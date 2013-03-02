@@ -1,0 +1,655 @@
+/* jQuery UI */
+
+.ui-widget {
+ /*font-size: 14px;*/
+}
+
+
+#content-reserva {
+  width: 800px;	
+  margin: 0 auto;
+  margin-top: 10px;
+  background: white;
+  /* Esquinas redondeadas */
+  -webkit-border-radius: 5px 5px; /* Safari  */ 
+  -moz-border-radius: 5px 5px; /* Firefox */
+  border-radius: 5px 5px; /* iExplorer 9 */
+}
+
+#content-reserva #content-header {	
+  padding-top: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+#content-reserva #content-body {
+  padding: 5px 15px;
+}
+
+#content-reserva #content-footer {
+ clear:both;	
+}
+
+#content-reserva .logo-img { 
+ float: right;
+}
+ 
+/* --------------------------------------------- */
+/* Plugins : Errores, Datepicker, Placeholder... */
+/* --------------------------------------------- */
+
+#ui-datepicker-div { 
+ /* font-size: 12px; */
+}
+
+#content-reserva label.error {
+  color: #690404;	
+  padding-left: 10px;
+  float: left;
+}
+
+
+/*match placeholder/watermark padding to border+padding for input element*/
+#content-reserva label.placeholder {
+cursor: text;
+padding: 4px 4px 4px 4px;
+color: #999999;
+}
+
+/* html5 placeholder support */
+#content-reserva input::-webkit-input-placeholder, #content-reserva textarea::-webkit-input-placeholder {
+color:#999999;
+}
+
+#content-reserva input:placeholder, #content-reserva textarea:placeholder {
+color:#999999;
+}
+
+#content-reserva fieldset {
+  border-width: 0px; /* border-color: transparent does not work */	
+
+}
+
+/* ----------------------------- */
+/*         Common forms          */
+/* ----------------------------- */
+
+#content-reserva .botones 
+{
+  cursor: pointer;	
+}
+
+#content-reserva .legend-first-level 
+{
+ /* font-size: 14px;*/
+  font-weight: bold;
+  width: 100%; /* To show the border in all the space */
+  border-bottom: 1px solid gray;	
+}
+
+#content-reserva .legend-second-level
+{
+  /*font-size: 12px;*/
+  font-weight: bold;
+  padding-top:5px;
+  padding-bottom:5px;
+  /*padding-left:3px;*/
+}
+
+#content-reserva .fieldset_description
+{
+  padding-left:3px;	
+}
+
+#content-reserva fieldset 
+{
+ border-color: transparent;
+}
+
+#content-reserva label {
+ /*font-size: 12px;	*/
+}
+
+#content-reserva input[type="text"], select, textarea {
+  padding: 4px;
+}
+
+#content-reserva label {
+  padding: 4px 0px 4px 0px;
+}
+
+/* ------------------------------------ */
+/*  Overlay content                  */
+/* ------------------------------------ */
+
+   .contentWrap {
+   	 padding-left : 15px;
+   	 padding-right: 15px;
+   }
+
+/* use a semi-transparent image for the overlay */
+	#overlay {
+        border: 1px solid gray;
+		height:450px;
+		  /* Esquinas redondeadas */
+        -webkit-border-radius: 5px 5px; /* Safari  */ 
+        -moz-border-radius: 5px 5px; /* Firefox */
+        border-radius: 5px 5px; /* iExplorer 9 */
+	}
+	
+	/* container for external content. uses vertical scrollbar, if needed */
+	div.contentWrap {
+		height:441px;
+		overflow-y:auto;
+	}
+	
+	/* the overlayed element */
+   .apple_overlay {
+	
+	   /* initially overlay is hidden */
+	   display:none;
+	
+	  /* growing background image */
+	  /*background-image:url(../img/overlay/white.png);*/
+	  background: white;
+	  color: black;
+	
+	  /* 
+		width after the growing animation finishes
+		height is automatically calculated
+	  */
+ 	  width:640px;		
+	
+	  /* some padding to layout nested elements nicely  */
+	  padding:15px;
+	  margin: 5px;
+
+   }
+
+  /* default close button positioned on upper right corner */
+  .apple_overlay .close {
+	background-image:url(../img/overlay/close.png);
+	position:absolute; right:-25px; top:-25px;
+	cursor:pointer;
+	height:35px;
+	width:35px;
+  }
+
+/* ----------------------------- */
+/* Wizard                        */
+/* ----------------------------- */
+
+#content-reserva #wizard-navigation {
+ padding-left: 15px;
+ padding-right: 5px;
+ height: 40px;
+ margin-top:10px;
+}
+
+#content-reserva #wizard-options {
+ font-size: 20px;
+ list-style-type: none;
+ display: inline;
+}
+
+#content-reserva #wizard-options li {
+ float: left;
+}
+
+#content-reserva #wizard-options a {
+ padding-right: 20px;	
+}
+
+#content-reserva #wizard-options a span {
+ font-size: 20px;	
+ padding: 5px 10px;  
+ text-decoration: none;
+ /* Esquinas redondeadas */
+ -webkit-border-radius: 5px 5px; /* Safari  */ 
+ -moz-border-radius: 5px 5px; /* Firefox */
+ border-radius: 5px 5px; /* iExplorer 9 */
+}
+
+#content-reserva .active {	
+  color: black;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#content-reserva .active span {
+  background-color: yellow;	
+}
+
+#content-reserva .not-active {	
+  color: black;
+  font-weight: 300;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#content-reserva .not-active span {	
+  background-color: white;
+  color: black;	
+  //border: 1px solid gray;
+}
+
+#content-reserva .not-enabled {	
+  color: #C2C2C2;
+  font-weight: normal;
+  text-decoration: none;
+  cursor: default;
+}
+
+#content-reserva .not-enabled span {
+  background-color: #C2C2C2;
+  color: white;	
+}
+
+/* ----------------------------- */
+/*    Search Item Form           */
+/* ----------------------------- */
+
+#form-search-item {
+  background: #F1EFE2; /*url('../img/form-search-item-background.png');*/
+  border: 1px solid gray;
+  padding: 10px 10px 5px 10px;
+  /* Esquinas redondeadas */
+  -webkit-border-radius: 5px 5px; /* Safari  */ 
+  -moz-border-radius: 5px 5px; /* Firefox */
+  border-radius: 5px 5px; /* iExplorer 9 */
+}
+
+#form-search-item div { /* Each components lines is displayed in a div */ 
+  overflow: hidden;
+  clear: left; /* Para limpiar los floats */
+  margin-right: 30px;
+  /*margin-bottom: 5px;*/
+  margin-top: 5px;
+}
+
+#button_calcular_tarifas {
+  /*float: left;*/
+  margin-left: 25%;
+  margin-top: 10px;
+  width: 142px;
+}
+
+#content-reserva .columna1 {
+  width: 25%;
+  float: left;
+}
+
+#content-reserva .columna2 {
+  /*width: 100px;*/
+  width: 25%;
+}
+
+#content-reserva .columna3 {
+  width: 25%;	
+}
+
+#content-reserva .columna4 {
+  width: 25%;
+}
+
+#content-reserva .columna5 {
+  float: left;	
+}
+
+
+/* ------------------------------------------------ */
+/*           Search Items RESULT                    */
+/* ------------------------------------------------ */
+
+#content-reserva div.car{	
+  margin-top: 5px; /* Margin between cars */
+  height: 85px;  
+  position: relative;
+  /* Esquinas redondeadas */
+  -webkit-border-radius: 10px; /* Safari  */ 
+  -moz-border-radius: 10px; /* Firefox */
+  border-radius: 10px; /* iExplorer 9 */ 
+  clear: left;
+  padding-bottom: 5px;
+} 
+
+#content-reserva div.car_photo {
+ float: left;
+ margin-left: 5px;	
+ width: 100px;
+ padding: 10px;
+}
+
+#content-reserva div.car_detail {
+ float: left;	
+ margin-left: 5px;
+ padding: 5px;
+ width: 400px;
+}
+
+#content-reserva div.car_detail_description {
+ font-weight: bold;	
+}
+
+#content-reserva div.car_detail_cars {
+ padding-top: 10px;	
+}
+
+
+#content-reserva div.car_price {
+ margin-right: 10px;	
+ float: right;
+}
+
+#content-reserva div.car_price_total {
+ overflow: hidden;	
+}
+
+#content-reserva div.car_price_booking {
+	
+}
+
+#content-reserva div.A{
+  background-color: #e1dfdf;
+}
+
+#content-reserva div.B{
+  background-color: #f0efef;
+}
+
+#content-reserva div.C{
+  background-color: #e1dfdf;
+}
+
+#content-reserva div.D{
+  background-color: #f0efef;
+}
+
+#content-reserva div.E{
+  background-color: #e1dfdf;
+}
+
+#content-reserva div.F{
+  background-color: #f0efef;	
+}
+
+#content-reserva .car_price span{	
+  font-size: 36px;
+  text-align: right;
+  float:right;
+}
+
+#content-reserva .book-button {
+  float: right;
+  min-width: 75px;
+  min-height: 23px;
+}
+
+/* ------------------------------------------------ */
+/*           Formulario datos reserva               */
+/* ------------------------------------------------ */
+
+#form-reservation {
+	
+  display: none; /* In the beginning is not visible */
+  overflow: hidden;
+  margin-bottom: 10px;
+  clear: both;
+  /*font-size: 12px;*/
+  
+}
+
+#reservation-input {
+ width: 60%; /*500px;*/
+ float: left;	
+ background: #F1EFE2; /*url('../img/form-search-item-background.png');*/
+ 
+ /* Esquinas redondeadas */
+ -webkit-border-radius: 5px; /* Safari  */ 
+ -moz-border-radius: 5px; /* Firefox */
+ border-radius: 5px; /* iExplorer 9 */ 
+
+ padding-top: 10px;
+ padding-bottom: 10px;
+ padding-left: 5px;
+
+  overflow: hidden;
+  border: 1px solid gray;
+}
+
+#reservation-summary {
+ width: 38%; /*240px;*/
+ float: left;
+ margin-left: 5px;
+ background: #F1EFE2; /*url('../img/form-search-item-background.png');*/
+
+  overflow: hidden;
+  border: 1px solid gray;
+  
+  /* Esquinas redondeadas */
+  -webkit-border-radius: 5px; /* Safari  */ 
+  -moz-border-radius: 5px; /* Firefox */
+  border-radius: 5px; /* iExplorer 9 */
+
+ 
+}
+
+/* ------------ RESERVATION INPUT ----------------- */
+
+
+#reservation-input div { /* Each components lines is displayed in a div */ 
+  overflow: hidden;
+  width: 100%; /* for iExplorer 6 */
+  clear: left; /* Para limpiar los floats */
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+#content-reserva .form-reservation-columna1 { /* Los labels */
+ float : left;	
+ width : 100%;
+}
+
+#content-reserva .form-reservation-columna2 { /* Los inputs */
+ float: left;
+ width: 95%;	
+}
+
+#content-reserva .summary-row {
+ margin-top: 5px;
+ margin-bottom: 5px;
+}
+
+#content-reserva .form-reservation-right-column { /* Columnas especiales alineadas a la derecha */
+ float: right;
+ margin-right: 10px;
+ margin-top: 0px;
+ margin-bottom: 0px;
+ padding-top: 0px;
+ padding-bottom: 0px;
+}
+
+#tblextras {
+ padding: 5px;	
+}
+
+#tblextras td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#tblextras label {
+ top: 0px;	
+}
+
+#content-reserva .form-reservation-extra-titulo {
+ font-weight : bold;
+ border-bottom:1px solid gray;
+}
+
+#content-reserva .form-reservation-extra-columna1 {
+ width: 130px;	
+}
+
+#reservation-input label.form-reservation-error {
+  color: #690404;	
+  float: left;	
+  margin-left: 150px;
+}
+
+#reservation-summary label.form-reservation-error {
+  color: #690404;	
+  float: left;	
+}
+
+/* -------------- RESERVATION SUMMARY ----------------------- */
+
+
+#reservation-summary .readonly-field {
+ border-width: 0px;
+ background-color: transparent;
+}
+
+#fs_summary_total {
+ background: black;
+ margin: 5px;
+ padding: 5px;
+ /* Esquinas redondeadas */
+ -webkit-border-radius: 5px; /* Safari  */ 
+ -moz-border-radius: 5px; /* Firefox */
+ border-radius: 5px; /* iExplorer 9 */ 
+}
+
+#fs_summary_collection {
+ height: 10%;	
+}
+
+#fs_summary_delivery {
+ height: 10%;	
+}
+
+#fs_summary_item {
+ height: 20%;	
+}
+
+#fs_summary_item #item_image {
+  display: block;
+  margin: 0 auto;
+  padding-bottom: 10px;
+}
+
+#fs_summary_extras {
+ height: 10%;	
+}
+
+#content-reserva .total_cost {
+ color: white;
+ font-size: 40px;
+ background-color: black;
+ text-align: center;
+ width: 100%;
+ display: inline-block;
+ border-radius: 5px;
+ padding-top: 5px;
+ padding-bottom: 5px 
+}
+
+#content-reserva .detailed_price-button {
+  display: block;
+  width: 90px;
+  margin: 0 auto;
+  padding: 5px;
+}
+
+#item_image {
+ margin-left:20px;
+}
+
+#fs_conditions {
+ border-top: 1px solid gray;	
+}
+
+#button_confirmar_reserva {
+  float: left;
+  margin-top:10px;
+  margin-left: 60px;
+  min-width: 90px;
+  min-height: 28px;
+}
+
+
+/* -------------- SENDING BOOKING ------------------------- */
+
+#sending-booking img {
+  display: block;
+  margin: 0 auto;
+  margin-top:15px;
+}
+
+/* -------------- MESSAGE BOOKING SENT -------------------- */
+
+#booking-complete-message {
+/*  width: 500px; */
+  margin-bottom: 30px;
+  display: none;
+}
+
+#content-reserva .bf-title , #content-reserva .bf-footer {
+  margin-left: 20px;	
+}
+
+#content-reserva .bf-message {
+  margin-left: 40px;
+  text-align: left;	
+}
+
+/* ------------ DETAILED COST ------------------------- */
+
+#content-reserva .detailed_price {
+ 
+  font-weight: normal;
+  /*font-size: 14px;*/
+	
+}
+
+#content-reserva .detailed_price thead {
+  background-color: black;
+  font-weight: normal;
+  color : white;	
+}
+
+#content-reserva .detailed_price thead th {
+ 
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+	
+}
+
+#content-reserva .detailed_price td {
+
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-right: 1px dashed gray;
+  border-bottom: 1px dashed gray;
+  	
+}
+
+#content-reserva .quantity_column {
+  text-align: right;	
+}
+
+#content-reserva .total_column {
+  font-weight: bold;	
+}
+
+#content-reserva .first_column {
+  border-left: 1px dashed gray;	
+}
+
+
