@@ -1,4 +1,5 @@
 require 'ysd-plugins_viewlistener' unless defined?Plugins::ViewListener
+require 'ysd_md_configuration' unless defined?SystemConfiguration::Variable
 
 #
 # Huasi CMS Extension
@@ -12,7 +13,13 @@ module Huasi
     # Install the plugin
     #
     def install(context={})
-            
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.notification_email'},
+        {:value => '',
+         :description => 'Bookings notification email',
+         :module => :booking})      
+    
     end
             
     # routes
