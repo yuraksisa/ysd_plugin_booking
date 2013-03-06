@@ -1,6 +1,4 @@
 
-  
- 
   <div id="content-reserva">
   
     <div id="content-header">
@@ -9,6 +7,7 @@
             <ul id="wizard-options">
               <li><a id="tab-choose-item" href="#" class="tab img_txt"><span>1</span> Seleccionar el vehículo</a></li>
               <li><a id="tab-complete-reservation" href="#" class="tab img_txt"><span>2</span> Completar la reserva</a></li>
+              <li><a id="tab-payment" href="#" class="tab img_txt"><span>3</span> Pago</a></li>
             </ul>
           </div>
         </div>      
@@ -17,15 +16,14 @@
     <div id="content-body">
 
 	  <div id="item-selection">
-		  <!-- Formulario calculo de tarifas -->
-		  <form id="form-search-item" action="">
+		  <form id="form-search-item" name="form-search-item">
 		    <fieldset>
 		   	  <legend id="lg_reservas" class="legend-first-level">Reservas</legend>
 		      <div>
-		      	<label for="datefrom" id="labeldatefrom" class="search-form-column columna1 ">Fecha de entrega</label> 
-		      	<input type="text" name="datefrom" id="datefrom" class="search-form-column columna2" size="10" maxlength="10"/>
-		      	<label for="timefrom" id="labeltimefrom" class="search-form-column columna3 " >Hora</label>
-		      	<select name="timefrom" id="timefrom" class="search-form-column columna4"> 
+		      	<label for="datefrom" id="labeldatefrom" class="search-form-column columna1">Fecha de entrega</label> 
+		      	<input type="text" name="datefrom" id="datefrom" class="search-form-column columna2 date_control" size="10" maxlength="10"/>
+		      	<label for="timefrom" id="labeltimefrom" class="search-form-column columna3" style="display:none">Hora</label>
+		      	<select name="timefrom" id="timefrom" class="search-form-column columna4" style="display:none"> 
 					<option value="7:00" selected="selected">7:00</option>
 					<option value="7:30">7:30</option>
 					<option value="8:00">8:00</option>
@@ -63,10 +61,10 @@
 		      	</select>
 		      </div>
 		      <div>
-		      	<label for="dateto" id="labeldateto" class="search-form-column columna1 ">Fecha de devolución</label> 
-		      	<input type="text" name="dateto" id="dateto" class="search-form-column columna2" size="10" maxlength="10"/>
-		      	<label for="timeto" id="labeltimeto" class="search-form-column columna3 ">Hora</label>
-		      	<select name="timeto" id="timeto" class="search-form-column columna4"> 
+		      	<label for="dateto" id="labeldateto" class="search-form-column columna1">Fecha de devolución</label> 
+		      	<input type="text" name="dateto" id="dateto" class="search-form-column columna2 date_control" size="10" maxlength="10"/>
+		      	<label for="timeto" id="labeltimeto" class="search-form-column columna3" style="display:none">Hora</label>
+		      	<select name="timeto" id="timeto" class="search-form-column columna4" style="display:none"> 
 					<option value="7:00" selected="selected">7:00</option>
 					<option value="7:30">7:30</option>
 					<option value="8:00">8:00</option>
@@ -118,7 +116,7 @@
 	  	      	    
  	  <!-- Formulario de confirmacion de reserva -->
   
-	  <form id="form-reservation" method="post">
+	  <form id="form-reservation" name="form-reservation" method="POST" style="display:none">
 
 	    <div id="reservation-input">	      
 	      <fieldset id="fs_customer">
@@ -158,7 +156,7 @@
 	        <p class="form-reservation-right-column"> <span id="booking_comments_length"></span> caracteres disponibles</p>
 	      </fieldset>
 	      
-	      <fieldset id="fs_driver">
+	      <fieldset id="fs_driver" style="display:none">
 	        <legend id="lg_driver" class="legend-first-level">Conductor</legend>
             <p class="fieldset_description">Si desea <strong>agilizar</strong> la entrega del vehículo <em>complete</em> los datos del conductor </p>
 	        <legend class="legend-second-level">Datos personales</legend>
@@ -232,21 +230,19 @@
 	    </div>
 
 	    <div id="reservation-summary">
-	      <fieldset id="fs_summary_total">
+	      <fieldset class="fs_summary_total">
 	      	  <input type="hidden" name="total_cost" id="total_cost"/>
 	      	  <span class="total_cost"></span>
 	      </fieldset>
-	      <fieldset>
-	        <div class="form-button detailed_price-button" id="detailed_price">
-	          <a href="script_detailed_price" rel="#overlay" class="template">Detalle</a>
-	        </div>
-	      </fieldset>
+          <div class="detailed_price-button" id="detailed_price">
+	          <a href="script_detailed_price" rel="#overlay" class="template">Ver detalle</a>
+	      </div>
 	      <fieldset id="fs_summary_collection">
 	        <legend id="lg_summary_collection" class="legend-first-level">Entrega</legend>
 	        <div class="summary-row">
 	          <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="margin-left:-1px"/>
 	        </div>
-	        <div class="collection_place">
+	        <div class="collection_place" style="display:none">
 	          <label for="pickup_place">Lugar * </label>
 	          <select name="pickup_place" id="pickup_place">
 	            <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
@@ -265,7 +261,7 @@
 	        <div class="summary-row">
 	          <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly" style="margin-left:-1px"/>
 	        </div>
-	        <div class="return_place">
+	        <div class="return_place" style="display:none">
 	          <label for="return_place">Lugar * </label>
 	      	  <select name="return_place" id="return_place">
 	            <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
@@ -298,30 +294,41 @@
 	          </tbody>
 	        </table>
 	      </fieldset>
-	      <fieldset>
+	      <fieldset class="fs_summary_total">
 	          <span class="total_cost"></span>
 	      </fieldset>
-	      <fieldset>
-	        <div class="form-button detailed_price-button">
-	          <a href="script_detailed_price" rel="#overlay" class="template">Detalle</a>
-	        </div>
-	      </fieldset>	      	      
+          <div class="detailed_price-button">
+	          <a href="script_detailed_price" rel="#overlay" class="template">Ver detalle</a>
+	      </div>
 
 	      <fieldset id="fs_conditions">
 	        <div>
-	          <input type="checkbox" name="conditions_read" id="conditions_read">He leido y acepto <a href="/renting_conditions.html?id=2" rel="#overlay" class="external">las condiciones del alquiler</a></input>
+	          <input type="checkbox" name="conditions_read" id="conditions_read">
+	          <span class="conditions_text">He leido y acepto <a href="/renting_conditions.html?id=2" rel="#overlay" class="external">las condiciones del alquiler</a></span></input>
 	        </div>        
 	      </fieldset>	      
 	      
 	      <fieldset id="fs_confirm">
-	          <input type="submit" value="Confirmar" id="button_confirmar_reserva" class="botones"/>
+	      	  <input type="button" value="Continuar" id="button_ir_a_pagar_reserva" class="botones" style="display:none"/>
+	          <input type="submit" value="Confirmar" id="button_confirmar_reserva" class="botones" style="display:none"/>
 	      </fieldset>	
-
 	      
 	    </div>
 	  
 	  </form>
 	  
+      <div id="booking-payment" style="display:none">
+
+        <div id="booking_summary">
+        </div>
+        
+        <div id="payment_methods">
+           <h3 class="guiblock-title">Formas de pago</h3>
+           <div id="payment_methods_selector"></div>
+        </div>
+
+      </div>
+
 	  <div id="booking-complete-message">
 	  
 	  </div>
@@ -334,7 +341,7 @@
 
       </div>	  
 	  
-      <div id="sending-booking" title="Enviando la solicitud de reserva">
+      <div id="sending-booking" title="Enviando la solicitud de reserva" style="display:none">
         <img src="/img/ajax-loader_grande.gif"/>
       </div>
             
@@ -370,9 +377,7 @@
   </script>
   
   <script type="text/tpml" id="script_detailed_price">
-  
       <table class="detailed_price">
-      
         <thead>
           <tr>
             <th>Concepto</th>
@@ -381,51 +386,52 @@
             <th>Precio</th>
           </tr>
         </thead>
-        
         <tbody>
           <tr>
-            <td class="first_column">clase <%%= booking.item_id %> </td>
+            <td class="first_column"><%%= bookingDataSystem.families[booking.item_id].cars %> </td>
             <td class="quantity_column"><%%= booking.quantity %> </td>
-            <td class="quantity_column"><%%= booking.days %> días</td>
+            <td class="quantity_column"><%%= booking.days %> </td>
             <td class="quantity_column"><%%= booking.item_cost %> € </td>
           </tr>
-          
           <%% for (extra in booking.booking_extras) { %>
-          
             <tr>
               <td class="first_column"><%%= bookingDataSystem.extras[booking.booking_extras[extra].extra_id].the_name %></td>
               <td class="quantity_column"><%%= booking.booking_extras[extra].quantity %></td>
-              <td class="quantity_column"><%%= booking.days %> días</td>
+              <td class="quantity_column"><%%= booking.days %> </td>
               <td class="quantity_column"><%%= booking.booking_extras[extra].extra_cost %> €</td>
             </tr>
-          
           <%% } %>
-
           <tr>
             <td class="total_column first_column">TOTAL</td>
             <td class="quantity_column"></td>
             <td class="quantity_column"></td>
             <td class="quantity_column total_column"><%%= booking.total_cost %> € </td>
           </tr>
-      
-      
-      
+        </tbody>      
       </table>
   
   </script>
   
+  <script type="text/tpml" id="script_booking_summary">
+      
+      <h3 class="guiblock-title">Reserva</h3>
+
+      <div><span class="highlighted_text"><%%= item %></span></div>
+      <div><span class="highlighted_text">Entrada:</span> <%%= date_from %></div>
+      <div><span class="highlighted_text">Salida:</span> <%%= date_to %></div>
+ 
+      <h3 class="guiblock-title">Precio</h3>
+
+  </script>
+
   <script type="text/tpml" id="script_booking_finished">
 	    
-	  <h1>Reserva pendiente de confirmación </h2>
+	  <h2>Reserva pendiente de confirmación </h2>
 	  
 	  <p class="bf-title">Estimado Sr/Sra. <%%= booking.customer_name %> <%%= booking.customer_surname %>: </p>
-	  	  
 	  <p class="bf-message">Queremos agradecerle su confianza en <strong><%%= bookingConfiguration.company %></strong> para el alquiler de su <%%= bookingConfiguration.item_type %>.</p>
-	  
 	  <p class="bf-message">En breve recibirá en su correo electrónico, <em> <%%= booking.customer_email %> </em>, todos los datos para realizar el pago por transferencia de su reserva.</p>
-	      
 	  <p class="bf-message">Recuerde que dispone de una plazo máximo de 72 horas para realizar el pago y de esta forma confirmar su reserva.</p>
-	  	 
 	  <p class="bf-footer">Atentamente, </p>
 	  <p class="bf-footer">El equipo de <%%= bookingConfiguration.company %></p>
 	  	    	  	    
@@ -436,10 +442,59 @@
   <script type="text/javascript">
     
   require(['jquery', 'YSDForms', 'YSDDateControl', '/js/booking.js', 'ysdtemplate',
-           'json2', 'jquery.validate', 
-  	       'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker', 
+           'YSDListSelector', 'YSDRemoteDataSource', 'json2', 'jquery.validate', 
+  	       'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
+  	       'jquery.ui.datepicker.validation',
   	       'jquery.tools', 'jquery.formparams', 'datejs'], 
-  	       function($, YSDForms, DateControl, bookingDataSystem, tmpl) {  
+  	       function($, YSDForms, DateControl, bookingDataSystem, tmpl, 
+  	       ListSelector, RemoteDataSource) {  
+
+    /* It represents the wizard tabs */
+
+    var WizardTab = function (element_id, visible) {
+       	
+      this.element_id = element_id;
+      this.state = null;
+                	         	  
+      this.setState = function(new_state) { /* set the state (not-enabled, active, not-active) */ 
+       	  
+        this.state = new_state;
+      	    
+        switch (this.state) {
+       	    
+  	      case 'not-enabled':
+   	        $('#' + this.element_id).removeClass('active not-active').addClass('not-enabled');
+   	        break;
+       	        
+   	      case 'active':
+   	        $('#' + this.element_id).removeClass('not-active not-enabled').addClass('active');
+   	        break;
+       	        
+   	      case 'not-active':
+   	        $('#' + this.element_id).removeClass('active not-enabled').addClass('not-active');
+   	        break;
+       	       
+        }         	    
+      
+      };
+       	  
+      this.setVisible = function(visible) { /* setVisible */
+        this.visible = visible;	
+       	    
+       	if (this.visible) {
+       	  $('#' + element_id).show();
+       	}
+       	else {
+       	  $('#' + element_id).hide();
+       	}
+       	    
+       	return this;
+      }
+       	
+      this.setVisible(visible);
+
+    };
+ 
 
     /* ----------------------------------- */
     /* An object that represents the MODEL */
@@ -447,37 +502,27 @@
         
     var bookingModel = {
 
-       all_prices : [], /* Caches all models prices for the period */
+       all_prices : [],    /* Caches all models prices for the period */
        exceeded_hours : 2, /* Used when calculating prices. When exceeded it's considered one more day */
-       process_states : [ 'item_selection', 'completing_booking', 'item_changing', 'continue_booking', 'sending_booking', 'process_finished', 'process_error' ],
+       process_states : [ 'item_selection', 'completing_booking', 'pay_booking', 'continue_booking', 'sending_booking', 'process_finished', 'process_error' ],
        process_state : 'item_selection',
-       
-       /* the booking */       
+              
        booking : {
 
           date_from : null, /* the booking date from */
-      
           time_from : null, /* the booking time from */
-             
           date_to : null, /* the booking date to */
-       
           time_to: null, /* the booking time to */
-          
           date_to_price_calculation : null, /* the date to used when calculating prices */
-       
           days: 0, /* renting days */
-          
           quantity: 1, /* Number of products */
-       
           item_id : null, /* the booking item */
-       
           item_cost : 0, /* the item cost */
-       
           extras_cost : 0, /* the extras cost */
-       
           total_cost : 0, /* the total cost (item + extras) */
+          booking_extras : {}, /* The booking extras */
           
-          set_item : function (item_id) {
+          set_item : function (item_id) { /* Set the booking item */
           	
           	old_cost = this.item_cost;
             this.item_id = item_id;
@@ -498,14 +543,13 @@
           addCost : function (value) { /* Add cost */
    	         this.total_cost += value;
           },          
-                             
-          booking_extras : { },  
-            
+                               
           BookingExtra : function (extra_id, quantity) {
    	 
    	         this.extra_id = extra_id;
    	         this.quantity = quantity;
-   	         this.extra_unit_cost = bookingDataSystem.calculate_extra_price(bookingModel.booking.date_from, bookingModel.booking.date_to_price_calculation, this.extra_id, bookingModel.booking.item_id);
+   	         this.extra_unit_cost = bookingDataSystem.calculate_extra_price(bookingModel.booking.date_from, 
+   	         	bookingModel.booking.date_to_price_calculation, this.extra_id, bookingModel.booking.item_id);
    	         this.extra_cost = this.quantity * this.extra_unit_cost;
    	         this.data = bookingDataSystem.extras[extra_id];
  
@@ -513,16 +557,16 @@
      	
      	        this.quantity = new_quantity;
      	        var old_extra_cost = this.extra_cost;
-     	        this.extra_cost = new_quantity * this.extra_unit_cost;
-         
-               bookingModel.booking.addExtraCost (this.extra_cost - old_extra_cost);  
+     	        this.extra_cost = new_quantity * this.extra_unit_cost;         
+                bookingModel.booking.addExtraCost (this.extra_cost - old_extra_cost);  
 
              }
  
              this.reCalcCost = function() { /* Computes the extra price */
 
                 var old_extra_cost = this.extra_cost;
-                this.extra_unit_cost = bookingDataSystem.calculate_extra_price(bookingModel.booking.date_from, bookingModel.booking.date_to_price_calculation, this.extra_id, bookingModel.booking.item_id);
+                this.extra_unit_cost = bookingDataSystem.calculate_extra_price(bookingModel.booking.date_from, 
+                	bookingModel.booking.date_to_price_calculation, this.extra_id, bookingModel.booking.item_id);
                 this.extra_cost = this.quantity * this.extra_unit_cost;
                 if (this.extra_cost != old_extra_cost) {
                   bookingModel.booking.addExtraCost(this.extra_cost - old_extra_cost);
@@ -534,13 +578,8 @@
                                                        
           add_extra : function (extra_id, quantity) { /* Adds an extra to the booking */
           	          	
-          	  // Add the extra
           	  this.booking_extras [extra_id] = new this.BookingExtra(extra_id, quantity);
-          	            	
-          	  // Update booking cost    
           	  this.addExtraCost (this.booking_extras[extra_id].extra_cost);      	
-          	  
-          	  // Update the Gui
           	  bookingView.update_information('booking_extras');
           	            	
           },
@@ -548,12 +587,8 @@
           remove_extra : function (extra_id) { /* Remove an extra from the booking */
           	
         	  var oldCost = this.booking_extras[extra_id].extra_cost;
-   	         delete this.booking_extras [extra_id]; 
-   	         
-   	         // Update booking cost
-   	         this.addExtraCost (-oldCost);  
-   	         
-          	  // Update the Gui
+   	          delete this.booking_extras [extra_id]; 
+   	          this.addExtraCost (-oldCost);  
           	  bookingView.update_information('booking_extras');
           	
           },
@@ -564,21 +599,16 @@
           	  {
           	  	 this.add_extra(extra_id, new_quantity);
           	  }
-          	  else
-          	  if (this.booking_extras[extra_id] != null)
-          	  {          	
-          	  	 if (new_quantity == 0)
-          	  	 {
+          	  else 
+          	  	if (this.booking_extras[extra_id] != null) {          	
+          	  	  if (new_quantity == 0) {
           	       this.remove_extra(extra_id);
-          	  	 }
-          	  	 else
-          	  	 {
+          	  	  }
+          	  	  else {
           	  	 	this.booking_extras[extra_id].set_quantity(new_quantity);
-          	  	 	// Update the Gui
-          	       bookingView.update_information('booking_extras');
-          	  	 }
+           	        bookingView.update_information('booking_extras');
+          	  	  }
           	  }
-          	  
           	            	
           }
        
@@ -609,32 +639,26 @@
        	  	   break;
        	  	       	  	         	  	          	       
        	     case 'select_item' :
-
                this.process_state = 'completing_booking';       	     
        	       break;
-       	   	
-       	   	 case 'go_to_item_selection' :
-       	   	 
-       	   	   this.process_state = 'item_changing';
-       	   	   break;
-       	   	
+       	   	       	   	
        	   	 case 'go_to_complete_booking':
-       	   	 
        	   	   this.process_state = 'continue_booking';
        	   	   break;
-       	   	   
-       	   	 case 'send_booking':
        	   	 
+             case 'go_to_pay_booking':
+               this.process_state = 'pay_booking';
+               break;
+
+       	   	 case 'send_booking':
        	   	   this.process_state = 'sending_booking';
        	   	   break;
        	   	   
        	   	 case 'booking_response_ok':
-       	   	 
        	   	   this.process_state = 'process_completed';
        	   	   break;
        	   	   
        	   	 case 'booking_response_error':
-       	   	 
        	   	   this.process_state = 'process_error';
        	   	   break;
        	  }
@@ -686,49 +710,36 @@
        	   this.booking.days++;
        	 }
 
-         // Get prices
        	 this.all_prices = bookingDataSystem.calculate_items_price(this.booking.date_from, 
        	                                                           this.booking.date_to_price_calculation);
-       	
-       	       	
+       	       	       	
        },    	
-       
-       /* Add an extra */
-       
-       add_extra : function (extra, quantity) {
+              
+       add_extra : function (extra, quantity) { /* Add an extra */
        	
        	this.booking.add_extra (extra, quantity);
        	
        },
        
-       /* Remove an extra */
-       
-       remove_extra: function (extra) {
+       remove_extra: function (extra) { /* Remove an extra */
        	
        	this.booking.remove_extra (extra);
        	
        },
        
-       /* Change extra quantity */
-       
-       change_extra_quantity : function (extra, quantity) {
+       change_extra_quantity : function (extra, quantity) { /* Change extra quantity */
        	
        	this.booking.change_extra_quantity (extra, quantity);
        	
        },
-             
-       /* Prepares the request object */
-       
-       prepare_request_object : function (data) {
+                    
+       prepare_request_object : function (data) { /* Prepares the request object */
        	
             // Creates a request object with all the information (mixin the model and the data passed)
        
            var request = {
-            
               booking : data.booking,
-              
               car_booking : data.car_booking	
-                    	
            };
                     
            // Drop the properties not necessary to the request (they only live in the Gui)         
@@ -772,9 +783,15 @@
        	
        },
        
-       /* Confirms the booking */
-       
-       confirm_booking : function (data) {
+       go_to_payment : function() { /* Go to the payment tab */
+
+        if ($('#form-reservation').valid()) {
+          this.change_state('go_to_pay_booking');
+        }
+
+       },
+
+       confirm_booking : function (data) { /* Confirms the booking */
        	
            var request = this.prepare_request_object(data);
            
@@ -811,20 +828,14 @@
                    contentType: 'application/json; charset=utf-8', /* Data type sent to the server */
        	                  	           
        	           success : function(data, textStatus, jqXHR) { /* RESPONSE OK */
-       	             
        	             bookingModel.change_state('booking_response_ok'); /* textStatus y data */
-       	             
        	           },	
        	           
        	           error: function(jqXHR, textStatus, errorThrow){ /* RESPONSE ERROR */
-       	           	
        	           	 bookingModel.change_state('booking_response_error'); /* textStatus y errorThrow */
-       	             
        	           }
        	           
-       	         }
-       	         );       
-       	        
+       	         });       
        	
        }
     	
@@ -844,47 +855,31 @@
       /* calculate the prices */
       	
       calculate_prices : function (date_from, time_from, date_to, time_to) {
-      	
       	bookingModel.calculate_price(date_from, time_from, date_to, time_to);
-      	bookingView.show_result();
-      	
+      	bookingView.show_prices();
       },	
-    
-      /* start booking */
       
-      start_booking : function (item) {
-      	
+      start_booking : function (item) { /* start booking */
       	bookingModel.choose_item(item);
-         
       },
       
       change_item : function (item) {
-      	
       	bookingModel.change_item(item);
-      	
       },
       
-      /* check an extra */
-      
-      check_extra : function(extra, quantity) {
+      check_extra : function(extra, quantity) { /* check an extra */
       	bookingModel.add_extra(extra, quantity==='0'?1:new Number(quantity));
       },
       
-      /* uncheck an extra */
-      
-      uncheck_extra : function(extra) {
+      uncheck_extra : function(extra) {  /* uncheck an extra */
       	bookingModel.remove_extra(extra);
       },
-     
-      /* change the extra quantity */
-      
-      change_extra_quantity: function(extra, quantity) {
+
+      change_extra_quantity: function(extra, quantity) { /* change the extra quantity */
          bookingModel.change_extra_quantity(extra, new Number(quantity));	
       },
-     
-      /* change pickup place */
       
-      change_pickup_place_select : function(pickup_place) {
+      change_pickup_place_select : function(pickup_place) { /* change pickup place */
         
         if ($('#pickup_place :selected').index() == document.getElementById('pickup_place').length-1 ) {
           $('#pickup_place_other').show();	
@@ -895,7 +890,6 @@
         {
           $('#pickup_place_other').hide();
           $('#pickup_place_other').val('');	
-          // stores the pick up place in the form
           $('#car_booking\\[pickup_place\\]').val(pickup_place);
         }
         
@@ -909,10 +903,8 @@
         }
                	
       },
-      
-      /* change return place */
      
-      change_return_place_select : function(return_place) {
+      change_return_place_select : function(return_place) { /* change return place */
       	      	
         if ($('#return_place :selected').index() == document.getElementById('return_place').length-1 ) {
           $('#return_place_other').show();
@@ -923,49 +915,29 @@
         {
           $('#return_place_other').hide();
           $('#return_place_other').val('');	
-          // stores the pick up place in the form
           $('#car_booking\\[return_place\\]').val(return_place);
         }      
-      
       
       },
       
       blur_return_place_input : function(return_place) {
       	
         if ($('#return_place_other').val() != $('#car_booking\\[return_place\\]').val()) {
-          // stores the pick up place in the form
           $('#car_booking\\[return_place\\]').val(return_place);
         }
       	
       },
       
-      
-      /* confirm booking */
-      
-      confirm_booking : function (data) {
-      
+      go_to_booking_payment_click: function() { /* Go to payment button click */
+
+        bookingModel.go_to_payment();
+
+      },
+
+      confirm_booking : function (data) { /* Confirm button click */
         bookingModel.confirm_booking(data);
-      
       },
-    
-      /* The user click on an wizard tab */
-      
-      tab_navigation : function ( tab_id ) { 
-             
-        switch (tab_id)
-       	{
-       	   case 'tab-choose-item' :
-       	   	 bookingModel.change_state('go_to_item_selection'); 	 
-       	   	 break;
-       	   	    	
-       	   case 'tab-complete-reservation': 
-       	   	 
-       	   	 bookingModel.change_state('go_to_complete_booking');      
-       	   	 break;	
-       	}        
-      		
-      },
-    
+        
       /* Copy customer name to driver name */
 
       copy_customer_to_driver : function() {
@@ -987,94 +959,37 @@
     /* ---------------------------------- */
     /* An object that represents the VIEW */
     /* ---------------------------------- */
-    
-    var WizardTab = function (element_id) {
-       	
-       	  this.element_id = element_id;
-          this.state = null;
-       	  this.visible = false;
-       	 
-       	  /* Configure the mouse events on the Wizard Tab */
-       	  
-       	  $('#' + this.element_id).bind('click', 
-       	    function(element) 
-       	    {
-       	      if (bookingView.wizard.tabs[this.id].state == 'not-active') { /* Only process the event if the step is not active */       	   	         	   	  
-       	   	    bookingController.tab_navigation( element.currentTarget.id );
-       	      }
-       	    }
-          );
-       	  
-       	  this.setState = function(new_state) { /* set the state (not-enabled, not-outstanding, outstanding) */ 
-       	  
-       	    this.state = new_state;
-       	    
-       	    switch (this.state) {
-       	    
-       	      case 'not-enabled':
-       	        
-       	        $('#' + this.element_id).removeClass('active not-active').addClass('not-enabled');
-       	        break;
-       	        
-       	      case 'active':
-       	        $('#' + this.element_id).removeClass('not-active not-enabled').addClass('active');
-       	        break;
-       	        
-       	      case 'not-active':
-       	        $('#' + this.element_id).removeClass('active not-enabled').addClass('not-active');
-       	        break;
-       	       
-       	    }         	    
-      
-       	  }
-       	  
-       	  this.setVisible = function(visible) { /* setVisible */
-       	    this.visible = visible;	
-       	    
-       	    if (this.visible) {
-       	      $('#' + element_id).show();
-       	    }
-       	    else {
-       	      $('#' + element_id).hide();
-       	    }
-       	    
-       	    return this;
-       	  }
-       	
-       };
-      
-    
+         
     var bookingView = {
     	    	
-       configureGui : function() { /* Configure the Gui elements using the booking configuration */
-       	
+       configureBookingGui : function() { /* Configure the Gui elements using the booking configuration */
+    
+         $('#tab-choose-item').html('<span>1</span> Seleccionar el ' + bookingDataSystem.configuration.item_type );
+
        	 $('#labeldatefrom').html('Fecha de ' + bookingDataSystem.configuration.collection_literal);
        	 $('#labeldateto').html('Fecha de ' + bookingDataSystem.configuration.return_literal);
        	
-       	 if (!bookingDataSystem.configuration.show_time) {
-       	   $('#labeltimefrom').hide();
-       	   $('#timefrom').hide();
-       	   $('#labeltimeto').hide();
-       	   $('#timeto').hide(); 	
+       	 if (bookingDataSystem.configuration.show_time) {
+       	   $('#labeltimefrom').show();
+       	   $('#timefrom').show();
+       	   $('#labeltimeto').show();
+       	   $('#timeto').show(); 	
        	 }
-       	
-       	 $('#tab-choose-item').html('<span>1</span> Seleccionar el ' + bookingDataSystem.configuration.item_type );
        	 
-       	 if (!bookingDataSystem.configuration.show_delivery_return_place) {
-       	   $('.collection_place').hide();
-       	   $('.return_place').hide();
+       	 if (bookingDataSystem.configuration.show_delivery_return_place) {
+       	   $('.collection_place').show();
+       	   $('.return_place').show();
        	 }
        	 
        	 $('#lg_summary_collection').html( bookingDataSystem.configuration.collection_literal.replace(/^(\w)/, function(whole, first) { return first.toUpperCase(); } )  );
        	 $('#lg_summary_delivery').html( bookingDataSystem.configuration.return_literal.replace(/^(\w)/, function(whole, first) { return first.toUpperCase(); } )  );       	 
        	 $('#lg_summary_item').html( bookingDataSystem.configuration.item_type.replace(/^(\w)/, function(whole, first) { return first.toUpperCase(); } ) );
        	       	 
-       	 if (!bookingDataSystem.configuration.driver_information)
+       	 if (bookingDataSystem.configuration.driver_information)
        	 {
-       	   $('#fs_driver').hide();
+       	   $('#fs_driver').show();
        	 }
        	 
-         // Configure date_from and date_to                                            
          var locale = $.datepicker.regional["es"];
 
          $('#datefrom').datepicker({numberOfMonths:2, minDate:bookingDataSystem.configuration.min_date, 
@@ -1085,21 +1000,32 @@
             maxDate: bookingDataSystem.configuration.max_date , dateFormat: 'dd/mm/yy'}, locale);
          $('#dateto').datepicker('setDate', '+1');
 
+         if (bookingDataSystem.configuration.payment) {
+           this.configurePaymentMethods();
+           $('#button_ir_a_pagar_reserva').show();
+           $('#button_confirmar_reserva').hide();
+           $('#button_ir_a_pagar_reserva').bind('click', function(event) {
+             bookingController.go_to_booking_payment_click();
+           });
+         }
+         else {
+           $('#button_ir_a_pagar_reserva').hide();
+           $('#button_confirmar_reserva').show();
+         }
+
        	 
        },	    	
-    	    	
-       /* Inits the View */	
-       init : function () {
+       
+       init : function () { /* Inits the View */	
        	       	       	       	       	       	
        	 // Configure the date controls
        	 // http://jquery-ui.googlecode.com/svn/trunk/ui/i18n/ (locales for datepicker)
        	 // http://keith-wood.name/uiDatepickerValidation.html (validation for datepicker)
        	 $.datepicker.setDefaults( $.datepicker.regional[ "" ] );
        	        	   	 
-       	 this.configureGui();
+       	 this.configureBookingGui();
   	          
          // Configure driver date of birth and driver license date                                            
-
          var dataControlDateOfBirth = new DateControl(document.getElementById('car_booking[driver_date_of_birth_day]'), 
                                               document.getElementById('car_booking[driver_date_of_birth_month]'),
                                               document.getElementById('car_booking[driver_date_of_birth_year]'), 
@@ -1118,15 +1044,12 @@
          );                
          
          // configure place holders
-         
          $('input[placeholder],textarea[placeholder]').placeholder();
          
          // Configure item behaviour
          $('#booking\\[item_id\\]').bind('change',
            function() {
-           	
            	 bookingController.change_item($(this).val());
-           	
            });
           	 
        	 // Configure the pickup_place and return_place behaviour
@@ -1134,7 +1057,6 @@
        	   function() {
        	   	 bookingController.change_pickup_place_select($(this).val());
        	   });
-       	   
        	 $('#pickup_place_other').bind('blur',
        	   function() {
        	   	 bookingController.blur_pickup_place_input($(this).val());
@@ -1145,7 +1067,6 @@
        	   function() {
        	   	 bookingController.change_return_place_select($(this).val());
        	   });
-
        	 $('#return_place_other').bind('blur',
        	   function() {
        	   	 bookingController.blur_return_place_input($(this).val());
@@ -1153,17 +1074,14 @@
        	 $('#car_booking\\[return_place\\]').val($('#return_place').val());  
        	      	       	
        	 // Configure the dialog(s)
-       	 
-       	 $('#sending-booking').dialog({autoOpen: false, height: 160, modal: true,
+       	 $('#sending-booking').dialog({autoOpen: false, height: 240, modal: true,
        	      closeOnEscape: false,
        	       open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
        	       close: function(event, ui) { $(".ui-dialog-titlebar-close").show(); }
              });
        	 	
-         // Configure overlay
-
-	      // Mostrar los enlaces incrustados
-	      $("a[rel='#overlay'].external").overlay({
+	     // Mostrar los enlaces incrustados
+	     $("a[rel='#overlay'].external").overlay({
 	      	
 	      	// Mascara para los dialogos modales
 	        mask: {
@@ -1219,7 +1137,6 @@
 	      });
          
          // Configure name and surname events
-         
          $('#booking\\[customer_name\\],#booking\\[customer_surname\\]').bind('blur',
              function(){
                bookingController.copy_customer_to_driver();
@@ -1274,8 +1191,7 @@
        	 $('#form-search-item').validate(
        	  {
        	  	
-            submitHandler: function(form) 
-            {
+            submitHandler: function(form) {
                bookingView.calculate_prices();
                return false;
             },
@@ -1322,7 +1238,6 @@
        	 );
        	
        	// Booking Form Validation
-
         $('#form-reservation').validate(
          {
           
@@ -1333,7 +1248,7 @@
            
            invalidHandler : function (form, validator) {
       
-               $('<div title="Formulario no válido"> Por favor, revise el formulario. Contiene datos no válidos </div>').dialog( { height: 160, modal: true,     	 
+               $('<div title="Formulario no válido"> Por favor, revise el formulario. Contiene datos no válidos </div>').dialog( { height: 240, modal: true,     	 
        	        buttons: {
        	            Ok: function() {
 				   	  $( this ).dialog( "close" );
@@ -1423,12 +1338,10 @@
                    
          }
         );
-
        	
        },
-       
-       /* Show search result */       
-       show_result : function() {
+              
+       show_prices : function() { /* Show search result */
 
          var container = $('#result');
       
@@ -1545,48 +1458,27 @@
        	 switch (new_state) {
        	 	
        	   case 'item_selection' : /* First state (begin process) */
-       	  
-       	     $('#form-reservation').hide();
-       	     $('#item-selection').show();
-       	          	  
        	     break;
        	        
        	   case 'completing_booking' : /* Second state (user choose an item and starts booking) */
-       	   
-       	     this.update_information('booking_data');
-       	   
-       	     $('#item-selection').hide();
-             $('#form-reservation').show();
-             	   
+       	     this.update_information('booking_data');      	               	   
        	     this.load_items();
        	     this.load_extras();
-       	   
        	     break;
-       	   
-       	   case 'item_changing' : /* Alternative state (user comes back to choose item) */
-       	   
-       	     $('#form-reservation').hide();
-       	     $('#item-selection').show();       	   
-       	      	   
-       	     break;	
-  
+
           case 'continue_booking' : /* Alternative state (user comes back to complete booking) */
-                    
-       	     $('#item-selection').hide();
-             $('#form-reservation').show();
-             
+            break;
+          
+          case 'pay_booking': /* Go to payment tab */
+            this.showPaymentSummary();
             break;
        	 	
        	  case 'sending_booking' : /* Sending the booking using Ajax (user clicks confirm button) */
-       	   
        	    $('#sending-booking').dialog('open');
-       	  
        	    break;
        	    
        	  case 'process_completed' : /* The booking has been saved in the system */
-       	  
        	    $('#sending-booking').dialog('close');       	  
-       	
        	    $('<div title="Solicitud de reserva realizada"> Se ha realizado la solictud de reserva </div>').dialog( { height: 260, modal: true,     	 
        	        buttons: {
        	            Ok: function() {
@@ -1602,18 +1494,14 @@
 		       	    var message = tmpl('script_booking_finished', data);
 		       	    $('#booking-complete-message').html(message);
        	            $('#booking-complete-message').show();
-		       	    /* Wizard */
        	            bookingView.wizard.hide();					
 				}
            	  });
-           	  
        	    break;
        	    
        	  case 'process_error' : /* The booking has not been saved in the system */
-       	  
        	    $('#sending-booking').dialog('close');
-       	           	  
-            $('<div title="Error en solicitud de reserva"> Error en el proceso </div>').dialog( { height: 160, modal: true,     	 
+            $('<div title="Error en solicitud de reserva"> Error en el proceso </div>').dialog( { height: 240, modal: true,     	 
        	        buttons: {
        	            Ok: function() {
 				     $(this).dialog("close");
@@ -1624,42 +1512,66 @@
 				   	bookingModel.change_state('go_to_complete_booking');					
 				}
            	  });       	           	  
-       	           	         	    
-      
        	    break;
-       	    
        	 }
        	 
        	 this.wizard.state_changed(new_state);
        	
        },
        
+       configurePaymentMethods: function() {
+          
+          var paymentMethodsDS = new RemoteDataSource('/paymethods', 
+          	{id:'id', description: function(data){
+          	  var img = (data.icon && data.icon.length > 0)?'<img src="'+ data.icon + '"/>':'';	
+          	  img += '<span class="highlighted_text">' + 
+          	    data.title +'</span><div class="payment_description">' + data.description + '</div>';
+          	  return img;} 
+          	});
+          
+          var paymentMethods = new ListSelector('payment_methods_selector',
+          	'payment_method', paymentMethodsDS, null, false);
+
+       },
+
+       showPaymentSummary : function() {
+
+          var summary = tmpl('script_booking_summary', 
+          	{date_from: $('#date_from_extended').val(), 
+          	 date_to: $('#date_to_extended').val(),
+          	 item: bookingDataSystem.families[bookingModel.booking.item_id].description,
+          	 booking: bookingModel.booking});
+          
+          summary += tmpl('script_detailed_price',
+            {booking: bookingModel.booking, 
+             bookingDataSystem: bookingDataSystem});
+
+          $('#booking_summary').html(summary);
+
+       },
+
        /* --------- UPDATE DATA ---------------- */	 
        update_information : function(information) {
        	
        	 switch (information) {
        	 	
        	   case 'booking_data' :
-       	   
        	     var date_time_from = new Date(bookingModel.booking.date_from).toString( "dddd, d MMMM yyyy");
        	     if (bookingDataSystem.configuration.show_time) {
        	       date_time_from += ' ' +bookingModel.booking.time_from;	
        	     }
-       	     
        	     var date_time_to = new Date(bookingModel.booking.date_to).toString( "dddd, d MMMM yyyy");
        	     if (bookingDataSystem.configuration.show_time) {
        	       date_time_to +=  ' ' +bookingModel.booking.time_to;
        	     }
-       	   
        	     $('#date_from_extended').val( date_time_from );  
        	     $('#date_to_extended').val( date_time_to );
-       	            	 	
+
        	   case 'booking_item' :
        	     var path='/img/clase-'+bookingModel.booking.item_id+'.png';
        	     $('#item_image').attr('src',path);
-       	 	
+
        	   case 'booking_cost' :
-       	   
        	     $('#total_cost').val( bookingModel.booking.total_cost.toFixed(0) + ' €' );
        	     $('span.total_cost').html( bookingModel.booking.total_cost.toFixed(0) + ' €' );
        	     break;
@@ -1674,9 +1586,8 @@
                });  
                
                // Update the extras
-         	     var extras = bookingModel.booking.booking_extras;
-       	     for (var extra_id in extras)
-         	     {
+         	   var extras = bookingModel.booking.booking_extras;
+       	       for (var extra_id in extras) {
        	  	     
        	  	     // Extras checkbox
        	  	     var checkbox = $('#extras\\['+extra_id+'\\[extra_id\\]\\]');
@@ -1693,14 +1604,11 @@
        	  	       option.val(extras[extra_id].quantity);	
        	  	     }       	  	     
        	  	     
-        	     }
+        	   }
         	           	     
-        	     
-        	     /* Update the cost */
-       	   
-       	     this.update_information('booking_cost');
-       	   
-       	     break;
+        	   /* Update the cost */
+       	       this.update_information('booking_cost');
+       	       break;
        	 	
        	 }
        	
@@ -1710,30 +1618,42 @@
        wizard : {
        	
        	 tabs : { 
-       	 	       'tab-choose-item' : new WizardTab ( 'tab-choose-item' ),
-       	 	       'tab-complete-reservation' : new WizardTab( 'tab-complete-reservation' )
+       	 	       'tab-choose-item' : new WizardTab ('tab-choose-item', true),
+       	 	       'tab-complete-reservation' : new WizardTab('tab-complete-reservation', true),
+       	 	       'tab-payment' : new WizardTab('tab-payment', bookingDataSystem.configuration.payment)
        	        },
        	       
        	 state_changed : function (new_state) {
        	 
        	   switch (new_state) {
        	   	
-       	   	  case 'item_selection' :
-       	   	  
+       	   	  case 'item_selection' : /* Item selection tab */
+       	        $('#form-reservation').hide();
+       	        $('#item-selection').show();
+       	        $('#booking-payment').hide();
        	   	    this.tabs['tab-choose-item'].setState('active'); 
        	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
+       	   	    this.tabs['tab-payment'].setState('not-enabled');
        	   	    break;
        	   	  
-       	   	  case 'item_changing' :
-       	   	    this.tabs['tab-choose-item'].setState('active');
-       	   	    this.tabs['tab-complete-reservation'].setState('not-active');
-       	   	    break;
-       	   	  
-       	   	  case 'completing_booking' :
+       	   	  case 'completing_booking' : /* Complete booking data tab */
        	   	  case 'continue_booking' :
+       	        $('#item-selection').hide();
+                $('#form-reservation').show();
+       	   	    $('#booking-payment').hide();
        	   	    this.tabs['tab-choose-item'].setState('not-enabled'); //not-active
        	   	    this.tabs['tab-complete-reservation'].setState('active');
+       	   	    this.tabs['tab-payment'].setState('not-enabled');
        	   	    break;
+
+              case 'pay_booking': /* Payment tab */
+                $('#item-selection').hide();
+                $('#form-reservation').hide();
+                $('#booking-payment').show();
+     	   	    this.tabs['tab-choose-item'].setState('not-enabled'); //not-active
+       	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
+       	   	    this.tabs['tab-payment'].setState('active');                
+                break;
        	   	  
        	   }
        	 	

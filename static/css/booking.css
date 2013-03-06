@@ -6,7 +6,6 @@
 
 
 #content-reserva {
-  width: 800px;	
   margin: 0 auto;
   margin-top: 10px;
   background: white;
@@ -401,7 +400,7 @@ color:#999999;
 }
 
 #reservation-input {
- width: 60%; /*500px;*/
+ width: 50%; /*500px;*/
  float: left;	
  background: #F1EFE2; /*url('../img/form-search-item-background.png');*/
  
@@ -419,7 +418,7 @@ color:#999999;
 }
 
 #reservation-summary {
- width: 38%; /*240px;*/
+ width: 48%; /*240px;*/
  float: left;
  margin-left: 5px;
  background: #F1EFE2; /*url('../img/form-search-item-background.png');*/
@@ -494,13 +493,10 @@ color:#999999;
 
 #reservation-input label.form-reservation-error {
   color: #690404;	
-  float: left;	
-  margin-left: 150px;
 }
 
 #reservation-summary label.form-reservation-error {
   color: #690404;	
-  float: left;	
 }
 
 /* -------------- RESERVATION SUMMARY ----------------------- */
@@ -511,7 +507,7 @@ color:#999999;
  background-color: transparent;
 }
 
-#fs_summary_total {
+.fs_summary_total {
  background: black;
  margin: 5px;
  padding: 5px;
@@ -523,6 +519,7 @@ color:#999999;
 
 #fs_summary_collection {
  height: 10%;	
+ clear: right;
 }
 
 #fs_summary_delivery {
@@ -556,10 +553,8 @@ color:#999999;
 }
 
 #content-reserva .detailed_price-button {
-  display: block;
-  width: 90px;
-  margin: 0 auto;
-  padding: 5px;
+  float: right;
+  margin: 5px;
 }
 
 #item_image {
@@ -567,17 +562,23 @@ color:#999999;
 }
 
 #fs_conditions {
+ clear: right; 
  border-top: 1px solid gray;	
 }
 
-#button_confirmar_reserva {
-  float: left;
-  margin-top:10px;
-  margin-left: 60px;
-  min-width: 90px;
-  min-height: 28px;
+.conditions_text {
+  font-size: 0.8em;
 }
 
+#button_confirmar_reserva {
+  display: block;
+  margin: 0 auto;
+}
+
+#button_ir_a_pagar_reserva {
+  display: block;
+  margin: 0 auto;
+}
 
 /* -------------- SENDING BOOKING ------------------------- */
 
@@ -608,15 +609,12 @@ color:#999999;
 
 #content-reserva .detailed_price {
  
-  font-weight: normal;
-  /*font-size: 14px;*/
+  margin: 0 auto
 	
 }
 
 #content-reserva .detailed_price thead {
-  background-color: black;
-  font-weight: normal;
-  color : white;	
+  border-bottom: 1px solid #CCC;
 }
 
 #content-reserva .detailed_price thead th {
@@ -625,7 +623,7 @@ color:#999999;
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
-
+  font-weight: 600;
 	
 }
 
@@ -635,8 +633,7 @@ color:#999999;
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
-  border-right: 1px dashed gray;
-  border-bottom: 1px dashed gray;
+  border-bottom: 1px solid #DDD;
   	
 }
 
@@ -649,7 +646,7 @@ color:#999999;
 }
 
 #content-reserva .first_column {
-  border-left: 1px dashed gray;	
+
 }
 
 
