@@ -1,5 +1,3 @@
-require 'json' unless defined?JSON
-
 module Sinatra
   module YSD
     #
@@ -28,21 +26,8 @@ module Sinatra
         end   
             
         #
-        # Creates a booking
+        # Serves static content
         #
-        app.post '/confirm_booking/?' do
-              
-          request.body.rewind 
-          data = JSON.parse request.body.read     
-  
-          booking = BookingDataSystem::Booking.new data['booking'] 
-          booking.save
-    
-          content_type :html
-          "Request processed"
-
-        end
-
         app.get '/booking/*' do
 
            serve_static_resource(request.path_info.gsub(/^\/booking/,''), File.join(File.dirname(__FILE__), '..', '..', 'static'), 'booking') 
@@ -51,7 +36,6 @@ module Sinatra
       
       end
       
-    
     end # Booking
   end # YSD
 end # Sinatra

@@ -322,10 +322,15 @@
         <div id="booking_summary">
         </div>
         
-        <div id="payment_methods">
-           <h3 class="guiblock-title">Formas de pago</h3>
-           <div id="payment_methods_selector"></div>
-        </div>
+        <form name="form-payment" id="form-payment">
+          <div id="payment_methods">
+             <h3 class="guiblock-title">Formas de pago</h3>
+             <div id="payment_methods_selector"></div>
+          </div>
+          <div class="formrow-botonera">
+             <input type="submit" value="Reservar"/>
+          </div>
+        </form>
 
       </div>
 
@@ -416,11 +421,17 @@
       
       <h3 class="guiblock-title">Reserva</h3>
 
-      <div><span class="highlighted_text"><%%= item %></span></div>
-      <div><span class="highlighted_text">Entrada:</span> <%%= date_from %></div>
-      <div><span class="highlighted_text">Salida:</span> <%%= date_to %></div>
+      <p><span class="highlighted_text"><%%= item %></span></p>
+      <p><span class="highlighted_text">Entrada:</span> <%%= date_from %></p>
+      <p><span class="highlighted_text">Salida:</span> <%%= date_to %></p>
  
       <h3 class="guiblock-title">Precio</h3>
+
+      <%%= priceSummary %>
+
+      <p class="content_data_box" style="text-align: center; margin-left:auto; margin-right: auto; display: table">
+         Para confirmar la reserva debe hacer un abono de <span class="highlighted_text"><%%= booking.bookingAmount() %>€</span>.
+      </p>
 
   </script>
 
@@ -610,6 +621,13 @@
           	  	  }
           	  }
           	            	
+          },
+
+          bookingAmount : function() { /* Get the booking payment amount */
+
+             return new Number(this.total_cost * 
+             	bookingDataSystem.configuration.booking_percentage / 100).toFixed(0);
+
           }
        
        },
@@ -1339,6 +1357,47 @@
          }
         );
        	
+        $('#form-payment').validate({
+
+          submitHandler : function(form) {
+         	
+         	return false;
+          },
+
+          invalidHandler : function (form, validator) {
+      
+            $('<div title="Formulario no válido"> Por favor, revise el formulario. Contiene datos no válidos </div>').dialog( { height: 240, modal: true,     	 
+       	        buttons: {
+       	            Ok: function() {
+				   	  $( this ).dialog( "close" );
+       	            }
+       	        } 
+       	      });
+      
+          },
+  
+          rules : {
+        	payment_method : {
+        		required: true
+        	}
+          },
+
+          messages : {
+        	payment_method: {
+        		required: 'Debe seleccionar la forma de pago'
+        	}
+          },
+
+       	  errorPlacement : function(error, element) {
+       	    	
+       	  	if (element.attr('name') === 'payment_method') {
+       	   	  error.insertAfter('#payment_methods');
+       	   	}          
+          
+          }
+
+        });
+
        },
               
        show_prices : function() { /* Show search result */
@@ -1525,7 +1584,7 @@
           	{id:'id', description: function(data){
           	  var img = (data.icon && data.icon.length > 0)?'<img src="'+ data.icon + '"/>':'';	
           	  img += '<span class="highlighted_text">' + 
-          	    data.title +'</span><div class="payment_description">' + data.description + '</div>';
+          	    data.title +'</span><div class="lighter_text">' + data.description + '</div>';
           	  return img;} 
           	});
           
@@ -1540,12 +1599,12 @@
           	{date_from: $('#date_from_extended').val(), 
           	 date_to: $('#date_to_extended').val(),
           	 item: bookingDataSystem.families[bookingModel.booking.item_id].description,
-          	 booking: bookingModel.booking});
+          	 booking: bookingModel.booking,
+          	 configuration: bookingDataSystem.configuration,
+          	 priceSummary : tmpl('script_detailed_price', {booking: bookingModel.booking, 
+                            bookingDataSystem: bookingDataSystem})
+            });
           
-          summary += tmpl('script_detailed_price',
-            {booking: bookingModel.booking, 
-             bookingDataSystem: bookingDataSystem});
-
           $('#booking_summary').html(summary);
 
        },

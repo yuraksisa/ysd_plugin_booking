@@ -9,5 +9,6 @@ Plugins::SinatraAppPlugin.register :booking do
    version=     '0.1'
    hooker       Huasi::BookingExtension
    sinatra_extension Sinatra::YSD::Booking
+   sinatra_extension Sinatra::YSD::BookingRESTApi
 
 end
