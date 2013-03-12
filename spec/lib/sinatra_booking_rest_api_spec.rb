@@ -10,9 +10,7 @@ describe Sinatra::YSD::BookingRESTApi do
     TestingSinatraApp
   end
   
-  before :all do
-
-    @booking = {'booking' => {
+  let(:booking) { {'booking' => {
       	'date_from' => Time.utc(2013, 3, 1).to_s,
       	'date_to' => Time.utc(2013,3, 3).to_s ,
       	'item_id' => 'A',
@@ -35,28 +33,36 @@ describe Sinatra::YSD::BookingRESTApi do
       		                 'extra_unit_cost' => 10,
       		                 'quantity' => 1}],
         'non_existing_prop' => 'value'
-        }}
+        }} }
 
-  end
-
-  context "new booking" do
+  context "online payment method" do
 
     before do 
       booking_model = double('booking')
       BookingDataSystem::Booking.should_receive(:new).with(
-      	@booking['booking'].keep_if {|key, value| key != 'non_existing_prop'}).
+      	booking['booking'].keep_if {|key, value| key != 'non_existing_prop'}).
         and_return(booking_model)
       booking_model.should_receive(:save)
     end
 
-    it "should create a new booking" do
+    it "creates a new booking" do
 
-      post('/confirm_booking', @booking.to_json, 
+      post('/confirm_booking', booking.to_json, 
       	'CONTENT_TYPE' => 'application/json')
-      last_response.should be_ok 
+
+      last_response.should be_ok
+      last_response.headers['Content-Type'].should match /text\/html/ 
 
     end
 
   end
+
+  #context "offline payment method" do
+  #
+  #end
+
+  #context "no payment" do
+  #
+  #end
 
 end
