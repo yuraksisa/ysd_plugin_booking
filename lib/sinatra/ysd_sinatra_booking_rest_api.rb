@@ -25,9 +25,16 @@ module Sinatra
 
           booking = BookingDataSystem::Booking.new(booking_data)
           booking.save
-        
-          content_type :html
-          body "Request processed"
+          
+          if not booking.charges.empty?
+            session[:booking_id] = booking.id
+            session[:charge_id] = booking.charges.first.id
+            status, header, body = call! env.merge("PATH_INFO" => "/charge", 
+              "REQUEST_METHOD" => 'GET') 
+          else
+            content_type :json
+            booking.to_json
+          end
 
         end
      end

@@ -1,13 +1,20 @@
 require 'spec_helper'
 require 'rack/test'
 require 'json'
+require 'ysd_md_booking'
+require 'ysd_md_payment'
 
 describe Sinatra::YSD::BookingRESTApi do
   include Rack::Test::Methods
 
   def app  
-  	TestingSinatraApp.register Sinatra::YSD::BookingRESTApi
-    TestingSinatraApp
+    TestingSinatraApp.register Sinatra::YSD::BookingRESTApi
+    TestingSinatraApp.class_eval do
+      get '/charge' do
+        'Charge done'
+      end
+    end
+  	TestingSinatraApp
   end
   
   let(:booking) { {'booking' => {
@@ -35,34 +42,65 @@ describe Sinatra::YSD::BookingRESTApi do
         'non_existing_prop' => 'value'
         }} }
 
-  context "online payment method" do
+  context "booking with charge" do
 
-    before do 
-      booking_model = double('booking')
+    before :each do 
+      
+      new_booking = double('booking')
+
       BookingDataSystem::Booking.should_receive(:new).with(
       	booking['booking'].keep_if {|key, value| key != 'non_existing_prop'}).
-        and_return(booking_model)
-      booking_model.should_receive(:save)
+        and_return(new_booking)
+
+      new_booking.should_receive(:id).and_return(1)
+      new_booking.should_receive(:save)
+      new_booking.should_receive(:charges).twice.and_return([
+        Payments::Charge.new({:amount => 20, :currency => 'EUR',
+          :payment_method_id => 'cecabank'})])
+    
     end
-
-    it "creates a new booking" do
-
+    
+    subject do
       post('/confirm_booking', booking.to_json, 
       	'CONTENT_TYPE' => 'application/json')
-
-      last_response.should be_ok
-      last_response.headers['Content-Type'].should match /text\/html/ 
-
+      last_response
     end
+    
+    its(:status) { should == 200 }  
+    its(:header) { should have_key 'Content-Type' } 
+    it { subject.header['Content-Type'].should match(/text\/html/)  } 
+    its(:body)   { should == 'Charge done' }
 
   end
 
-  #context "offline payment method" do
-  #
-  #end
+  context "booking without charge" do
+  
+    before :each do
 
-  #context "no payment" do
-  #
-  #end
+      new_booking = double('booking')
+
+      BookingDataSystem::Booking.should_receive(:new).with(
+        booking['booking'].keep_if {|key, value| key != 'non_existing_prop'}).
+        and_return(new_booking)
+      
+      new_booking.should_receive(:save)
+      new_booking.should_receive(:charges).and_return([])
+      new_booking.should_receive(:to_json).and_return("{id:999}")
+
+    end
+
+    subject do
+      post('/confirm_booking', booking.to_json, 
+        'CONTENT_TYPE' => 'application/json')
+      last_response
+    end
+    
+    its(:status) { should == 200 } 
+    its(:header) { should have_key 'Content-Type' }
+    it { subject.header['Content-Type'].should match(/application\/json/) }
+    its(:body) { should == '{id:999}'}
+
+  end
+
 
 end

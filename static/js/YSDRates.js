@@ -264,6 +264,39 @@ define(function() {
      	
   }
   
+  /*
+   *
+   */
+  rates.OptionalRateFinder = function(optionRates) {
+    
+    this.optionRates = optionRates;
+    
+    /*
+     * Get the rate for the family and option
+     *
+     * @param [String] family
+     * @param [String] option (the optional)
+     * @return [Object] the daily price of the option
+     *
+     */
+    this.get_rate = function(family, optional) {
+
+      if (typeof this.optionRates[optional] != 'undefined') { // If option rate is defined by family
+        if (typeof this.optionRates[optional][family] != 'undefined') {
+          return this.optionRates[optional][family];
+        }
+        else {
+          return this.optionRates[optional];
+        }
+      }
+      
+      return null;
+      
+
+    }
+   
+  }
+
   /***************************
    FactorCalculations
    ***************************/
@@ -341,24 +374,34 @@ define(function() {
    *
    * It's responsable of calculating the renting price
    *
+   * @param [Calendar] The calendar
+   * @param [RateFinder] The rate finder
+   * @param [FactorFinder] The factor to apply
+   *
    **/   
-  rates.RateCalculation = function(calendar, rateFinder, factorFinder) {
+  rates.RateCalculation = function(calendar, rateFinder, factorFinder, optionalFinder) {
   
     this.calendar = calendar;
   	this.rateFinder = rateFinder;
   	this.factorFinder = factorFinder;
+    this.optionalFinder = optionalFinder;
   	
   	/**
   	 get_price
   	 ---------
+     @param [Date] from
+     @param [Date] to
+     @param [Object] the families
+     @param [Object] the options
+     @param [Number] scale
   	 @returns a object which properties are the families and the value is the price 	 
   	 **/
-  	this.get_price = function (fromDate, toDate, families, scale) {
+  	this.get_price = function (fromDate, toDate, families, optionals, scale) {
   
-      // Obtain the ratings class
+      // Get the total number of days
       var ndays = ((toDate - fromDate) / (1000*60*60*24)).toFixed(0); 
       
-      // Get the days
+      // Get the days grouped by season
       var endDate = new Date(toDate);
       endDate.setDate(endDate.getDate() - 1);
 
@@ -379,14 +422,26 @@ define(function() {
       	var rate = this.rateFinder.get_rate( family, ndays );
         var price = 0;
                 
-        // for each family, get the price (processing all days)
+        // calculate the price that affects the seasons
       	for (var idxdays = 0; idxdays < seasonDaysLength; idxdays++)
       	{
-      	  var theIndex = seasonDays[idxdays].season;
-      	  price += rate[theIndex].price * seasonDays[idxdays].days;	
+      	  var season = seasonDays[idxdays].season;
+      	  price += rate[season].price * seasonDays[idxdays].days;	
       	}
       	
-      	result[family] = new Number( (price * this.factorFinder.get_factor(firstPeriodSeason, family, ndays)).toFixed(scale) ); // take only two decimals (corrected 0 decimals) [NOTE USE a parameter]
+      	var priceWithFactor = price * this.factorFinder.get_factor(firstPeriodSeason, family, ndays);
+
+        result[family] = new Number(priceWithFactor.toFixed(scale)); 
+        
+        // Calculate the options prices
+        for (var optional in optionals) {
+          var optionalRate = this.optionalFinder.get_rate(family, optional);
+          var optionalPrice = 0;
+          if (optionalRate != null) {
+            optionalPrice = optionalRate.price * ndays;
+          }
+          result[family][optional] = new Number((priceWithFactor + optionalPrice).toFixed(scale));
+        }
       	
       }
 
@@ -395,21 +450,38 @@ define(function() {
   	
   }
   
+  /* Options (It represents item options) */
+  rates.Option = function(id, name, abbr, description) {
+    this.id = id;
+    this.name = name;
+    this.abbr = abbr;
+    this.description = description;
+  }
   
   /* Extra (It represents the items extras) */
   /* 
       @param [String] The extra id
       @param [String] The extra name
       @param [Numeric] Max extra quantity
+      @param [Array] The optional that doesn't use the extra
    */
-  rates.Extra = function(id, the_name, max_quantity) {
+  rates.Extra = function(id, the_name, max_quantity, notAcceptedOptionals) {
   	
     this.id = id;
     this.the_name = the_name;
     this.max_quantity = max_quantity;
+    this.notAcceptedOptionals = notAcceptedOptionals || [];
     
+    this.optionalAccepted = function(optional) {
+      if (Array.prototype.indexOf) {
+        return this.notAcceptedOptionals.indexOf(optional) == -1;
+      }
+      else {
+        return _.indexOf(this.notAcceptedOptionals, optional) == -1;
+      }
+    }
   }
-
+  
   rates.ExtraCalculation = function(extrasRates) {
 
     this.extrasRates = extrasRates;
