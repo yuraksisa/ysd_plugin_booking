@@ -1,8 +1,8 @@
       <h3 class="guiblock-title">Reserva</h3>
 
       <p><span class="highlighted_text"><%= booking.item_description %></span></p>
-      <p><span class="highlighted_text">Entrada:</span> <%= booking.date_from %></p>
-      <p><span class="highlighted_text">Salida:</span> <%= booking.date_to %></p>
+      <p><span class="highlighted_text">Entrada:</span> <%= booking.date_from.strftime("%d.%m.%Y") %></p>
+      <p><span class="highlighted_text">Salida:</span> <%= booking.date_to.strftime("%d.%m.%Y") %></p>
  
       <h3 class="guiblock-title">Precio</h3>
 
@@ -27,14 +27,14 @@
               <td class="first_column"><%= booking_extra.extra_description %></td>
               <td class="quantity_column"><%=booking_extra.quantity %></td>
               <td class="quantity_column"><%= booking.days %> </td>
-              <td class="quantity_column"><%= booking_extra.extra_cost %> €</td>
+              <td class="quantity_column"><%= "%.2f" % booking_extra.extra_cost %> €</td>
             </tr>
           <% end %>
           <tr>
             <td class="total_column first_column">TOTAL</td>
             <td class="quantity_column"></td>
             <td class="quantity_column"></td>
-            <td class="quantity_column total_column"><%%= booking.total_cost %> € </td>
+            <td class="quantity_column total_column"><%= "%.2f" % booking.total_cost %> € </td>
           </tr>
         </tbody>      
       </table>
