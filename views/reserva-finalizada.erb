@@ -1,0 +1,7 @@
+	  <h2>Reserva recibida</h2>
+	  <p>Estimado Sr/Sra. <%= booking.customer_name %> <%= booking.customer_surname %>: </p>
+	  <p>El identificador de su reserva es <%= booking.id %> </p>
+	  <%= partial(:reserva, :locals => {:booking => booking}) %>
+	  <p>En breve recibirá en su correo electrónico, <em> <%= booking.customer_email %> </em>, la confirmación de su reserva.</p>
+	  <p>Atentamente, </p>
+	  <p>El equipo de <%=company%></p>

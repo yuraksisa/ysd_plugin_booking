@@ -1,0 +1,40 @@
+      <h3 class="guiblock-title">Reserva</h3>
+
+      <p><span class="highlighted_text"><%= booking.item_description %></span></p>
+      <p><span class="highlighted_text">Entrada:</span> <%= booking.date_from %></p>
+      <p><span class="highlighted_text">Salida:</span> <%= booking.date_to %></p>
+ 
+      <h3 class="guiblock-title">Precio</h3>
+
+      <table class="detailed_price">
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Cantidad</th>
+            <th>Días</th>
+            <th>Precio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="first_column"><%= booking.item_description %> <% if booking.optional %> <%="(#{booking.optional})"%> <% end %> </td>
+            <td class="quantity_column"><%= booking.quantity %> </td>
+            <td class="quantity_column"><%= booking.days %> </td>
+            <td class="quantity_column"><%= booking.item_cost %> € </td>
+          </tr>
+          <% booking.booking_extras.each do |booking_extra| %>
+            <tr>
+              <td class="first_column"><%= booking_extra.extra_description %></td>
+              <td class="quantity_column"><%=booking_extra.quantity %></td>
+              <td class="quantity_column"><%= booking.days %> </td>
+              <td class="quantity_column"><%= booking_extra.extra_cost %> €</td>
+            </tr>
+          <% end %>
+          <tr>
+            <td class="total_column first_column">TOTAL</td>
+            <td class="quantity_column"></td>
+            <td class="quantity_column"></td>
+            <td class="quantity_column total_column"><%%= booking.total_cost %> € </td>
+          </tr>
+        </tbody>      
+      </table>
