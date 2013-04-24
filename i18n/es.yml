@@ -1,0 +1,21 @@
+system_admin_menu:
+  apps:
+    bookings_menu:
+      title: Gestión de reservas
+      bookings: Reservas
+booking_management:
+  title: Gestión de reservas
+  description: <p>Consultar las reservas.</p>
+  table:
+    id: Id
+    creation_date: Fecha reserva
+    customer: Cliente
+    status: Estado
+    date_from: Fecha inicio
+    date_to: Fecha fin
+    item: Item
+  form:
+    creation_date: Fecha reservva
+    date_from: Fecha inicio
+    date_to: Fecha fin
+    item: Item

@@ -1,0 +1,105 @@
+<%= include('entity-management') %>
+
+<!-- Renders the element description -->
+
+<script type="text/tmpl" id="elements_title">
+  <h2 class="entity-title"><%=t.booking_management.title%></h2>
+</script>
+
+<script type="text/tmpl" id="elements_description">
+  <%= t.booking_management.description %>
+</script>
+
+<!-- Renders the elements container -->
+<script type="text/tmpl" id="elements_container_template">
+  <table id="elements_table" class="table">
+     <thead class="table-header">
+       <tr>
+         <th class="table-header-title" scope="col" style="width:15%"><%= t.booking_management.table.id %></th>
+         <th class="table-header-title" scope="col" style="width:15%"><%= t.booking_management.table.creation_date %></th>
+         <th class="table-header-title" scope="col" style="width:25%"><%= t.booking_management.table.customer %></th>
+         <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_management.table.status %></th>
+         <th class="table-header-title" scope="col" style="width:15%"><%= t.booking_management.table.date_from %></th>
+         <th class="table-header-title" scope="col" style="width:15%"><%= t.booking_management.table.date_to %></th>
+         <th class="table-header-title" scope="col" style="width:5%"><%= t.booking_management.table.item %></th>
+       </tr>
+     </thead>
+     <tbody id="elements_tbody" class="table-tbody">             
+     </tbody>
+  </table>
+</script>
+
+<!-- Renders one element in the elements list view -->
+        
+<script type="text/tmpl" id="elements_list_template">
+    <tr class="table-row element-navigation-detail" rel="<%%= index %>" id="element_row_<%%=index%>">
+      <td class="table-cell"><%%= entity.id %></td>
+      <td class="table-cell"><%%= self.formatDate(entity.creation_date) %></td>
+      <td class="table-cell"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
+      <td class="table-cell"><%%= entity.status %></td>
+      <td class="table-cell"><%%= self.formatDate(entity.date_from,'dd.MM.yyyy') %> <%%= entity.time_from %></td>
+      <td class="table-cell"><%%= self.formatDate(entity.date_to,'dd.MM.yyyy') %> <%%= entity.time_to %></td>
+      <td class="table-cell"><%%= entity.item_id %></td>
+    </tr>
+</script>
+
+<!-- Renders one element in the element view (full detailed) -->
+
+<script type="text/tmpl" id="element_template">
+</script>
+
+<!-- Renders the form to edit an element -->
+
+<script type="text/tmpl" id="element_template_form">
+     <div class="element-detail">
+        <div class="element_template">
+          <div class="entity-field">
+            <span class="entity-fieldlabel"><%= t.booking_management.form.creation_date %></span>
+            <span class="entity-fieldvalue"><%%= self.formatDate(entity.creation_date) %></span>
+          </div>
+        </div>
+        <div class="element_template">
+          <div class="entity-field">
+            <span class="entity-fieldlabel"><%= t.booking_management.form.date_from %></span>
+            <span class="entity-fieldvalue"><%%= self.formatDate(entity.date_from) %></span>
+          </div>
+        </div>
+        <div class="element_template">
+          <div class="entity-field">
+            <span class="entity-fieldlabel"><%= t.booking_management.form.date_to %></span>
+            <span class="entity-fieldvalue"><%%= self.formatDate(entity.date_to) %></span>
+          </div>
+        </div>
+        <div class="element_template">
+          <div class="entity-field">
+            <span class="entity-fieldlabel"><%= t.booking_management.form.item %></span>
+            <span class="entity-fieldvalue"><%%= entity.item_id %></span>
+          </div>
+        </div>
+     </form>
+</script>
+
+
+<script type="text/javascript">
+ 
+ require(['jquery', 'YSDEntityManagement'], function($, EntityManagement) {
+
+ 
+  function BookingHook() {
+ 	   
+    this.entityKey = function(entity) {
+      return entity.id;
+    }    
+  	
+  };
+  
+  var urls = { 
+  	           query_url  : '/bookings'
+  	         };
+  
+  var bookingHook = new BookingHook();
+  var bookingManager = new EntityManagement(urls, 'bookings', <%=bookings_page_size%>, bookingHook, {prefix: '/admin'});
+ 
+ });
+  
+</script>

@@ -13,6 +13,7 @@ module Sinatra
         app.settings.views = Array(app.settings.views).push(
           File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 
           'views')))
+        app.settings.translations = Array(app.settings.translations).push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'i18n')))      
       
         app.set :bookingcharge_gateway_return_ok, '/reserva/payment-gateway-return/ok'
         app.set :bookingcharge_gateway_return_nok, '/reserva/payment-gateway-return/nok'

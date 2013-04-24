@@ -1,0 +1,21 @@
+system_admin_menu:
+  apps:
+    bookings_menu:
+      title: Booking management
+      bookings: Bookings
+booking_management:
+  title: Booking management
+  description: <p>Manage bookings.</p>
+  table:
+    id: Id
+    creation_date: Received date
+    customer: Customer
+    status: Status
+    date_from: Date from
+    date_to: Date to
+    item: Item
+  form:
+    creation_date: Received date
+    date_from: Date from
+    date_to: Date to
+    item: Item

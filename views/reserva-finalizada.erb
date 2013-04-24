@@ -1,10 +1,12 @@
 	  <h2>Reserva recibida</h2>
-	  <p>Estimado Sr/Sra. <%= booking.customer_name %> <%= booking.customer_surname %>: </p>
-	  <p>El identificador de su reserva es <%= booking.id %> </p>
-	  <p>En breve recibirá en su correo electrónico, <em> <%= booking.customer_email %> </em>, la confirmación de su reserva.</p>
-
-
-      <%= partial(:reserva, :locals => {:booking => booking}) %>
-
-	  <p>Atentamente, </p>
-	  <p>El equipo de <%=company%></p>
+	  <div class="letter">
+	  <p class="letter-recipient">Estimado Sr/Sra. <%= booking.customer_name %> <%= booking.customer_surname %>: </p>
+	  <p class="letter-paragraph">El identificador de su reserva es <strong><%= booking.id %></strong>. 
+	  	 En breve recibirá en su correo electrónico, <em> <%= booking.customer_email %> </em>,
+	  	 la confirmación de su reserva.</p>
+	  <p class="letter-complimentary-close">Atentamente, </p>
+	  <p class="letter-signature">El equipo de <%=company%></p>
+      </div>
+      <div id="highlight_block">
+        <%= partial(:reserva, :locals => {:booking => booking}) %>
+      </div>

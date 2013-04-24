@@ -1,0 +1,21 @@
+system_admin_menu:
+  apps:
+    bookings_menu:
+      title: Gestió de reserves
+      bookings: Reserves
+booking_management:
+  title: Gestió de reserves
+  description: <p>Consultar les reseves.</p>
+  table:
+    id: Id
+    creation_date: Data
+    customer: Client
+    status: Estat
+    date_from: Data d\'inici
+    date_to: Data de fi
+    item: Item
+  form:
+    creation_date: Data
+    date_from: Data d\'inici
+    date_to: Data de fi
+    item: Item

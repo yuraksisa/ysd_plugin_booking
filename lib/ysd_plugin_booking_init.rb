@@ -10,5 +10,7 @@ Plugins::SinatraAppPlugin.register :booking do
    hooker       Huasi::BookingExtension
    sinatra_extension Sinatra::YSD::Booking
    sinatra_extension Sinatra::YSD::BookingRESTApi
+   sinatra_extension Sinatra::YSD::BookingManagement
+   sinatra_extension Sinatra::YSD::BookingManagementRESTApi
 
 end

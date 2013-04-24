@@ -21,6 +21,37 @@ module Huasi
          :module => :booking})      
     
     end
+
+    # --------- Menus --------------------
+    
+    #
+    # It defines the admin menu menu items
+    #
+    # @return [Array]
+    #  Menu definition
+    #
+    def menu(context={})
+      
+      app = context[:app]
+
+      menu_items = [{:path => '/apps/bookings',              
+                     :options => {:title => app.t.system_admin_menu.apps.bookings_menu.title,
+                                  :description => 'Bookings',
+                                  :module => :booking,
+                                  :weight => 2}
+                    },
+                    {:path => '/apps/bookings/bookings',              
+                     :options => {:title => app.t.system_admin_menu.apps.bookings_menu.bookings,
+                                  :link_route => "/admin/bookings",
+                                  :description => 'Booking charges',
+                                  :module => :booking,
+                                  :weight => 2}
+                    }
+                    ]                      
+    
+    end  
+
+    # ========= Routes ===================
             
     # routes
     #
@@ -34,7 +65,13 @@ module Huasi
                  :title => 'Reserva' , 
                  :description => 'Formulario para realizar reserva',
                  :fit => 1,
-                 :module => :booking}             
+                 :module => :booking},
+                {:path => '/apps/bookings/bookings',
+                 :regular_expression => /^\/admin\/bookings/, 
+                 :title => 'Bookings', 
+                 :description => 'Booking management',
+                 :fit => 1,
+                 :module => :booking }                              
                ]
         
     end
