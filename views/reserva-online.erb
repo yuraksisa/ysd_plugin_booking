@@ -809,6 +809,7 @@
            for (var index in this.booking.booking_extras) {
              request.booking.booking_extras[extra_index++] = { 
              	 extra_id : index,
+             	 extra_description: this.booking.booking_extras[index].extra_description,
              	 extra_cost : this.booking.booking_extras[index].extra_cost,
              	 extra_unit_cost : this.booking.booking_extras[index].extra_unit_cost,
              	 quantity : this.booking.booking_extras[index].quantity
