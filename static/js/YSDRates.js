@@ -504,9 +504,13 @@ define(function() {
     this.get_price = function( date_from, date_to, extra_id, family, scale) {
     
        var ndays = ((date_to - date_from) / (1000*60*60*24)).toFixed(0);
-       var extraRate = this.get_extra_rate(extra_id, family);
 
-       return new Number( Math.min( ndays * extraRate.price, extraRate.maxPrice ).toFixed(scale) );
+       if (ndays > 0) {
+         var extraRate = this.get_extra_rate(extra_id, family);
+         return new Number( Math.min( ndays * extraRate.price, extraRate.maxPrice ).toFixed(scale) );
+       }
+
+       return 0;
 
     }
 

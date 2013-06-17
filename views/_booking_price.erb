@@ -1,0 +1,52 @@
+         <div class="left-margin highlight_block">
+           <div>
+             <div class="top-space bottom-space bottom-margin bottom-separator">
+               <div class="centered_text">
+                  <span class="uppercase_text less_contrast_text"><%=t.booking.total.upcase%></span>
+               </div>
+               <div class="centered_text">
+                  <span class="more_contrast_text"><%= "%.2f" % booking.total_cost%> €</span>
+               </div>
+             </div>  
+             <% if booking.status == :confirmed %>
+             <div class="bottom-space bottom-margin bottom-separator">              
+               <div class="centered_text">
+                  <span class="uppercase_text less_contrast_text"><%=t.booking.paid.upcase%></span>
+               </div>
+               <div class="centered_text">
+                  <span class="more_contrast_text"><%= "%.2f" % booking.total_paid%> €</span>
+               </div>              
+             </div>
+             <% end %>
+             <% if booking.total_pending > 0 %>
+             <div class="bottom-space bottom-margin bottom-separator">              
+               <div class="centered_text">
+                  <span class="uppercase_text less_contrast_text"><%=t.booking.pending.upcase%></span>
+               </div>
+               <div class="centered_text">
+                  <span class="more_contrast_text"><%= "%.2f" % booking.total_pending%> €</span>
+               </div>              
+             </div>             
+             <% end %>
+           </div>
+           <div class="item_properties_attributes smaller_text">
+             <div class="item_properties_attribute bottom-margin">
+               <span class="item_properties_attribute_name left_text">
+                 <%= booking.item_description %>
+               </span>
+               <span class="item_properties_attribute_value right_text">
+                 <%= "%.2f" % booking.item_cost %> €
+               </span>
+             </div>
+             <% booking.booking_extras.each do |booking_extra| %>
+             <div class="item_properties_attribute bottom-margin">
+               <span class="item_properties_attribute_name left_text">
+                 <%= booking_extra.extra_description %>
+               </span>
+               <span class="item_properties_attribute_value right_text">
+                <%= "%.2f" % booking_extra.extra_cost %> €
+               </span>
+             </div>          
+             <% end %>
+           </div>
+         </div>

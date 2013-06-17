@@ -1,28 +1,45 @@
 
   <div id="content-reserva">
   
-    <div id="content-header">
+    <div id="content-header" class="bottom-margin">
         <div>
           <div id="wizard-navigation">
             <ul id="wizard-options">
-              <li><a id="tab-choose-item" href="#" class="tab img_txt"><span>1</span> Seleccionar el vehículo</a></li>
-              <li><a id="tab-complete-reservation" href="#" class="tab img_txt"><span>2</span> Completar la reserva</a></li>
-              <li><a id="tab-payment" href="#" class="tab img_txt"><span>3</span> Pago</a></li>
+              <li>
+              	 <a id="tab-choose-item" href="#" class="tab img_txt">
+              	   <span>1</span>
+              	   <%= t.new_booking.choose_item(t.booking_items[booking_item_type.to_sym]) %>
+                 </a>
+              </li>
+              <li>
+              	 <a id="tab-complete-reservation" href="#" class="tab img_txt">
+              	 	<span>2</span>
+              	 	<%=t.new_booking.complete_booking%>
+              	 </a>
+              </li>
+              <li>
+              	  <a id="tab-payment" href="#" class="tab img_txt">
+              	  	<span>3</span>
+              	  	<%=t.new_booking.payment%>
+              	  </a>
+              </li>
             </ul>
           </div>
         </div>      
     </div>
     
-    <div id="content-body">
+    <div id="content-body" class="element-form-detail bottom-margin">
 
-	  <div id="item-selection">
+	  <div id="item-selection" class="bottom-margin">
 		  <form id="form-search-item" name="form-search-item">
 		    <fieldset>
-		      <div>
-		      	<label for="datefrom" id="labeldatefrom" class="search-form-column columna1">Fecha de entrega</label> 
-		      	<input type="text" name="datefrom" id="datefrom" class="search-form-column columna2 date_control" size="10" maxlength="10"/>
-		      	<label for="timefrom" id="labeltimefrom" class="search-form-column columna3" style="display:none">Hora</label>
-		      	<select name="timefrom" id="timefrom" class="search-form-column columna4" style="display:none"> 
+		      <div class="formrow">
+		      	<label for="datefrom" id="labeldatefrom" class="fieldtitle search-form-column columna1">
+		      		<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
+		      	</label> 
+		      	<input type="text" name="datefrom" id="datefrom" class="date_control" size="10" maxlength="10"/>
+		      	<% if booking_item_family.time_to_from %>
+		      	<select name="timefrom" id="timefrom"> 
 					<option value="7:00" selected="selected">7:00</option>
 					<option value="7:30">7:30</option>
 					<option value="8:00">8:00</option>
@@ -58,12 +75,15 @@
 					<option value="23:00">23:00</option>
 					<option value="23:30">23:30</option>
 		      	</select>
+                <% end %>
 		      </div>
-		      <div>
-		      	<label for="dateto" id="labeldateto" class="search-form-column columna1">Fecha de devolución</label> 
-		      	<input type="text" name="dateto" id="dateto" class="search-form-column columna2 date_control" size="10" maxlength="10"/>
-		      	<label for="timeto" id="labeltimeto" class="search-form-column columna3" style="display:none">Hora</label>
-		      	<select name="timeto" id="timeto" class="search-form-column columna4" style="display:none"> 
+		      <div class="formrow">
+		      	<label for="dateto" id="labeldateto" class="fieldtitle search-form-column columna1">
+		      	  <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
+		      	</label> 
+		      	<input type="text" name="dateto" id="dateto" class="date_control" size="10" maxlength="10"/>
+		      	<% if booking_item_family.time_to_from %>
+		      	<select name="timeto" id="timeto"> 
 					<option value="7:00" selected="selected">7:00</option>
 					<option value="7:30">7:30</option>
 					<option value="8:00">8:00</option>
@@ -99,15 +119,16 @@
 					<option value="23:00">23:00</option>
 					<option value="23:30">23:30</option>
 		      	</select>
+		      	<% end %>
 		      </div>
-		      <div>
-	        	<input type="submit" value="Ver precios" id="button_calcular_tarifas" class="botones"/>
+		      <div class="formrow" style="margin-left:25%">
+	        	<input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones"/>
 		      </div>  
 		    </fieldset>	  
 		  </form>
 	 	  
 	 	  <!-- Resultado del calculo de tarifas -->
-		  <div id="result">
+		  <div id="result" class="top-separator">
 	  
 		  </div>
 	 	  
@@ -115,171 +136,244 @@
 	  	      	    
  	  <!-- Formulario de confirmacion de reserva -->
   
-	  <form id="form-reservation" name="form-reservation" method="POST" style="display:none">
+	  <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
 
 	    <div id="reservation-input">	      
 	      <fieldset id="fs_customer">
-	        <legend id="lg_customer" class="legend-first-level">Cliente</legend>
+	        <legend id="lg_customer" class="legend-first-level"><%=t.new_booking.customer%></legend>
 	        <div>
-	          <label id="label_customer_email" for="booking[customer_name]" class=" form-reservation-columna1">Nombre *</label>
-	          <input type="text" name="booking[customer_name]" id="booking[customer_name]" class="form-reservation-columna2" maxlength="40" placeholder="Su nombre"/>
+	          <label id="label_customer_email" for="booking[customer_name]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_name.label%> *</label>
+	          <input type="text" name="booking[customer_name]" id="booking[customer_name]" class="fieldcontrol form-reservation-columna2" maxlength="40" placeholder="<%=t.new_booking.customer_name.placeholder%>"/>
 	        </div>
 	        <div>
-	          <label id="label_customer_surname" for="booking[customer_surname]" class=" form-reservation-columna1">Apellidos *</label>
-	          <input type="text" name="booking[customer_surname]" id="booking[customer_surname]" class="form-reservation-columna2" maxlength="40" placeholder="Sus apellidos"/>	          
+	          <label id="label_customer_surname" for="booking[customer_surname]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_surname.label%> *</label>
+	          <input type="text" name="booking[customer_surname]" id="booking[customer_surname]" class="fieldcontrol form-reservation-columna2" maxlength="40" placeholder="<%=t.new_booking.customer_surname.placeholder%>"/>	          
 	        </div>
 	        <div>
-	          <label id="label_customer_email" for="booking[customer_email]" class=" form-reservation-columna1">Email *</label>
-	          <input type="text" name="booking[customer_email]" id="booking[customer_email]" class="form-reservation-columna2" placeholder="Su correo electrónico" maxlength="40"/>
+	          <label id="label_customer_email" for="booking[customer_email]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_email.label%> *</label>
+	          <input type="text" name="booking[customer_email]" id="booking[customer_email]" class="fieldcontrol form-reservation-columna2" placeholder="<%=t.new_booking.customer_email.placeholder%>" maxlength="40"/>
 	        </div>
 	        <div>
-	          <label id="label_customer_email_confirmation" for="booking[customer_email_confirmation]" class=" form-reservation-columna1">Confirme email *</label>
-	          <input type="text" name="booking[customer_email_confirmation]" id="booking[customer_email_confirmation]" class="form-reservation-columna2" placeholder="Confirme su correo electrónico" maxlength="40"/>
+	          <label id="label_customer_email_confirmation" for="booking[customer_email_confirmation]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_email_confirmation.label%> *</label>
+	          <input type="text" name="booking[customer_email_confirmation]" id="booking[customer_email_confirmation]" class="fieldcontrol form-reservation-columna2" placeholder="<%=t.new_booking.customer_email_confirmation.placeholder%>" maxlength="40"/>
 	        </div>
 	        <div>
-	          <label id="label_customer_phone" for="booking[customer_phone]" class=" form-reservation-columna1">Teléfono *</label>
-	          <input type="text" name="booking[customer_phone]" id="booking[customer_phone]" class="form-reservation-columna2" maxlength="15" placeholder="Su teléfono fijo"/>      
+	          <label id="label_customer_phone" for="booking[customer_phone]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_phone.label%> *</label>
+	          <input type="text" name="booking[customer_phone]" id="booking[customer_phone]" class="fieldcontrol form-reservation-columna2" maxlength="15" placeholder="<%=t.new_booking.customer_phone.placeholder%>"/>      
 	        </div>
 	        <div>
-	          <label id="label_customer_mobile_phone" for="booking[customer_mobile_phone]" class=" form-reservation-columna1">Teléfono móvil</label>
-	          <input type="text" name="booking[customer_mobile_phone]" id="booking[customer_mobile_phone]" class="form-reservation-columna2" maxlength="15" placeholder="Su teléfono móvil"/>      
-	        </div>	        
+	          <label id="label_customer_mobile_phone" for="booking[customer_mobile_phone]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_mobile.label%></label>
+	          <input type="text" name="booking[customer_mobile_phone]" id="booking[customer_mobile_phone]" class="fieldcontrol form-reservation-columna2" maxlength="15" placeholder="<%=t.new_booking.customer_mobile.placeholder%>"/>      
+	        </div>
+	        <% if booking_item_family.driver %>
+	        <div class="formrow bottom-space">
+	            <label id="label_driver_date_of_birth" for="booking[driver_date_of_birth]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_date_of_birth.label%> *</label>
+                <select name="booking[driver_date_of_birth_day]" id="booking[driver_date_of_birth_day]"></select>
+                <select name="booking[driver_date_of_birth_month]" id="booking[driver_date_of_birth_month]"></select>
+                <select name="booking[driver_date_of_birth_year]" id="booking[driver_date_of_birth_year]"></select>
+                <input type="hidden" name="booking[driver_date_of_birth]" id="booking[driver_date_of_birth]"></input>
+	        </div>		        	        
+	        <% end %>
 	      </fieldset>
+
+          <% if (booking_item_family.guests) %>
+          <fieldset id="fs_guests">
+             <legend id="lg_guests" class="legend-first-level"><%=t.new_booking.guests.title%></legend>
+		     <div>
+		       <label id="label_adult_guests" for="booking[number_of_adults]" class="fieldtitle"><%=t.new_booking.guests.adults%></label>	
+		       <select name="booking[number_of_adults]" id="booking[number_of_adults]"> 
+			      <option value="1" selected="selected">1</option>
+				  <option value="2">2</option>
+				  <option value="3">3</option>
+				  <option value="4">4</option>
+				  <option value="5">5</option>
+				  <option value="6">6</option>
+				  <option value="7">7</option>
+				  <option value="8">8</option>
+				  <option value="9">9</option>
+				  <option value="10">10</option>
+               </select>
+		       <label id="label_adult_guests" for="booking[number_of_children]" class="fieldtitle"><%=t.new_booking.guests.children%></label>	
+		       <select name="booking[number_of_children]" id="booking[number_of_children]"> 
+			      <option value="0" selected="selected">0</option>
+				  <option value="2">1</option>
+				  <option value="2">2</option>
+				  <option value="3">3</option>
+				  <option value="4">4</option>
+				  <option value="5">5</option>
+				  <option value="6">6</option>
+				  <option value="7">7</option>
+				  <option value="8">8</option>
+				  <option value="9">9</option>
+				  <option value="10">10</option>
+               </select>
+             </div>                       
+          </fieldset>
+          <% end %>
 
 	      <fieldset id="fs_info">
-	        <legend id="lg_info" class="legend-first-level">Otros datos de la reserva</legend>
+	        <legend id="lg_info" class="legend-first-level"><%=t.new_booking.other_data%></legend>
 	        <div>
-	          <label id="label_comments" for="booking[comments]" class="form-reservation-columna1">Comentarios</label>
-	          <textarea id="booking[comments]" name="booking[comments]" class="form-reservation-columna2" rows="10" placeholder="Observaciones, dudas, comentarios"></textarea>
+	          <label id="label_comments" for="booking[comments]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.comments.label%></label>
+	          <textarea id="booking[comments]" name="booking[comments]" class="fieldcontrol form-reservation-columna2" rows="10" placeholder="<%=t.new_booking.comments.placeholder%>"></textarea>
 	        </div>	      
-	        <p class="form-reservation-right-column"> <span id="booking_comments_length"></span> caracteres disponibles</p>
+	        <p class="form-reservation-right-column"> <span id="booking_comments_length"></span> <%=t.available_chars%></p>
 	      </fieldset>
 	      
-	      <fieldset id="fs_driver" style="display:none">
-	        <legend id="lg_driver" class="legend-first-level">Conductor</legend>
-            <p class="fieldset_description">Si desea <strong>agilizar</strong> la entrega del vehículo <em>complete</em> los datos del conductor </p>
-	        <legend class="legend-second-level">Datos personales</legend>
-	        <div>
-	          <label id="label_driver_name" for="car_booking[driver_name]" class=" form-reservation-columna1">Nombre</label>
-	          <input type="text" name="car_booking[driver_name]" id="car_booking[driver_name]" class="form-reservation-columna2" maxlength="40" placeholder="Nombre del conductor"/>
+	      <% if booking_item_family.driver %>
+	      <fieldset id="fs_driver">
+	        <legend id="lg_driver" class="legend-first-level overflow">
+	        	<%=t.new_driving_booking.driver.label%>
+	        	<span id="show_driver" data-icon="&#xe06d;" aria-hidden=true class="right-float"></span>
+	        </legend>	             
+	        <p class="fieldset_description"><%=t.new_driving_booking.driver.description%></p>
+	        <div id="driver_data" class="background-color-2 top-space bottom-space left-space right-space" style="display:none">
+	          <legend class="legend-second-level"><%=t.new_driving_booking.driver_personal_data%></legend>
+	          <div class="formrow">
+	            <label id="label_driver_name" for="booking[driver_name]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_name.label%></label>
+	            <input type="text" name="booking[driver_name]" id="booking[driver_name]" class="fieldcontrol form-reservation-columna2" maxlength="40" placeholder="<%=t.new_driving_booking.driver_name.placeholder%>"/>
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_surname" for="booking[driver_surname]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_surname.label%></label>
+	            <input type="text" name="booking[driver_surname]" id="booking[driver_surname]" class="fieldcontrol form-reservation-columna2" maxlength="40" placeholder="<%=t.new_driving_booking.driver_surname.placeholder%>"/>
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_document" for="booking[driver_document_id]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_nif.label%></label>
+	            <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol form-reservation-columna2" maxlength="15" placeholder="<%=t.new_driving_booking.driver_nif.placeholder%>"/>
+	          </div>	        
+              <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_license%></legend>
+	          <div class="formrow">
+	            <label id="label_driver_driving_license_number" for="booking[driver_driving_license_number]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_license_number.label%></label>
+	            <input type="text" name="booking[driver_driving_license_number]" id="booking[driver_driving_license_number]" class="fieldcontrol form-reservation-columna2" maxlength="15" placeholder="<%=t.new_driving_booking.driver_license_number.placeholder%>"/>
+	          </div>
+	          <div class="formrow">
+  	            <label id="label_driver_driving_license_date" for="booking[driver_driving_license_date]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_license_date.label%></label>
+	            <select name="booking[driver_driving_license_date_day]" id="booking[driver_driving_license_date_day]"></select>
+                <select name="booking[driver_driving_license_date_month]" id="booking[driver_driving_license_date_month]"></select>
+                <select name="booking[driver_driving_license_date_year]" id="booking[driver_driving_license_date_year]"></select>
+                <input type="hidden" name="booking[driver_driving_license_date]" id="booking[driver_driving_license_date]"></select>    
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_driving_license_country" for="booking[driver_driving_license_country]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_license_country.label%></label>
+	            <input type="text" name="booking[driver_driving_license_country]" id="booking[driver_driving_license_country]" class="fieldcontrol form-reservation-columna2" maxlength="50" placeholder="<%=t.new_driving_booking.driver_license_country.placeholder%>"/>
+	          </div>
+              <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_address%></legend>
+	          <div class="formrow">
+	            <label id="label_driver_address_street" for="booking[driver_address[street]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_street.label%></label>
+	            <input type="text" name="booking[driver_address[street]]" id="booking[driver_address[street]]" class="fieldcontrol form-reservation-columna2" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_street.placeholder%>"/>
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_address_number" for="booking[driver_address[number]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_number.label%></label>
+	            <input type="text" name="booking[driver_address[number]]" id="booking[driver_address[number]]" class="fieldcontrol form-reservation-columna2" maxlength="10" placeholder="<%=t.new_driving_booking.driver_address_number.placeholder%>"/>
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_address_complement" for="booking[driver_address[complement]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_complement.label%></label>
+	            <input type="text" name="booking[driver_address[complement]]" id="booking[driver_address[complement]]" class="fieldcontrol form-reservation-columna2" maxlength="20" placeholder="<%=t.new_driving_booking.driver_address_complement.placeholder%>"/>
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_address_city" for="booking[driver_address[city]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_city.label%></label>
+	            <input type="text" name="booking[driver_address[city]]" id="booking[driver_address[city]]" class="fieldcontrol form-reservation-columna2" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_city.placeholder%>"/>      
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_address_state" for="booking[driver_address[state]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_state.label%></label>
+	            <input type="text" name="booking[driver_address[state]]" id="booking[driver_address[state]]" class="fieldcontrol form-reservation-columna2" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_state.placeholder%>"/>    
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_address_country" for="booking[driver_address[country]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_country.label%></label>
+	            <input type="text" name="booking[driver_address[country]]" id="booking[driver_address[country]]" class="fieldcontrol form-reservation-columna2" maxlength="50" placeholder="<%=t.new_driving_booking.driver_address_country.placeholder%>"/>      
+	          </div>
+	          <div class="formrow">
+	            <label id="label_driver_address_zip" for="booking[driver_address[zip]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_zip.label%></label>
+	            <input type="text" name="booking[driver_address[zip]]" id="booking[driver_address[zip]]" class="fieldcontrol form-reservation-columna2" maxlength="10" placeholder="<%=t.new_driving_booking.driver_address_zip.label%>"/>         
+	          </div>
 	        </div>
-	        <div>
-	          <label id="label_driver_surname" for="car_booking[driver_surname]" class=" form-reservation-columna1">Apellidos</label>
-	          <input type="text" name="car_booking[driver_surname]" id="car_booking[driver_surname]" class="form-reservation-columna2" maxlength="40" placeholder="Apellidos del conductor"/>
-	        </div>
-	        <div>
-	          <label id="label_driver_document" for="car_booking[driver_document_id]" class=" form-reservation-columna1">Nif o pasaporte</label>
-	          <input type="text" name="car_booking[driver_document_id]" id="car_booking[driver_document_id]" class="form-reservation-columna2" maxlength="15" placeholder="Nif o pasaporte del conductor"/>
-	        </div>
-	        <div>
-	          <label id="label_driver_date_of_birth" for="car_booking[driver_date_of_birth]" class=" form-reservation-columna1">Fecha de nacimiento *</label>
-              <select name="car_booking[driver_date_of_birth_day]" id="car_booking[driver_date_of_birth_day]"></select>
-              <select name="car_booking[driver_date_of_birth_month]" id="car_booking[driver_date_of_birth_month]"></select>
-              <select name="car_booking[driver_date_of_birth_year]" id="car_booking[driver_date_of_birth_year]"></select>
-              <input type="hidden" name="car_booking[driver_date_of_birth]" id="car_booking[driver_date_of_birth]"></input>
-	        </div>	        
-              <legend class="legend-second-level">Permiso de conducir</legend>
-	          <div>
-	            <label id="label_driver_driving_license_number" for="car_booking[driver_driving_license_number]" class="form-reservation-columna1">Número licencia</label>
-	            <input type="text" name="car_booking[driver_driving_license_number]" id="car_booking[driver_driving_license_number]" class="form-reservation-columna2" maxlength="15" placeholder="Número del carnet o licencia de conducir"/>
-	          </div>
-	          <div>
-  	            <label id="label_driver_driving_license_date" for="car_booking[driver_driving_license_date]" class="form-reservation-columna1">Fecha expedición</label>
-	            <select name="car_booking[driver_driving_license_date_day]" id="car_booking[driver_driving_license_date_day]"></select>
-                <select name="car_booking[driver_driving_license_date_month]" id="car_booking[driver_driving_license_date_month]"></select>
-                <select name="car_booking[driver_driving_license_date_year]" id="car_booking[driver_driving_license_date_year]"></select>
-                <input type="hidden" name="car_booking[driver_driving_license_date]" id="car_booking[driver_driving_license_date]"></select>    
-	          </div>
-	          <div>
-	            <label id="label_driver_driving_license_country" for="car_booking[driver_driving_license_country]" class="form-reservation-columna1">País expedición</label>
-	            <input type="text" name="car_booking[driver_driving_license_country]" id="car_booking[driver_driving_license_country]" class="form-reservation-columna2" maxlength="50" placeholder="País de expedición de la licencia"/>
-	          </div>
-
-              <legend class="legend-second-level">Dirección</legend>
-	          <div>
-	            <label id="label_driver_address_street" for="car_booking[driver_address[street]]" class=" form-reservation-columna1">Calle</label>
-	            <input type="text" name="car_booking[driver_address[street]]" id="car_booking[driver_address[street]]" class="form-reservation-columna2" maxlength="60" placeholder="Nombre de la calle"/>
-	          </div>
-	          <div>
-	            <label id="label_driver_address_number" for="car_booking[driver_address[number]]" class=" form-reservation-columna1">Número</label>
-	            <input type="text" name="car_booking[driver_address[number]]" id="car_booking[driver_address[number]]" class="form-reservation-columna2" maxlength="10" placeholder="Numero de la calle"/>
-	          </div>
-	          <div>
-	            <label id="label_driver_address_complement" for="car_booking[driver_address[complement]]" class=" form-reservation-columna1">Piso, puerta</label>
-	            <input type="text" name="car_booking[driver_address[complement]]" id="car_booking[driver_address[complement]]" class="form-reservation-columna2" maxlength="20" placeholder="bloque, escalera, piso, puerta"/>
-	          </div>
-	          <div>
-	            <label id="label_driver_address_city" for="car_booking[driver_address[city]]" class=" form-reservation-columna1">Población</label>
-	            <input type="text" name="car_booking[driver_address[city]]" id="car_booking[driver_address[city]]" class="form-reservation-columna2" maxlength="60" placeholder="ciudad o población"/>      
-	          </div>
-	          <div>
-	            <label id="label_driver_address_state" for="car_booking[driver_address[state]]" class=" form-reservation-columna1">Provincia</label>
-	            <input type="text" name="car_booking[driver_address[state]]" id="car_booking[driver_address[state]]" class="form-reservation-columna2" maxlength="60" placeholder="provincia o estado"/>    
-	          </div>
-	          <div>
-	            <label id="label_driver_address_country" for="car_booking[driver_address[country]]" class=" form-reservation-columna1">País</label>
-	            <input type="text" name="car_booking[driver_address[country]]" id="car_booking[driver_address[country]]" class="form-reservation-columna2" maxlength="50" placeholder="país"/>      
-	          </div>
-	          <div>
-	            <label id="label_driver_address_zip" for="car_booking[driver_address[zip]]" class=" form-reservation-columna1">Código postal</label>
-	            <input type="text" name="car_booking[driver_address[zip]]" id="car_booking[driver_address[zip]]" class="form-reservation-columna2" maxlength="10" placeholder="código postal"/>         
-	          </div>
 	      </fieldset>
+	      <% end %>
+
+	      <% if booking_item_family.flight %>
+	      <fieldset id="fs_flight">
+	        <legend id="lg_flight" class="legend-first-level overflow">
+	        	<%=t.new_booking.flight.title%>
+	        	<span id="show_flight" data-icon="&#xe06d;" aria-hidden=true class="right-float"></span>
+	        </legend>	
+	        <div id="flight_data" class="background-color-2 top-space bottom-space left-space right-space" style="display:none">
+	          <div class="formrow">
+	            <label id="label_flight_company" for="booking[flight_company]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.flight.company.label%></label>
+	            <input type="text" name="booking[flight_company]" id="booking[flight_company]" 
+	                   class="fieldcontrol form-reservation-columna2" maxlength="80" placeholder="<%=t.new_booking.flight.company.placeholder%>"/>
+	          </div>
+	          <div class="formrow">
+	            <label id="label_flight_company" for="booking[flight_number]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.flight.number.label%></label>
+	            <input type="text" name="booking[flight_number]" id="booking[flight_number]" 
+	                   class="fieldcontrol form-reservation-columna2" maxlength="10" placeholder="<%=t.new_booking.flight.number.placeholder%>"/>
+	          </div>
+	          <div class="formrow">
+	            <label id="label_flight_company" for="booking[flight_time]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.flight.time.label%></label>
+	            <input type="text" name="booking[flight_time]" id="booking[flight_time]" 
+	                   class="fieldcontrol form-reservation-columna2" maxlength="5" placeholder="<%=t.new_booking.flight.time.placeholder%>"/>
+	          </div>	          
+	        </div>
+	      </fieldset>
+	      <% end %>	      
 	    
 	    </div>
 
 	    <div id="reservation-summary">
 	      <fieldset id="fs_summary_collection">
-	        <legend id="lg_summary_collection" class="legend-first-level">Entrega</legend>
+	        <legend id="lg_summary_collection" class="legend-first-level"><%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%></legend>
 	        <div class="summary-row">
 	          <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="margin-left:-1px"/>
 	        </div>
-	        <div class="collection_place" style="display:none">
-	          <label for="pickup_place">Lugar * </label>
+	        <% if booking_item_family.pickup_return_place %>
+	        <div class="collection_place">
+	          <label for="pickup_place"><%=t.new_booking.place%> * </label>
 	          <select name="pickup_place" id="pickup_place">
 	            <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
 	            <option value="Puerto Mahón">Puerto Mahón</option>
 	            <option value="Puerto Ciutadella">Puerto Ciutadella</option>
-	            <option value="Otro">Otro (especificar)</option>
+	            <option value="Otro"><%=t.new_booking.other%></option>
 	          </select>
 	        </div>
 	        <div>
-	          <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none; margin-top:5px; margin-left: 4px;" placeholder="Lugar de entrega"/>
+	          <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none; margin-top:5px; margin-left: 4px;" placeholder="<%=t.new_booking.pickup_place%>"/>
 	        </div>
-	        <input type="hidden" name="car_booking[pickup_place]" id="car_booking[pickup_place]"/>	        
+	        <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
+	        <% end %>	        
 	      </fieldset>
 	      <fieldset id="fs_summary_delivery">
-	        <legend id="lg_summary_delivery" class="legend-first-level">Devolución</legend>
+	        <legend id="lg_summary_delivery" class="legend-first-level"><%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%></legend>
 	        <div class="summary-row">
 	          <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly" style="margin-left:-1px"/>
 	        </div>
-	        <div class="return_place" style="display:none">
-	          <label for="return_place">Lugar * </label>
+	        <% if booking_item_family.pickup_return_place %>
+	        <div class="return_place">
+	          <label for="return_place"><%=t.new_booking.place%> * </label>
 	      	  <select name="return_place" id="return_place">
 	            <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
 	            <option value="Puerto Mahón">Puerto Mahón</option>
 	            <option value="Puerto Ciutadella">Puerto Ciutadella</option>
-	            <option value="Otro">Otro (especificar)</option>
+	            <option value="Otro"><%=t.new_booking.other%></option>
 	          </select>
 	        </div>
 	        <div>
-	          <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none; margin-top:5px; margin-left: 4px;" placeholder="Lugar de devolución"/>  
+	          <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none; margin-top:5px; margin-left: 4px;" placeholder="<%=t.new_booking.return_place%>"/>  
 	        </div>
-	        <input type="hidden" name="car_booking[return_place]" id="car_booking[return_place]"/>
+	        <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
+	        <% end %>
 	      </fieldset>
 	      <fieldset id="fs_summary_item">
-	        <legend id="lg_summary_item" class="legend-first-level">Vehiculo</legend>
+	        <legend id="lg_summary_item" class="legend-first-level"><%=t.booking_items[booking_item_type.to_sym]%></legend>
 	        <img id="item_image"/>
 	        <select id="booking[item_id]" name="booking[item_id]" class="item_chooser">
 	        </select>
 	      </fieldset>
 	      <fieldset id="fs_summary_extras">
-	        <legend id="lg_summary_extras" class="legend-first-level">Extras</legend>	        
+	        <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
 	        <table id="tblextras">
 	          <thead>
 	          <tr>
-	            <th class="form-reservation-extra-titulo form-reservation-extra-columna1" colspan="2">Extra</th>
-	            <th class="form-reservation-extra-titulo form-reservation-extra-columna2">Cantidad</th>
+	            <th class="form-reservation-extra-titulo form-reservation-extra-columna1" colspan="2"><%=t.new_booking.extra%></th>
+	            <th class="form-reservation-extra-titulo form-reservation-extra-columna2"><%=t.new_booking.quantity%></th>
 	          </tr>
 	          </thead>
 	          <tbody>
@@ -287,25 +381,24 @@
 	        </table>
 	      </fieldset>
 	      <fieldset class="fs_summary_total">
-	      	<legend id="lg_summary_total" class="legend-first-level">Precio</legend>
+	      	<legend id="lg_summary_total" class="legend-first-level"><%=t.new_booking.price%></legend>
 	      	<input type="hidden" name="total_cost" id="total_cost"/>
 	      	<div id="detailed_summary">
-	      	  
-	        <div>
-            <!--div class="detailed_price-button" id="detailed_price">
-	          <a href="script_detailed_price" rel="#overlay" class="template">Ver detalle</a>
-	        </div-->	      
+	        <div>      
 	      </fieldset>
 	      <fieldset id="fs_conditions">
 	        <div>
 	          <input type="checkbox" name="conditions_read" id="conditions_read">
-	          <span class="conditions_text">He leido y acepto <a href="/renting_conditions.html?id=2" rel="#overlay" class="external">las condiciones del alquiler</a></span></input>
+	            <span class="conditions_text">
+	           	  <%=t.new_booking.conditions_confirm('/renting_conditions')%>
+	            </span>
+	          </input>
 	        </div>        
 	      </fieldset>	      
 	      
 	      <fieldset id="fs_confirm">
-	      	  <input type="button" value="Continuar" id="button_ir_a_pagar_reserva" class="botones" style="display:none"/>
-	          <input type="submit" value="Confirmar" id="button_confirmar_reserva" class="botones" style="display:none"/>
+	      	  <input type="button" value="<%=t.new_booking.continue%>" id="button_ir_a_pagar_reserva" class="botones" style="display:none"/>
+	          <input type="submit" value="<%=t.new_booking.confirm%>" id="button_confirmar_reserva" class="botones" style="display:none"/>
 	      </fieldset>	
 	      
 	    </div>
@@ -317,13 +410,26 @@
         <div id="booking_summary">
         </div>
         
+        <h3 class="guiblock-title"><%=t.booking.payment.label%></h3>
         <form name="form-payment" id="form-payment">
+          <% if booking_deposit > 0 %>
+            <div class="radio-block">
+              <input type="radio" name="payment" value="total" checked="true"><%=t.booking.payment_type.total.label%></input>
+              <p id="payment_total" class="radio-info less_contrast_text"></p>
+            </div>
+            <div class="radio-block">
+              <input type="radio" name="payment" value="deposit"><%=t.booking.payment_type.deposit.label%></input>
+              <p id="payment_deposit" class="radio-info less_contrast_text"></p>
+            </div>
+          <% else %>
+            <input type="hidden" name="payment" value="total"/>          
+          <% end %> 	
           <div id="payment_methods">
-             <h3 class="guiblock-title">Formas de pago</h3>
+             <h4 class="top-margin bottom-margin"><%=t.new_booking.payment_methods%></h4>
              <div id="payment_methods_selector"></div>
           </div>
           <div class="formrow-botonera">
-             <input type="submit" value="Reservar"/>
+             <input type="submit" value="<%=t.new_booking.booking%>"/>
           </div>
         </form>
 
@@ -341,7 +447,7 @@
 
       </div>	  
 	  
-      <div id="sending-booking" title="Enviando la solicitud de reserva" style="display:none">
+      <div id="sending-booking" title="<%=t.new_booking.sending_booking_request%>" style="display:none">
         <img src="/img/ajax-loader_grande.gif"/>
       </div>
             
@@ -380,15 +486,15 @@
       <table class="detailed_price">
         <thead>
           <tr>
-            <th>Concepto</th>
-            <th>Cantidad</th>
-            <th>Días</th>
-            <th>Precio</th>
+            <th><%=t.new_booking.concept%></th>
+            <th><%=t.new_booking.quantity%></th>
+            <th><%=t.new_booking.days%></th>
+            <th><%=t.new_booking.price%></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="first_column"><%%= bookingDataSystem.families[booking.item_id].cars %> <%% if (booking.optional) { %> <%%='('+DoralAuto.optionals[booking.optional].name+')'%> <%% } %> </td>
+            <td class="first_column"><%%= bookingDataSystem.families[booking.item_id].cars %> <%% if (booking.optional) { %> <%%='('+bookingDataSystem.optionals[booking.optional].name+')'%> <%% } %> </td>
             <td class="quantity_column"><%%= booking.quantity %> </td>
             <td class="quantity_column"><%%= booking.days %> </td>
             <td class="quantity_column"><%%= booking.item_cost %> € </td>
@@ -402,7 +508,7 @@
             </tr>
           <%% } %>
           <tr>
-            <td class="total_column first_column">TOTAL</td>
+            <td class="total_column first_column"><%=t.new_booking.total.upcase%></td>
             <td class="quantity_column"></td>
             <td class="quantity_column"></td>
             <td class="quantity_column total_column"><%%= booking.total_cost %> € </td>
@@ -414,45 +520,43 @@
   
   <script type="text/tpml" id="script_booking_summary">
       
-      <h3 class="guiblock-title">Reserva</h3>
+      <h3 class="guiblock-title"><%=t.new_booking.title%></h3>
 
       <p><span class="highlighted_text"><%%= item %></span></p>
-      <p><span class="highlighted_text">Entrada:</span> <%%= date_from %></p>
-      <p><span class="highlighted_text">Salida:</span> <%%= date_to %></p>
+      <p><span class="highlighted_text"><%=(booking_item_family.start_date_literal==:arrival)?(t.booking.arrival):(t.new_booking.pickup)%>:</span> <%%= date_from %></p>
+      <p><span class="highlighted_text"><%=(booking_item_family.start_date_literal==:arrival)?(t.booking.departure):(t.new_booking.return)%>:</span> <%%= date_to %></p>
  
-      <h3 class="guiblock-title">Precio</h3>
+      <h3 class="guiblock-title"><%=t.new_booking.price%></h3>
 
       <%%= priceSummary %>
 
       <p class="content_data_box" style="text-align: center; margin-left:auto; margin-right: auto; display: table">
-         Para confirmar la reserva debe hacer un abono de <span class="highlighted_text"><%%= booking.booking_amount %>€</span>.
+         <%=t.new_booking.confirm_message%>
       </p>
 
   </script>
 
   <script type="text/tpml" id="script_booking_finished">
-	    
-	  <h2>Reserva pendiente de confirmación </h2>
-	  
-	  <p class="bf-title">Estimado Sr/Sra. <%%= booking.customer_name %> <%%= booking.customer_surname %>: </p>
-	  <p class="bf-message">Queremos agradecerle su confianza en <strong><%%= bookingConfiguration.company %></strong> para el alquiler de su <%%= bookingConfiguration.item_type %>.</p>
-	  <p class="bf-message">En breve recibirá en su correo electrónico, <em> <%%= booking.customer_email %> </em>, todos los datos para realizar el pago por transferencia de su reserva.</p>
-	  <p class="bf-message">Recuerde que dispone de una plazo máximo de 72 horas para realizar el pago y de esta forma confirmar su reserva.</p>
-	  <p class="bf-footer">Atentamente, </p>
-	  <p class="bf-footer">El equipo de <%%= bookingConfiguration.company %></p>
-	  	    	  	    
+	  <% if defined?(booking_summary_message) %>
+	   <%= booking_summary_message %>
+	  <% end %>
   </script>
   
   <!-- CODE -->
   
   <script type="text/javascript">
-    
-  require(['jquery', 'YSDForms', 'YSDDateControl', '/js/booking.js', 'ysdtemplate',
+  
+  <% if defined?booking_js %>
+    <%= booking_js %>
+  <% end %>
+
+  require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
+  	       <% if defined?booking_js %>'booking_js'<% else %>'/js/booking.js'<%end%>, 
            'YSDListSelector', 'YSDRemoteDataSource', 'json2', 'jquery.validate', 
   	       'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
   	       'jquery.ui.datepicker.validation',
   	       'jquery.tools', 'jquery.formparams', 'datejs'], 
-  	       function($, YSDForms, DateControl, bookingDataSystem, tmpl, 
+  	       function($, YSDForms, DateControl, tmpl, bookingDataSystem,  
   	       ListSelector, RemoteDataSource) {  
 
     /* It represents the wizard tabs */
@@ -574,7 +678,7 @@
           addCost : function (value) { /* Add cost */
    	         this.total_cost += value;
    	         this.booking_amount = new Number(this.total_cost * 
-             	bookingDataSystem.configuration.booking_percentage / 100).toFixed(0);
+             	<%=booking_deposit%> / 100).toFixed(0);
           },          
                                
           BookingExtra : function (extra_id, quantity) {
@@ -644,7 +748,7 @@
           	  	  }
           	  }
           	            	
-          },
+          }
        
        },
       
@@ -739,7 +843,7 @@
        	 var dias_diferencia = (date_to - date_from) / (1000*60*60*24);
        	 var horas_diferencia = (_date_to - _date_from) / (1000*60*60);
        	 
-       	 this.booking.days = dias_diferencia;
+       	 this.booking.days = Math.max(dias_diferencia,0);
        	 this.booking.date_to_price_calculation = new Date(this.booking.date_to.getTime());
        	 
        	 if (this.exceeded_hours > 0 && (horas_diferencia/24 > dias_diferencia + this.exceeded_hours/24) ) {
@@ -775,19 +879,18 @@
             // Creates a request object with all the information (mixin the model and the data passed)
        
            var request = {
-              booking : data.booking,
-              car_booking : data.car_booking	
+              booking : data.booking
            };
                     
            // Drop the properties not necessary to the request (they only live in the Gui)         
                     
            delete request.booking ['customer_email_confirmation'];   
-           delete request.car_booking ['driver_date_of_birth_day'];
-           delete request.car_booking ['driver_date_of_birth_month'];
-           delete request.car_booking ['driver_date_of_birth_year'];
-           delete request.car_booking ['driver_driving_license_date_day'];
-           delete request.car_booking ['driver_driving_license_date_month'];
-           delete request.car_booking ['driver_driving_license_date_year'];
+           delete request.booking ['driver_date_of_birth_day'];
+           delete request.booking ['driver_date_of_birth_month'];
+           delete request.booking ['driver_date_of_birth_year'];
+           delete request.booking ['driver_driving_license_date_day'];
+           delete request.booking ['driver_driving_license_date_month'];
+           delete request.booking ['driver_driving_license_date_year'];
      
                          
            // Copies the booking model data to the request (only the data)
@@ -861,7 +964,7 @@
        	 $.ajax( 
        	         {
        	           type : 'POST',
-       	           url : bookingDataSystem.configuration.booking_url || '/confirm_booking',
+       	           url : bookingDataSystem.configuration.booking_url || '/booking',
        	           data : json_request,
                    dataType: 'html',  /* Response expected from the server */
                    /*crossDomain: true,*/
@@ -935,23 +1038,23 @@
         
         if ($('#pickup_place :selected').index() == document.getElementById('pickup_place').length-1 ) {
           $('#pickup_place_other').show();	
-          $('#car_booking\\[pickup_place\\]').val('');
+          $('#booking\\[pickup_place\\]').val('');
           $('#pickup_place_other').focus();
         } 
         else
         {
           $('#pickup_place_other').hide();
           $('#pickup_place_other').val('');	
-          $('#car_booking\\[pickup_place\\]').val(pickup_place);
+          $('#booking\\[pickup_place\\]').val(pickup_place);
         }
         
       },
       
       blur_pickup_place_input : function(pickup_place) {
       
-        if ($('#pickup_place_other').val() != $('#car_booking\\[pickup_place\\]').val()) {
+        if ($('#pickup_place_other').val() != $('#booking\\[pickup_place\\]').val()) {
           // stores the pick up place in the form
-          $('#car_booking\\[pickup_place\\]').val(pickup_place);
+          $('#booking\\[pickup_place\\]').val(pickup_place);
         }
                	
       },
@@ -960,22 +1063,22 @@
       	      	
         if ($('#return_place :selected').index() == document.getElementById('return_place').length-1 ) {
           $('#return_place_other').show();
-          $('#car_booking\\[return_place\\]').val(''); 	
+          $('#booking\\[return_place\\]').val(''); 	
           $('#return_place_other').focus();
         } 
         else
         {
           $('#return_place_other').hide();
           $('#return_place_other').val('');	
-          $('#car_booking\\[return_place\\]').val(return_place);
+          $('#booking\\[return_place\\]').val(return_place);
         }      
       
       },
       
       blur_return_place_input : function(return_place) {
       	
-        if ($('#return_place_other').val() != $('#car_booking\\[return_place\\]').val()) {
-          $('#car_booking\\[return_place\\]').val(return_place);
+        if ($('#return_place_other').val() != $('#booking\\[return_place\\]').val()) {
+          $('#booking\\[return_place\\]').val(return_place);
         }
       	
       },
@@ -994,14 +1097,14 @@
 
       copy_customer_to_driver : function() {
       	
-        if ($('#car_booking\\[driver_name\\]').val() == '')
+        if ($('#booking\\[driver_name\\]').val() == '')
         {
-          $('#car_booking\\[driver_name\\]').val($('#booking\\[customer_name\\]').val());	
+          $('#booking\\[driver_name\\]').val($('#booking\\[customer_name\\]').val());	
         }
       
-        if ($('#car_booking\\[driver_surname\\]').val() == '')
+        if ($('#booking\\[driver_surname\\]').val() == '')
         {
-          $('#car_booking\\[driver_surname\\]').val($('#booking\\[customer_surname\\]').val());	
+          $('#booking\\[driver_surname\\]').val($('#booking\\[customer_surname\\]').val());	
         }
             	
       }
@@ -1015,56 +1118,28 @@
     var bookingView = {
     	    	
        configureBookingGui : function() { /* Configure the Gui elements using the booking configuration */
-    
-         $('#tab-choose-item').html('<span>1</span> Seleccionar el ' + bookingDataSystem.configuration.item_type );
-
-       	 $('#labeldatefrom').html('Fecha de ' + bookingDataSystem.configuration.collection_literal);
-       	 $('#labeldateto').html('Fecha de ' + bookingDataSystem.configuration.return_literal);
-       	
-       	 if (bookingDataSystem.configuration.show_time) {
-       	   $('#labeltimefrom').show();
-       	   $('#timefrom').show();
-       	   $('#labeltimeto').show();
-       	   $('#timeto').show(); 	
-       	 }
-       	 
-       	 if (bookingDataSystem.configuration.show_delivery_return_place) {
-       	   $('.collection_place').show();
-       	   $('.return_place').show();
-       	 }
-       	 
-       	 $('#lg_summary_collection').html( bookingDataSystem.configuration.collection_literal.replace(/^(\w)/, function(whole, first) { return first.toUpperCase(); } )  );
-       	 $('#lg_summary_delivery').html( bookingDataSystem.configuration.return_literal.replace(/^(\w)/, function(whole, first) { return first.toUpperCase(); } )  );       	 
-       	 $('#lg_summary_item').html( bookingDataSystem.configuration.item_type.replace(/^(\w)/, function(whole, first) { return first.toUpperCase(); } ) );
-       	       	 
-       	 if (bookingDataSystem.configuration.driver_information)
-       	 {
-       	   $('#fs_driver').show();
-       	 }
-       	 
-         var locale = $.datepicker.regional["es"];
+           	       	 
+         var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
 
          $('#datefrom').datepicker({numberOfMonths:2, minDate:bookingDataSystem.configuration.min_date, 
          	maxDate: new Date(bookingDataSystem.configuration.max_date).add(-1).days(), dateFormat: 'dd/mm/yy'}, locale);
          $('#datefrom').datepicker('setDate', '+0'); 
 
-         $('#dateto').datepicker({numberOfMonths:2, minDate:new Date(bookingDataSystem.configuration.min_date).add(1).days(),
+         $('#dateto').datepicker({numberOfMonths:2, minDate:new Date(bookingDataSystem.configuration.min_date).add(<%=booking_min_days%>).days(),
             maxDate: bookingDataSystem.configuration.max_date , dateFormat: 'dd/mm/yy'}, locale);
-         $('#dateto').datepicker('setDate', '+1');
+         $('#dateto').datepicker('setDate', '+<%=booking_min_days%>');
 
-         if (bookingDataSystem.configuration.payment) {
+         <% if booking_payment %>
            this.configurePaymentMethods();
            $('#button_ir_a_pagar_reserva').show();
            $('#button_confirmar_reserva').hide();
            $('#button_ir_a_pagar_reserva').bind('click', function(event) {
              bookingController.go_to_booking_payment_click();
            });
-         }
-         else {
+         <% else %>  
            $('#button_ir_a_pagar_reserva').hide();
            $('#button_confirmar_reserva').show();
-         }
-
+         <% end %>
        	 
        },	    	
        
@@ -1073,20 +1148,77 @@
        	 // Configure the date controls
        	 // http://jquery-ui.googlecode.com/svn/trunk/ui/i18n/ (locales for datepicker)
        	 // http://keith-wood.name/uiDatepickerValidation.html (validation for datepicker)
-       	 $.datepicker.setDefaults( $.datepicker.regional[ "" ] );
+       	 $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
        	        	   	 
        	 this.configureBookingGui();
   	          
-         // Configure driver date of birth and driver license date                                            
-         var dataControlDateOfBirth = new DateControl(document.getElementById('car_booking[driver_date_of_birth_day]'), 
-                                              document.getElementById('car_booking[driver_date_of_birth_month]'),
-                                              document.getElementById('car_booking[driver_date_of_birth_year]'), 
-                                              document.getElementById('car_booking[driver_date_of_birth]'));
+         // Configure driver date of birth and driver license date 
+         if (document.getElementById('booking[driver_date_of_birth_day]')) {                                           
+           var dataControlDateOfBirth = new DateControl(document.getElementById('booking[driver_date_of_birth_day]'), 
+                                              document.getElementById('booking[driver_date_of_birth_month]'),
+                                              document.getElementById('booking[driver_date_of_birth_year]'), 
+                                              document.getElementById('booking[driver_date_of_birth]'));
+         }
+         if (document.getElementById('booking[driver_driving_license_date_day]')) {
+           var dataControlLicenseDate = new DateControl(document.getElementById('booking[driver_driving_license_date_day]'), 
+                                              document.getElementById('booking[driver_driving_license_date_month]'),
+                                              document.getElementById('booking[driver_driving_license_date_year]'), 
+                                              document.getElementById('booking[driver_driving_license_date]'));
+         }
+                  
+         $(window).scroll(function(){ 
+           var scrollTop = $(this).scrollTop();
+           var top = $('#reservation-summary').offset().top;       
+           if (scrollTop > top) {
+           	 var holderHeight = parseInt($('#form-reservation').css('height').replace('px',''));
+           	 var summaryHeight = parseInt($('#reservation-summary').css('height').replace('px',''));
+           	 var summaryTop = scrollTop;
+           	 var summaryTopAtBottom = holderHeight - summaryHeight - 20;
+           	 if (summaryTopAtBottom < 0) {
+           	   summaryTopAtBottom = 0;
+           	 }
+             $('#reservation-summary').css('position', 'relative');
+             $('#reservation-summary').css('top', Math.min(summaryTop, summaryTopAtBottom) + 'px');      
+           }
+           else
+           	if (scrollTop == 0)
+           {
+             $('#reservation-summary').css('position', 'static');
+           }
+         });
+         
+         $('#datefrom').bind('change', function() {
+           var dateFrom = $('#datefrom').datepicker('getDate');	
+           var dateTo = $('#dateto').datepicker('getDate');
+           dateTo.setDate(dateFrom.getDate() + <%=booking_min_days%>);
+           $('#dateto').datepicker('setDate', dateTo );
+           $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+         });
 
-         var dataControlLicenseDate = new DateControl(document.getElementById('car_booking[driver_driving_license_date_day]'), 
-                                              document.getElementById('car_booking[driver_driving_license_date_month]'),
-                                              document.getElementById('car_booking[driver_driving_license_date_year]'), 
-                                              document.getElementById('car_booking[driver_driving_license_date]'));
+         $('#show_driver').bind('click',
+           function(){
+             $('#driver_data').toggle('slow', function() {
+               if ($('#driver_data:visible').length>0) {
+                 $('#show_driver').attr('data-icon', "\uE06E");	
+               }
+               else {
+                 $('#show_driver').attr('data-icon', "\uE06D");
+               }
+             });
+         });
+
+
+         $('#show_flight').bind('click',
+           function(){
+             $('#flight_data').toggle('slow', function() {
+               if ($('#flight_data:visible').length>0) {
+                 $('#show_flight').attr('data-icon', "\uE06E");	
+               }
+               else {
+                 $('#show_flight').attr('data-icon', "\uE06D");
+               }
+             });
+         });         
 
          // Configure the comments textarea
          YSDForms.limit_text_area_content_size(document.getElementById('booking[comments]'), 256, 
@@ -1096,7 +1228,7 @@
          );                
          
          // configure place holders
-         $('input[placeholder],textarea[placeholder]').placeholder();
+         $('input[placeholder]:visible,textarea[placeholder]:visible').placeholder();
          
          // Configure item behaviour
          $('#booking\\[item_id\\]').bind('change',
@@ -1115,7 +1247,7 @@
        	   function() {
        	   	 bookingController.blur_pickup_place_input($(this).val());
        	   });
-       	 $('#car_booking\\[pickup_place\\]').val($('#pickup_place').val());  
+       	 $('#booking\\[pickup_place\\]').val($('#pickup_place').val());  
        	   
        	 $('#return_place').bind('change',
        	   function() {
@@ -1125,7 +1257,7 @@
        	   function() {
        	   	 bookingController.blur_return_place_input($(this).val());
        	   });
-       	 $('#car_booking\\[return_place\\]').val($('#return_place').val());  
+       	 $('#booking\\[return_place\\]').val($('#return_place').val());  
        	      	       	
        	 // Configure the dialog(s)
        	 $('#sending-booking').dialog({autoOpen: false, height: 260, modal: true,
@@ -1217,17 +1349,39 @@
        	  var timefrom = decodeURIComponent(url_vars['timefrom']);
        	  var dateto = decodeURIComponent(url_vars['dateto']);
        	  var timeto = decodeURIComponent(url_vars['timeto']);
+       	  var number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
+       	  var number_of_children = decodeURIComponent(url_vars['number_of_children']);
        	  
-       	  if (datefrom != 'undefined' && dateto != 'undefined') {       	  
+       	  if (datefrom != 'undefined' && dateto != 'undefined' && 
+       	  	  $.datepicker.parseDate("dd/mm/yy", dateto) > $.datepicker.parseDate("dd/mm/yy", datefrom)) {       	  
             $('#datefrom').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", datefrom)); 
             $('#timefrom').val(timefrom);
             $('#dateto').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", dateto)); 
-            $('#timeto').val(timeto);       	   
+            $('#timeto').val(timeto);    
+            this.configureDates();   	   
             this.calculate_prices();
 
        	  }
        },        
-            
+           
+       configureDates : function() {
+
+           var dateFrom = $('#datefrom').datepicker('getDate');	
+           var dateTo = $('#dateto').datepicker('getDate');
+           var nDays = (dateTo - dateFrom) / (3600000*24);
+
+           var dateToMin = $('#datefrom').datepicker('getDate');
+           dateToMin.add(Math.max(<%=booking_min_days%>, nDays)).days();
+           
+           if (dateTo < dateToMin) {
+           	dateTo = dateToMin;
+           }
+
+           $('#dateto').datepicker('setDate', dateTo );
+           $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+
+       },
+
        calculate_prices : function() {
 
        	    bookingController.calculate_prices($('#datefrom').datepicker("getDate"), 
@@ -1266,12 +1420,12 @@
        	    messages : {
        	    	
        	       'datefrom': {
-       	       	 required : 'Debe informar la fecha de entrega'
+       	       	 required : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date_mandatory):(t.new_booking.pickup_date_mandatory)%>'
        	       },	
        	    	
        	       'dateto' : {
-       	       	 required : 'Debe informar la fecha de devolución',
-       	       	 dpCompareDate : 'La fecha de devolución no puede ser anterior a la de entrega'
+       	       	 required : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date_mandatory):(t.new_booking.return_date_mandatory)%>',
+       	       	 dpCompareDate : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date_greater_arrival_date):(t.new_booking.return_date_greater_pickup_date)%>'
        	       }	
        	    },
        	    
@@ -1291,6 +1445,31 @@
        	  }
        	 );
        	
+        $.validator.addMethod('item_guests', 
+          function(value, element) {
+            if (bookingDataSystem.families[value] &&
+          	    bookingDataSystem.families[value].maxGuests) {
+              return bookingDataSystem.families[value].maxGuests >= 
+                     parseInt($('#booking\\[number_of_adults\\]').val()) + parseInt($('#booking\\[number_of_children\\]').val());
+            }
+          
+            return true;
+
+        });
+
+        $.validator.addMethod('guests',
+          function(value, element) {
+
+           if (bookingDataSystem.families[$('#booking\\[item_id\\]').val()] &&
+          	   bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxGuests) {
+             return bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxGuests >= 
+               parseInt($('#booking\\[number_of_adults\\]').val()) + parseInt($('#booking\\[number_of_children\\]').val())
+           }
+
+           return true;
+
+          });
+
        	// Booking Form Validation
         $('#form-reservation').validate(
          {
@@ -1302,7 +1481,7 @@
            
            invalidHandler : function (form, validator) {
       
-               $('<div title="Formulario no válido"> Por favor, revise el formulario. Contiene datos no válidos </div>').dialog( { height: 260, modal: true,     	 
+               $('<div title="<%=t.new_booking.form_errors.title%>"> <%=t.new_booking.form_errors.description%> </div>').dialog( { height: 260, modal: true,     	 
        	        buttons: {
        	            Ok: function() {
 				   	  $( this ).dialog( "close" );
@@ -1314,6 +1493,9 @@
            
            rules : {
            	
+           	'booking[item_id]': 'item_guests',
+           	'booking[number_of_adults]' : 'guests',
+            'booking[number_of_children]' : 'guests',
            	'booking[customer_name]': 'required',
            	'booking[customer_surname]' : 'required',
            	'booking[customer_email]' : {
@@ -1329,13 +1511,13 @@
            	  required: true,
            	  minlength: 9	
            	},
-           	'car_booking[driver_date_of_birth]': {
+           	'booking[driver_date_of_birth]': {
            	  required: "#fs_driver:visible"	
            	},
-           	'car_booking[pickup_place]': {
+           	'booking[pickup_place]': {
            	  required: "#fs_driver:visible"	
            	},
-           	'car_booking[return_place]': {
+           	'booking[return_place]': {
            	  required: "#fs_driver:visible"	
            	},
            	'conditions_read' : 'required'
@@ -1344,34 +1526,37 @@
            
            messages : {
            	
-            'booking[customer_name]': 'El nombre del cliente es obligatorio',
-           	'booking[customer_surname]' : 'Los apellidos del cliente son obligatorios',
+           	'booking[item_id]' : '<%=t.new_booking.guests_limit%>',
+           	'booking[number_of_adults]' : '<%=t.new_booking.guests_limit%>',
+            'booking[number_of_children]' : '<%=t.new_booking.guests_limit%>',           	
+            'booking[customer_name]': '<%=t.new_booking.customer_name.required%>',
+           	'booking[customer_surname]' : '<%=t.new_booking.customer_surname.required%>',
            	
            	'booking[customer_email]' : {
-           	   required: 'El correo electrónico del cliente es obligatorio',
-           	   email: 'El correo electrónico debe estar en formato usuario@dominio.com'
+           	   required: '<%=t.new_booking.customer_email.required%>',
+           	   email: '<%=t.new_booking.customer_email.format%>'
            	},
            	
            	'booking[customer_email_confirmation]': {
-           	  'required': 'Confirmación del correo electrónico obligatorio',	
-           	  email: 'El correo electrónico debe estar en formato usuario@dominio.com',
-           	  'equalTo': 'Debe ser igual al correo electrónico'
+           	  'required': '<%=t.new_booking.customer_email_confirmation.required%>',	
+           	  email: '<%=t.new_booking.customer_email_confirmation.format%>',
+           	  'equalTo': '<%=t.new_booking.customer_email_confirmation.equal_to%>'
            	},
            	
            	'booking[customer_phone]': {
-           	  'required': 'El teléfono del cliente es obligatorio',
-           	  'minlength': 'Debe introducir un número de teléfono de 9 dígitos'	
+           	  'required': '<%=t.new_booking.customer_phone.required%>',
+           	  'minlength': '<%=t.new_booking.customer_phone.min_length%>'	
            	}, 
-           	'car_booking[driver_date_of_birth]': {
-           	  'required': 'La fecha de nacimiento del conductor es obligatoria'	
+           	'booking[driver_date_of_birth]': {
+           	  'required': '<%=t.new_driving_booking.driver_date_of_birth.required%>'	
            	},       	
-           	'car_booking[pickup_place]': {
-           	  'required': 'El lugar de entrega es obligatorio'	
+           	'booking[pickup_place]': {
+           	  'required': '<%=t.new_booking.pickup_place.required%>'	
            	},
-           	'car_booking[return_place]': {
-           	  'required': 'El lugar de devolución es obligatorio'	
+           	'booking[return_place]': {
+           	  'required': '<%=t.new_booking.return.required%>'	
            	},
-           	'conditions_read': 'Debe aceptar las condiciones'
+           	'conditions_read': '<%=t.new_booking.conditions.required%>'
            	
            },
         
@@ -1415,7 +1600,7 @@
 
           invalidHandler : function (form, validator) {
       
-            $('<div title="Formulario no válido"> Por favor, revise el formulario. Contiene datos no válidos </div>').dialog( { height: 260, modal: true,     	 
+            $('<div title="<%=t.new_booking.form_errors.title%>"> <%=t.new_booking.form_errors.description%> </div>').dialog( { height: 260, modal: true,     	 
        	        buttons: {
        	            Ok: function() {
 				   	  $( this ).dialog( "close" );
@@ -1433,7 +1618,7 @@
 
           messages : {
         	'booking[payment_method_id]': {
-        		required: 'Debe seleccionar la forma de pago'
+        		required: '<%=t.new_booking.payment_method.required%>'
         	}
           },
 
@@ -1466,7 +1651,7 @@
          {
       	
       	   var content =	     	
-      	        '<div class="car '+family+'">' +
+      	        '<div class="bottom-space bottom-separator car '+family+'">' +
       	          '<div class="car_photo">' +
       	            '<img src="/img/clase-'+family+'.png"/>' +
       	          '</div>' +
@@ -1481,7 +1666,7 @@
              	  '<div class="car_price_optional">'+
              	    '<div class="car_price_optional_text">' + bookingDataSystem.optionals[option].name + '</div>' +
                     '<div class="car_price_total"><span>' + prices[family][option].toFixed(0) + ' €' + '</span></div>' +
-                    '<div class="car_price_booking"><input type="button" class="botones book-button" id="button_start_booking_'+family+'" value="Reservar" rel="'+family+'" data-optional="'+ option + '" /></div>' +     	          
+                    '<div class="car_price_booking"><input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" /></div>' +     	          
       	          '</div>';
              }
              content += '</div>';
@@ -1489,7 +1674,7 @@
       	   else {      
     	     content += '<div class="car_price car_price_not_optional">'+
                     '<div class="car_price_total"><span>'+prices[family].toFixed(0) + ' €' + '</span></div>' +
-                    '<div class="car_price_booking"><input type="button" class="botones book-button form-button" id="button_start_booking_'+family+'" value="Reservar" rel="'+family+'" /></div>' +     	          
+                    '<div class="car_price_booking"><input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" /></div>' +     	          
       	          '</div>';
            }
       	      	     	
@@ -1624,7 +1809,7 @@
        	    
        	  case 'process_error' : /* The booking has not been saved in the system */
        	    $('#sending-booking').dialog('close');
-            $('<div title="Error en solicitud de reserva"> Error en el proceso </div>').dialog( { height: 260, modal: true,     	 
+            $('<div title="<%=t.new_booking.booking_creation_error.title%>"> <%=t.new_booking.booking_creation_error.description%> </div>').dialog( { height: 260, modal: true,     	 
        	        buttons: {
        	            Ok: function() {
 				     $(this).dialog("close");
@@ -1690,7 +1875,7 @@
        	     $('#date_to_extended').val( date_time_to );
 
        	   case 'booking_item' :
-       	     var path='/img/clase-'+bookingModel.booking.item_id+'.png';
+       	     var path='/img/clase-'+bookingModel.booking.item_id+'-big.png';
        	     $('#item_image').attr('src',path);
 
        	   case 'booking_cost' :
@@ -1757,7 +1942,7 @@
        	 tabs : { 
        	 	       'tab-choose-item' : new WizardTab ('tab-choose-item', true),
        	 	       'tab-complete-reservation' : new WizardTab('tab-complete-reservation', true),
-       	 	       'tab-payment' : new WizardTab('tab-payment', bookingDataSystem.configuration.payment)
+       	 	       'tab-payment' : new WizardTab('tab-payment', <%= booking_payment %>)
        	        },
        	       
        	 state_changed : function (new_state) {
@@ -1785,8 +1970,13 @@
 
               case 'pay_booking': /* Payment tab */
                 $('#item-selection').hide();
-                $('#form-reservation').hide();
+                $('#form-reservation').hide();              
                 $('#booking-payment').show();
+                $('#payment_total').text(bookingModel.booking.total_cost + ' €');
+                $('#payment_deposit').text(bookingModel.booking.booking_amount + ' €');
+                if ($('#booking\\[payment_method_id\\]_container').children().length == 0) {
+                   $('#payments_methods h3').hide();	
+                } 
      	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
        	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
        	   	    this.tabs['tab-payment'].setState('active');                
@@ -1796,7 +1986,6 @@
          	    $('#item-selection').hide();
          	    $('#form-reservation').hide();
          	    $('#booking-payment').hide();
-
 		       	var data = $('#form-reservation').formParams(false);
 		       	data.bookingConfiguration = bookingDataSystem.configuration;   
 		       	var message = tmpl('script_booking_finished', data);

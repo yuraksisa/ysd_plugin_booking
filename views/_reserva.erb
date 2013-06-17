@@ -1,42 +1,10 @@
-      <h3 class="guiblock-title">Reserva</h3>
-
-      <p><span class="highlighted_text"><%= booking.item_description %></span></p>
-      <p><span class="highlighted_text">Entrada:</span> <%= booking.date_from.strftime("%d.%m.%Y") %></p>
-      <p><span class="highlighted_text">Salida:</span> <%= booking.date_to.strftime("%d.%m.%Y") %></p>
- 
-      <h3 class="guiblock-title">Precio</h3>
+      <h2><%=t.booking.title("#{t[:booking][:state][booking.status.to_sym]}".downcase)%></h2>
       
-      <div class="table-container">
-        <table class="table" style="background:none">
-          <thead class="table-header-title" style="background:none">
-            <tr class="table-row" style="background:none">
-              <th>Concepto</th>
-              <th>Cantidad</th>
-              <th>Días</th>
-              <th>Precio</th>
-            </tr>
-          </thead>
-          <tbody class="table-tbody">
-            <tr class="table-row" style="background:none">
-              <td class="table-cell"><%= booking.item_description %> <% if booking.optional %> <%="(#{booking.optional})"%> <% end %> </td>
-              <td class="table-cell"><%= booking.quantity %> </td>
-              <td class="table-cell"><%= booking.days %> </td>
-              <td class="table-cell"><%= "%.2f" % booking.item_cost %> € </td>
-            </tr>
-            <% booking.booking_extras.each do |booking_extra| %>
-              <tr class="table-row" style="background:none">
-                <td class="table-cell"><%= booking_extra.extra_description %></td>
-                <td class="table-cell"><%=booking_extra.quantity %></td>
-                <td class="table-cell"><%= booking.days %> </td>
-                <td class="table-cell"><%= "%.2f" % booking_extra.extra_cost %> €</td>
-              </tr>
-            <% end %>
-            <tr class="table-row" style="font-weight:bold; background: none">
-              <td class="table">TOTAL</td>
-              <td class="table"></td>
-              <td class="table"></td>
-              <td class="table"><%= "%.2f" % booking.total_cost %> € </td>
-            </tr>
-          </tbody>      
-        </table>
+      <div class="bottom-margin">
+        <p><%=t.booking.id(booking.id)%></p>
       </div>
+
+      <%= partial(:booking_summary, :locals => {:booking => booking}) %>
+
+
+      

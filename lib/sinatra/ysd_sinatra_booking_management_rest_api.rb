@@ -7,19 +7,19 @@ module Sinatra
       def self.registered(app)
         
         #
-        # Retrieve bookings
+        # Booking querying 
         #
         ["/bookings", "/bookings/page/:page"].each do |path|
-          app.post path do
+          app.post path, :allowed_usergroups => ['booking_manager'] do
         	
             query_options = {}
             if request.media_type == "application/x-www-form-urlencoded"
               if params[:search]
-                query_options[:conditions] = {:amount => "%#{params[:search]}%"} 
+                query_options[:conditions] = {:id => params[:search]} 
               else
                 request.body.rewind
                 search_text=request.body.read
-                query_options[:conditions] = {:amount => "%#{search_text}%"} 
+                query_options[:conditions] = {:id => search_text} 
               end
             end
             page_size = SystemConfiguration::Variable.
@@ -31,6 +31,53 @@ module Sinatra
             {:data => data, :summary => {:total => total}}.to_json
 
           end
+        end
+
+        #
+        # Booking access
+        #
+        app.get '/booking/:booking_id',
+          :allowed_usergroups => ['booking_manager'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:booking_id])
+            status 200
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Booking creation
+        #
+        app.post '/booking/?' do
+              
+          request.body.rewind 
+          data = JSON.parse request.body.read     
+          
+          booking_data = data['booking'].keep_if do |key, value| 
+            BookingDataSystem::Booking.properties.field_map.keys.include?(key) or 
+            BookingDataSystem::Booking.relationships.named?(key)
+          end
+          booking_data.symbolize_keys!
+          unless booking_data.has_key?(:customer_language)
+            booking_data[:customer_language] = session[:locale] || 'es'
+          end
+
+          booking = BookingDataSystem::Booking.new(booking_data)
+          booking.save
+          
+          if not booking.charges.empty?
+            session[:booking_id] = booking.id
+            session[:charge_id] = booking.charges.first.id
+            status, header, body = call! env.merge("PATH_INFO" => "/charge", 
+              "REQUEST_METHOD" => 'GET') 
+          else
+            content_type :json
+            booking.to_json
+          end
+
         end
 
       end

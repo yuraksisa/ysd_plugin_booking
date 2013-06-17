@@ -3,6 +3,178 @@ system_admin_menu:
     bookings_menu:
       title: Booking management
       bookings: Bookings
+booking_status:
+  pending_confirmation: Pending
+  confirmed: Confirmed
+  in_progress: In progress
+  done: Done
+  cancelled: Canceled
+booking_payment_status:
+  none: None
+  deposit: Deposit
+  total: Total
+booking_items:
+  car: car
+  bike: bike
+  motorbike: motorbike
+  apartment: apartment
+  room: room
+new_booking:
+  title: Booking
+  search: Search
+  choose_item: Select the %1
+  complete_booking: Complete the reservation
+  payment: Payment
+  arrival_date: Arrival date
+  arrival_date_mandatory: Arrival date is required
+  departure_date: Departure date
+  departure_date_mandatory: Departure date is required
+  departure_date_greater_arrival_date: Departure date must be later than arrival date
+  pickup_date: Pickup date
+  pickup_date_mandatory: Pickup date is required
+  return_date: Return date
+  return_date_mandatory: Return date is required
+  return_date_greater_pickup_date: Return date must be later than pickup date
+  arrival: Arrival
+  departure: Departure
+  pickup: Pickup
+  return: Return
+  place: Place
+  other: Other
+  pickup_place: Pickup place
+  return_place: Return place
+  extras: Extras
+  extra: Extra
+  quantity: Quantity
+  price: Price
+  customer: Customer
+  conditions_confirm: I have read and accept <a href="%1" target="_blank">their conditions of this service</a>
+  continue: Continue
+  confirm: Confirm
+  booking: Book
+  payment_methods: Payment methods
+  sending_booking_request: Sending booking request
+  concept: Concept
+  days: Days
+  total: Total
+  form_errors:
+    title: Error
+    description: Please check the booking form. There are errors.
+  guests_limit: Number of guests out of limit
+  booking_creation_error:
+    title: Error registering booking
+    description: Server error
+  confirm_message: To fix the booking, we ask you to send a deposit of <span class="highlighted_text"><%= booking.booking_amount %>€</span>
+  summary_message: >   
+                   <h2>Complete booking </h2>
+                   <p class="bf-title">Dear Mr/Ms. <%= booking.customer_name %> <%= booking.customer_surname %>: </p>
+                   <p class="bf-message">We thank you for your confidence in <strong><%= bookingConfiguration.company %></strong> for the rental of their <%= bookingConfiguration.item_type %>.</p>
+                   <p class="bf-message">shortly receive an e-mail, <em> <%= booking.customer_email %> </em>, all data to make the payment.</p>
+                   <p class="bf-message">Remember that you have a maximum of 72 hours to make payment and thus confirm your reservation.</p>
+                   <p class="bf-footer">attentively, </p>
+                   <p class="bf-footer">The <%= bookingConfiguration.company%> team</p>
+  customer_name: 
+    label: Name
+    placeholder: your name
+    required: Customer name is required
+  customer_surname: 
+    label: Surname
+    placeholder: surname
+    required: Customer surname is required
+  customer_email: 
+    label: Email
+    placeholder: Your email (account@server.com)
+    required: Email is required
+    format: Email format is user@domain.com    
+  customer_email_confirmation: 
+    label: Confirmation email
+    placeholder: Rewrite your email
+    required: Email confirmation required
+    format: Email format is user@domain.com 
+    equal_to: It must be equal to email    
+  customer_phone: 
+    label: Phone
+    placeholder: Your landline
+    required: Customer phone required
+    min_length: Minimum length is 9 digits   
+  customer_mobile: 
+    label: Mobile phone
+    placeholder: Your cell phone
+  guests:
+    title: Guests
+    adults: Adults
+    children: Children   
+  flight:
+    title: Flight
+    company: 
+      label: Flight company
+      placeholder: For example, Vueling, EasyJet, ...
+    number: 
+      label: Flight number
+      placeholder: For example, VG123
+    time:
+      label: Flight time
+      placeholder: For example, 10:30
+  other_data: Further details of the reservation
+  comments:
+    label: Comments
+    placeholder: Comments, questions
+  conditions:
+    required: You must accept the terms and conditions    
+  payment_method:
+    required: Payment method is required    
+new_driving_booking:
+  driver:
+    label: Driver
+    description: Please fill the driver information
+  driver_personal_data: Personal information
+  driver_name:
+    label: Name
+    placeholder: Driver's name
+  driver_surname:
+    label: Surname
+    placeholder: Driver's surname
+  driver_nif:
+    label: Id or passport
+    placeholder: Driver's id or passport
+  driver_date_of_birth:
+    label: Driver's date of birth
+    required: Date of birth is required    
+  driver_license: Driving license
+  driver_license_number:
+    label: Number
+    placeholder: Driving license number
+  driver_license_date:
+    label: Date
+  driver_license_country:
+    label: Country
+    placeholder: Driving licens country
+  driver_address: Address
+  driver_address_street:
+    label: Street
+    placeholder: Street name
+  driver_address_number:
+    label: Number
+    placeholder: Address name
+  driver_address_complement:
+    label: Complement
+    placeholder: Apartment, suite, unit, building, floor
+  driver_address_city:
+    label: City
+    placeholder: City
+  driver_address_state:
+    label: State
+    placeholder: State
+  driver_address_country:
+    label: Country
+    placeholder: Country
+  driver_address_zip:
+    label: Postal code
+    placeholder: postal code 
+  pickup_place:
+    required: Pickup place is required
+  return_place:
+    required: Return place is required        
 booking_management:
   title: Booking management
   description: <p>Manage bookings.</p>
@@ -11,11 +183,95 @@ booking_management:
     creation_date: Received date
     customer: Customer
     status: Status
+    payment_status: Payment
     date_from: Date from
     date_to: Date to
-    item: Item
+    notifications: Notifications
   form:
+    id: Booking number
     creation_date: Received date
+    status: Status
+    payment_status: Payment
+    booking_data_title: Boooking information    
     date_from: Date from
     date_to: Date to
+    pickup_place: Pick up place
+    return_place: Return place
     item: Item
+    days: Days
+    extras_title: Extras
+    extra_description: Description
+    extra_quantity: Amount   
+    charges_title: Charges
+    charge_date: Date
+    charge_amount: Amount
+    charge_status: Status
+    item_cost: Price
+    extras_cost: Extras prices
+    total_cost: Total price
+    total_paid: Total paid
+    total_pending: Total pending
+    booking_amount: Deposit amount
+    comments: Comments    
+    customer_title: Customer
+    customer_name: Name
+    customer_phone: Phone
+    customer_email: Email  
+    customer_language: Language
+    guests_title: Guests
+    adults: Adults
+    children: Children
+    driver_title: Driver
+    driver_name: Name
+    driver_date_of_birth: Date of birth
+    driver_license_number: License number
+    driver_license_date: License date
+    driver_license_country: Country
+    driver_address_title : Address
+    driver_address_street: Street
+    driver_address_city: City
+    driver_address_state: State
+    driver_address_country: Country
+    drive_address_zip: Postal code
+    other: Other information
+    free_access_id: Direct access    
+    payment_method: Payment method
+booking:
+  days: !!pl
+    1: 1 day
+    n: %1 days
+  title: %1 booking
+  id: Your booking id is <strong>%1</strong>. <span class="smaller_text less_contrast_text">Use the above booking id in all your communications.</span>
+  arrival: Arrival
+  departure: Departure 
+  customer_notified: Notified by email
+  concept: Concept
+  amount: Amount
+  days_literal: Days
+  price: Price
+  total: Total
+  paid: Paid
+  pending: Pending
+  payment_alert: To fix the booking we ask you to pay in 72 hours.
+  payment_method: Payment methods
+  payment_type:
+    total:
+      label: Total
+    deposit:
+      label: Deposit
+  payment:
+    label: Payment
+    description: You can make the payment of the booking, <strong>%1</strong>
+  pending_payment: 
+    label: 2nd charge
+    description: You can make the payment of the pending amount, <strong>%1</strong>
+  summary: Booking detail
+  deposit_text: You must make a deposit of <span class="highlighted_text">%1 €</span>
+  no_deposit: The booking deposit charge has not been done.    
+  state:
+    pending_confirmation: Pending confirmation
+    confirming: Confirming
+    confirmed: Confirmed
+    in_progress: In progress
+    done: Done
+    cancelled: Cancelled

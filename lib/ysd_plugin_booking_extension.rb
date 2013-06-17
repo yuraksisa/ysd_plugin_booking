@@ -1,5 +1,7 @@
 require 'ysd-plugins_viewlistener' unless defined?Plugins::ViewListener
 require 'ysd_md_configuration' unless defined?SystemConfiguration::Variable
+require 'ysd_md_cms' unless defined?ContentManagerSystem::Template
+require 'ysd_md_booking' unless defined?Yito::Booking::ProductFamily
 
 #
 # Huasi CMS Extension
@@ -19,8 +21,125 @@ module Huasi
         {:value => '',
          :description => 'Bookings notification email',
          :module => :booking})      
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.deposit'},
+        {:value => '40',
+         :description => 'Deposit percentage or 0 if no deposit management',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.payment'},
+        {:value => 'false',
+         :description => 'Integrate the payment in the booking process. Values: true, false',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.min_days'},
+        {:value => '1',
+         :description => 'Minimum number of days you must book',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.item_family'},
+        {:value => 'place',
+         :description => 'Booking family: place or other',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.item_type'},
+        {:value => 'apartment',
+         :description => 'Booking Type : car, apartment, bike, motorbike, room',
+         :module => :booking})
     
+      Yito::Booking::ProductFamily.first_or_create({:code => 'place'},
+        {:driver => false,
+         :guests => true,
+         :flight => true,
+         :pickup_return_place => false,
+         :time_to_from => false,
+         :start_date_literal => :arrival} )
+
+      Yito::Booking::ProductFamily.first_or_create({:code => 'car'},
+        {:driver => true,
+         :guests => false,
+         :flight => true,
+         :pickup_return_place => true,
+         :time_to_from => true,
+         :start_date_literal => :pickup} )
+
+
+      Users::Group.first_or_create({:group => 'booking_manager'},
+          {:name => 'Booking manager', :description => 'Booking manager'})
+
     end
+    
+    # ----------- Blocks ------------------------------------
+
+    # Retrieve all the blocks defined in this module 
+    # 
+    # @param [Hash] context
+    #   The context
+    #
+    # @return [Array]
+    #   The blocks defined in the module
+    #
+    #   An array of Hash which the following keys:
+    #
+    #     :name         The name of the block
+    #     :module_name  The name of the module which defines the block
+    #     :theme        The theme
+    #
+    def block_list(context={})
+    
+      app = context[:app]
+    
+      [{:name => 'booking_selector',
+        :module_name => :booking,
+        :theme => Themes::ThemeManager.instance.selected_theme.name},
+       {:name => 'booking_selector_inline',
+        :module_name => :booking,
+        :theme => Themes::ThemeManager.instance.selected_theme.name}        
+      ]
+        
+    end
+
+    # Get a block representation 
+    #
+    # @param [Hash] context
+    #   The context
+    #
+    # @param [String] block_name
+    #   The name of the block
+    #
+    # @return [String]
+    #   The representation of the block
+    #    
+    def block_view(context, block_name)
+    
+      app = context[:app]
+        
+      locals = {}
+      locals.store(:booking_min_days,
+        SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
+      locals.store(:booking_item_family, 
+        ::Yito::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+      locals.store(:booking_item_type,
+        SystemConfiguration::Variable.get_value('booking.item_type'))          
+      if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
+         not booking_js.text.empty?
+        locals.store(:booking_js, booking_js.text) 
+      end      
+
+      case block_name
+        when 'booking_selector'    
+          app.partial(:booking_selector, :locals => locals)
+        when 'booking_selector_inline'         
+          app.partial(:booking_selector_inline, :locals => locals)          
+      end
+      
+    end
+
 
     # --------- Menus --------------------
     

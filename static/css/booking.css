@@ -7,8 +7,8 @@
 
 #content-reserva {
   margin: 0 auto;
-  margin-top: 10px;
-  background: white;
+  margin-top: 2.618em;
+  /*background: white;*/
   /* Esquinas redondeadas */
   -webkit-border-radius: 5px 5px; /* Safari  */ 
   -moz-border-radius: 5px 5px; /* Firefox */
@@ -16,9 +16,6 @@
 }
 
 #content-reserva #content-header {	
-  padding-top: 5px;
-  position: relative;
-  overflow: hidden;
 }
 
 #content-reserva #content-body {
@@ -78,12 +75,16 @@ color:#999999;
   cursor: pointer;	
 }
 
+#content-reserva legend {
+  color: gray;
+}
+
 #content-reserva .legend-first-level 
 {
  /* font-size: 14px;*/
   font-weight: bold;
   width: 100%; /* To show the border in all the space */
-  border-bottom: 1px solid gray;	
+  border-bottom: 1px solid #CCC;	
 }
 
 #content-reserva .legend-second-level
@@ -91,7 +92,8 @@ color:#999999;
   /*font-size: 12px;*/
   font-weight: bold;
   padding-top:5px;
-  padding-bottom:5px;
+  border-bottom: 1px dashed #DDD;
+  margin-bottom:5px;
   /*padding-left:3px;*/
 }
 
@@ -107,14 +109,15 @@ color:#999999;
 
 #content-reserva label {
  /*font-size: 12px;	*/
+ padding: 5px 0px 5px 0px;
 }
 
 #content-reserva input[type="text"], select, textarea {
-  padding: 4px;
+/* padding: 4px;*/
 }
 
 #content-reserva label {
-  padding: 4px 0px 4px 0px;
+/*  padding: 4px 0px 4px 0px;*/
 }
 
 /* ------------------------------------ */
@@ -179,8 +182,6 @@ color:#999999;
 /* ----------------------------- */
 
 #content-reserva #wizard-navigation {
- padding-left: 15px;
- padding-right: 5px;
  height: 40px;
  margin-top:10px;
 }
@@ -249,29 +250,30 @@ color:#999999;
 /*    Search Item Form           */
 /* ----------------------------- */
 
+#timefrom, #timeto {
+  height: 34px;
+  position: relative;
+  top: -1px;
+}
+
 #form-search-item {
-  /*background: #F1EFE2;*/ /*url('../img/form-search-item-background.png');*/
-  /*border: 1px solid gray;*/
   padding: 10px 10px 5px 10px;
-  /* Esquinas redondeadas */
-  /*-webkit-border-radius: 5px 5px;*/ /* Safari  */ 
-  /*-moz-border-radius: 5px 5px;*/ /* Firefox */
-  /*border-radius: 5px 5px;*/ /* iExplorer 9 */
 }
 
 #form-search-item div { /* Each components lines is displayed in a div */ 
   overflow: hidden;
   clear: left; /* Para limpiar los floats */
-  margin-right: 30px;
+  /*margin-right: 30px; */
   /*margin-bottom: 5px;*/
-  margin-top: 5px;
+  /*margin-top: 5px;*/
 }
 
 #button_calcular_tarifas {
-  /*float: left;*/
+  /*float: left;
   margin-left: 25%;
   margin-top: 10px;
-  width: 142px;
+  width: 142px;*/
+  padding: 10px;
 }
 
 #content-reserva .columna1 {
@@ -305,11 +307,8 @@ color:#999999;
   margin-top: 5px; /* Margin between cars */
   min-height: 125px;  
   position: relative;
-  /* Esquinas redondeadas */
-  -webkit-border-radius: 10px; /* Safari  */ 
-  -moz-border-radius: 10px; /* Firefox */
-  border-radius: 10px; /* iExplorer 9 */ 
   clear: left;
+  overflow: hidden;
 } 
 
 #content-reserva div.car_photo {
@@ -354,34 +353,6 @@ color:#999999;
 #content-reserva div.car_price_booking {
   margin: 0 auto;
   width: 75px;		
-}
-
-#content-reserva div.A{
-  background-color: rgb(250,250,250);
-}
-
-#content-reserva div.B{
-  background-color: rgb(245,245,245);
-}
-
-#content-reserva div.C{
-  background-color: rgb(250,250,250);
-}
-
-#content-reserva div.D{
-  background-color: rgb(245,245,245);
-}
-
-#content-reserva div.E{
-  background-color: rgb(250,250,250);
-}
-
-#content-reserva div.F{
-  background-color: rgb(245,245,245);	
-}
-
-#content-reserva div.G{
-  background-color: rgb(250,250,250); 
 }
 
 #content-reserva .car_price span{	
@@ -466,8 +437,9 @@ color:#999999;
   overflow: hidden;
   width: 100%; /* for iExplorer 6 */
   clear: left; /* Para limpiar los floats */
-  padding-top: 2px;
+/*  padding-top: 2px;
   padding-bottom: 2px;
+*/
 }
 
 #content-reserva .form-reservation-columna1 { /* Los labels */

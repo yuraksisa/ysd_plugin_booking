@@ -47,16 +47,16 @@ describe Sinatra::YSD::Booking do
  }
 
  #
- # Reserva form 
+ # Start booking 
  #
- describe "/reserva" do
+ describe "/p/booking/start" do
    
    before :each do
      init_theme
    end
 
    subject do
-     get '/reserva'
+     get '/p/booking/start'
      last_response
    end
     
@@ -67,10 +67,38 @@ describe Sinatra::YSD::Booking do
 
  end
 
+ describe "/p/mybooking" do
+
+   before :each do
+     init_theme
+     BookingDataSystem::Booking.should_receive(:get_by_free_access_id).any_number_of_times
+       .with('1234').and_return(BookingDataSystem::Booking.new(booking))
+     BookingDataSystem::Booking.should_receive(:get_by_free_access_id).any_number_of_times
+       .with('5555').and_return(nil)
+   end
+
+   context "booking exists" do
+     subject do
+       get '/p/mybooking/1234'
+       last_response 
+     end
+     it {should be_ok}
+   end
+
+   context "booking does not exist" do
+     subject do
+       get '/p/mybooking/5555'
+       last_response
+     end
+     its(:status) { should == 404 }
+   end  
+
+ end 
+
  #
- # Reserva payment gateway return (ok)
+ # Booking payment gateway return (ok)
  #
- describe "/reserva/payment-gateway-return/ok" do
+ describe "/p/booking/payment-gateway-return/ok" do
    
    before :each do
      init_theme
@@ -81,16 +109,15 @@ describe Sinatra::YSD::Booking do
        BookingDataSystem::Booking.should_receive(:get).with(1).and_return(BookingDataSystem::Booking.new(booking))
      end
      subject do
-       get '/reserva/payment-gateway-return/ok', {}, {'rack.session' => {'booking_id' => 1}}
+       get '/p/booking/payment-gateway-return/ok', {}, {'rack.session' => {'booking_id' => 1}}
        last_response
      end
      it { should be_ok}
-     its(:body) { should match /<h2>Reserva recibida<\/h2>/ }
    end
 
    context "no booking_id in session" do
    	 subject do
-   	   get 'reserva/payment-gateway-return/ok'
+   	   get '/p/booking/payment-gateway-return/ok'
    	   last_response
    	 end
    	 its(:status) { should == 404 }
@@ -99,9 +126,9 @@ describe Sinatra::YSD::Booking do
  end
  
  #
- # Reserva payment gateway return (error)
+ # Booking payment gateway return (error)
  #
- describe "/reserva/payment-gateway-return/nok" do
+ describe "/p/booking/payment-gateway-return/nok" do
 
    before :each do
      init_theme
@@ -112,7 +139,7 @@ describe Sinatra::YSD::Booking do
        BookingDataSystem::Booking.should_receive(:get).with(1).and_return(BookingDataSystem::Booking.new(booking))
      end
      subject do
-       get '/reserva/payment-gateway-return/nok', {}, {'rack.session' => {'booking_id' => 1} }
+       get '/p/booking/payment-gateway-return/nok', {}, {'rack.session' => {'booking_id' => 1} }
        last_response
      end
      it { should be_ok }
@@ -121,7 +148,7 @@ describe Sinatra::YSD::Booking do
 
    context "no booking_id in session" do
    	 subject do
-   	   get 'reserva/payment-gateway-return/nok'
+   	   get '/p/booking/payment-gateway-return/nok'
    	   last_response
    	 end
    	 its(:status) { should == 404 }   
@@ -130,9 +157,9 @@ describe Sinatra::YSD::Booking do
  end
  
  #
- # Reserva create a charge deposit
+ # Booking create a charge deposit
  #
- describe "/reserva/charge-deposit" do
+ describe "/p/booking/charge-deposit" do
 
    context "booking_id in session and in database" do
      before :each do
@@ -143,7 +170,7 @@ describe Sinatra::YSD::Booking do
          :payment_method_id => :pi4b))
      end
      subject do
-       get '/reserva/charge-deposit', {}, {'rack.session' => {'booking_id' => 1} }
+       get '/p/booking/charge-deposit', {}, {'rack.session' => {'booking_id' => 1} }
        last_response
      end
      it {should be_ok}
@@ -153,7 +180,7 @@ describe Sinatra::YSD::Booking do
 
    context "no booking_id in session" do
    	 subject do
-   	   get 'reserva/charge-deposit'
+   	   get '/p/booking/charge-deposit'
    	   last_response
    	 end
    	 its(:status) { should == 404 }   

@@ -15,20 +15,89 @@ module Sinatra
           'views')))
         app.settings.translations = Array(app.settings.translations).push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'i18n')))      
       
-        app.set :bookingcharge_gateway_return_ok, '/reserva/payment-gateway-return/ok'
-        app.set :bookingcharge_gateway_return_nok, '/reserva/payment-gateway-return/nok'
+        app.set :bookingcharge_gateway_return_ok, '/p/booking/payment-gateway-return/ok'
+        app.set :bookingcharge_gateway_return_nok, '/p/booking/payment-gateway-return/nok'
+        
+        #
+        # Shows a booking: To be managed by the customer
+        #   
+        app.get '/p/mybooking/:id' do
+          if booking = BookingDataSystem::Booking.get_by_free_access_id(params[:id])
+            locals = {:booking => booking}
+            locals.store(:booking_deposit,
+              SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)            
+            locals.store(:booking_payment,
+              SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
+            load_page :reserva, :locals => locals
+          else
+            status 404
+          end
+        end
 
         #
         # It starts a booking process
         #
-        app.get '/reserva/?' do
-          load_page('reserva-online'.to_sym)
+        app.get '/p/booking/start/?' do          
+          
+          locals = {}
+
+          locals.store(:booking_item_family, 
+            ::Yito::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+
+          locals.store(:booking_item_type,
+            SystemConfiguration::Variable.get_value('booking.item_type'))
+       
+          locals.store(:booking_payment,
+            SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
+
+          locals.store(:booking_deposit,
+            SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
+
+          locals.store(:booking_min_days,
+            SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
+
+          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
+             not booking_js.text.empty?
+            locals.store(:booking_js, booking_js.text) 
+          end
+          
+          if summary_message=ContentManagerSystem::Template.find_by_name('booking_summary_message') and
+             not summary_message.text.empty?
+            locals.store(:booking_summary_message, summary_message.text)
+          else
+            locals.store(:booking_summary_message, t.new_booking.summary_message)
+          end
+
+          load_page('reserva-online'.to_sym, :locals => locals)
         end
-           
+
+        #
+        # Register a deposit payment on the booking 
+        #
+        app.post '/p/booking/pay/?', 
+          :allowed_origin => lambda { SystemConfiguration::Variable.get_value('site.domain') } do
+          
+          if booking = BookingDataSystem::Booking.get(params[:id])
+            payment = params[:payment]
+            payment_method = params[:payment_method_id]
+            if charge = booking.create_online_charge!(payment, payment_method)
+              session[:booking_id] = booking.id
+              session[:charge_id] = charge.id
+              status, header, body = call! env.merge("PATH_INFO" => "/charge", 
+                "REQUEST_METHOD" => 'GET')
+            else
+              redirect "/p/mybooking/#{booking.free_access_id}"
+            end            
+          else
+            status 404
+          end 
+
+        end
+
         #
         # It returns from the payment gateway when the payment has been done
         #   
-        app.get '/reserva/payment-gateway-return/ok' do
+        app.get '/p/booking/payment-gateway-return/ok' do
           if session.has_key?('booking_id')
             booking = BookingDataSystem::Booking.get(session['booking_id'])
             company = SystemConfiguration::Variable.get_value('site.company_name')
@@ -43,7 +112,7 @@ module Sinatra
         #
         # It returns from the payment gateway when the payment has been denied
         #
-        app.get '/reserva/payment-gateway-return/nok' do
+        app.get '/p/booking/payment-gateway-return/nok' do
           if session.has_key?('booking_id')
             booking = BookingDataSystem::Booking.get(session['booking_id'])
             load_page('reserva-denegada'.to_sym, :locals => {:booking => booking})
@@ -52,32 +121,12 @@ module Sinatra
             status 404
           end
         end
-        
-        #
-        # It creates a charge to receive the booking deposit and process the
-        # charge
-        #
-        # An booking_id has to be defined in the session in order to process
-        # the charge
-        # 
-        app.get '/reserva/charge-deposit/?' do
-
-          if session.has_key?('booking_id')
-            booking = BookingDataSystem::Booking.get(session['booking_id'])
-            charge = booking.create_deposit_charge!
-            session[:charge_id] = charge.id
-            status, header, body = call! env.merge("PATH_INFO" => "/charge", 
-              "REQUEST_METHOD" => 'GET') 
-          else
-            status 404
-          end
-
-        end
-
+                
         #
         # It starts a booking process (with a customer template)
         #
-        app.get '/reserva/:customer' do 
+        app.get '/p/booking/:customer' do 
+          pass unless get_path("#{params[:customer]}-layout}")
           load_page('reserva-online'.to_sym, :layout => "#{params[:customer]}-layout".to_sym)
         end   
            

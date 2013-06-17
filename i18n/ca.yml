@@ -3,6 +3,16 @@ system_admin_menu:
     bookings_menu:
       title: Gestió de reserves
       bookings: Reserves
+booking_status:
+  pending_confirmation: Pendent
+  confirmed: Confirmat
+  in_progress: En progrès
+  done: Finalitzat
+  cancelled: Cancel.lat   
+booking_payment_status:
+  none: No cobrat
+  deposit: Depòsit
+  total: Total       
 booking_management:
   title: Gestió de reserves
   description: <p>Consultar les reseves.</p>
@@ -13,9 +23,87 @@ booking_management:
     status: Estat
     date_from: Data d\'inici
     date_to: Data de fi
-    item: Item
+    notifications: Notificacions
   form:
+    id: Numero de reserva
     creation_date: Data
+    status: Estat
+    booking_data_title: Dades reserva
     date_from: Data d\'inici
     date_to: Data de fi
+    pickup_place: Lloc d\'entrega
+    return_place: Lloc de devolució 
     item: Item
+    extras_title: Extras
+    extra_description: Descripció
+    extra_quantity: Quantitat
+    days: Dies
+    item_cost: Preu
+    extras_cost: Preu extras
+    total_cost: Preu total
+    total_paid: Pagat
+    total_pending: Pendent   
+    booking_amount: Import depòsit reserva
+    comments: Comentaris
+    customer_title: Client
+    customer_name: Nom
+    customer_phone: Telèfon
+    customer_email: Correu electrònic
+    customer_language: Idioma
+    guests_title: Hostes
+    adults: Adults
+    children: Nens      
+    driver_title: Conductor
+    driver_name: Nom
+    driver_date_of_birth: Data naixement
+    driver_license_number: Permís de conduir
+    driver_license_date: Data permís conduir
+    driver_license_country: País permís conduir
+    driver_address_title : Adreça
+    driver_address_street: Carrer
+    driver_address_city: Població
+    driver_address_state: Provincia
+    driver_address_country: Pais
+    drive_address_zip: Codi postal    
+    other: Més informació
+    free_access_id: Accès directe   
+    payment_method: Forma de pagament 
+booking:
+  days: !!pl
+    1: 1 dia
+    n: %1 dies
+  title: Reserva %1
+  id: El seu identificador de reserva és <strong>%1</strong>. <span class="less_contrast_text smaller_text">Si us plau utilitzi el seu identificador de reserva en totes les comunicacions.</span>
+  arrival: Entrada
+  departure: Sortida
+  customer_notified: Notificat por correu electrònic 
+  concept: Concepte
+  amount: Quantitat
+  days_literal: Dies
+  price: Preu
+  total: Total
+  paig: Pagat
+  payment_alert: Recordi que disposa de 72 hores per realitzar el pagament i confirmar la seva reserva.
+  payment_method: Formes de pagament
+  payment_type:
+    total:
+      label: Total
+    deposit:
+      label: Depòsit   
+      label: Depósito 
+  payment:
+    label: Pagament
+    description: Pot realitzar el pagament de la reserva, <strong>%1</strong>
+  pending_payment: 
+    label: Segon pagament
+    description: Pot realitzar el pagament de la quantitat pendent de la seva reserva, <strong>%1</strong>
+  summary: Informació de la seva reserva
+  deposit_text: Ha de fer un dipòsit de <span class="highlighted_text">%1 €</span> per a confirmar la reserva     
+  no_deposit: No s\'ha pogut enregistrar el dipòsit de la reserva.No se ha podido registrar el depósito de la reserva.
+  state:
+    pending_confirmation: Pendent de confirmació
+    confirming: En confirmació
+    confirmed: Confirmada
+    in_progress: En progrès
+    done: Finalitzada
+    cancelled: Cancelada

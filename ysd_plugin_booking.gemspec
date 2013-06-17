@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name    = "ysd_plugin_booking"
-  s.version = "0.1.14"
+  s.version = "0.1.55"
   s.authors = ["Yurak Sisa Dream"]
   s.date    = "2013-02-28"
   s.email   = ["yurak.sisa.dream@gmail.com"]
@@ -15,8 +15,12 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "ysd_yito_core"
   s.add_runtime_dependency "ysd_yito_js"
 
-  s.add_runtime_dependency "ysd_md_booking"    
+  s.add_runtime_dependency "ysd_md_booking"
+  s.add_runtime_dependency "ysd_md_cms"    
   s.add_runtime_dependency "ysd_md_configuration"
+  
+  s.add_runtime_dependency "ysd_plugin_payment"
+  s.add_runtime_dependency "ysd_plugin_auth"
 
   s.add_development_dependency "dm-sqlite-adapter" # Model testing using sqlite
   s.add_development_dependency "rake"

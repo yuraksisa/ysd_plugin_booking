@@ -1,0 +1,118 @@
+       
+<script type="text/javascript">
+
+<% if defined?booking_js %>
+  <%= booking_js %>
+<% end %>
+
+require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking.js'<%end%>, 'jquery.validate', 'jquery.ui', 
+	     'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation', 'datejs'], function($, bookingDataSystem) {
+
+  var selectorModel = {
+
+  }
+
+  var selectorController = {
+
+  }
+
+  var selectorView = {
+
+      init : function () { /* Inits the View */	
+       	       	       	       	       	       	
+       	 $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+       	        	   	 
+       	 this.configureBookingGui();
+       	 this.configureValidations();
+         this.configureEvents();     
+      },
+
+      configureEvents: function() {
+
+         $('#datefrom').bind('change', function() {
+           var dateFrom = $('#datefrom').datepicker('getDate');
+           var dateTo = $('#datefrom').datepicker('getDate');
+           dateTo.setDate(dateTo.getDate() + <%=booking_min_days%>)
+           $('#dateto').datepicker('setDate', dateTo );
+           $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+         });
+
+      },
+
+      configureBookingGui : function() { /* Configure the Gui elements using the booking configuration */
+       	
+       	 if (bookingDataSystem.configuration.show_time) {
+       	   $('#labeltimefrom').show();
+       	   $('#timefrom').show();
+       	   $('#labeltimeto').show();
+       	   $('#timeto').show(); 	
+       	 }
+       	 
+         var locale = $.datepicker.regional["es"];
+
+         $('#datefrom').datepicker({numberOfMonths:1, minDate:bookingDataSystem.configuration.min_date, 
+         	maxDate: new Date(bookingDataSystem.configuration.max_date).add(-1).days(), dateFormat: 'dd/mm/yy'}, locale);
+         $('#datefrom').datepicker('setDate', '+0'); 
+
+         $('#dateto').datepicker({numberOfMonths:1, minDate:new Date(bookingDataSystem.configuration.min_date).add(<%=booking_min_days%>).days(),
+            maxDate: bookingDataSystem.configuration.max_date , dateFormat: 'dd/mm/yy'}, locale);
+         $('#dateto').datepicker('setDate', '+<%=booking_min_days%>');
+       	 
+       },	    	
+
+
+      configureValidations : function () {
+       	 // Search item form validation
+       	 
+       	 $('#form-search-item').validate(
+       	  {               	        	   
+       	    rules : {
+       	   
+       	       'datefrom': {
+       	         required: true	
+       	       },
+       	     
+       	       'dateto': {
+       	         required: true,
+       	         dpCompareDate : { 'notLessThan' : '#datefrom'} // dateto can not be less than datefrom
+       	       }
+       	   	
+       	    },
+       	    
+       	    messages : {
+       	    	
+               'datefrom': {
+                 required : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date_mandatory):(t.new_booking.pickup_date_mandatory)%>'
+               }, 
+              
+               'dateto' : {
+                 required : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date_mandatory):(t.new_booking.return_date_mandatory)%>',
+                 dpCompareDate : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date_greater_arrival_date):(t.new_booking.return_date_greater_pickup_date)%>'
+               }
+       	    },
+       	    
+       	    errorPlacement : function(error, element) {
+       	    	
+       	    	if (element.attr('name') === 'datefrom') {
+       	    	  error.insertAfter('#timefrom');
+       	    	}
+       	    	
+       	    	if (element.attr('name') === 'dateto') {
+       	    	  error.insertAfter('#timeto');	
+       	    	}
+       	    	
+       	    }
+       	    
+       	    
+       	  }
+       	 );
+     
+    }
+
+  }
+
+  selectorView.init();
+
+});
+
+</script>	

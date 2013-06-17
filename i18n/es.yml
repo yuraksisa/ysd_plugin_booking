@@ -3,6 +3,178 @@ system_admin_menu:
     bookings_menu:
       title: Gestión de reservas
       bookings: Reservas
+booking_status:
+  pending_confirmation: Pendiente
+  confirmed: Confirmado
+  in_progress: En progreso
+  done: Finalizado
+  cancelled: Cancelado
+booking_payment_status:
+  none: No cobrado
+  deposit: Depósito
+  total: Total  
+booking_items:
+  car: coche
+  bike: bicicleta
+  motorbike: motocicleta
+  apartment: apartamento
+  room: habitación 
+new_booking:
+  title: Reserva
+  search: Ver precios
+  choose_item: Seleccionar %1
+  complete_booking: Completar la reserva
+  payment: Pago
+  arrival_date: Fecha de entrada
+  arrival_date_mandatory: Debe informar la fecha de entrada
+  departure_date: Fecha de salida
+  departure_date_mandatory: Debe informar la fecha de salida
+  departure_date_greater_arrival_date: La fecha de salida no puede ser anterior a la de entrada
+  pickup_date: Fecha de entrega
+  pickup_date_mandatory: Debe informar la fecha de entrega
+  return_date: Fecha de devolución
+  return_date_mandatory: Debe informar la fecha de devolución
+  return_date_greater_pickup_date: La fecha de devolución no puede ser anterior a la de entrega
+  arrival: Entrada
+  departure: Salida
+  pickup: Entrega
+  return: Devolución
+  place: Lugar
+  other: Otro
+  pickup_place: Lugar de entrega
+  return_place: Lugar de devolución
+  extras: Extras
+  extra: Extra
+  quantity: Cantidad
+  price: Precio
+  customer: Cliente
+  conditions_confirm: He leído y acepto <a href="%1" target="_blank">las condiciones del alquiler</a>
+  continue: Continuar
+  confirm: Confirmar
+  booking: Reservar
+  payment_methods: Formas de pago
+  sending_booking_request: Enviando la solicitud de reserva
+  concept: Concepto
+  days: Días
+  total: Total
+  form_errors:
+    title: Formulario no válido
+    description: Por favor, revise el formulario. Contiene datos no válidos
+  guests_limit: Número de huéspedes fuera de límite
+  booking_creation_error:
+    title: Error en solicitud de reserva
+    description: Error en el proceso
+  confirm_message: Para confirmar la reserva debe hacer un abono de <span class="highlighted_text"><%= booking.booking_amount %>€</span>
+  summary_message: >   
+                   <h2>Reserva pendiente de confirmación </h2>
+                   <p class="bf-title">Estimado Sr/Sra. <%= booking.customer_name %> <%= booking.customer_surname %>: </p>
+                   <p class="bf-message">Queremos agradecerle su confianza en <strong><%= bookingConfiguration.company %></strong> para el alquiler de su <%= bookingConfiguration.item_type %>.</p>
+                   <p class="bf-message">En breve recibirá en su correo electrónico, <em> <%= booking.customer_email %> </em>, todos los datos para realizar el pago de su reserva.</p>
+                   <p class="bf-message">Recuerde que dispone de una plazo máximo de 72 horas para realizar el pago y de esta forma confirmar su reserva.</p>
+                   <p class="bf-footer">Atentamente, </p>
+                   <p class="bf-footer">El equipo de <%= bookingConfiguration.company %></p>
+  customer_name: 
+    label: Nombre
+    placeholder: Su nombre
+    required: El nombre del cliente es obligatorio
+  customer_surname: 
+    label: Apellidos
+    placeholder: Sus apellidos
+    required: Los apellidos del cliente son obligatorios 
+  customer_email: 
+    label: Email
+    placeholder: Su correo electrónico
+    required: El correo electrónico del cliente es obligatorio
+    format: El correo electrónico debe estar en formato usuario@dominio.com
+  customer_email_confirmation: 
+    label: Confirme email
+    placeholder: Confirme su correo electrónico
+    required: Confirmación del correo electrónico obligatorio
+    format: El correo electrónico debe estar en formato usuario@dominio.com
+    equal_to: Debe ser igual al correo electrónico
+  customer_phone: 
+    label: Teléfono
+    placeholder: Su teléfono fijo
+    required: El teléfono del cliente es obligatorio
+    min_length: Debe introducir un número de teléfono de 9 dígitos
+  customer_mobile: 
+    label: Teléfono móvil
+    placeholder: Su teléfono móvil
+  guests:
+    title: Huéspedes
+    adults: Adultos
+    children: Niños (hasta 7 años)
+  flight:
+    title: Datos de su vuelo
+    company: 
+      label: Nombre compañía
+      place_holder: Por ejemplo, Vueling, EasyJet, ...
+    number: 
+      label: Número de vuelo
+      place_holder: Por ejemplo, VG123
+    time:
+      label: Hora de llegada
+      place_holder: Por ejemplo 10:30 
+  other_data: Otros datos de la reserva
+  comments:
+    label: Comentarios
+    placeholder: Observaciones, dudas, comentarios
+  conditions:
+    required: Debe aceptar las condiciones
+  payment_method:
+    required: Debe seleccionar la forma de pago
+new_driving_booking:
+  driver:
+    label: Conductor
+    description: Si desea <strong>agilizar</strong> la entrega del vehículo <em>complete</em> los datos del conductor. <em>Pulse el botón + para desplegarlos</em>
+  driver_personal_data: Datos personales
+  driver_name:
+    label: Nombre
+    placeholder: Nombre del conductor
+  driver_surname:
+    label: Apellidos
+    placeholder: Apellidos del conductor
+  driver_nif:
+    label: Nif o pasaporte
+    placeholder: Nif o pasaporte del conductor
+  driver_date_of_birth:
+    label: Fecha de nacimiento del conductor
+    required: La fecha de nacimiento del conductor es obligatoria
+  driver_license: Permiso de conducir
+  driver_license_number:
+    label: Número licencia
+    placeholder: Número del carnet o licencia de conducir
+  driver_license_date:
+    label: Fecha expedición
+  driver_license_country:
+    label: País expedición
+    placeholder: País de expedición de la licencia
+  driver_address: Dirección
+  driver_address_street:
+    label: Calle
+    placeholder: Nombre de la calle
+  driver_address_number:
+    label: Número
+    placeholder: Numero de la calle
+  driver_address_complement:
+    label: Piso, puerta
+    placeholder: bloque, escalera, piso, puerta 
+  driver_address_city:
+    label: Población
+    placeholder: ciudad o población
+  driver_address_state:
+    label: Província
+    placeholder: provincia o estado
+  driver_address_country:
+    label: País
+    placeholder: país
+  driver_address_zip:
+    label: Código postal
+    placeholder: código postal  
+  pickup_place:
+    required: El lugar de entrega es obligatorio
+  return_place:
+    required: El lugar de devolución es obligatorio
 booking_management:
   title: Gestión de reservas
   description: <p>Consultar las reservas.</p>
@@ -11,11 +183,95 @@ booking_management:
     creation_date: Fecha reserva
     customer: Cliente
     status: Estado
+    payment_status: Pago
     date_from: Fecha inicio
     date_to: Fecha fin
-    item: Item
+    notifications: Notificaciones
   form:
-    creation_date: Fecha reservva
+    id: Localizador reserva
+    creation_date: Fecha reserva
+    status: Estado
+    payment_status: Pago
+    booking_data_title: Datos reserva    
     date_from: Fecha inicio
     date_to: Fecha fin
+    pickup_place: Lugar de entrega
+    return_place: Lugar de devolución
     item: Item
+    extras_title: Extras
+    extra_description: Descripción
+    extra_quantity: Cantidad    
+    charges_title: Cobros
+    charge_date: Fecha
+    charge_amount: Cantidad
+    charge_status: Estado      
+    days: Días
+    item_cost: Precio
+    extras_cost: Precio extras
+    total_cost: Precio total 
+    total_paid: Pagado
+    total_pending: Pendiente   
+    booking_amount: Importe depósito reserva
+    comments: Comentarios    
+    customer_title: Cliente
+    customer_name: Nombre
+    customer_phone: Teléfono
+    customer_email: Correo electrónico
+    customer_language: Idioma    
+    guests_title: Huéspedes
+    adults: Adultos
+    children: Niños (hasta 7 años)    
+    driver_title: Conductor
+    driver_name: Nombre
+    driver_date_of_birth: Fecha de nacimiento
+    driver_license_number: Permiso de conducir
+    driver_license_date: Fecha permiso conducir
+    driver_license_country: País permiso conducir
+    driver_address_title : Dirección
+    driver_address_street: Calle
+    driver_address_city: Población
+    driver_address_state: Provincia
+    driver_address_country: País
+    drive_address_zip: Código postal
+    other: Otra información
+    free_access_id: Acceso directo
+    payment_method: Forma de pago    
+booking:
+  days: !!pl
+    1: 1 día
+    n: %1 días
+  title: Reserva %1
+  id: Su identificador de reserva es <strong>%1</strong>. <span class="less_contrast_text smaller_text">Use su identificador de reserva en todas las comunicaciones.</span>
+  arrival: Entrada
+  departure: Salida
+  customer_notified: Notificado por correo electrónico 
+  concept: Concepto
+  amount: Cantidad
+  days_literal: Días
+  price: Precio
+  total: Total
+  paid: Pagado
+  pending: Pendiente
+  payment_alert: Recuerde que dispone de una plazo máximo de 72 horas para realizar el pago y de esta forma confirmar su reserva.
+  payment_method: Formas de pago
+  payment_type:
+    total:
+      label: Total
+    deposit:
+      label: Depósito 
+  payment:
+    label: Pago
+    description: Puede realizar el pago del importe de la reserva, <strong>%1</strong>
+  pending_payment: 
+    label: Segundo pago
+    description: Puede realizar el pago de la cantidad pendiente, <strong>%1</strong>
+  summary: Detalle de su reserva
+  deposit_text: Debe realizar un depósito de <span class="highlighted_text">%1 €</span> para confirmar la reserva.
+  no_deposit: No se ha podido registrar el depósito de la reserva.
+  state:
+    pending_confirmation: Pendiente de confirmación
+    confirming: Confirmando
+    confirmed: Confirmada
+    in_progress: En progreso
+    done: Finalizada
+    cancelled: Cancelada
