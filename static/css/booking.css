@@ -269,15 +269,21 @@ color:#999999;
 }
 
 #button_calcular_tarifas {
-  /*float: left;
-  margin-left: 25%;
-  margin-top: 10px;
-  width: 142px;*/
-  padding: 10px;
+  background-image: -webkit-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
+  background-image: linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
+  background-image: -o-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
+  background-image: -moz-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
+  background-image: -webkit-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
+  background-image: -ms-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
+  background-image: -webkit-gradient( linear, left top, left bottom, color-stop(0.25, rgb(70, 136, 207)), color-stop(0.71, rgb(121, 169, 214)));  
+  padding: 9px;
+  color: white;
+  text-transform: uppercase;
+  font-size: small;  
 }
 
 #content-reserva .columna1 {
-  width: 25%;
+  width: 10%;
   float: left;
 }
 
@@ -388,82 +394,7 @@ color:#999999;
   overflow: hidden;
   margin-bottom: 10px;
   clear: both;
-  /*font-size: 12px;*/
   
-}
-
-#reservation-input {
- width: 50%; /*500px;*/
- float: left;	
- /*background: #F1EFE2;*/ /*url('../img/form-search-item-background.png');*/
- 
- /* Esquinas redondeadas */
- /*-webkit-border-radius: 5px;*/ /* Safari  */ 
- /*-moz-border-radius: 5px;*/ /* Firefox */
- /*border-radius: 5px;*/ /* iExplorer 9 */ 
-
- padding-top: 10px;
- padding-bottom: 10px;
- /*padding-left: 5px;*/
-
-  overflow: hidden;
- /*border: 1px solid gray;*/
-}
-
-#reservation-summary {
- width: 48%; /*240px;*/
- float: left;
- margin-left: 5px;
- padding-left: 10px;
- padding-top: 0.808em;
- /*background: #F1EFE2; */ /*url('../img/form-search-item-background.png');*/
- background: #EEE;
-
- overflow: hidden;
- /*border: 1px solid gray;*/
-  
-  /* Esquinas redondeadas */
-  -webkit-border-radius: 5px; /* Safari  */ 
-  -moz-border-radius: 5px; /* Firefox */
-  border-radius: 5px; /* iExplorer 9 */
-
- 
-}
-
-/* ------------ RESERVATION INPUT ----------------- */
-
-
-#reservation-input div { /* Each components lines is displayed in a div */ 
-  overflow: hidden;
-  width: 100%; /* for iExplorer 6 */
-  clear: left; /* Para limpiar los floats */
-/*  padding-top: 2px;
-  padding-bottom: 2px;
-*/
-}
-
-#content-reserva .form-reservation-columna1 { /* Los labels */
- float : left;	
- width : 100%;
-}
-
-#content-reserva .form-reservation-columna2 { /* Los inputs */
- float: left;
- width: 95%;	
-}
-
-#content-reserva .summary-row {
- margin-top: 5px;
- margin-bottom: 5px;
-}
-
-#content-reserva .form-reservation-right-column { /* Columnas especiales alineadas a la derecha */
- float: right;
- margin-right: 10px;
- margin-top: 0px;
- margin-bottom: 0px;
- padding-top: 0px;
- padding-bottom: 0px;
 }
 
 #tblextras {
@@ -483,47 +414,13 @@ color:#999999;
  top: 0px;	
 }
 
-#content-reserva .form-reservation-extra-titulo {
- font-weight : bold;
- border-bottom:1px solid #CCC;
-}
-
-#content-reserva .form-reservation-extra-columna1 {
- width: 130px;	
-}
-
-#reservation-input label.form-reservation-error {
+label.form-reservation-error {
   color: #690404;	
 }
 
-#reservation-summary label.form-reservation-error {
-  color: #690404;	
-}
-
-/* -------------- RESERVATION SUMMARY ----------------------- */
-
-
-#reservation-summary .readonly-field {
+#date_from_extended, #date_to_extended {
  border-width: 0px;
  background-color: transparent;
-}
-
-#fs_summary_collection {
- height: 10%;	
- clear: right;
-}
-
-#fs_summary_delivery {
- height: 10%;	
-}
-
-#fs_summary_item {
- height: 20%;	
-}
-
-.item_chooser {
-  display: block;
-  margin: 0 auto;
 }
 
 #fs_summary_item #item_image {
@@ -548,22 +445,9 @@ color:#999999;
  padding-bottom: 5px 
 }
 
-#content-reserva .detailed_price-button {
-  float: right;
-  margin: 5px;
-}
-
-#item_image {
- margin-left:20px;
-}
-
 #fs_conditions {
  clear: right; 
  border-top: 1px solid gray;	
-}
-
-.conditions_text {
-  font-size: 0.8em;
 }
 
 #button_confirmar_reserva {

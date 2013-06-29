@@ -25,14 +25,14 @@ new_booking:
   choose_item: Seleccionar %1
   complete_booking: Completar la reserva
   payment: Pago
-  arrival_date: Fecha de entrada
+  arrival_date: Entrada
   arrival_date_mandatory: Debe informar la fecha de entrada
-  departure_date: Fecha de salida
+  departure_date: Salida
   departure_date_mandatory: Debe informar la fecha de salida
   departure_date_greater_arrival_date: La fecha de salida no puede ser anterior a la de entrada
-  pickup_date: Fecha de entrega
+  pickup_date: Entrega
   pickup_date_mandatory: Debe informar la fecha de entrega
-  return_date: Fecha de devolución
+  return_date: Devolución
   return_date_mandatory: Debe informar la fecha de devolución
   return_date_greater_pickup_date: La fecha de devolución no puede ser anterior a la de entrega
   arrival: Entrada
@@ -60,7 +60,7 @@ new_booking:
   form_errors:
     title: Formulario no válido
     description: Por favor, revise el formulario. Contiene datos no válidos
-  guests_limit: Número de huéspedes fuera de límite
+  guests_limit: Número de huéspedes fuera de límite. Por favor seleccione otro/a %1.
   booking_creation_error:
     title: Error en solicitud de reserva
     description: Error en el proceso
@@ -103,18 +103,18 @@ new_booking:
   guests:
     title: Huéspedes
     adults: Adultos
-    children: Niños (hasta 7 años)
+    children: Niños
   flight:
     title: Datos de su vuelo
     company: 
       label: Nombre compañía
-      place_holder: Por ejemplo, Vueling, EasyJet, ...
+      placeholder: Nombre compañía. Vueling, EasyJet, ...
     number: 
       label: Número de vuelo
-      place_holder: Por ejemplo, VG123
+      placeholder: Número de vuelo. VG123
     time:
       label: Hora de llegada
-      place_holder: Por ejemplo 10:30 
+      placeholder: Hora de llegada. 10:30 
   other_data: Otros datos de la reserva
   comments:
     label: Comentarios
@@ -191,6 +191,10 @@ booking_management:
     id: Localizador reserva
     creation_date: Fecha reserva
     status: Estado
+    status_action:
+      confirm: Confirmar
+      pickup: Recogida/Entrada
+      return_item: Devolución/Salida
     payment_status: Pago
     booking_data_title: Datos reserva    
     date_from: Fecha inicio

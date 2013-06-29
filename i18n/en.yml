@@ -60,7 +60,7 @@ new_booking:
   form_errors:
     title: Error
     description: Please check the booking form. There are errors.
-  guests_limit: Number of guests out of limit
+  guests_limit: Number of guests out of limit. Please choose other %1.
   booking_creation_error:
     title: Error registering booking
     description: Server error
@@ -108,13 +108,13 @@ new_booking:
     title: Flight
     company: 
       label: Flight company
-      placeholder: For example, Vueling, EasyJet, ...
+      placeholder: Flight company. Vueling, EasyJet, ...
     number: 
       label: Flight number
-      placeholder: For example, VG123
+      placeholder: Flight number. VG123
     time:
       label: Flight time
-      placeholder: For example, 10:30
+      placeholder: Flight time. 10:30
   other_data: Further details of the reservation
   comments:
     label: Comments

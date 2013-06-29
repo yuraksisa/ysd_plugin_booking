@@ -68,6 +68,14 @@ module Huasi
          :time_to_from => true,
          :start_date_literal => :pickup} )
 
+      Yito::Booking::ProductFamily.first_or_create({:code => 'bike'},
+        {:driver => false,
+         :guests => false,
+         :flight => false,
+         :pickup_return_place => false,
+         :time_to_from => true,
+         :start_date_literal => :pickup} )
+
 
       Users::Group.first_or_create({:group => 'booking_manager'},
           {:name => 'Booking manager', :description => 'Booking manager'})

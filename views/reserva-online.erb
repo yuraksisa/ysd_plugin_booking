@@ -121,53 +121,151 @@
 		      	</select>
 		      	<% end %>
 		      </div>
-		      <div class="formrow" style="margin-left:25%">
+		      <div class="formrow" style="margin-left:10%">
 	        	<input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones"/>
 		      </div>  
 		    </fieldset>	  
 		  </form>
-	 	  
-	 	  <!-- Resultado del calculo de tarifas -->
 		  <div id="result" class="top-separator">
-	  
 		  </div>
-	 	  
 	  </div>
-	  	      	    
- 	  <!-- Formulario de confirmacion de reserva -->
-  
-	  <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
 
-	    <div id="reservation-input">	      
+	  <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
+	    <div>	      
+          <div class="guiblock">
+          	<div class="container_12">
+          	  <div >
+	            <fieldset id="fs_summary_item">
+                 <div class="grid_3">
+	                <img id="item_image"/>
+	             </div>
+	             <div class="grid_4">
+	               <div class="right-margin smaller_text">
+                     <select id="booking[item_id]" name="booking[item_id]" class="item_chooser"></select>	
+	                 <div>
+	                   <label class="fieldtitle" style="display:inline-block; width:25%">
+	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
+	                   </label>
+                       <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly"/>
+	                   <% if booking_item_family.pickup_return_place %>
+	                   <div class="collection_place">
+	                     <label for="pickup_place"><%=t.new_booking.place%> * </label>
+	                     <select name="pickup_place" id="pickup_place">
+	                       <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
+	                       <option value="Puerto Mahón">Puerto Mahón</option>
+	                       <!--option value="Otro"><%=t.new_booking.other%></option-->
+	                     </select>
+	                   </div>
+	                   <div>
+	                     <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
+	                   </div>
+	                   <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
+	                   <% end %>	        
+	                </div>
+	                <div>
+	                  <label class="fieldtitle" style="display:inline-block; width:25%">
+	          	        <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%>
+	                  </label>
+                      <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly"/>
+	                  <% if booking_item_family.pickup_return_place %>
+	                  <div class="return_place">
+	                    <label for="return_place"><%=t.new_booking.place%> * </label>
+	      	            <select name="return_place" id="return_place">
+	                      <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
+	                      <option value="Puerto Mahón">Puerto Mahón</option>
+	                      <!--option value="Otro"><%=t.new_booking.other%></option-->
+	                    </select>
+	                  </div>
+	                  <div>
+	                    <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
+	                  </div>
+	                  <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
+	                  <% end %>
+	                </div>
+                    <% if (booking_item_family.guests) %>
+                    <div >
+		              <div>
+		                <label id="label_adult_guests" for="booking[number_of_adults]" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.guests.adults%></label>	
+		                <select name="booking[number_of_adults]" id="booking[number_of_adults]" style="margin-right:5%"> 
+			              <option value="1" selected="selected">1</option>
+				          <option value="2">2</option>
+				          <option value="3">3</option>
+				          <option value="4">4</option>
+				          <option value="5">5</option>
+				          <option value="6">6</option>
+				          <option value="7">7</option>
+				          <option value="8">8</option>
+				          <option value="9">9</option>
+				          <option value="10">10</option>
+                        </select>
+		                <label id="label_adult_guests" for="booking[number_of_children]" class="fieldtitle" style="display:inline-block"><%=t.new_booking.guests.children%></label>	
+		                <select name="booking[number_of_children]" id="booking[number_of_children]"> 
+			              <option value="0" selected="selected">0</option>
+				          <option value="1">1</option>
+				          <option value="2">2</option>
+				          <option value="3">3</option>
+				          <option value="4">4</option>
+				          <option value="5">5</option>
+				          <option value="6">6</option>
+				          <option value="7">7</option>
+				          <option value="8">8</option>
+				          <option value="9">9</option>
+				          <option value="10">10</option>
+                        </select>
+                      </div>    
+                    </div>                   
+                    <% end %>		                
+	              </div>
+	            </div>
+	            <div class="grid_5">
+	              <div class="left-margin smaller_text">
+	      	      <input type="hidden" name="total_cost" id="total_cost"/>
+	      	      <div id="detailed_summary" style="border: 1px solid #DDD">
+	              <div>      
+	              </div>
+	            </div>
+	            </fieldset>
+	          </div>
+	        </div>
+          </div>
+
+	      <fieldset id="fs_summary_extras">
+	        <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
+	        <table id="tblextras">
+	          <tbody>
+	          </tbody>
+	        </table>
+	      </fieldset>
+
 	      <fieldset id="fs_customer">
 	        <legend id="lg_customer" class="legend-first-level"><%=t.new_booking.customer%></legend>
-	        <div>
-	          <label id="label_customer_email" for="booking[customer_name]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_name.label%> *</label>
-	          <input type="text" name="booking[customer_name]" id="booking[customer_name]" class="fieldcontrol form-reservation-columna2" maxlength="40" placeholder="<%=t.new_booking.customer_name.placeholder%>"/>
+	        <div class="formrow">
+	          <label id="label_customer_email" for="booking[customer_name]" class="fieldtitle"><%=t.new_booking.customer_name.label%> *</label>
+	          <input type="text" name="booking[customer_name]" id="booking[customer_name]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_name.placeholder%>"/>
 	        </div>
-	        <div>
-	          <label id="label_customer_surname" for="booking[customer_surname]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_surname.label%> *</label>
-	          <input type="text" name="booking[customer_surname]" id="booking[customer_surname]" class="fieldcontrol form-reservation-columna2" maxlength="40" placeholder="<%=t.new_booking.customer_surname.placeholder%>"/>	          
+	        <div class="formrow">
+	          <label id="label_customer_surname" for="booking[customer_surname]" class="fieldtitle"><%=t.new_booking.customer_surname.label%> *</label>
+	          <input type="text" name="booking[customer_surname]" id="booking[customer_surname]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_surname.placeholder%>"/>	          
 	        </div>
-	        <div>
-	          <label id="label_customer_email" for="booking[customer_email]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_email.label%> *</label>
-	          <input type="text" name="booking[customer_email]" id="booking[customer_email]" class="fieldcontrol form-reservation-columna2" placeholder="<%=t.new_booking.customer_email.placeholder%>" maxlength="40"/>
+	        <div class="formrow">
+	          <label id="label_customer_email" for="booking[customer_email]" class="fieldtitle"><%=t.new_booking.customer_email.label%> *</label>
+	          <input type="text" name="booking[customer_email]" id="booking[customer_email]" class="fieldcontrol" placeholder="<%=t.new_booking.customer_email.placeholder%>" maxlength="40"/>
 	        </div>
-	        <div>
-	          <label id="label_customer_email_confirmation" for="booking[customer_email_confirmation]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_email_confirmation.label%> *</label>
-	          <input type="text" name="booking[customer_email_confirmation]" id="booking[customer_email_confirmation]" class="fieldcontrol form-reservation-columna2" placeholder="<%=t.new_booking.customer_email_confirmation.placeholder%>" maxlength="40"/>
+	        <div class="formrow">
+	          <label id="label_customer_email_confirmation" for="booking[customer_email_confirmation]" class="fieldtitle"><%=t.new_booking.customer_email_confirmation.label%> *</label>
+	          <input type="text" name="booking[customer_email_confirmation]" id="booking[customer_email_confirmation]" class="fieldcontrol" placeholder="<%=t.new_booking.customer_email_confirmation.placeholder%>" maxlength="40"/>
 	        </div>
-	        <div>
-	          <label id="label_customer_phone" for="booking[customer_phone]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_phone.label%> *</label>
-	          <input type="text" name="booking[customer_phone]" id="booking[customer_phone]" class="fieldcontrol form-reservation-columna2" maxlength="15" placeholder="<%=t.new_booking.customer_phone.placeholder%>"/>      
+	        <div class="formrow">
+	          <label id="label_customer_phone" for="booking[customer_phone]" class="fieldtitle"><%=t.new_booking.customer_phone.label%> *</label>
+	          <input type="text" name="booking[customer_phone]" id="booking[customer_phone]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_booking.customer_phone.placeholder%>"/>      
 	        </div>
-	        <div>
-	          <label id="label_customer_mobile_phone" for="booking[customer_mobile_phone]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.customer_mobile.label%></label>
-	          <input type="text" name="booking[customer_mobile_phone]" id="booking[customer_mobile_phone]" class="fieldcontrol form-reservation-columna2" maxlength="15" placeholder="<%=t.new_booking.customer_mobile.placeholder%>"/>      
+	        <div class="formrow">
+	          <label id="label_customer_mobile_phone" for="booking[customer_mobile_phone]" class="fieldtitle"><%=t.new_booking.customer_mobile.label%></label>
+	          <input type="text" name="booking[customer_mobile_phone]" id="booking[customer_mobile_phone]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_booking.customer_mobile.placeholder%>"/>      
 	        </div>
 	        <% if booking_item_family.driver %>
 	        <div class="formrow bottom-space">
-	            <label id="label_driver_date_of_birth" for="booking[driver_date_of_birth]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_date_of_birth.label%> *</label>
+	            <label id="label_driver_date_of_birth" for="booking[driver_date_of_birth]" class="fieldtitle"><%=t.new_driving_booking.driver_date_of_birth.label%> *</label>
                 <select name="booking[driver_date_of_birth_day]" id="booking[driver_date_of_birth_day]"></select>
                 <select name="booking[driver_date_of_birth_month]" id="booking[driver_date_of_birth_month]"></select>
                 <select name="booking[driver_date_of_birth_year]" id="booking[driver_date_of_birth_year]"></select>
@@ -176,46 +274,11 @@
 	        <% end %>
 	      </fieldset>
 
-          <% if (booking_item_family.guests) %>
-          <fieldset id="fs_guests">
-             <legend id="lg_guests" class="legend-first-level"><%=t.new_booking.guests.title%></legend>
-		     <div>
-		       <label id="label_adult_guests" for="booking[number_of_adults]" class="fieldtitle"><%=t.new_booking.guests.adults%></label>	
-		       <select name="booking[number_of_adults]" id="booking[number_of_adults]"> 
-			      <option value="1" selected="selected">1</option>
-				  <option value="2">2</option>
-				  <option value="3">3</option>
-				  <option value="4">4</option>
-				  <option value="5">5</option>
-				  <option value="6">6</option>
-				  <option value="7">7</option>
-				  <option value="8">8</option>
-				  <option value="9">9</option>
-				  <option value="10">10</option>
-               </select>
-		       <label id="label_adult_guests" for="booking[number_of_children]" class="fieldtitle"><%=t.new_booking.guests.children%></label>	
-		       <select name="booking[number_of_children]" id="booking[number_of_children]"> 
-			      <option value="0" selected="selected">0</option>
-				  <option value="2">1</option>
-				  <option value="2">2</option>
-				  <option value="3">3</option>
-				  <option value="4">4</option>
-				  <option value="5">5</option>
-				  <option value="6">6</option>
-				  <option value="7">7</option>
-				  <option value="8">8</option>
-				  <option value="9">9</option>
-				  <option value="10">10</option>
-               </select>
-             </div>                       
-          </fieldset>
-          <% end %>
-
 	      <fieldset id="fs_info">
 	        <legend id="lg_info" class="legend-first-level"><%=t.new_booking.other_data%></legend>
-	        <div>
-	          <label id="label_comments" for="booking[comments]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.comments.label%></label>
-	          <textarea id="booking[comments]" name="booking[comments]" class="fieldcontrol form-reservation-columna2" rows="10" placeholder="<%=t.new_booking.comments.placeholder%>"></textarea>
+	        <div class="formrow">
+	          <label id="label_comments" for="booking[comments]" class="fieldtitle"><%=t.new_booking.comments.label%></label>
+	          <textarea id="booking[comments]" name="booking[comments]" class="fieldcontrol" rows="10" placeholder="<%=t.new_booking.comments.placeholder%>"></textarea>
 	        </div>	      
 	        <p class="form-reservation-right-column"> <span id="booking_comments_length"></span> <%=t.available_chars%></p>
 	      </fieldset>
@@ -230,61 +293,61 @@
 	        <div id="driver_data" class="background-color-2 top-space bottom-space left-space right-space" style="display:none">
 	          <legend class="legend-second-level"><%=t.new_driving_booking.driver_personal_data%></legend>
 	          <div class="formrow">
-	            <label id="label_driver_name" for="booking[driver_name]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_name.label%></label>
-	            <input type="text" name="booking[driver_name]" id="booking[driver_name]" class="fieldcontrol form-reservation-columna2" maxlength="40" placeholder="<%=t.new_driving_booking.driver_name.placeholder%>"/>
+	            <label id="label_driver_name" for="booking[driver_name]" class="fieldtitle"><%=t.new_driving_booking.driver_name.label%></label>
+	            <input type="text" name="booking[driver_name]" id="booking[driver_name]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_driving_booking.driver_name.placeholder%>"/>
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_surname" for="booking[driver_surname]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_surname.label%></label>
-	            <input type="text" name="booking[driver_surname]" id="booking[driver_surname]" class="fieldcontrol form-reservation-columna2" maxlength="40" placeholder="<%=t.new_driving_booking.driver_surname.placeholder%>"/>
+	            <label id="label_driver_surname" for="booking[driver_surname]" class="fieldtitle"><%=t.new_driving_booking.driver_surname.label%></label>
+	            <input type="text" name="booking[driver_surname]" id="booking[driver_surname]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_driving_booking.driver_surname.placeholder%>"/>
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_document" for="booking[driver_document_id]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_nif.label%></label>
-	            <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol form-reservation-columna2" maxlength="15" placeholder="<%=t.new_driving_booking.driver_nif.placeholder%>"/>
+	            <label id="label_driver_document" for="booking[driver_document_id]" class="fieldtitle"><%=t.new_driving_booking.driver_nif.label%></label>
+	            <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_driving_booking.driver_nif.placeholder%>"/>
 	          </div>	        
               <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_license%></legend>
 	          <div class="formrow">
-	            <label id="label_driver_driving_license_number" for="booking[driver_driving_license_number]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_license_number.label%></label>
-	            <input type="text" name="booking[driver_driving_license_number]" id="booking[driver_driving_license_number]" class="fieldcontrol form-reservation-columna2" maxlength="15" placeholder="<%=t.new_driving_booking.driver_license_number.placeholder%>"/>
+	            <label id="label_driver_driving_license_number" for="booking[driver_driving_license_number]" class="fieldtitle"><%=t.new_driving_booking.driver_license_number.label%></label>
+	            <input type="text" name="booking[driver_driving_license_number]" id="booking[driver_driving_license_number]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_driving_booking.driver_license_number.placeholder%>"/>
 	          </div>
 	          <div class="formrow">
-  	            <label id="label_driver_driving_license_date" for="booking[driver_driving_license_date]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_license_date.label%></label>
+  	            <label id="label_driver_driving_license_date" for="booking[driver_driving_license_date]" class="fieldtitle"><%=t.new_driving_booking.driver_license_date.label%></label>
 	            <select name="booking[driver_driving_license_date_day]" id="booking[driver_driving_license_date_day]"></select>
                 <select name="booking[driver_driving_license_date_month]" id="booking[driver_driving_license_date_month]"></select>
                 <select name="booking[driver_driving_license_date_year]" id="booking[driver_driving_license_date_year]"></select>
                 <input type="hidden" name="booking[driver_driving_license_date]" id="booking[driver_driving_license_date]"></select>    
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_driving_license_country" for="booking[driver_driving_license_country]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_license_country.label%></label>
-	            <input type="text" name="booking[driver_driving_license_country]" id="booking[driver_driving_license_country]" class="fieldcontrol form-reservation-columna2" maxlength="50" placeholder="<%=t.new_driving_booking.driver_license_country.placeholder%>"/>
+	            <label id="label_driver_driving_license_country" for="booking[driver_driving_license_country]" class="fieldtitle"><%=t.new_driving_booking.driver_license_country.label%></label>
+	            <input type="text" name="booking[driver_driving_license_country]" id="booking[driver_driving_license_country]" class="fieldcontrol" maxlength="50" placeholder="<%=t.new_driving_booking.driver_license_country.placeholder%>"/>
 	          </div>
               <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_address%></legend>
 	          <div class="formrow">
-	            <label id="label_driver_address_street" for="booking[driver_address[street]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_street.label%></label>
-	            <input type="text" name="booking[driver_address[street]]" id="booking[driver_address[street]]" class="fieldcontrol form-reservation-columna2" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_street.placeholder%>"/>
+	            <label id="label_driver_address_street" for="booking[driver_address[street]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_street.label%></label>
+	            <input type="text" name="booking[driver_address[street]]" id="booking[driver_address[street]]" class="fieldcontrol" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_street.placeholder%>"/>
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_address_number" for="booking[driver_address[number]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_number.label%></label>
-	            <input type="text" name="booking[driver_address[number]]" id="booking[driver_address[number]]" class="fieldcontrol form-reservation-columna2" maxlength="10" placeholder="<%=t.new_driving_booking.driver_address_number.placeholder%>"/>
+	            <label id="label_driver_address_number" for="booking[driver_address[number]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_number.label%></label>
+	            <input type="text" name="booking[driver_address[number]]" id="booking[driver_address[number]]" class="fieldcontrol" maxlength="10" placeholder="<%=t.new_driving_booking.driver_address_number.placeholder%>"/>
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_address_complement" for="booking[driver_address[complement]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_complement.label%></label>
-	            <input type="text" name="booking[driver_address[complement]]" id="booking[driver_address[complement]]" class="fieldcontrol form-reservation-columna2" maxlength="20" placeholder="<%=t.new_driving_booking.driver_address_complement.placeholder%>"/>
+	            <label id="label_driver_address_complement" for="booking[driver_address[complement]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_complement.label%></label>
+	            <input type="text" name="booking[driver_address[complement]]" id="booking[driver_address[complement]]" class="fieldcontrol" maxlength="20" placeholder="<%=t.new_driving_booking.driver_address_complement.placeholder%>"/>
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_address_city" for="booking[driver_address[city]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_city.label%></label>
-	            <input type="text" name="booking[driver_address[city]]" id="booking[driver_address[city]]" class="fieldcontrol form-reservation-columna2" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_city.placeholder%>"/>      
+	            <label id="label_driver_address_city" for="booking[driver_address[city]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_city.label%></label>
+	            <input type="text" name="booking[driver_address[city]]" id="booking[driver_address[city]]" class="fieldcontrol" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_city.placeholder%>"/>      
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_address_state" for="booking[driver_address[state]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_state.label%></label>
-	            <input type="text" name="booking[driver_address[state]]" id="booking[driver_address[state]]" class="fieldcontrol form-reservation-columna2" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_state.placeholder%>"/>    
+	            <label id="label_driver_address_state" for="booking[driver_address[state]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_state.label%></label>
+	            <input type="text" name="booking[driver_address[state]]" id="booking[driver_address[state]]" class="fieldcontrol" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_state.placeholder%>"/>    
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_address_country" for="booking[driver_address[country]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_country.label%></label>
-	            <input type="text" name="booking[driver_address[country]]" id="booking[driver_address[country]]" class="fieldcontrol form-reservation-columna2" maxlength="50" placeholder="<%=t.new_driving_booking.driver_address_country.placeholder%>"/>      
+	            <label id="label_driver_address_country" for="booking[driver_address[country]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_country.label%></label>
+	            <input type="text" name="booking[driver_address[country]]" id="booking[driver_address[country]]" class="fieldcontrol" maxlength="50" placeholder="<%=t.new_driving_booking.driver_address_country.placeholder%>"/>      
 	          </div>
 	          <div class="formrow">
-	            <label id="label_driver_address_zip" for="booking[driver_address[zip]]" class="fieldtitle form-reservation-columna1"><%=t.new_driving_booking.driver_address_zip.label%></label>
-	            <input type="text" name="booking[driver_address[zip]]" id="booking[driver_address[zip]]" class="fieldcontrol form-reservation-columna2" maxlength="10" placeholder="<%=t.new_driving_booking.driver_address_zip.label%>"/>         
+	            <label id="label_driver_address_zip" for="booking[driver_address[zip]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_zip.label%></label>
+	            <input type="text" name="booking[driver_address[zip]]" id="booking[driver_address[zip]]" class="fieldcontrol" maxlength="10" placeholder="<%=t.new_driving_booking.driver_address_zip.label%>"/>         
 	          </div>
 	        </div>
 	      </fieldset>
@@ -298,19 +361,19 @@
 	        </legend>	
 	        <div id="flight_data" class="background-color-2 top-space bottom-space left-space right-space" style="display:none">
 	          <div class="formrow">
-	            <label id="label_flight_company" for="booking[flight_company]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.flight.company.label%></label>
+	            <label id="label_flight_company" for="booking[flight_company]" class="fieldtitle"><%=t.new_booking.flight.company.label%></label>
 	            <input type="text" name="booking[flight_company]" id="booking[flight_company]" 
-	                   class="fieldcontrol form-reservation-columna2" maxlength="80" placeholder="<%=t.new_booking.flight.company.placeholder%>"/>
+	                   class="fieldcontrol" maxlength="80" placeholder="<%=t.new_booking.flight.company.placeholder%>"/>
 	          </div>
 	          <div class="formrow">
-	            <label id="label_flight_company" for="booking[flight_number]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.flight.number.label%></label>
+	            <label id="label_flight_company" for="booking[flight_number]" class="fieldtitle"><%=t.new_booking.flight.number.label%></label>
 	            <input type="text" name="booking[flight_number]" id="booking[flight_number]" 
-	                   class="fieldcontrol form-reservation-columna2" maxlength="10" placeholder="<%=t.new_booking.flight.number.placeholder%>"/>
+	                   class="fieldcontrol" maxlength="10" placeholder="<%=t.new_booking.flight.number.placeholder%>"/>
 	          </div>
 	          <div class="formrow">
-	            <label id="label_flight_company" for="booking[flight_time]" class="fieldtitle form-reservation-columna1"><%=t.new_booking.flight.time.label%></label>
+	            <label id="label_flight_company" for="booking[flight_time]" class="fieldtitle"><%=t.new_booking.flight.time.label%></label>
 	            <input type="text" name="booking[flight_time]" id="booking[flight_time]" 
-	                   class="fieldcontrol form-reservation-columna2" maxlength="5" placeholder="<%=t.new_booking.flight.time.placeholder%>"/>
+	                   class="fieldcontrol" maxlength="5" placeholder="<%=t.new_booking.flight.time.placeholder%>"/>
 	          </div>	          
 	        </div>
 	      </fieldset>
@@ -318,74 +381,7 @@
 	    
 	    </div>
 
-	    <div id="reservation-summary">
-	      <fieldset id="fs_summary_collection">
-	        <legend id="lg_summary_collection" class="legend-first-level"><%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%></legend>
-	        <div class="summary-row">
-	          <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="margin-left:-1px"/>
-	        </div>
-	        <% if booking_item_family.pickup_return_place %>
-	        <div class="collection_place">
-	          <label for="pickup_place"><%=t.new_booking.place%> * </label>
-	          <select name="pickup_place" id="pickup_place">
-	            <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
-	            <option value="Puerto Mahón">Puerto Mahón</option>
-	            <option value="Puerto Ciutadella">Puerto Ciutadella</option>
-	            <option value="Otro"><%=t.new_booking.other%></option>
-	          </select>
-	        </div>
-	        <div>
-	          <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none; margin-top:5px; margin-left: 4px;" placeholder="<%=t.new_booking.pickup_place%>"/>
-	        </div>
-	        <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
-	        <% end %>	        
-	      </fieldset>
-	      <fieldset id="fs_summary_delivery">
-	        <legend id="lg_summary_delivery" class="legend-first-level"><%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%></legend>
-	        <div class="summary-row">
-	          <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly" style="margin-left:-1px"/>
-	        </div>
-	        <% if booking_item_family.pickup_return_place %>
-	        <div class="return_place">
-	          <label for="return_place"><%=t.new_booking.place%> * </label>
-	      	  <select name="return_place" id="return_place">
-	            <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
-	            <option value="Puerto Mahón">Puerto Mahón</option>
-	            <option value="Puerto Ciutadella">Puerto Ciutadella</option>
-	            <option value="Otro"><%=t.new_booking.other%></option>
-	          </select>
-	        </div>
-	        <div>
-	          <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none; margin-top:5px; margin-left: 4px;" placeholder="<%=t.new_booking.return_place%>"/>  
-	        </div>
-	        <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
-	        <% end %>
-	      </fieldset>
-	      <fieldset id="fs_summary_item">
-	        <legend id="lg_summary_item" class="legend-first-level"><%=t.booking_items[booking_item_type.to_sym]%></legend>
-	        <img id="item_image"/>
-	        <select id="booking[item_id]" name="booking[item_id]" class="item_chooser">
-	        </select>
-	      </fieldset>
-	      <fieldset id="fs_summary_extras">
-	        <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
-	        <table id="tblextras">
-	          <thead>
-	          <tr>
-	            <th class="form-reservation-extra-titulo form-reservation-extra-columna1" colspan="2"><%=t.new_booking.extra%></th>
-	            <th class="form-reservation-extra-titulo form-reservation-extra-columna2"><%=t.new_booking.quantity%></th>
-	          </tr>
-	          </thead>
-	          <tbody>
-	          </tbody>
-	        </table>
-	      </fieldset>
-	      <fieldset class="fs_summary_total">
-	      	<legend id="lg_summary_total" class="legend-first-level"><%=t.new_booking.price%></legend>
-	      	<input type="hidden" name="total_cost" id="total_cost"/>
-	      	<div id="detailed_summary">
-	        <div>      
-	      </fieldset>
+	    <div id="reservation-summary" class="content_data_box">
 	      <fieldset id="fs_conditions">
 	        <div>
 	          <input type="checkbox" name="conditions_read" id="conditions_read">
@@ -395,7 +391,6 @@
 	          </input>
 	        </div>        
 	      </fieldset>	      
-	      
 	      <fieldset id="fs_confirm">
 	      	  <input type="button" value="<%=t.new_booking.continue%>" id="button_ir_a_pagar_reserva" class="botones" style="display:none"/>
 	          <input type="submit" value="<%=t.new_booking.confirm%>" id="button_confirmar_reserva" class="botones" style="display:none"/>
@@ -414,15 +409,15 @@
         <form name="form-payment" id="form-payment">
           <% if booking_deposit > 0 %>
             <div class="radio-block">
-              <input type="radio" name="payment" value="total" checked="true"><%=t.booking.payment_type.total.label%></input>
+              <input type="radio" name="booking[payment]" value="total" checked="true"><%=t.booking.payment_type.total.label%></input>
               <p id="payment_total" class="radio-info less_contrast_text"></p>
             </div>
             <div class="radio-block">
-              <input type="radio" name="payment" value="deposit"><%=t.booking.payment_type.deposit.label%></input>
+              <input type="radio" name="booking[payment]" value="deposit"><%=t.booking.payment_type.deposit.label%></input>
               <p id="payment_deposit" class="radio-info less_contrast_text"></p>
             </div>
           <% else %>
-            <input type="hidden" name="payment" value="total"/>          
+            <input type="hidden" name="booking[payment]" value="total"/>          
           <% end %> 	
           <div id="payment_methods">
              <h4 class="top-margin bottom-margin"><%=t.new_booking.payment_methods%></h4>
@@ -1165,27 +1160,6 @@
                                               document.getElementById('booking[driver_driving_license_date_year]'), 
                                               document.getElementById('booking[driver_driving_license_date]'));
          }
-                  
-         $(window).scroll(function(){ 
-           var scrollTop = $(this).scrollTop();
-           var top = $('#reservation-summary').offset().top;       
-           if (scrollTop > top) {
-           	 var holderHeight = parseInt($('#form-reservation').css('height').replace('px',''));
-           	 var summaryHeight = parseInt($('#reservation-summary').css('height').replace('px',''));
-           	 var summaryTop = scrollTop;
-           	 var summaryTopAtBottom = holderHeight - summaryHeight - 20;
-           	 if (summaryTopAtBottom < 0) {
-           	   summaryTopAtBottom = 0;
-           	 }
-             $('#reservation-summary').css('position', 'relative');
-             $('#reservation-summary').css('top', Math.min(summaryTop, summaryTopAtBottom) + 'px');      
-           }
-           else
-           	if (scrollTop == 0)
-           {
-             $('#reservation-summary').css('position', 'static');
-           }
-         });
          
          $('#datefrom').bind('change', function() {
            var dateFrom = $('#datefrom').datepicker('getDate');	
@@ -1445,25 +1419,26 @@
        	  }
        	 );
        	
-        $.validator.addMethod('item_guests', 
-          function(value, element) {
-            if (bookingDataSystem.families[value] &&
-          	    bookingDataSystem.families[value].maxGuests) {
-              return bookingDataSystem.families[value].maxGuests >= 
-                     parseInt($('#booking\\[number_of_adults\\]').val()) + parseInt($('#booking\\[number_of_children\\]').val());
-            }
-          
-            return true;
-
-        });
-
-        $.validator.addMethod('guests',
+        $.validator.addMethod('number_of_adults',
           function(value, element) {
 
            if (bookingDataSystem.families[$('#booking\\[item_id\\]').val()] &&
-          	   bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxGuests) {
-             return bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxGuests >= 
-               parseInt($('#booking\\[number_of_adults\\]').val()) + parseInt($('#booking\\[number_of_children\\]').val())
+          	   bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfAdults) {
+             return bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfAdults >= 
+               parseInt($('#booking\\[number_of_adults\\]').val());
+           }
+
+           return true;
+
+          });
+
+        $.validator.addMethod('number_of_children',
+          function(value, element) {
+
+           if (bookingDataSystem.families[$('#booking\\[item_id\\]').val()] &&
+          	   bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfChildren) {
+             return bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfChildren >= 
+               parseInt($('#booking\\[number_of_children\\]').val());
            }
 
            return true;
@@ -1493,9 +1468,8 @@
            
            rules : {
            	
-           	'booking[item_id]': 'item_guests',
-           	'booking[number_of_adults]' : 'guests',
-            'booking[number_of_children]' : 'guests',
+           	'booking[number_of_adults]' : 'number_of_adults',
+            'booking[number_of_children]' : 'number_of_children',
            	'booking[customer_name]': 'required',
            	'booking[customer_surname]' : 'required',
            	'booking[customer_email]' : {
@@ -1526,9 +1500,8 @@
            
            messages : {
            	
-           	'booking[item_id]' : '<%=t.new_booking.guests_limit%>',
-           	'booking[number_of_adults]' : '<%=t.new_booking.guests_limit%>',
-            'booking[number_of_children]' : '<%=t.new_booking.guests_limit%>',           	
+           	'booking[number_of_adults]' : '<%=t.new_booking.guests_limit(t.booking_items[booking_item_type.to_sym])%>',
+            'booking[number_of_children]' : '<%=t.new_booking.guests_limit(t.booking_items[booking_item_type.to_sym])%>',           	
             'booking[customer_name]': '<%=t.new_booking.customer_name.required%>',
            	'booking[customer_surname]' : '<%=t.new_booking.customer_surname.required%>',
            	
@@ -1562,7 +1535,9 @@
         
            errorPlacement: function (error, element) {
            	  
-           	  if (element.attr('name') == 'conditions_read')
+           	  if (element.attr('name') == 'conditions_read' || 
+           	  	  element.attr('name') == 'booking[number_of_adults]' ||
+           	  	  element.attr('name') == 'booking[number_of_children]' )
            	  {
            	    error.insertAfter(element.parent()); 
            	  }

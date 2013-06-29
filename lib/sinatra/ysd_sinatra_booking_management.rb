@@ -20,7 +20,7 @@ module Sinatra
           context = {:app => self}
           
           aspects = []
-          aspects << UI::GuiBlockEntityAspectAdapter.new(GuiBlock::Audit.new, 102, true, false, true, true, 100, true )
+          aspects << UI::GuiBlockEntityAspectAdapter.new(GuiBlock::Audit.new, {:weight => 102, :render_in_group => true})
           aspects_render = UI::EntityManagementAspectRender.new(context, aspects) 
           
           locals = aspects_render.render(BookingDataSystem::Booking)
