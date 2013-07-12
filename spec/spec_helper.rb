@@ -14,6 +14,21 @@ class TestingSinatraApp < Sinatra::Base
   set :raise_errors, true
   set :dump_errors, false
   set :show_exceptions, false
+  set(:allowed_usergroups) do |*usergroups|
+     condition do
+       true
+     end
+  end  
+  set(:allowed_usergroups) do |*usergroups|
+     condition do
+       true
+     end
+  end  
+  set(:allowed_origin) do |origin|
+     condition do
+       true
+     end
+  end
 end
 
 module DataMapper
@@ -44,5 +59,6 @@ module ThemeMock
      theme.should_receive(:styles).any_number_of_times.and_return([])
      theme.should_receive(:scripts).any_number_of_times.and_return([])
      theme.should_receive(:resource_path).any_number_of_times.and_return(nil)
+     theme.should_receive(:name).any_number_of_times.and_return('default')
   end
 end

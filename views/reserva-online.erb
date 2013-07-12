@@ -394,10 +394,13 @@
 	      <fieldset id="fs_confirm">
 	      	  <input type="button" value="<%=t.new_booking.continue%>" id="button_ir_a_pagar_reserva" class="botones" style="display:none"/>
 	          <input type="submit" value="<%=t.new_booking.confirm%>" id="button_confirmar_reserva" class="botones" style="display:none"/>
-	      </fieldset>	
-	      
+	      </fieldset>
+	      <div id="reservation_error">
+	      </div>	
 	    </div>
-	  
+	     
+        <input type="hidden" name="booking[source]" id="booking[source]"/>
+
 	  </form>
 	  
       <div id="booking-payment" style="display:none">
@@ -426,6 +429,8 @@
           <div class="formrow-botonera">
              <input type="submit" value="<%=t.new_booking.booking%>"/>
           </div>
+	      <div id="payment_error">
+	      </div>	          
         </form>
 
       </div>
@@ -1239,70 +1244,13 @@
        	       open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
        	       close: function(event, ui) { $(".ui-dialog-titlebar-close").show(); }
              });
-       	 	
-	     // Mostrar los enlaces incrustados
-	     $("a[rel='#overlay'].external").overlay({
-	      	
-	      	// Mascara para los dialogos modales
-	        mask: {
-		       color: '#aaaaaa',
-		       loadSpeed: 200,
-		       opacity: 0.5
-   	        },
-	
-	        closeOnClick : false,
-	      	
-		    onBeforeLoad: function() {
-		    	
-		      this.getOverlay().width(640);
-		      this.getOverlay().height(440);	
-			  
-			  // grab wrapper element inside content
-			  var wrap = this.getOverlay().find(".contentWrap");
-
-		  	  // load the page specified in the trigger
-			  wrap.load(this.getTrigger().attr("href"));
-	      	}
-
-	      });
-	      
-	      // Mostrar los templates
-	      $("a[rel='#overlay'].template").overlay({
-	      	
-	      	// Mascara para los dialogos modales
-	        mask: {
-		       color: '#aaaaaa',
-		       loadSpeed: 200,
-		       opacity: 0.5
-   	        },
-	
-	        closeOnClick : false,
-	      	
-		    onBeforeLoad: function() {
-		    	
-		      this.getOverlay().width(500);
-		      this.getOverlay().height(320);	
-		    	
-			  // grab wrapper element inside content
-			  var wrap = this.getOverlay().find(".contentWrap");
-
-		  	  // load the page specified in the trigger
-		  	
-		  	  var message = tmpl(this.getTrigger().attr("href"), {booking: bookingModel.booking, bookingDataSystem: bookingDataSystem});
-		  	  
-			  wrap.html(message);
-	      	}
-	      
-	      	
-	      });
-         
+       	 	         
          // Configure name and surname events
          $('#booking\\[customer_name\\],#booking\\[customer_surname\\]').bind('blur',
              function(){
                bookingController.copy_customer_to_driver();
              }
            );
-         
          
        	 // Configure validations	
        	 this.configure_validations();
@@ -1325,7 +1273,12 @@
        	  var timeto = decodeURIComponent(url_vars['timeto']);
        	  var number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
        	  var number_of_children = decodeURIComponent(url_vars['number_of_children']);
+       	  var source = decodeURIComponent(url_vars['source']);
        	  
+          if (source != 'undefined') {
+          	$('#booking\\[source\\]').val(source);
+          }
+
        	  if (datefrom != 'undefined' && dateto != 'undefined' && 
        	  	  $.datepicker.parseDate("dd/mm/yy", dateto) > $.datepicker.parseDate("dd/mm/yy", datefrom)) {       	  
             $('#datefrom').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", datefrom)); 
@@ -1450,20 +1403,13 @@
          {
           
            submitHandler: function(form) {
+           	 $('#reservation_error').html('');
            	 bookingController.confirm_booking($(form).formParams(false)); // Numbers and booleans are not converted (hold as strings)
            	 return false;
            },
            
            invalidHandler : function (form, validator) {
-      
-               $('<div title="<%=t.new_booking.form_errors.title%>"> <%=t.new_booking.form_errors.description%> </div>').dialog( { height: 260, modal: true,     	 
-       	        buttons: {
-       	            Ok: function() {
-				   	  $( this ).dialog( "close" );
-       	            }
-       	        } }
-       	        );
-      
+             $('#reservation_error').html('<%=t.new_booking.form_errors.description%>');
            },
            
            rules : {
@@ -1557,6 +1503,7 @@
 
           submitHandler : function(form) {
          	
+            $('#payment_error').html('');
             var bookingData = $('#form-reservation').formParams(false);
             var paymentData = $(form).formParams(false);
             for (item in paymentData) {
@@ -1574,15 +1521,7 @@
           },
 
           invalidHandler : function (form, validator) {
-      
-            $('<div title="<%=t.new_booking.form_errors.title%>"> <%=t.new_booking.form_errors.description%> </div>').dialog( { height: 260, modal: true,     	 
-       	        buttons: {
-       	            Ok: function() {
-				   	  $( this ).dialog( "close" );
-       	            }
-       	        } 
-       	      });
-      
+            $('#payment_error').html('<%=t.new_booking.form_errors.description%>');
           },
   
           rules : {
@@ -1625,17 +1564,18 @@
          for (var family in prices) 
          {
       	
-      	   var content =	     	
+      	   var content =
+      	      '<div class="container_12">'+	     	
       	        '<div class="bottom-space bottom-separator car '+family+'">' +
-      	          '<div class="car_photo">' +
-      	            '<img src="/img/clase-'+family+'.png"/>' +
+      	          '<div class="grid_3">' +
+      	            '<img src="/img/clase-'+family+'-big.png"/>' +
       	          '</div>' +
-      	          '<div class="car_detail">' +
+      	          '<div class="grid_3 top-margin">' +
       	            '<div class="car_detail_description"><span class="car_family_description">'+bookingDataSystem.families[family].description+'</span></div>' +
       	            '<div class="car_detail_cars"><span class="car_family_cars">'+bookingDataSystem.families[family].cars+'</span></div>'+
       	          '</div>';
      	   if (bookingDataSystem.optionals) {
-      	     content += '<div class="car_price">';
+      	     content += '<div class="grid_6">';
              for (var option in bookingDataSystem.optionals) {
              	content += 
              	  '<div class="car_price_optional">'+
@@ -1644,13 +1584,15 @@
                     '<div class="car_price_booking"><input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" /></div>' +     	          
       	          '</div>';
              }
-             content += '</div>';
+             content += '</div>' + 
+                '</div>';
       	   }
       	   else {      
-    	     content += '<div class="car_price car_price_not_optional">'+
+    	     content += '<div class="grid_6">'+
                     '<div class="car_price_total"><span>'+prices[family].toFixed(0) + ' €' + '</span></div>' +
                     '<div class="car_price_booking"><input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" /></div>' +     	          
-      	          '</div>';
+      	        '</div>'+
+      	      '</div>';
            }
       	      	     	
            container.append( content ); 

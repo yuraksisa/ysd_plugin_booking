@@ -10,34 +10,45 @@ GIT
 PATH
   remote: .
   specs:
-    ysd_plugin_booking (0.1.8)
+    ysd_plugin_booking (0.1.65)
       json
       ysd_core_plugins
       ysd_core_themes
       ysd_md_booking
+      ysd_md_cms
       ysd_md_configuration
+      ysd_plugin_auth
+      ysd_plugin_payment
       ysd_yito_core
       ysd_yito_js
 
 PATH
   remote: ~/proyectos/biblioteca.desarrollo/ruby/core/core_themes
   specs:
-    ysd_core_themes (0.2.0)
+    ysd_core_themes (0.2.1)
 
 PATH
   remote: ~/proyectos/biblioteca.desarrollo/ruby/models/model_booking
   specs:
-    ysd_md_booking (0.2.6)
+    ysd_md_booking (0.2.35)
       data_mapper (= 1.2.0)
+      delayed_job
+      delayed_job_data_mapper
+      dm-observer
       json
+      ysd_md_audit
       ysd_md_business_events
+      ysd_md_cms
+      ysd_md_location
       ysd_md_payment
+      ysd_md_translation
+      ysd_md_yito
       ysd_service_postal
 
 PATH
   remote: ~/proyectos/biblioteca.desarrollo/ruby/yito/yito_core
   specs:
-    ysd_yito_core (0.1.36)
+    ysd_yito_core (0.1.46)
       json
       tilt
       ysd_core_plugins
@@ -47,8 +58,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (3.2.13)
+      i18n (= 0.6.1)
+      multi_json (~> 1.0)
     addressable (2.2.8)
     bcrypt-ruby (3.0.1)
+    bson (1.9.0)
+    daemons (1.1.9)
     data_mapper (1.2.0)
       dm-aggregates (~> 1.2.0)
       dm-constraints (~> 1.2.0)
@@ -61,6 +77,14 @@ GEM
       dm-validations (~> 1.2.0)
     data_objects (0.10.12)
       addressable (~> 2.1)
+    delayed_job (2.1.4)
+      activesupport (~> 3.0)
+      daemons
+    delayed_job_data_mapper (1.0.0.rc)
+      delayed_job (~> 2.1)
+      dm-aggregates
+      dm-core
+      dm-observer
     diff-lcs (1.2.4)
     dm-aggregates (1.2.0)
       dm-core (~> 1.2.0)
@@ -72,6 +96,8 @@ GEM
       data_objects (~> 0.10.6)
       dm-core (~> 1.2.0)
     dm-migrations (1.2.0)
+      dm-core (~> 1.2.0)
+    dm-observer (1.2.0)
       dm-core (~> 1.2.0)
     dm-serializer (1.2.2)
       dm-core (~> 1.2.0)
@@ -100,17 +126,20 @@ GEM
     do_sqlite3 (0.10.12)
       data_objects (= 0.10.12)
     fastercsv (1.5.5)
-    i18n (0.6.4)
-    json (1.7.7)
-    json_pure (1.7.7)
-    mail (2.5.3)
-      i18n (>= 0.4.0)
+    i18n (0.6.1)
+    json (1.8.0)
+    json_pure (1.8.0)
+    macaddr (1.6.1)
+      systemu (~> 2.5.0)
+    mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.23)
-    multi_json (1.7.2)
+    mongo (1.9.0)
+      bson (~> 1.9.0)
+    multi_json (1.7.7)
     polyglot (0.3.3)
-    pony (1.4)
+    pony (1.5)
       mail (> 2.0)
     r18n-core (1.1.4)
     rack (1.5.2)
@@ -127,38 +156,140 @@ GEM
     rspec-expectations (2.13.0)
       diff-lcs (>= 1.1.3, < 2.0)
     rspec-mocks (2.13.1)
+    sinatra-flash (0.3.0)
+      sinatra (>= 1.0.0)
     sinatra-r18n (1.1.4)
       r18n-core (= 1.1.4)
       sinatra (>= 1.3)
     stringex (1.5.1)
+    systemu (2.5.2)
     tilt (1.3.7)
     tlsmail (0.0.1)
-    treetop (1.4.12)
+    treetop (1.4.14)
       polyglot
       polyglot (>= 0.3.1)
-    uuidtools (2.1.3)
+    unicode_utils (1.4.0)
+    uuid (2.3.5)
+      macaddr (~> 1.0)
+    uuidtools (2.1.4)
+    warden (1.2.1)
+      rack (>= 1.0)
+    ysd-persistence (0.2.31)
+      mongo
+      ysd_md_comparison
+      ysd_md_system
     ysd_core_plugins (0.2.12)
       data_mapper (= 1.2.0)
       json
       sinatra (~> 1.3)
       ysd_md_configuration
+    ysd_md_audit (0.2.4)
+      data_mapper (= 1.2.0)
+      ysd-persistence (>= 0.2.0)
+      ysd_md_profile
     ysd_md_business_events (0.2.0)
       data_mapper (= 1.2.0)
+    ysd_md_cms (0.2.35)
+      data_mapper (= 1.2.0)
+      unicode_utils
+      uuid (= 2.3.5)
+      ysd-persistence
+      ysd_core_plugins
+      ysd_md_audit
+      ysd_md_comparison
+      ysd_md_profile
+      ysd_md_rac
+      ysd_md_search
+      ysd_md_system
+      ysd_md_translation
+      ysd_md_yito
+    ysd_md_comparison (0.2.7)
     ysd_md_configuration (0.2.6)
       data_mapper (= 1.2.0)
       dm-ysd-encrypted
       ysd_md_yito
-    ysd_md_payment (0.2.10)
+    ysd_md_fieldset (0.2.1)
+      ysd_core_plugins
+    ysd_md_location (0.2.5)
+      data_mapper (= 1.2.0)
+      ysd_core_plugins
+    ysd_md_payment (0.2.19)
       data_mapper (= 1.2.0)
       json
-      r18n-core
       tilt
       ysd_md_configuration
+      ysd_md_translation
+      ysd_md_yito
+    ysd_md_profile (0.2.30)
+      data_mapper (= 1.2.0)
+      ysd-persistence
+      ysd_core_plugins
+      ysd_md_business_events
+      ysd_md_comparison
+      ysd_md_configuration
+      ysd_md_yito
+    ysd_md_rac (0.2.12)
+      ysd_md_comparison
+      ysd_md_profile
+    ysd_md_search (0.2.4)
+      data_mapper (>= 1.2.0)
+    ysd_md_system (0.2.2)
+    ysd_md_translation (0.2.1)
+      data_mapper (= 1.2.0)
+      r18n-core
     ysd_md_yito (0.2.7)
+    ysd_plugin_aspects (0.1.35)
+      ysd_core_plugins
+      ysd_core_themes
+      ysd_yito_core
+      ysd_yito_js
+    ysd_plugin_auth (0.1.21)
+      sinatra-flash
+      warden
+      ysd_core_plugins
+      ysd_core_themes
+      ysd_plugin_cms
+      ysd_plugin_profile
+    ysd_plugin_cms (0.1.97)
+      json
+      ysd_core_plugins
+      ysd_core_themes
+      ysd_md_cms (>= 0.2.0)
+      ysd_plugin_aspects
+      ysd_plugin_rca
+      ysd_yito_core
+      ysd_yito_js
+    ysd_plugin_payment (0.1.29)
+      json
+      ysd_core_plugins
+      ysd_md_configuration
+      ysd_md_payment
+      ysd_plugin_auth
+      ysd_yito_core
+      ysd_yito_js
+    ysd_plugin_profile (0.1.28)
+      json
+      sinatra-r18n
+      warden
+      ysd_core_plugins
+      ysd_core_themes
+      ysd_md_cms
+      ysd_md_configuration
+      ysd_md_profile
+      ysd_plugin_cms
+      ysd_service_postal
+      ysd_service_template
+      ysd_yito_core
+      ysd_yito_js
+    ysd_plugin_rca (0.1.1)
+      ysd_core_plugins
+      ysd_md_fieldset
+      ysd_yito_core
     ysd_service_postal (0.1.3)
       pony (~> 1.3)
       tlsmail (~> 0.0.1)
-    ysd_yito_js (0.1.60)
+    ysd_service_template (0.1)
+    ysd_yito_js (0.1.82)
       ysd_core_themes
 
 PLATFORMS

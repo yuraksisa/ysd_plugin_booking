@@ -3,6 +3,7 @@ system_admin_menu:
     bookings_menu:
       title: Gestión de reservas
       bookings: Reservas
+      bookings_scheduler: Agenda
 booking_status:
   pending_confirmation: Pendiente
   confirmed: Confirmado
@@ -188,9 +189,22 @@ booking_management:
     date_to: Fecha fin
     notifications: Notificaciones
   form:
+    confirm_button: 
+      label: Confirmar
+      message: ¿Desea confirmar la reserva?
+    pickup_button: 
+      label: Recogida/Entrada
+      message: ¿Desea indicar que se ha realizado la recogida/entrada?
+    return_button: 
+      label: Devolución/Salida
+      message: ¿Desea indicar que se ha realizado la devolución/salida?
+    cancel_button:   
+      label: Cancelar
+      message: ¿Desea cancelar la solicitud reserva?
     id: Localizador reserva
     creation_date: Fecha reserva
     status: Estado
+    source: Origen
     status_action:
       confirm: Confirmar
       pickup: Recogida/Entrada

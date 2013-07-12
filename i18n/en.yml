@@ -3,6 +3,7 @@ system_admin_menu:
     bookings_menu:
       title: Booking management
       bookings: Bookings
+      bookings_scheduler: Scheduler
 booking_status:
   pending_confirmation: Pending
   confirmed: Confirmed
@@ -188,9 +189,22 @@ booking_management:
     date_to: Date to
     notifications: Notifications
   form:
+    confirm_button: 
+      label: Confirm
+      message: Do you want to confirm the booking?
+    pickup_button: 
+      label: Pickup/Arrival
+      message: Do you want to mark the reservation as picked up?
+    return_button: 
+      label: Return/Departure
+      message: Do you want to mark the reservation as returned?
+    cancel_button: 
+      label: Cancel
+      message: Do you want to cancel the reservation?
     id: Booking number
     creation_date: Received date
     status: Status
+    source: Source
     payment_status: Payment
     booking_data_title: Boooking information    
     date_from: Date from

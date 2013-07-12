@@ -39,6 +39,21 @@ module Sinatra
         #
         app.get '/p/booking/start/?' do          
           
+          options = {}
+
+          options.store(:page_title,
+            SystemConfiguration::Variable.get_value('booking.page_title'))
+
+          options.store(:page_description,
+            SystemConfiguration::Variable.get_value('booking.page_description'))
+
+          options.store(:page_language, session[:locale])
+
+          options.store(:page_keywords,
+            SystemConfiguration::Variable.get_value('booking.page_keywords'))          
+
+          options.store(:layout, params['layout']=='false'? false : params['layout']) if params.has_key?('layout')
+
           locals = {}
 
           locals.store(:booking_item_family, 
@@ -67,8 +82,16 @@ module Sinatra
           else
             locals.store(:booking_summary_message, t.new_booking.summary_message)
           end
-
-          load_page('reserva-online'.to_sym, :locals => locals)
+                 
+          load_page('reserva-online'.to_sym, options.merge(:locals => locals))
+        end
+        
+        #
+        # Integration in facebook as a tab
+        #
+        app.post '/p/booking/start/?' do
+          status, header, body = call! env.merge("PATH_INFO" => "/p/booking/start", 
+                "REQUEST_METHOD" => 'GET')
         end
 
         #
@@ -77,7 +100,7 @@ module Sinatra
         app.post '/p/booking/pay/?', 
           :allowed_origin => lambda { SystemConfiguration::Variable.get_value('site.domain') } do
           
-          if booking = BookingDataSystem::Booking.get(params[:id])
+          if booking = BookingDataSystem::Booking.get(params[:id].to_i)
             payment = params[:payment]
             payment_method = params[:payment_method_id]
             if charge = booking.create_online_charge!(payment, payment_method)
@@ -99,10 +122,10 @@ module Sinatra
         #   
         app.get '/p/booking/payment-gateway-return/ok' do
           if session.has_key?('booking_id')
-            booking = BookingDataSystem::Booking.get(session['booking_id'])
-            company = SystemConfiguration::Variable.get_value('site.company_name')
-            load_page('reserva-finalizada'.to_sym, :locals => {:booking => booking,
-              :company => company})
+            locals = {}
+            locals.store(:booking, BookingDataSystem::Booking.get(session['booking_id']))
+            locals.store(:booking_deposit, SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
+            load_page('reserva-finalizada'.to_sym, :locals => locals)
           else
             logger.error "Back from payment gateway NOT booking in session"
             status 404
@@ -114,8 +137,10 @@ module Sinatra
         #
         app.get '/p/booking/payment-gateway-return/nok' do
           if session.has_key?('booking_id')
-            booking = BookingDataSystem::Booking.get(session['booking_id'])
-            load_page('reserva-denegada'.to_sym, :locals => {:booking => booking})
+            locals = {}
+            locals.store(:booking, BookingDataSystem::Booking.get(session['booking_id']))
+            locals.store(:booking_deposit, SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
+            load_page('reserva-denegada'.to_sym, :locals => locals)
           else
             logger.error "Back from payment gateway NOT booking in session"
             status 404

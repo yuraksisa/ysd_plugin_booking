@@ -3,6 +3,7 @@ system_admin_menu:
     bookings_menu:
       title: Gestió de reserves
       bookings: Reserves
+      bookings_scheduler: Agenda
 booking_status:
   pending_confirmation: Pendent
   confirmed: Confirmat
@@ -25,9 +26,22 @@ booking_management:
     date_to: Data de fi
     notifications: Notificacions
   form:
+    confirm_button: 
+      label: Confirmar
+      message: Vol confirmar la reserva?
+    pickup_button: 
+      label: Recollida/Entrada
+      message: Vol indicar que la recollida/entrada s\'ha portat a terme?
+    return_button: 
+      label: Devolució/Sortida
+      message: Vol indicar que la devolució/sortida s\'ha portat a terme?
+    cancel_button:   
+      label: Cancelar
+      message: Vol cancelar la reserva?
     id: Numero de reserva
     creation_date: Data
     status: Estat
+    source: Origen
     booking_data_title: Dades reserva
     date_from: Data d\'inici
     date_to: Data de fi

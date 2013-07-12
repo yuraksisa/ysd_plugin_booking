@@ -13,6 +13,15 @@ module Sinatra
       def self.registered(app)
         
         #
+        # Bookings scheduler
+        #
+        app.get '/admin/bookings/scheduler', :allowed_usergroups => ['booking_manager'] do
+
+          load_page(:bookings_scheduler)
+
+        end
+
+        #
         # Bookings admin page
         #
         app.get '/admin/bookings/?*', :allowed_usergroups => ['booking_manager'] do 

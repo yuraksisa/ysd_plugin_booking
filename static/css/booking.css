@@ -4,6 +4,15 @@
  /*font-size: 14px;*/
 }
 
+#reservation_error {
+ color: #690404;
+ text-align: center; 
+}
+
+#payment_error {
+  color: #690404;
+  text-align: center;
+}
 
 #content-reserva {
   margin: 0 auto;
@@ -317,20 +326,6 @@ color:#999999;
   overflow: hidden;
 } 
 
-#content-reserva div.car_photo {
- float: left;
- margin-left: 5px;	
- width: 100px;
- padding: 25px 5px;
-}
-
-#content-reserva div.car_detail {
- float: left;	
- margin-left: 5px;
- padding: 25px 5px;
- width: 450px;
-}
-
 #content-reserva div.car_detail_description {
  font-weight: bold;	
 }
@@ -338,7 +333,6 @@ color:#999999;
 #content-reserva div.car_detail_cars {
  padding-top: 10px;	
 }
-
 
 #content-reserva div.car_price {
  float: left;
@@ -354,6 +348,8 @@ color:#999999;
 #content-reserva div.car_price_total {
  /*overflow: hidden;*/	
  text-align: center;
+ font-size: 2em;
+ font-weight: 600;
 }
 
 #content-reserva div.car_price_booking {

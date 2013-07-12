@@ -6,6 +6,31 @@ module Sinatra
       
       def self.registered(app)
         
+        # Booking scheduler
+        app.get '/booking/scheduler' do
+
+          from = params['start']
+          to = params['end']
+
+          bookings = BookingDataSystem::Booking.all(
+             :date_from.gte => Time.at(from.to_i),
+             :date_to.lte => Time.at(to.to_i), 
+             :status.not => :cancelled,
+             :order => [:item_id.asc]).map do |booking|
+            {:id => booking.id,
+             :title => "#{booking.item_description} - #{booking.customer_name.upcase} #{booking.customer_surname.upcase} #{(booking.customer_phone.nil? or booking.customer_phone.empty?)? booking.customer_mobile_phone : booking.customer_phone}",
+             :start => booking.date_from,
+             :end => booking.date_to,
+             :url => "/admin/bookings/#{booking.id}",
+             :editable => false,
+             :backgroundColor => (booking.status==:confirmed)? 'rgb(41, 158, 69)' : (booking.status==:in_progress)? 'rgb(13, 124, 226)' : (booking.status == :pending_confirmation)? 'rgb(241, 248, 69)' : 'rgb(0,0,0)',
+             :textColor => 'white'}
+          end
+
+          bookings.to_json
+
+        end
+
         #
         # Booking querying 
         #
@@ -47,6 +72,66 @@ module Sinatra
           end
 
         end
+        
+        #
+        # Confirm a booking
+        #
+        app.post '/booking/confirm/:booking_id',
+          :allowed_usergroups => ['booking_manager'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
+            content_type :json
+            booking.confirm!.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Pickup/Arrival 
+        #
+        app.post '/booking/pickup/:booking_id',
+          :allowed_usergroups => ['booking_manager']  do
+       
+          if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
+            content_type :json
+            booking.pickup_item.to_json
+          else
+            status 404
+          end
+    
+        end
+
+        #
+        # Return/Departure
+        #
+        app.post '/booking/return/:booking_id',
+          :allowed_usergroups => ['booking_manager']  do
+
+          if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
+            content_type :json
+            booking.return_item.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Cancel
+        #
+        app.post '/booking/cancel/:booking_id',
+          :allowed_usergroups => ['booking_manager']  do
+
+          if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
+            content_type :json
+            booking.cancel.to_json
+          else
+            status 404
+          end
+
+        end
 
         #
         # Booking creation
@@ -79,6 +164,7 @@ module Sinatra
           end
 
         end
+
 
       end
 

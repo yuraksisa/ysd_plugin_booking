@@ -46,6 +46,16 @@ describe Sinatra::YSD::Booking do
    	              }
  }
 
+ let(:product_family) { 
+        {:code => 'place',
+         :driver => false,
+         :guests => true,
+         :flight => true,
+         :pickup_return_place => false,
+         :time_to_from => false,
+         :start_date_literal => :arrival} 
+ }
+
  #
  # Start booking 
  #
@@ -53,6 +63,31 @@ describe Sinatra::YSD::Booking do
    
    before :each do
      init_theme
+     Yito::Booking::ProductFamily.should_receive(:get).with('place').
+       and_return(Yito::Booking::ProductFamily.new(product_family))
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('booking.item_family').
+       and_return('place')
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('booking.item_type').
+       and_return('apartment')
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('booking.payment', 'false').
+       and_return('false')
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('booking.deposit', '0').
+       and_return('40') 
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('booking.min_days', '1').
+       and_return('1')             
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('site_template_engine') 
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('site.title') 
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('site.slogan') 
+     SystemConfiguration::Variable.should_receive(:get_value).
+       with('site.logo') 
    end
 
    subject do
@@ -66,7 +101,10 @@ describe Sinatra::YSD::Booking do
    its(:body) { should match /id="content-reserva"/ }
 
  end
-
+ 
+ #
+ # Direct access to the booking
+ #
  describe "/p/mybooking" do
 
    before :each do
@@ -143,7 +181,6 @@ describe Sinatra::YSD::Booking do
        last_response
      end
      it { should be_ok }
-     its(:body) { should match /<h2>Reserva<\/h2>/ }
    end
 
    context "no booking_id in session" do
@@ -157,33 +194,28 @@ describe Sinatra::YSD::Booking do
  end
  
  #
- # Booking create a charge deposit
+ # Make a reservation payment
  #
- describe "/p/booking/charge-deposit" do
+ describe "/p/booking/pay" do
 
-   context "booking_id in session and in database" do
+   context "deposit payment" do
      before :each do
        built_booking = BookingDataSystem::Booking.new(booking)
        BookingDataSystem::Booking.should_receive(:get).with(1).and_return(built_booking)
-       built_booking.should_receive(:create_deposit_charge!).
+       built_booking.should_receive(:create_online_charge!).
+         with('deposit', 'pi4b').
          and_return(Payments::Charge.new(:amount => 10, 
          :payment_method_id => :pi4b))
      end
      subject do
-       get '/p/booking/charge-deposit', {}, {'rack.session' => {'booking_id' => 1} }
+       post '/p/booking/pay', {'id' => '1', 
+         'payment' => 'deposit', 
+         'payment_method_id' => 'pi4b'}
        last_response
      end
      it {should be_ok}
      it { subject.header['Content-Type'].should match(/text\/html/)  } 
      its(:body)   { should == 'Charge done' }
-   end
-
-   context "no booking_id in session" do
-   	 subject do
-   	   get '/p/booking/charge-deposit'
-   	   last_response
-   	 end
-   	 its(:status) { should == 404 }   
    end
 
  end

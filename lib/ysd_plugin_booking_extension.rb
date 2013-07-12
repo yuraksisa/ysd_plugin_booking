@@ -51,7 +51,25 @@ module Huasi
         {:value => 'apartment',
          :description => 'Booking Type : car, apartment, bike, motorbike, room',
          :module => :booking})
-    
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.page_title'},
+        {:value => 'Bookings',
+         :description => 'Booking page title',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.page_description'},
+        {:value => 'Booking system',
+         :description => 'Booking page description',
+         :module => :booking})    
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.page_keywords'},
+        {:value => 'booking',
+         :description => 'Booking page keywords',
+         :module => :booking})
+
       Yito::Booking::ProductFamily.first_or_create({:code => 'place'},
         {:driver => false,
          :guests => true,
@@ -170,10 +188,17 @@ module Huasi
                     {:path => '/apps/bookings/bookings',              
                      :options => {:title => app.t.system_admin_menu.apps.bookings_menu.bookings,
                                   :link_route => "/admin/bookings",
-                                  :description => 'Booking charges',
+                                  :description => 'Booking management',
                                   :module => :booking,
                                   :weight => 2}
-                    }
+                    },
+                    {:path => '/apps/bookings/scheduler',              
+                     :options => {:title => app.t.system_admin_menu.apps.bookings_menu.bookings_scheduler,
+                                  :link_route => "/admin/bookings/scheduler",
+                                  :description => 'Booking scheduler',
+                                  :module => :booking,
+                                  :weight => 1}
+                    }                    
                     ]                      
     
     end  
@@ -198,7 +223,13 @@ module Huasi
                  :title => 'Bookings', 
                  :description => 'Booking management',
                  :fit => 1,
-                 :module => :booking }                              
+                 :module => :booking },
+                {:path => '/apps/bookings/scheduler',
+                 :regular_expression => /^\/admin\/bookings\/scheduler/, 
+                 :title => 'Scheduler', 
+                 :description => 'Booking scheduler',
+                 :fit => 1,
+                 :module => :booking }                                                  
                ]
         
     end
