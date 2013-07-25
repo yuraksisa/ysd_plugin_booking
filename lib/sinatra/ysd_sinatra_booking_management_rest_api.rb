@@ -24,7 +24,7 @@ module Sinatra
              :url => "/admin/bookings/#{booking.id}",
              :editable => false,
              :backgroundColor => (booking.status==:confirmed)? 'rgb(41, 158, 69)' : (booking.status==:in_progress)? 'rgb(13, 124, 226)' : (booking.status == :pending_confirmation)? 'rgb(241, 248, 69)' : 'rgb(0,0,0)',
-             :textColor => 'white'}
+             :textColor => (booking.status == :pending_confirmation)? 'black' : 'white'}
           end
 
           bookings.to_json

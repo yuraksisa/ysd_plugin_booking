@@ -121,7 +121,7 @@
 		      	</select>
 		      	<% end %>
 		      </div>
-		      <div class="formrow" style="margin-left:10%">
+		      <div class="formrow" style="margin-left:15%">
 	        	<input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones"/>
 		      </div>  
 		    </fieldset>	  
@@ -1036,6 +1036,7 @@
       
       change_pickup_place_select : function(pickup_place) { /* change pickup place */
         
+        /*
         if ($('#pickup_place :selected').index() == document.getElementById('pickup_place').length-1 ) {
           $('#pickup_place_other').show();	
           $('#booking\\[pickup_place\\]').val('');
@@ -1047,6 +1048,7 @@
           $('#pickup_place_other').val('');	
           $('#booking\\[pickup_place\\]').val(pickup_place);
         }
+        */
         
       },
       
@@ -1060,7 +1062,8 @@
       },
      
       change_return_place_select : function(return_place) { /* change return place */
-      	      	
+      	
+      	/*      	
         if ($('#return_place :selected').index() == document.getElementById('return_place').length-1 ) {
           $('#return_place_other').show();
           $('#booking\\[return_place\\]').val(''); 	
@@ -1071,7 +1074,8 @@
           $('#return_place_other').hide();
           $('#return_place_other').val('');	
           $('#booking\\[return_place\\]').val(return_place);
-        }      
+        } 
+        */     
       
       },
       
@@ -1566,21 +1570,21 @@
       	
       	   var content =
       	      '<div class="container_12">'+	     	
-      	        '<div class="bottom-space bottom-separator car '+family+'">' +
+      	        '<div itemscope itemtype="http://schema.org/Product" class="bottom-space bottom-separator car '+family+'">' +
       	          '<div class="grid_3">' +
-      	            '<img src="/img/clase-'+family+'-big.png"/>' +
+      	            '<img itemprop="image" src="/img/clase-'+family+'-big.png"/>' +
       	          '</div>' +
       	          '<div class="grid_3 top-margin">' +
-      	            '<div class="car_detail_description"><span class="car_family_description">'+bookingDataSystem.families[family].description+'</span></div>' +
-      	            '<div class="car_detail_cars"><span class="car_family_cars">'+bookingDataSystem.families[family].cars+'</span></div>'+
+      	            '<div class="car_detail_description"><span class="car_family_description" itemprop="name">'+bookingDataSystem.families[family].description+'</span></div>' +
+      	            '<div class="car_detail_cars"><span class="car_family_cars" itemprop="description">'+bookingDataSystem.families[family].cars+'</span></div>'+
       	          '</div>';
      	   if (bookingDataSystem.optionals) {
       	     content += '<div class="grid_6">';
              for (var option in bookingDataSystem.optionals) {
              	content += 
-             	  '<div class="car_price_optional">'+
-             	    '<div class="car_price_optional_text">' + bookingDataSystem.optionals[option].name + '</div>' +
-                    '<div class="car_price_total"><span>' + prices[family][option].toFixed(0) + ' €' + '</span></div>' +
+             	  '<div class="car_price_optional" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
+             	    '<div class="car_price_optional_text" itemprop="name">' + bookingDataSystem.optionals[option].name + '</div>' +
+                    '<div class="car_price_total"><span itemprop="price">' + prices[family][option].toFixed(0) + ' €' + '</span></div>' +
                     '<div class="car_price_booking"><input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" /></div>' +     	          
       	          '</div>';
              }
@@ -1588,8 +1592,8 @@
                 '</div>';
       	   }
       	   else {      
-    	     content += '<div class="grid_6">'+
-                    '<div class="car_price_total"><span>'+prices[family].toFixed(0) + ' €' + '</span></div>' +
+    	     content += '<div class="grid_6" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
+                    '<div class="car_price_total"><span itemprop="price">'+prices[family].toFixed(0) + ' €' + '</span></div>' +
                     '<div class="car_price_booking"><input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" /></div>' +     	          
       	        '</div>'+
       	      '</div>';
