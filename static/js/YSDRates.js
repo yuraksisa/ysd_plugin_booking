@@ -28,8 +28,11 @@ define(function() {
     
       var theYear = fromDate.getFullYear().toString();
       
-      var startDate = new Date( this.start + '/' + theYear );
-      var endDate = new Date(this.end + '/' + theYear);
+      var startDateStr = this.start + '/' + theYear;
+      var endDateStr = this.end + '/' + theYear;
+
+      var startDate = new Date(startDateStr);
+      var endDate = new Date(endDateStr);
              
       var days = ( ( ((toDate < endDate ? toDate:endDate) - (fromDate > startDate ? fromDate : startDate)) / (1000 * 60 * 60 * 24) ) + 1 ).toFixed(0) ;
       
@@ -238,11 +241,52 @@ define(function() {
   /*************************
    * Rate Finder
    * -----------------------
+   *
+   * Rates can be defined like this:
+   *
+   *  rates = { 
+   *    'family1' : { 
+   *       'session1': {
+   *          // HOW THE PRICE IS REPRESENTED
+   *        }
+   *    }
+   *  }
+   *
+   *  1. Price by family / session / day
+   *
+   *  rates = { 
+   *    'family1' : { 
+   *       'session1': {
+   *          price: 1_day_car_price
+   *        }
+   *    }
+   *  }
+   *
+   * 2. Price by family / session / number of days
+   *
+   *  rates = { 
+   *    'family1' : { 
+   *       'session1': {
+   *          'upToDays' : 7,
+   *          'prices' : {
+   *            '1': 1_day_car_price,
+   *            '2': 2_days_car_price,
+   *            '3': 3_days_car_price,
+   *            '4': 4_days_car_price,
+   *            '5': 5_days_car_price,
+   *            '6': 6_days_car_price,
+   *            '7': 7_days_car_price,
+   *          },
+   *          'extraPrice' : 1_extra_day_car_price               
+   *        }
+   *    }
+   *  }
+   *
    */
   rates.RateFinder = function(rates) {
-  	
-  	this.rates = rates;
-  	
+    
+    this.rates = rates;
+    
     /***
      * Get the rate that matches the family and ndays
      *
@@ -252,20 +296,20 @@ define(function() {
      *
      * @param [Numeric] ndays
      *
-     * @return [Rate]
+     * @return [Object] {'session' : {'price' : value}}
      */
     this.get_rate = function(family, ndays) {
     
       var key = family + ndays;
       
       return this.rates[key]?this.rates[key]:this.rates[family];
-       	
+        
     }
-     	
+      
   }
   
-  /*
-   *
+  /****
+   * Optional rate finder
    */
   rates.OptionalRateFinder = function(optionRates) {
     
@@ -335,6 +379,20 @@ define(function() {
   	
   } 
 
+  /*******************************
+   FixedFactorFinder
+   *******************************/
+  rates.FixedFactorFinder = function(value) {
+     this.value = value;
+
+     this.get_factor = function(season, family, ndays) {
+        return this.value;
+     }
+  }
+   
+  /**
+   * Session factor finder (factors defined by session)
+   */
   rates.SeasonFactorFinder = function(factors, globalFactors) {
 
     this.factors = factors;
@@ -367,24 +425,54 @@ define(function() {
     }
 
   }
-         
+   
+  /**
+   * PriceCalculatorSimpleRate
+   *
+   * The rate defines just one price 
+   */ 
+  rates.PriceCalculatorSimpleRate = function(priceDefinition, ndays) {
+
+    return priceDefinition.price * ndays; 
+
+  }
 
   /**
-   * Rate calculation 
+   * PriceCalculatorDaysRate
+   *
+   * Prices has been defined for number of days
+   */
+  rates.PriceCalculatorDaysRate = function(priceDefinition, ndays) {
+
+    if (ndays <= priceDefinition.upToDays) {
+      return priceDefinition.prices[ndays];
+    }
+    else {
+      var extraDays = ndays - priceDefinition.upToDays;
+      return priceDefinition.prices[priceDefinition.upToDays] + priceDefinition.extraPrice * extraDays;
+    }
+
+  }
+
+  /**
+   * Rate calculation based on factors 
    *
    * It's responsable of calculating the renting price
    *
    * @param [Calendar] The calendar
    * @param [RateFinder] The rate finder
    * @param [FactorFinder] The factor to apply
+   * @param [OptionalFinder] The optional finder
+   * @param [Function] Price calculation system
    *
    **/   
-  rates.RateCalculation = function(calendar, rateFinder, factorFinder, optionalFinder) {
+  rates.RateCalculation = function(calendar, rateFinder, factorFinder, optionalFinder, priceCalculationFunction) {
   
     this.calendar = calendar;
   	this.rateFinder = rateFinder;
   	this.factorFinder = factorFinder;
     this.optionalFinder = optionalFinder;
+    this.priceCalculationFunction = priceCalculationFunction || rates.PriceCalculatorSimpleRate;
   	
   	/**
   	 get_price
@@ -422,25 +510,30 @@ define(function() {
       	var rate = this.rateFinder.get_rate( family, ndays );
         var price = 0;
                 
-        // calculate the price that affects the seasons
+        // calculate the price taken the seasons into account
       	for (var idxdays = 0; idxdays < seasonDaysLength; idxdays++)
       	{
       	  var season = seasonDays[idxdays].season;
-      	  price += rate[season].price * seasonDays[idxdays].days;	
+          price += this.priceCalculationFunction(rate[season], seasonDays[idxdays].days);
+      	  //price += rate[season].price * seasonDays[idxdays].days;	
+
       	}
       	
-      	var priceWithFactor = price * this.factorFinder.get_factor(firstPeriodSeason, family, ndays);
+        // apply factor
+        if (this.factorFinder != null) {
+      	  price = price * this.factorFinder.get_factor(firstPeriodSeason, family, ndays);
+        }
 
-        result[family] = new Number(priceWithFactor.toFixed(scale)); 
+        result[family] = new Number(price.toFixed(scale)); 
         
-        // Calculate the options prices
+        // apply the optionals
         for (var optional in optionals) {
           var optionalRate = this.optionalFinder.get_rate(family, optional);
           var optionalPrice = 0;
           if (optionalRate != null) {
             optionalPrice = optionalRate.price * ndays;
           }
-          result[family][optional] = new Number((priceWithFactor + optionalPrice).toFixed(scale));
+          result[family][optional] = new Number((price + optionalPrice).toFixed(scale));
         }
       	
       }

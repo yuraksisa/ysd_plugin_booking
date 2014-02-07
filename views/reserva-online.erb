@@ -146,13 +146,11 @@
 	                   <label class="fieldtitle" style="display:inline-block; width:25%">
 	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
 	                   </label>
-                       <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly"/>
+                       <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="width:65%"/>
 	                   <% if booking_item_family.pickup_return_place %>
 	                   <div class="collection_place">
 	                     <label for="pickup_place"><%=t.new_booking.place%> * </label>
 	                     <select name="pickup_place" id="pickup_place">
-	                       <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
-	                       <option value="Puerto Mahón">Puerto Mahón</option>
 	                       <!--option value="Otro"><%=t.new_booking.other%></option-->
 	                     </select>
 	                   </div>
@@ -171,8 +169,6 @@
 	                  <div class="return_place">
 	                    <label for="return_place"><%=t.new_booking.place%> * </label>
 	      	            <select name="return_place" id="return_place">
-	                      <option value="Aeropuerto Mahón">Aeropuerto Mahón</option>
-	                      <option value="Puerto Mahón">Puerto Mahón</option>
 	                      <!--option value="Otro"><%=t.new_booking.other%></option-->
 	                    </select>
 	                  </div>
@@ -497,21 +493,21 @@
             <td class="first_column"><%%= bookingDataSystem.families[booking.item_id].cars %> <%% if (booking.optional) { %> <%%='('+bookingDataSystem.optionals[booking.optional].name+')'%> <%% } %> </td>
             <td class="quantity_column"><%%= booking.quantity %> </td>
             <td class="quantity_column"><%%= booking.days %> </td>
-            <td class="quantity_column"><%%= booking.item_cost %> € </td>
+            <td class="quantity_column"><%%= booking.item_cost %>€ </td>
           </tr>
           <%% for (extra in booking.booking_extras) { %>
             <tr>
               <td class="first_column"><%%= bookingDataSystem.extras[booking.booking_extras[extra].extra_id].the_name %></td>
               <td class="quantity_column"><%%= booking.booking_extras[extra].quantity %></td>
               <td class="quantity_column"><%%= booking.days %> </td>
-              <td class="quantity_column"><%%= booking.booking_extras[extra].extra_cost %> €</td>
+              <td class="quantity_column"><%%= booking.booking_extras[extra].extra_cost %>€</td>
             </tr>
           <%% } %>
           <tr>
             <td class="total_column first_column"><%=t.new_booking.total.upcase%></td>
             <td class="quantity_column"></td>
             <td class="quantity_column"></td>
-            <td class="quantity_column total_column"><%%= booking.total_cost %> € </td>
+            <td class="quantity_column total_column"><%%= booking.total_cost %>€ </td>
           </tr>
         </tbody>      
       </table>
@@ -613,7 +609,11 @@
     var bookingModel = {
 
        all_prices : [],    /* Caches all models prices for the period */
-       exceeded_hours : 2, /* Used when calculating prices. When exceeded it's considered one more day */
+       exceeded_hours : bookingDataSystem.gracePeriod || 2, /* Used when calculating prices. When exceeded it's considered one more day */
+       pickup_places : bookingDataSystem.pickup_places,
+       allow_custom_pickup_place : bookingDataSystem.allow_custom_pickup_place,
+       return_places : bookingDataSystem.return_places,
+       allow_custom_return_place : bookingDataSystem.allow_custom_pickup_place,
        process_states : [ 'item_selection', 'completing_booking', 'pay_booking', 'continue_booking', 'sending_booking', 'process_finished', 'process_error' ],
        process_state : 'item_selection',
        confirmBookingResponse : null, /* It holds the confirm booking response */       
@@ -1584,7 +1584,7 @@
              	content += 
              	  '<div class="car_price_optional" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
              	    '<div class="car_price_optional_text" itemprop="name">' + bookingDataSystem.optionals[option].name + '</div>' +
-                    '<div class="car_price_total"><span itemprop="price">' + prices[family][option].toFixed(0) + ' €' + '</span></div>' +
+                    '<div class="car_price_total"><span itemprop="price">' + prices[family][option].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +
                     '<div class="car_price_booking"><input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" /></div>' +     	          
       	          '</div>';
              }
@@ -1593,7 +1593,7 @@
       	   }
       	   else {      
     	     content += '<div class="grid_6" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
-                    '<div class="car_price_total"><span itemprop="price">'+prices[family].toFixed(0) + ' €' + '</span></div>' +
+                    '<div class="car_price_total"><span itemprop="price">'+prices[family].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +
                     '<div class="car_price_booking"><input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" /></div>' +     	          
       	        '</div>'+
       	      '</div>';
@@ -1694,6 +1694,59 @@
        	
        },
        
+       /* ------ Load pickup places ------ */
+       load_pickup_places : function() {
+
+          var comboItems = document.getElementById('pickup_place');
+          
+          // Remove the options
+          if (comboItems.options.length > 0)
+          {
+          	while (comboItems.hasChildNodes())
+          	{
+          	  comboItems.removeChild(comboItems.firstChild);	
+          	}
+          }
+          
+          // Add the new options
+          
+          for (var pickup_place_id in bookingModel.pickup_places)
+          {
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', pickup_place_id);	
+              optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
+              comboItems.appendChild(optionItem);
+          }
+
+       },
+
+       /* ------ Load return places -------- */
+
+       load_return_places : function() {
+
+          var comboItems = document.getElementById('return_place');
+          
+          // Remove the options
+          if (comboItems.options.length > 0)
+          {
+          	while (comboItems.hasChildNodes())
+          	{
+          	  comboItems.removeChild(comboItems.firstChild);	
+          	}
+          }
+          
+          // Add the new options
+          
+          for (var return_place_id in bookingModel.return_places)
+          {
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', return_place_id);	
+              optionItem.text = optionItem.innerText = bookingDataSystem.return_places[return_place_id];
+              comboItems.appendChild(optionItem);
+          }
+
+       },
+
        /* ------ Reflect the state change ----------- */
        
        state_changed : function(new_state) {
@@ -1707,6 +1760,8 @@
        	     this.update_information('booking_data');      	               	   
        	     this.load_items();
        	     this.load_extras();
+       	     this.load_pickup_places();
+       	     this.load_return_places();
        	     break;
 
           case 'continue_booking' : /* Alternative state (user comes back to complete booking) */
@@ -1800,7 +1855,7 @@
        	     $('#item_image').attr('src',path);
 
        	   case 'booking_cost' :
-       	     $('#total_cost').val( bookingModel.booking.total_cost.toFixed(0) + ' €' );
+       	     $('#total_cost').val( bookingModel.booking.total_cost.toFixed(0) + '€' );
        	     //$('span.total_cost').html( bookingModel.booking.total_cost.toFixed(0) + ' €' );
        	     $('#detailed_summary').html( 
        	      tmpl('script_detailed_price', {booking: bookingModel.booking, 
@@ -1893,8 +1948,8 @@
                 $('#item-selection').hide();
                 $('#form-reservation').hide();              
                 $('#booking-payment').show();
-                $('#payment_total').text(bookingModel.booking.total_cost + ' €');
-                $('#payment_deposit').text(bookingModel.booking.booking_amount + ' €');
+                $('#payment_total').text(bookingModel.booking.total_cost + '€');
+                $('#payment_deposit').text(bookingModel.booking.booking_amount + '€');
                 if ($('#booking\\[payment_method_id\\]_container').children().length == 0) {
                    $('#payments_methods h3').hide();	
                 } 

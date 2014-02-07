@@ -365,7 +365,7 @@ color:#999999;
 .car_price_optional {
   margin-left: 30px;
   float: left;
-  width: 125px;
+  width: 160px;
 }
 
 .car_price_optional_text {
@@ -495,8 +495,8 @@ label.form-reservation-error {
 
 #content-reserva .detailed_price thead th {
  
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
   font-weight: 600;
@@ -505,8 +505,8 @@ label.form-reservation-error {
 
 #content-reserva .detailed_price td {
 
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
   border-bottom: 1px solid #DDD;
