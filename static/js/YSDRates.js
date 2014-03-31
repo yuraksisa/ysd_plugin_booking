@@ -466,14 +466,15 @@ define(function() {
    * @param [Function] Price calculation system
    *
    **/   
-  rates.RateCalculation = function(calendar, rateFinder, factorFinder, optionalFinder, priceCalculationFunction) {
+  rates.RateCalculation = function(calendar, rateFinder, factorFinder, optionalFinder, priceCalculationFunction, basePrice) {
   
     this.calendar = calendar;
   	this.rateFinder = rateFinder;
   	this.factorFinder = factorFinder;
     this.optionalFinder = optionalFinder;
     this.priceCalculationFunction = priceCalculationFunction || rates.PriceCalculatorSimpleRate;
-  	
+  	this.basePrice = basePrice;
+
   	/**
   	 get_price
   	 ---------
@@ -508,15 +509,13 @@ define(function() {
       // Process the families
       for (var family in families) {
       	var rate = this.rateFinder.get_rate( family, ndays );
-        var price = 0;
+        var price = basePrice[family] || 0;
                 
         // calculate the price taken the seasons into account
       	for (var idxdays = 0; idxdays < seasonDaysLength; idxdays++)
       	{
       	  var season = seasonDays[idxdays].season;
           price += this.priceCalculationFunction(rate[season], seasonDays[idxdays].days);
-      	  //price += rate[season].price * seasonDays[idxdays].days;	
-
       	}
       	
         // apply factor
