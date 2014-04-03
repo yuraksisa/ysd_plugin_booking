@@ -4,6 +4,13 @@ system_admin_menu:
       title: Gestió de reserves
       bookings: Reserves
       bookings_scheduler: Agenda
+booking_settings:
+  form:
+    title: Configuració sistema de reserves
+    notification_email: Email de notificació
+    deposit: % Dipòsit
+    min_days: Numero mínim de dies
+    family: Tipus de producte en lloger
 booking_status:
   pending_confirmation: Pendent
   confirmed: Confirmat

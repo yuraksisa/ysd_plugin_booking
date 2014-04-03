@@ -1,0 +1,13 @@
+<h2><%=t.booking_settings.form.title%></h2>
+<div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+<form name="variables" action="/variables" method="PUT" 
+      data-remote="ajax" data-remote-method="PUT">
+  <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
+  <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>  
+  <%= render_variable_select('booking.item_family', t.booking_settings.form.family, families) %>
+  <%= render_variable_textarea('booking.notification_email', t.booking_settings.form.notification_email) %>
+  <div class="formrow-botonera">
+  	<input type="submit" value="<%=t.entitymanagement.update%>" 
+  	       class="button blue-button">
+  </div>
+</form>

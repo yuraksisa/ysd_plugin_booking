@@ -4,6 +4,13 @@ system_admin_menu:
       title: Booking management
       bookings: Bookings
       bookings_scheduler: Scheduler
+booking_settings:
+  form:
+    title: Booking configuration
+    notification_email: Notification email address
+    deposit: % Diposit
+    min_days: Minimum days   
+    family: Product type
 booking_status:
   pending_confirmation: Pending
   confirmed: Confirmed
@@ -51,8 +58,8 @@ new_booking:
   customer: Customer
   conditions_confirm: I have read and accept <a href="%1" target="_blank">their conditions of this service</a>
   continue: Continue
-  confirm: Confirm
-  booking: Book
+  confirm: Apply for a reservation
+  booking: Select
   payment_methods: Payment methods
   sending_booking_request: Sending booking request
   concept: Concept

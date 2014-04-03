@@ -509,7 +509,8 @@ define(function() {
       // Process the families
       for (var family in families) {
       	var rate = this.rateFinder.get_rate( family, ndays );
-        var price = basePrice[family] || 0;
+        var price = 0;
+        var base =  this.basePrice[family] || 0;
                 
         // calculate the price taken the seasons into account
       	for (var idxdays = 0; idxdays < seasonDaysLength; idxdays++)
@@ -522,6 +523,8 @@ define(function() {
         if (this.factorFinder != null) {
       	  price = price * this.factorFinder.get_factor(firstPeriodSeason, family, ndays);
         }
+
+        price += base;
 
         result[family] = new Number(price.toFixed(scale)); 
         

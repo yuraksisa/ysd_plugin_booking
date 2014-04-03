@@ -1,0 +1,10 @@
+require(['jquery','YSDForms'], function($, YSDForms) {
+
+  $(document).ready(function() {
+    
+    YSDForms.improve();
+    YSDForms.limit_text_area_content_size('.variable', 255);
+
+  });
+
+});

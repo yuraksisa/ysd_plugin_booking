@@ -4,6 +4,13 @@ system_admin_menu:
       title: Gestión de reservas
       bookings: Reservas
       bookings_scheduler: Agenda
+booking_settings:
+  form:
+    title: Configuración sistema de reservas
+    notification_email: Email de notificación
+    deposit: % Depósito
+    min_days: Numero mínimo de días    
+    family: Tipo de producto en alquiler
 booking_status:
   pending_confirmation: Pendiente
   confirmed: Confirmado
@@ -51,8 +58,8 @@ new_booking:
   customer: Cliente
   conditions_confirm: He leído y acepto <a href="%1" target="_blank">las condiciones del alquiler</a>
   continue: Continuar
-  confirm: Confirmar
-  booking: Reservar
+  confirm: Solicitar reserva
+  booking: Seleccionar
   payment_methods: Formas de pago
   sending_booking_request: Enviando la solicitud de reserva
   concept: Concepto
