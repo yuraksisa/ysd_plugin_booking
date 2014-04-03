@@ -30,7 +30,8 @@ booking_items:
 new_booking:
   title: Booking
   search: Search
-  choose_item: Select the %1
+  choose_item: Choose %1
+  choose_extras: Choose extras
   complete_booking: Complete the reservation
   payment: Payment
   arrival_date: Arrival date

@@ -30,7 +30,8 @@ booking_items:
 new_booking:
   title: Reserva
   search: Ver precios
-  choose_item: Seleccionar %1
+  choose_item: Elegir %1
+  choose_extras: Elegir extras
   complete_booking: Completar la reserva
   payment: Pago
   arrival_date: Entrada

@@ -12,14 +12,20 @@
                  </a>
               </li>
               <li>
-              	 <a id="tab-complete-reservation" href="#" class="tab img_txt">
+              	 <a id="tab-choose-extras" href="#" class="tab img_txt">
               	 	<span>2</span>
-              	 	<%=t.new_booking.complete_booking%>
+              	 	<%=t.new_booking.choose_extras%>
               	 </a>
               </li>
               <li>
-              	  <a id="tab-payment" href="#" class="tab img_txt">
+              	  <a id="tab-complete-reservation" href="#" class="tab img_txt">
               	  	<span>3</span>
+              	  	<%=t.new_booking.complete_booking%>
+              	  </a>
+              </li>
+              <li>
+              	  <a id="tab-payment" href="#" class="tab img_txt">
+              	  	<span>4</span>
               	  	<%=t.new_booking.payment%>
               	  </a>
               </li>
@@ -129,6 +135,108 @@
 		  <div id="result" class="top-separator">
 		  </div>
 	  </div>
+
+      <div id="extras-selection" class="bottom-margin">
+          <div class="guiblock">
+          	<div class="container_12">
+          	  <div >
+	            <fieldset id="fs_summary_item">
+                  <div class="grid_3">
+	                <img id="item_image"/>
+	              </div>
+	              <div class="grid_4">
+	                <div class="right-margin smaller_text">
+                      <select id="booking[item_id]" name="booking[item_id]" class="item_chooser"></select>	
+	                  <div>
+	                    <label class="fieldtitle" style="display:inline-block; width:25%">
+	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
+	                    </label>
+                        <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="width:65%"/>
+	                    <% if booking_item_family.pickup_return_place %>
+	                      <div class="collection_place">
+	                        <label for="pickup_place"><%=t.new_booking.place%> * </label>
+	                        <select name="pickup_place" id="pickup_place">
+	                        </select>
+	                       </div>
+	                       <div>
+	                         <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
+	                       </div>
+	                       <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
+	                    <% end %>	        
+	                  </div>
+	                  <div>
+	                    <label class="fieldtitle" style="display:inline-block; width:25%">
+	          	          <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%>
+	                    </label>
+                        <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly"/>
+	                    <% if booking_item_family.pickup_return_place %>
+	                      <div class="return_place">
+	                        <label for="return_place"><%=t.new_booking.place%> * </label>
+	      	                <select name="return_place" id="return_place">
+	                        </select>
+                          </div>
+	                      <div>
+	                        <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
+	                      </div>
+	                      <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
+	                    <% end %>
+	                  </div>
+                      <% if (booking_item_family.guests) %>
+                      <div >
+		                <div>
+		                  <label id="label_adult_guests" for="booking[number_of_adults]" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.guests.adults%></label>	
+		                  <select name="booking[number_of_adults]" id="booking[number_of_adults]" style="margin-right:5%"> 
+			                <option value="1" selected="selected">1</option>
+				            <option value="2">2</option>
+				            <option value="3">3</option>
+				            <option value="4">4</option>
+				            <option value="5">5</option>
+				            <option value="6">6</option>
+				            <option value="7">7</option>
+				            <option value="8">8</option>
+				            <option value="9">9</option>
+				            <option value="10">10</option>
+                          </select>
+		                  <label id="label_adult_guests" for="booking[number_of_children]" class="fieldtitle" style="display:inline-block"><%=t.new_booking.guests.children%></label>	
+		                  <select name="booking[number_of_children]" id="booking[number_of_children]"> 
+			                <option value="0" selected="selected">0</option>
+				            <option value="1">1</option>
+				            <option value="2">2</option>
+				            <option value="3">3</option>
+				            <option value="4">4</option>
+				            <option value="5">5</option>
+				            <option value="6">6</option>
+				            <option value="7">7</option>
+				            <option value="8">8</option>
+				            <option value="9">9</option>
+				            <option value="10">10</option>
+                          </select>
+                        </div>    
+                      </div>                   
+                      <% end %>		                
+	                </div>
+	              </div>
+	              <div class="grid_5">
+	                <div class="left-margin smaller_text">
+	      	          <input type="hidden" name="total_cost" id="total_cost"/>
+	      	          <div id="detailed_summary" style="border: 1px solid #DDD">
+	                  </div>      
+	                </div>
+	              </div>
+	            </fieldset>
+	          </div>
+	        </div>
+          </div>
+
+	      <fieldset id="fs_summary_extras">
+	        <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
+	        <table id="tblextras">
+	          <tbody>
+	          </tbody>
+	        </table>
+	      </fieldset>
+
+      </div>
 
 	  <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
 	    <div>	      
@@ -614,7 +722,14 @@
        allow_custom_pickup_place : bookingDataSystem.allow_custom_pickup_place,
        return_places : bookingDataSystem.return_places,
        allow_custom_return_place : bookingDataSystem.allow_custom_pickup_place,
-       process_states : [ 'item_selection', 'completing_booking', 'pay_booking', 'continue_booking', 'sending_booking', 'process_finished', 'process_error' ],
+       process_states : [ 'item_selection', 
+         'extras_selection',
+         'completing_booking', 
+         'pay_booking', 
+         'continue_booking', 
+         'sending_booking', 
+         'process_finished', 
+         'process_error' ],
        process_state : 'item_selection',
        confirmBookingResponse : null, /* It holds the confirm booking response */       
        booking : {
@@ -775,8 +890,12 @@
        	  	 case 'start' :
        	  	   this.process_state = 'item_selection';
        	  	   break;
-       	  	       	  	         	  	          	       
-       	     case 'select_item' :
+       	  	       	 
+             case 'select_item' :
+                this.process_state = "extras_selection";
+                break;
+
+       	     case 'select_extras' :
                this.process_state = 'completing_booking';       	     
        	       break;
        	   	       	   	
@@ -1756,36 +1875,46 @@
        	   case 'item_selection' : /* First state (begin process) */
        	     break;
        	        
-       	   case 'completing_booking' : /* Second state (user choose an item and starts booking) */
+           case 'extras_selection' : /* Second state (user choose an item and starts bookin) */
        	     this.update_information('booking_data');      	               	   
        	     this.load_items();
        	     this.load_extras();
        	     this.load_pickup_places();
        	     this.load_return_places();
+             break;
+
+       	   case 'completing_booking' : /* Third state (user choose an item and starts booking) */
+/*       	 this.update_information('booking_data');      	               	   
+       	     this.load_items();
+       	     this.load_extras();
+       	     this.load_pickup_places();
+       	     this.load_return_places();
+*/
        	     break;
 
-          case 'continue_booking' : /* Alternative state (user comes back to complete booking) */
-            break;
+
+           case 'continue_booking' : /* Alternative state (user comes back to complete booking) */
+             break;
           
-          case 'pay_booking': /* Go to payment tab */
-            this.showPaymentSummary();
-            break;
+           case 'pay_booking': /* Go to payment tab */
+             this.showPaymentSummary();
+             break;
        	 	
-       	  case 'sending_booking' : /* Sending the booking using Ajax (user clicks confirm button) */
-       	    $('#sending-booking').dialog('open');
-       	    break;
+       	   case 'sending_booking' : /* Sending the booking using Ajax (user clicks confirm button) */
+       	     $('#sending-booking').dialog('open');
+       	     break;
        	    
-       	  case 'process_completed' : /* The booking has been saved in the system */
-       	    $('#sending-booking').dialog('close');   
-            if (typeof(bookingModel.confirmBookingResponse) == 'string') {
-              document.write(bookingModel.confirmBookingResponse);	
-              return;
-            }
-       	    break;
+       	   case 'process_completed' : /* The booking has been saved in the system */
+       	     $('#sending-booking').dialog('close');   
+             if (typeof(bookingModel.confirmBookingResponse) == 'string') {
+               document.write(bookingModel.confirmBookingResponse);	
+               return;
+             }
+       	     break;
        	    
-       	  case 'process_error' : /* The booking has not been saved in the system */
-       	    $('#sending-booking').dialog('close');
-            $('<div title="<%=t.new_booking.booking_creation_error.title%>"> <%=t.new_booking.booking_creation_error.description%> </div>').dialog( { height: 260, modal: true,     	 
+       	    case 'process_error' : /* The booking has not been saved in the system */
+       	      $('#sending-booking').dialog('close');
+              $('<div title="<%=t.new_booking.booking_creation_error.title%>"> <%=t.new_booking.booking_creation_error.description%> </div>').dialog( { height: 260, modal: true,     	 
        	        buttons: {
        	            Ok: function() {
 				     $(this).dialog("close");
@@ -1795,7 +1924,7 @@
 				   	$( this ).dialog( "close" );				
 				}
            	  });       	           	  
-       	    break;
+       	      break;
        	 }
        	 
    	     this.wizard.state_changed(new_state);
@@ -1917,6 +2046,7 @@
        	
        	 tabs : { 
        	 	       'tab-choose-item' : new WizardTab ('tab-choose-item', true),
+       	 	       'tab-choose-extras' : new WizardTab ('tab-choose-extras', true),
        	 	       'tab-complete-reservation' : new WizardTab('tab-complete-reservation', true),
        	 	       'tab-payment' : new WizardTab('tab-payment', <%= booking_payment %>)
        	        },
@@ -1928,24 +2058,40 @@
        	   	  case 'item_selection' : /* Item selection tab */
        	        $('#form-reservation').hide();
        	        $('#item-selection').show();
+       	        $('#extras-selection').hide();
        	        $('#booking-payment').hide();
        	   	    this.tabs['tab-choose-item'].setState('active'); 
+       	   	    this.tabs['tab-choose-extras'].setState('not-enabled'); 
        	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
        	   	    this.tabs['tab-payment'].setState('not-enabled');
        	   	    break;
        	   	  
+              case 'extras_selection': /* Extras selection tab */
+                $('#form-reservation').hide();
+                $('#item-selection').hide();
+                $('#extras-selection').show();
+                $('#booking-payment').hide();
+       	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
+       	   	    this.tabs['tab-choose-extras'].setState('active'); 
+       	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
+       	   	    this.tabs['tab-payment'].setState('not-enabled');
+                break;
+
        	   	  case 'completing_booking' : /* Complete booking data tab */
        	   	  case 'continue_booking' :
        	        $('#item-selection').hide();
+       	        $('#extras-selection').hide();       	        
                 $('#form-reservation').show();
        	   	    $('#booking-payment').hide();
        	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
+       	   	    this.tabs['tab-choose-extras'].setState('not-enabled');       	   	    
        	   	    this.tabs['tab-complete-reservation'].setState('active');
        	   	    this.tabs['tab-payment'].setState('not-enabled');
        	   	    break;
 
               case 'pay_booking': /* Payment tab */
                 $('#item-selection').hide();
+       	        $('#extras-selection').hide();                
                 $('#form-reservation').hide();              
                 $('#booking-payment').show();
                 $('#payment_total').text(bookingModel.booking.total_cost + '€');
@@ -1954,12 +2100,14 @@
                    $('#payments_methods h3').hide();	
                 } 
      	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
+       	   	    this.tabs['tab-choose-extras'].setState('not-enabled');       	   	    
        	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
        	   	    this.tabs['tab-payment'].setState('active');                
                 break;
        	   	  
               case 'process_completed': /* Summary tab */
          	    $('#item-selection').hide();
+         	    $('#extras-selection').hide();
          	    $('#form-reservation').hide();
          	    $('#booking-payment').hide();
 		       	var data = $('#form-reservation').formParams(false);
@@ -1968,7 +2116,8 @@
 		       	$('#booking-complete-message').html(message);
        	        $('#booking-complete-message').show();
        	        
-     	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
+     	   	    this.tabs['tab-choose-item'].setState('not-enabled');
+     	   	    this.tabs['tab-choose-extras'].setState('not-enabled');  
        	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
        	   	    this.tabs['tab-payment'].setState('not-enabled');  
 
