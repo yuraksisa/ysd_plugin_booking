@@ -1718,6 +1718,9 @@
               comboItems.appendChild(optionItem);
           }
 
+          // stores the pick up place in the form
+          $('#booking\\[pickup_place\\]').val($('#pickup_place').val());
+
        },
 
        /* ------ Load return places -------- */
@@ -1744,6 +1747,9 @@
               optionItem.text = optionItem.innerText = bookingDataSystem.return_places[return_place_id];
               comboItems.appendChild(optionItem);
           }
+
+          // stores the pick up place in the form
+          $('#booking\\[return_place\\]').val($('#return_place').val());
 
        },
 
