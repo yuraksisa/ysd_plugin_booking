@@ -151,11 +151,10 @@
 	                   <div class="collection_place">
 	                     <label for="pickup_place"><%=t.new_booking.place%> * </label>
 	                     <select name="pickup_place" id="pickup_place">
-	                       <!--option value="Otro"><%=t.new_booking.other%></option-->
 	                     </select>
 	                   </div>
 	                   <div>
-	                     <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
+	                     <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>" class="top-margin"/>
 	                   </div>
 	                   <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
 	                   <% end %>	        
@@ -169,11 +168,10 @@
 	                  <div class="return_place">
 	                    <label for="return_place"><%=t.new_booking.place%> * </label>
 	      	            <select name="return_place" id="return_place">
-	                      <!--option value="Otro"><%=t.new_booking.other%></option-->
 	                    </select>
 	                  </div>
 	                  <div>
-	                    <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
+	                    <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>" class="top-margin"/>  
 	                  </div>
 	                  <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
 	                  <% end %>
@@ -1036,8 +1034,7 @@
       
       change_pickup_place_select : function(pickup_place) { /* change pickup place */
         
-        /*
-        if ($('#pickup_place :selected').index() == document.getElementById('pickup_place').length-1 ) {
+        if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
           $('#pickup_place_other').show();	
           $('#booking\\[pickup_place\\]').val('');
           $('#pickup_place_other').focus();
@@ -1048,7 +1045,6 @@
           $('#pickup_place_other').val('');	
           $('#booking\\[pickup_place\\]').val(pickup_place);
         }
-        */
         
       },
       
@@ -1062,9 +1058,8 @@
       },
      
       change_return_place_select : function(return_place) { /* change return place */
-      	
-      	/*      	
-        if ($('#return_place :selected').index() == document.getElementById('return_place').length-1 ) {
+      	      	
+        if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
           $('#return_place_other').show();
           $('#booking\\[return_place\\]').val(''); 	
           $('#return_place_other').focus();
@@ -1074,8 +1069,7 @@
           $('#return_place_other').hide();
           $('#return_place_other').val('');	
           $('#booking\\[return_place\\]').val(return_place);
-        } 
-        */     
+        }      
       
       },
       
@@ -1474,10 +1468,10 @@
            	  'required': '<%=t.new_driving_booking.driver_date_of_birth.required%>'	
            	},       	
            	'booking[pickup_place]': {
-           	  'required': '<%=t.new_booking.pickup_place.required%>'	
+           	  'required': '<%=t.new_booking.pickup_place_required%>'	
            	},
            	'booking[return_place]': {
-           	  'required': '<%=t.new_booking.return.required%>'	
+           	  'required': '<%=t.new_booking.return_place_required%>'	
            	},
            	'conditions_read': '<%=t.new_booking.conditions.required%>'
            	
@@ -1718,6 +1712,13 @@
               comboItems.appendChild(optionItem);
           }
 
+          if (bookingModel.allow_custom_pickup_place) {
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', '<%=t.new_booking.other%>');	
+              optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              comboItems.appendChild(optionItem);          	 
+          }
+
           // stores the pick up place in the form
           $('#booking\\[pickup_place\\]').val($('#pickup_place').val());
 
@@ -1746,6 +1747,13 @@
               optionItem.setAttribute('value', return_place_id);	
               optionItem.text = optionItem.innerText = bookingDataSystem.return_places[return_place_id];
               comboItems.appendChild(optionItem);
+          }
+
+          if (bookingModel.allow_custom_return_place) {
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', '<%=t.new_booking.other%>');	
+              optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              comboItems.appendChild(optionItem);          	 
           }
 
           // stores the pick up place in the form

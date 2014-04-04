@@ -50,7 +50,9 @@ new_booking:
   place: Lugar
   other: Otro
   pickup_place: Lugar de entrega
+  pickup_place_required: Debe informar el lugar de entrega
   return_place: Lugar de devolución
+  return_place_required: Debe informar el lugar de devolución
   extras: Extras
   extra: Extra
   quantity: Cantidad
