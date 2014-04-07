@@ -37,21 +37,29 @@ module Sinatra
         ["/bookings", "/bookings/page/:page"].each do |path|
           app.post path, :allowed_usergroups => ['booking_manager'] do
         	
-            query_options = {}
-            if request.media_type == "application/x-www-form-urlencoded"
-              if params[:search]
-                query_options[:conditions] = {:id => params[:search]} 
-              else
-                request.body.rewind
-                search_text=request.body.read
-                query_options[:conditions] = {:id => search_text} 
-              end
-            end
-            page_size = SystemConfiguration::Variable.
-              get_value('configuration.booking_page_size', 20).to_i 
             page = [params[:page].to_i, 1].max  
-            data, total = BookingDataSystem::Booking.all_and_count(
-              query_options.merge({:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]}) )
+            page_size = SystemConfiguration::Variable.
+              get_value('configuration.booking_page_size', 20).to_i
+            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]} 
+
+            if request.media_type == "application/x-www-form-urlencoded"
+              search_text = if params[:search]
+                              params[:search]
+                            else
+                              request.body.rewind
+                              request.body.read
+                            end
+              conditions = Conditions::JoinComparison.new('$or', 
+                              [Conditions::Comparison.new(:id, '$eq', search_text.to_i),
+                               Conditions::Comparison.new(:customer_surname, '$like', "%#{search_text}%"),
+                               Conditions::Comparison.new(:customer_email, '$eq', search_text)])
+            
+              total = conditions.build_datamapper(BookingDataSystem::Booking).all.count 
+              data = conditions.build_datamapper(BookingDataSystem::Booking).all(offset_order_query) 
+            else
+              data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
+            end
+
             content_type :json
             {:data => data, :summary => {:total => total}}.to_json
 
