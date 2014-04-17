@@ -35,7 +35,7 @@
     </div>
     
     <div id="content-body" class="element-form-detail bottom-margin">
-
+      <!-- ITEM SELECTION TAB -->
 	  <div id="item-selection" class="bottom-margin">
 		  <form id="form-search-item" name="form-search-item">
 		    <fieldset>
@@ -83,6 +83,19 @@
 		      	</select>
                 <% end %>
 		      </div>
+              <% if booking_item_family.pickup_return_place %>
+		      <div class="formrow">
+	              <div class="collection_place">
+	                 <label for="pickup_place" class="fieldtitle columna1"><%=t.new_booking.place%> * </label>
+	                 <select name="pickup_place" class="fieldcontrol" id="pickup_place">
+	                 </select>
+	              </div>
+	              <div>
+	                 <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
+	              </div>
+	              <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
+	          </div>          		      	
+	          <% end %>	       
 		      <div class="formrow">
 		      	<label for="dateto" id="labeldateto" class="fieldtitle search-form-column columna1">
 		      	  <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
@@ -127,7 +140,23 @@
 		      	</select>
 		      	<% end %>
 		      </div>
-		      <div class="formrow" style="margin-left:15%">
+	          <% if booking_item_family.pickup_return_place %>
+	          <div class="formrow">
+	               <div class="return_place">
+	                  <label for="return_place" class="fieldtitle columna1"><%=t.new_booking.place%> * </label>
+	      	          <select name="return_place" id="return_place" class="fieldcontrol">
+	                  </select>
+                   </div>
+	               <div>
+	                  <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
+	               </div>
+	               <input type="hidden" name="return_place_value" id="return_place_value"/>
+	          </div>
+	          <% end %>
+		      <div class="formrow">
+		      	<div class="columna1">
+                  &nbsp;
+		      	</div>
 	        	<input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones"/>
 		      </div>  
 		    </fieldset>	  
@@ -135,8 +164,9 @@
 		  <div id="result" class="top-separator">
 		  </div>
 	  </div>
-
-      <div id="extras-selection" class="bottom-margin">
+      <!-- EXTRAS SELECTION TAB -->
+      <div id="extras-selection" class="bottom-margin" style="display:none">
+      	<form>
           <div class="guiblock">
           	<div class="container_12">
           	  <div >
@@ -152,35 +182,33 @@
 	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
 	                    </label>
                         <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="width:65%"/>
-	                    <% if booking_item_family.pickup_return_place %>
-	                      <div class="collection_place">
-	                        <label for="pickup_place"><%=t.new_booking.place%> * </label>
-	                        <select name="pickup_place" id="pickup_place">
-	                        </select>
-	                       </div>
-	                       <div>
-	                         <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
-	                       </div>
-	                       <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
-	                    <% end %>	        
 	                  </div>
+
+                      <% if booking_item_family.pickup_return_place %>
+		              <div>
+	                     <div class="collection_place">
+	                     <label for="pickup_place_extended" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.place%></label>
+	                     <input type="text" name="pickup_place_extended" id="pickup_place_extended" class="readonly-field" readonly="readonly"/>
+	                     </div>
+	                  </div>
+	                  <% end %>	    
+
 	                  <div>
 	                    <label class="fieldtitle" style="display:inline-block; width:25%">
 	          	          <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%>
 	                    </label>
                         <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly"/>
-	                    <% if booking_item_family.pickup_return_place %>
-	                      <div class="return_place">
-	                        <label for="return_place"><%=t.new_booking.place%> * </label>
-	      	                <select name="return_place" id="return_place">
-	                        </select>
-                          </div>
-	                      <div>
-	                        <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
-	                      </div>
-	                      <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
-	                    <% end %>
 	                  </div>
+
+                      <% if booking_item_family.pickup_return_place %>
+		              <div >
+	                    <div class="return_place">
+	                      <label for="return_place_extended" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.place%></label>
+	      	              <input type="text" name="return_place_extended" id="return_place_extended" class="readonly-field" readonly="readonly"/>
+                        </div>
+                      </div>
+	                  <% end %>	    
+                      
                       <% if (booking_item_family.guests) %>
                       <div >
 		                <div>
@@ -236,111 +264,16 @@
 	        </table>
 	      </fieldset>
 
+	      <div class="content_data_box">
+	        <fieldset>
+	          <input type="button" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
+	        </fieldset>
+	      </div>
+        </form>
       </div>
 
 	  <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
 	    <div>	      
-          <div class="guiblock">
-          	<div class="container_12">
-          	  <div >
-	            <fieldset id="fs_summary_item">
-                 <div class="grid_3">
-	                <img id="item_image"/>
-	             </div>
-	             <div class="grid_4">
-	               <div class="right-margin smaller_text">
-                     <select id="booking[item_id]" name="booking[item_id]" class="item_chooser"></select>	
-	                 <div>
-	                   <label class="fieldtitle" style="display:inline-block; width:25%">
-	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
-	                   </label>
-                       <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="width:65%"/>
-	                   <% if booking_item_family.pickup_return_place %>
-	                   <div class="collection_place">
-	                     <label for="pickup_place"><%=t.new_booking.place%> * </label>
-	                     <select name="pickup_place" id="pickup_place">
-	                       <!--option value="Otro"><%=t.new_booking.other%></option-->
-	                     </select>
-	                   </div>
-	                   <div>
-	                     <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
-	                   </div>
-	                   <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
-	                   <% end %>	        
-	                </div>
-	                <div>
-	                  <label class="fieldtitle" style="display:inline-block; width:25%">
-	          	        <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%>
-	                  </label>
-                      <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly"/>
-	                  <% if booking_item_family.pickup_return_place %>
-	                  <div class="return_place">
-	                    <label for="return_place"><%=t.new_booking.place%> * </label>
-	      	            <select name="return_place" id="return_place">
-	                      <!--option value="Otro"><%=t.new_booking.other%></option-->
-	                    </select>
-	                  </div>
-	                  <div>
-	                    <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
-	                  </div>
-	                  <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
-	                  <% end %>
-	                </div>
-                    <% if (booking_item_family.guests) %>
-                    <div >
-		              <div>
-		                <label id="label_adult_guests" for="booking[number_of_adults]" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.guests.adults%></label>	
-		                <select name="booking[number_of_adults]" id="booking[number_of_adults]" style="margin-right:5%"> 
-			              <option value="1" selected="selected">1</option>
-				          <option value="2">2</option>
-				          <option value="3">3</option>
-				          <option value="4">4</option>
-				          <option value="5">5</option>
-				          <option value="6">6</option>
-				          <option value="7">7</option>
-				          <option value="8">8</option>
-				          <option value="9">9</option>
-				          <option value="10">10</option>
-                        </select>
-		                <label id="label_adult_guests" for="booking[number_of_children]" class="fieldtitle" style="display:inline-block"><%=t.new_booking.guests.children%></label>	
-		                <select name="booking[number_of_children]" id="booking[number_of_children]"> 
-			              <option value="0" selected="selected">0</option>
-				          <option value="1">1</option>
-				          <option value="2">2</option>
-				          <option value="3">3</option>
-				          <option value="4">4</option>
-				          <option value="5">5</option>
-				          <option value="6">6</option>
-				          <option value="7">7</option>
-				          <option value="8">8</option>
-				          <option value="9">9</option>
-				          <option value="10">10</option>
-                        </select>
-                      </div>    
-                    </div>                   
-                    <% end %>		                
-	              </div>
-	            </div>
-	            <div class="grid_5">
-	              <div class="left-margin smaller_text">
-	      	      <input type="hidden" name="total_cost" id="total_cost"/>
-	      	      <div id="detailed_summary" style="border: 1px solid #DDD">
-	              <div>      
-	              </div>
-	            </div>
-	            </fieldset>
-	          </div>
-	        </div>
-          </div>
-
-	      <fieldset id="fs_summary_extras">
-	        <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
-	        <table id="tblextras">
-	          <tbody>
-	          </tbody>
-	        </table>
-	      </fieldset>
-
 	      <fieldset id="fs_customer">
 	        <legend id="lg_customer" class="legend-first-level"><%=t.new_booking.customer%></legend>
 	        <div class="formrow">
@@ -496,8 +429,8 @@
 	        </div>        
 	      </fieldset>	      
 	      <fieldset id="fs_confirm">
-	      	  <input type="button" value="<%=t.new_booking.continue%>" id="button_ir_a_pagar_reserva" class="botones" style="display:none"/>
-	          <input type="submit" value="<%=t.new_booking.confirm%>" id="button_confirmar_reserva" class="botones" style="display:none"/>
+	      	  <input type="button" value="<%=t.new_booking.continue%>" id="button_ir_a_pagar_reserva" class="form-button botones" style="display:none"/>
+	          <input type="submit" value="<%=t.new_booking.confirm%>" id="button_confirmar_reserva" class="form-button botones" style="display:none"/>
 	      </fieldset>
 	      <div id="reservation_error">
 	      </div>	
@@ -531,7 +464,7 @@
              <div id="payment_methods_selector"></div>
           </div>
           <div class="formrow-botonera">
-             <input type="submit" value="<%=t.new_booking.booking%>"/>
+             <input type="submit" class="form-button botones" value="<%=t.new_booking.booking%>"/>
           </div>
 	      <div id="payment_error">
 	      </div>	          
@@ -738,6 +671,8 @@
           time_from : null, /* the booking time from */
           date_to : null, /* the booking date to */
           time_to: null, /* the booking time to */
+          pickup_place: null, /* the pick up place */
+          return_place: null, /* the return place */
           date_to_price_calculation : null, /* the date to used when calculating prices */
           days: 0, /* renting days */
           quantity: 1, /* Number of products */
@@ -751,7 +686,7 @@
           total_cost : 0, /* the total cost (item + extras) */
           booking_extras : {}, /* The booking extras */
           booking_amount: 0, /* The amount to pay to confirm the booking */
-          
+
           set_item : function (item_id) { /* Set the booking item */
           	
           	old_cost = this.item_cost;
@@ -948,13 +883,16 @@
 
        /* The business logic of calculating prices */
        
-       calculate_price : function(date_from, time_from, date_to, time_to) {
+       calculate_price : function(date_from, time_from, date_to, time_to, pickup_place, return_place) {
        	
        	 this.booking.date_from = date_from;
        	 this.booking.time_from = time_from;
        	 
        	 this.booking.date_to = date_to;
        	 this.booking.time_to = time_to;
+
+       	 this.booking.pickup_place = pickup_place;
+       	 this.booking.return_place = return_place;
        	        	 
        	 var _date_from = new Date( date_from.toString("MM/dd/yyyy ") + time_from);
        	 var _date_to = new Date( date_to.toString("MM/dd/yyyy ") + time_to);
@@ -1068,6 +1006,12 @@
 
        },
        
+      go_to_fill_data : function() { /* Go to fill data tab */
+      
+        this.change_state('go_to_complete_booking');
+
+      },
+
        go_to_payment : function() { /* Go to the payment tab */
 
         if ($('#form-reservation').valid()) {
@@ -1122,8 +1066,8 @@
     	
       /* calculate the prices */
       	
-      calculate_prices : function (date_from, time_from, date_to, time_to) {
-      	bookingModel.calculate_price(date_from, time_from, date_to, time_to);
+      calculate_prices : function (date_from, time_from, date_to, time_to, pickup_place, return_place) {
+      	bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
       	bookingView.show_prices();
       },	
     
@@ -1155,55 +1099,56 @@
       
       change_pickup_place_select : function(pickup_place) { /* change pickup place */
         
-        /*
-        if ($('#pickup_place :selected').index() == document.getElementById('pickup_place').length-1 ) {
+        if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
           $('#pickup_place_other').show();	
-          $('#booking\\[pickup_place\\]').val('');
+          $('#pickup_place_value').val('');
           $('#pickup_place_other').focus();
         } 
         else
         {
           $('#pickup_place_other').hide();
           $('#pickup_place_other').val('');	
-          $('#booking\\[pickup_place\\]').val(pickup_place);
+          $('#pickup_place_value').val(pickup_place);
         }
-        */
         
       },
       
       blur_pickup_place_input : function(pickup_place) {
       
-        if ($('#pickup_place_other').val() != $('#booking\\[pickup_place\\]').val()) {
-          // stores the pick up place in the form
-          $('#booking\\[pickup_place\\]').val(pickup_place);
+        if ($('#pickup_place_other').val() != $('#pickup_place_value').val()) {
+          $('#pickup_place_value').val(pickup_place);
         }
                	
       },
      
       change_return_place_select : function(return_place) { /* change return place */
       	
-      	/*      	
-        if ($('#return_place :selected').index() == document.getElementById('return_place').length-1 ) {
+      	if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
           $('#return_place_other').show();
-          $('#booking\\[return_place\\]').val(''); 	
+          $('#return_place_value').val(''); 	
           $('#return_place_other').focus();
         } 
         else
         {
           $('#return_place_other').hide();
           $('#return_place_other').val('');	
-          $('#booking\\[return_place\\]').val(return_place);
-        } 
-        */     
+          $('#return_place_value').val(return_place);
+        }      
       
       },
       
       blur_return_place_input : function(return_place) {
       	
-        if ($('#return_place_other').val() != $('#booking\\[return_place\\]').val()) {
-          $('#booking\\[return_place\\]').val(return_place);
+        if ($('#return_place_other').val() != $('return_place_value').val()) {
+          $('return_place_value').val(return_place);
         }
       	
+      },
+
+      go_to_fill_data_click : function() { /* Go to fill data button click */
+      
+        bookingModel.go_to_fill_data();
+
       },
       
       go_to_booking_payment_click: function() { /* Go to payment button click */
@@ -1251,6 +1196,10 @@
          $('#dateto').datepicker({numberOfMonths:2, minDate:new Date(bookingDataSystem.configuration.min_date).add(<%=booking_min_days%>).days(),
             maxDate: bookingDataSystem.configuration.max_date , dateFormat: 'dd/mm/yy'}, locale);
          $('#dateto').datepicker('setDate', '+<%=booking_min_days%>');
+
+         $('#button_continua_rellenar_datos').bind('click', function(event) {
+            bookingController.go_to_fill_data_click();
+         });
 
          <% if booking_payment %>
            this.configurePaymentMethods();
@@ -1343,13 +1292,13 @@
        	 // Configure the pickup_place and return_place behaviour
        	 $('#pickup_place').bind('change',
        	   function() {
-       	   	 bookingController.change_pickup_place_select($(this).val());
+       	   	 bookingController.change_pickup_place_select($(this).text());
        	   });
        	 $('#pickup_place_other').bind('blur',
        	   function() {
        	   	 bookingController.blur_pickup_place_input($(this).val());
        	   });
-       	 $('#booking\\[pickup_place\\]').val($('#pickup_place').val());  
+       	 $('#pickup_place_value').val($('#pickup_place option:selected').text());  
        	   
        	 $('#return_place').bind('change',
        	   function() {
@@ -1359,7 +1308,7 @@
        	   function() {
        	   	 bookingController.blur_return_place_input($(this).val());
        	   });
-       	 $('#booking\\[return_place\\]').val($('#return_place').val());  
+       	 $('#return_place_value').val($('#return_place option:selected').text());  
        	      	       	
        	 // Configure the dialog(s)
        	 $('#sending-booking').dialog({autoOpen: false, height: 260, modal: true,
@@ -1437,7 +1386,9 @@
        	    bookingController.calculate_prices($('#datefrom').datepicker("getDate"), 
                                                $('#timefrom option:selected').val(),
                                                $('#dateto').datepicker("getDate"), 
-                                               $('#timeto option:selected').val()); 
+                                               $('#timeto option:selected').val(),
+                                               $('#pickup_place_value').val(),
+                                               $('#return_place_value').val()); 
        	
        },     
               
@@ -1557,12 +1508,12 @@
            	'booking[driver_date_of_birth]': {
            	  required: "#fs_driver:visible"	
            	},
-           	'booking[pickup_place]': {
+           	/*'pickup_place_value': {
            	  required: "#fs_driver:visible"	
            	},
-           	'booking[return_place]': {
+           	'return_place_value': {
            	  required: "#fs_driver:visible"	
-           	},
+           	},*/
            	'conditions_read' : 'required'
            	
            },
@@ -1818,6 +1769,10 @@
 
           var comboItems = document.getElementById('pickup_place');
           
+          if (comboItems == null) {
+            return;
+          }  
+
           // Remove the options
           if (comboItems.options.length > 0)
           {
@@ -1837,6 +1792,9 @@
               comboItems.appendChild(optionItem);
           }
 
+          // stores the pick up place in the form
+          $('#pickup_place_value').val($('#pickup_place option:selected').text());
+
        },
 
        /* ------ Load return places -------- */
@@ -1845,6 +1803,10 @@
 
           var comboItems = document.getElementById('return_place');
           
+          if (comboItems == null) {
+            return;
+          }  
+
           // Remove the options
           if (comboItems.options.length > 0)
           {
@@ -1864,6 +1826,9 @@
               comboItems.appendChild(optionItem);
           }
 
+          // stores the pick up place in the form
+          $('#return_place_value').val($('#return_place option:selected').text());
+
        },
 
        /* ------ Reflect the state change ----------- */
@@ -1873,14 +1838,14 @@
        	 switch (new_state) {
        	 	
        	   case 'item_selection' : /* First state (begin process) */
+       	     this.load_pickup_places();
+       	     this.load_return_places();
        	     break;
        	        
            case 'extras_selection' : /* Second state (user choose an item and starts bookin) */
        	     this.update_information('booking_data');      	               	   
        	     this.load_items();
        	     this.load_extras();
-       	     this.load_pickup_places();
-       	     this.load_return_places();
              break;
 
        	   case 'completing_booking' : /* Third state (user choose an item and starts booking) */
@@ -1978,6 +1943,8 @@
        	     }
        	     $('#date_from_extended').val( date_time_from );  
        	     $('#date_to_extended').val( date_time_to );
+             $('#pickup_place_extended').val( bookingModel.booking.pickup_place );
+             $('#return_place_extended').val( bookingModel.booking.return_place );
 
        	   case 'booking_item' :
        	     var path='/img/clase-'+bookingModel.booking.item_id+'-big.png';

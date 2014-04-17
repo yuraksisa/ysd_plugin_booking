@@ -25,6 +25,9 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
        	 this.configureBookingGui();
        	 this.configureValidations();
          this.configureEvents();     
+
+         this.load_pickup_places();
+         this.load_return_places();
       },
 
       configureEvents: function() {
@@ -59,6 +62,67 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
          $('#dateto').datepicker('setDate', '+<%=booking_min_days%>');
        	 
        },	    	
+
+       /* ------ Load pickup places ------ */
+       load_pickup_places : function() {
+
+          var comboItems = document.getElementById('pickup_place');
+
+          if (comboItems == null) {
+            return;
+          }
+          
+          // Remove the options
+          if (comboItems.options.length > 0)
+          {
+            while (comboItems.hasChildNodes())
+            {
+              comboItems.removeChild(comboItems.firstChild);  
+            }
+          }
+          
+          // Add the new options
+          
+          for (var pickup_place_id in bookingDataSystem.pickup_places)
+          {
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', pickup_place_id);  
+              optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
+              comboItems.appendChild(optionItem);
+          }
+
+       },
+
+       /* ------ Load return places -------- */
+
+       load_return_places : function() {
+
+          var comboItems = document.getElementById('return_place');
+
+          if (comboItems == null) {
+            return;
+          }         
+          
+          // Remove the options
+          if (comboItems.options.length > 0)
+          {
+            while (comboItems.hasChildNodes())
+            {
+              comboItems.removeChild(comboItems.firstChild);  
+            }
+          }
+          
+          // Add the new options
+          
+          for (var return_place_id in bookingDataSystem.return_places)
+          {
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', return_place_id);  
+              optionItem.text = optionItem.innerText = bookingDataSystem.return_places[return_place_id];
+              comboItems.appendChild(optionItem);
+          }
+
+       },
 
 
       configureValidations : function () {

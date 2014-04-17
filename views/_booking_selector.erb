@@ -46,6 +46,19 @@
               <input type="text" name="datefrom" id="datefrom" class="fieldcontrol date_control" size="10" maxlength="10"/>
             <% end %>
 		      </div>
+          <% if booking_item_family.pickup_return_place %>
+          <div class="formrow">
+                <div class="collection_place">
+                   <label for="pickup_place" class="fieldtitle columna1"><%=t.new_booking.place%> * </label>
+                   <select name="pickup_place" class="fieldcontrol" id="pickup_place">
+                   </select>
+                </div>
+                <div>
+                   <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
+                </div>
+                <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
+          </div>                      
+          <% end %>             
 		      <div class="formrow">
 		      	<label for="dateto" id="labeldateto" class="fieldtitle">
               <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
@@ -123,6 +136,20 @@
              </select>
            </div>                       
           <% end %> 
+          <% if booking_item_family.pickup_return_place %>
+          <div class="formrow">
+                 <div class="return_place">
+                    <label for="return_place" class="fieldtitle columna1"><%=t.new_booking.place%> * </label>
+                    <select name="return_place" id="return_place" class="fieldcontrol">
+                    </select>
+                 </div>
+                 <div>
+                    <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
+                 </div>
+                 <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
+          </div>
+          <% end %>
+
 		      <div class="formrow">
 	        	<input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones"/>
 		      </div>    
