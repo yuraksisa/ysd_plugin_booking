@@ -53,6 +53,11 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.allow_custom_pickup_return_place'},
+        {:value => 'false',
+         :description => 'Allow custom pickup and return places'})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.page_title'},
         {:value => 'Bookings',
          :description => 'Booking page title',
@@ -151,7 +156,10 @@ module Huasi
       locals.store(:booking_item_family, 
         ::Yito::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
       locals.store(:booking_item_type,
-        SystemConfiguration::Variable.get_value('booking.item_type'))          
+        SystemConfiguration::Variable.get_value('booking.item_type')) 
+      locals.store(:booking_allow_custom_pickup_return_place,
+        SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+
       if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
          not booking_js.text.empty?
         locals.store(:booking_js, booking_js.text) 

@@ -14,6 +14,55 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
 
   var selectorController = {
 
+      change_pickup_place_select : function(pickup_place) { /* change pickup place */
+        
+        if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
+          $('#other_pickup_place').show();  
+          $('#pickup_place_value').val('');
+          $('#pickup_place_other').focus();
+        } 
+        else
+        {
+          $('#pickup_place_other').hide();
+          $('#pickup_place_other').val(''); 
+          $('#pickup_place_value').val(pickup_place);
+        }
+        
+      },
+      
+      blur_pickup_place_input : function(pickup_place) {
+      
+        if ($('#pickup_place_other').val() != $('#pickup_place_value').val()) {
+          $('#pickup_place_value').val(pickup_place);
+        }
+                
+      },
+     
+      change_return_place_select : function(return_place) { /* change return place */
+        
+        if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
+          $('#other_return_place').show();
+          $('#return_place_value').val('');   
+          $('#return_place_other').focus();
+        } 
+        else
+        {
+          $('#return_place_other').hide();
+          $('#return_place_other').val(''); 
+          $('#return_place_value').val(return_place);
+        }      
+      
+      },
+      
+      blur_return_place_input : function(return_place) {
+        
+        if ($('#return_place_other').val() != $('return_place_value').val()) {
+          $('return_place_value').val(return_place);
+        }
+        
+      },
+
+
   }
 
   var selectorView = {
@@ -25,6 +74,9 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
        	 this.configureBookingGui();
        	 this.configureValidations();
          this.configureEvents();     
+
+         this.load_pickup_places();
+         this.load_return_places();
       },
 
       configureEvents: function() {
@@ -36,6 +88,27 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
            $('#dateto').datepicker('setDate', dateTo );
            $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
          });
+
+         $('#pickup_place').bind('change',
+           function() {
+             selectorController.change_pickup_place_select($(this).text());
+           });
+         $('#pickup_place_other').bind('blur',
+           function() {
+             selectorController.blur_pickup_place_input($(this).val());
+           });
+         $('#pickup_place_value').val($('#pickup_place option:selected').text());  
+           
+         $('#return_place').bind('change',
+           function() {
+             selectorController.change_return_place_select($(this).val());
+           });
+         $('#return_place_other').bind('blur',
+           function() {
+             selectorController.blur_return_place_input($(this).val());
+           });
+         $('#return_place_value').val($('#return_place option:selected').text());  
+
 
       },
 
@@ -59,6 +132,81 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
          $('#dateto').datepicker('setDate', '+<%=booking_min_days%>');
        	 
        },	    	
+
+       /* ------ Load pickup places ------ */
+       load_pickup_places : function() {
+
+          var comboItems = document.getElementById('pickup_place');
+
+          if (comboItems == null) {
+            return;
+          }
+          
+          // Remove the options
+          if (comboItems.options.length > 0)
+          {
+            while (comboItems.hasChildNodes())
+            {
+              comboItems.removeChild(comboItems.firstChild);  
+            }
+          }
+          
+          // Add the new options
+          
+          for (var pickup_place_id in bookingDataSystem.pickup_places)
+          {
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', pickup_place_id);  
+              optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
+              comboItems.appendChild(optionItem);
+          }
+
+          <% if booking_allow_custom_pickup_return_place %>
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
+              optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              comboItems.appendChild(optionItem);    
+          <% end %>        
+
+       },
+
+       /* ------ Load return places -------- */
+
+       load_return_places : function() {
+
+          var comboItems = document.getElementById('return_place');
+
+          if (comboItems == null) {
+            return;
+          }         
+          
+          // Remove the options
+          if (comboItems.options.length > 0)
+          {
+            while (comboItems.hasChildNodes())
+            {
+              comboItems.removeChild(comboItems.firstChild);  
+            }
+          }
+          
+          // Add the new options
+          
+          for (var return_place_id in bookingDataSystem.return_places)
+          {
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', return_place_id);  
+              optionItem.text = optionItem.innerText = bookingDataSystem.return_places[return_place_id];
+              comboItems.appendChild(optionItem);
+          }
+
+          <% if booking_allow_custom_pickup_return_place %>
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
+              optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              comboItems.appendChild(optionItem);    
+          <% end %>            
+
+       },
 
 
       configureValidations : function () {

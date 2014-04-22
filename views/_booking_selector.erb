@@ -46,6 +46,20 @@
               <input type="text" name="datefrom" id="datefrom" class="fieldcontrol date_control" size="10" maxlength="10"/>
             <% end %>
 		      </div>
+          <% if booking_item_family.pickup_return_place %>
+          <div class="formrow">
+                <div class="collection_place">
+                   <label for="pickup_place" class="fieldtitle columna1"><%=t.new_booking.place%> * </label>
+                   <select name="pickup_place" class="fieldcontrol" id="pickup_place">
+                   </select>
+                </div>
+                <div id="other_pickup_place" style="display:none;">
+                   <span class="columna1">&nbsp;</span>
+                   <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
+                </div>
+                <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
+          </div>                      
+          <% end %>             
 		      <div class="formrow">
 		      	<label for="dateto" id="labeldateto" class="fieldtitle">
               <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
@@ -123,11 +137,26 @@
              </select>
            </div>                       
           <% end %> 
+          <% if booking_item_family.pickup_return_place %>
+          <div class="formrow">
+                 <div class="return_place">
+                    <label for="return_place" class="fieldtitle columna1"><%=t.new_booking.place%></label>
+                    <select name="return_place" id="return_place" class="fieldcontrol">
+                    </select>
+                   </div>
+                 <div id="other_return_place" style="display:none;">
+                    <span class="columna1">&nbsp;</span>
+                    <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" placeholder="<%=t.new_booking.return_place%>"/>  
+                 </div>
+                 <input type="hidden" name="return_place_value" id="return_place_value"/>
+          </div>
+          <% end %>
+
 		      <div class="formrow">
 	        	<input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones"/>
 		      </div>    
 		  </form>
     </div>
 
-<%= partial(:booking_selector_js, :locals => {:booking_min_days => booking_min_days, :booking_item_family => booking_item_family, :booking_item_type => booking_item_type, :booking_js => booking_js})%> 
+<%= partial(:booking_selector_js, :locals => {:booking_min_days => booking_min_days, :booking_item_family => booking_item_family, :booking_item_type => booking_item_type, :booking_js => booking_js, :booking_allow_custom_pickup_return_place => booking_allow_custom_pickup_return_place})%> 
 

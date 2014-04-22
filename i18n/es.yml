@@ -11,6 +11,10 @@ booking_settings:
     deposit: % Depósito
     min_days: Numero mínimo de días    
     family: Tipo de producto en alquiler
+    custom_pickup_return_place: Permitir otros lugares de entrega/recogida
+    payment: Habilitar pago online
+    general_group: General
+    payment_group: Pagos
 booking_status:
   pending_confirmation: Pendiente
   confirmed: Confirmado
@@ -30,7 +34,8 @@ booking_items:
 new_booking:
   title: Reserva
   search: Ver precios
-  choose_item: Seleccionar %1
+  choose_item: Elegir %1
+  choose_extras: Elegir extras
   complete_booking: Completar la reserva
   payment: Pago
   arrival_date: Entrada
@@ -61,6 +66,7 @@ new_booking:
   conditions_confirm: He leído y acepto <a href="%1" target="_blank">las condiciones del alquiler</a>
   continue: Continuar
   confirm: Solicitar reserva
+  pay: Confirmar reserva
   booking: Seleccionar
   payment_methods: Formas de pago
   sending_booking_request: Enviando la solicitud de reserva

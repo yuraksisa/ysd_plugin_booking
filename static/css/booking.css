@@ -414,7 +414,7 @@ label.form-reservation-error {
   color: #690404;	
 }
 
-#date_from_extended, #date_to_extended {
+.readonly-field, #date_from_extended, #date_to_extended, #pickup_place_extended, #return_place_extended{
  border-width: 0px;
  background-color: transparent;
 }
@@ -446,12 +446,10 @@ label.form-reservation-error {
  border-top: 1px solid gray;	
 }
 
-#button_confirmar_reserva {
-  display: block;
-  margin: 0 auto;
-}
 
-#button_ir_a_pagar_reserva {
+#button_continua_rellenar_datos,
+#button_ir_a_pagar_reserva,
+#button_confirmar_reserva {
   display: block;
   margin: 0 auto;
 }
