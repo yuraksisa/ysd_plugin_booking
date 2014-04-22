@@ -491,6 +491,8 @@
       
       start_booking : function (item, optional) {
       	
+        bookingModel.booking.pickup_place = $('#pickup_place_value').val();
+        bookingModel.booking.return_place = $('#return_place_value').val();
       	bookingModel.choose_item(item, optional);
          
       },
@@ -516,7 +518,7 @@
       change_pickup_place_select : function(pickup_place) { /* change pickup place */
         
         if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
-          $('#pickup_place_other').show();	
+          $('#other_pickup_place').show();	
           $('#pickup_place_value').val('');
           $('#pickup_place_other').focus();
         } 
@@ -540,7 +542,7 @@
       change_return_place_select : function(return_place) { /* change return place */
       	
       	if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
-          $('#return_place_other').show();
+          $('#other_return_place').show();
           $('#return_place_value').val(''); 	
           $('#return_place_other').focus();
         } 
@@ -700,9 +702,7 @@
          // Configure item behaviour
          $('#booking\\[item_id\\]').bind('change',
            function() {
-           	
            	 bookingController.change_item($(this).val(), $(this).find(":selected").attr('data-optional'));
-           	
            });
           	 
        	 // Configure the pickup_place and return_place behaviour
@@ -762,6 +762,10 @@
        	  var number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
        	  var number_of_children = decodeURIComponent(url_vars['number_of_children']);
        	  var source = decodeURIComponent(url_vars['source']);
+          var pickup_place = decodeURIComponent(url_vars['pickup_place']);
+          var pickup_place_other = decodeURIComponent(url_vars['pickup_place_other']);
+          var return_place = decodeURIComponent(url_vars['return_place']);
+          var return_place_other = decodeURIComponent(url_vars['return_place_other']);
        	  
           if (source != 'undefined') {
           	$('#booking\\[source\\]').val(source);
@@ -773,10 +777,14 @@
             $('#timefrom').val(timefrom);
             $('#dateto').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", dateto)); 
             $('#timeto').val(timeto);    
+            $('#pickup_place').val(pickup_place);
+            $('#pickup_place_other').val(pickup_place_other);
+            $('#return_place').val(return_place);
+            $('#return_place_other').val(return_place);
             this.configureDates();   	   
             this.calculate_prices();
-
        	  }
+
        },        
            
        configureDates : function() {
@@ -1199,7 +1207,6 @@
           }
           
           // Add the new options
-          
           for (var pickup_place_id in bookingModel.pickup_places)
           {
               var optionItem = document.createElement('option');
@@ -1207,6 +1214,13 @@
               optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
               comboItems.appendChild(optionItem);
           }
+
+          <% if booking_allow_custom_pick_return_place %>
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
+              optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              comboItems.appendChild(optionItem);    
+          <% end %>
 
           // stores the pick up place in the form
           $('#pickup_place_value').val($('#pickup_place option:selected').text());
@@ -1242,6 +1256,13 @@
               comboItems.appendChild(optionItem);
           }
 
+          <% if booking_allow_custom_pick_return_place %>
+              var optionItem = document.createElement('option');
+              optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
+              optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              comboItems.appendChild(optionItem);    
+          <% end %>          
+
           // stores the pick up place in the form
           $('#return_place_value').val($('#return_place option:selected').text());
 
@@ -1265,14 +1286,7 @@
              break;
 
        	   case 'completing_booking' : /* Third state (user choose an item and starts booking) */
-/*       	 this.update_information('booking_data');      	               	   
-       	     this.load_items();
-       	     this.load_extras();
-       	     this.load_pickup_places();
-       	     this.load_return_places();
-*/
        	     break;
-
 
            case 'continue_booking' : /* Alternative state (user comes back to complete booking) */
              break;

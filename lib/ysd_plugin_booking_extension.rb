@@ -53,6 +53,11 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.allow_custom_pickup_return_place'},
+        {:value => 'false',
+         :description => 'Allow custom pickup and return places'})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.page_title'},
         {:value => 'Bookings',
          :description => 'Booking page title',

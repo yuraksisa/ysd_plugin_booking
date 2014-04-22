@@ -91,8 +91,9 @@
 	                 <select name="pickup_place" class="fieldcontrol" id="pickup_place">
 	                 </select>
 	              </div>
-	              <div>
-	                 <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
+	              <div id="other_pickup_place" style="display:none;">
+	                 <span class="columna1">&nbsp;</span>
+	                 <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
 	              </div>
 	              <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
 	          </div>          		      	
@@ -148,8 +149,9 @@
 	      	          <select name="return_place" id="return_place" class="fieldcontrol">
 	                  </select>
                    </div>
-	               <div>
-	                  <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
+	               <div id="other_return_place" style="display:none;">
+	               	  <span class="columna1">&nbsp;</span>
+	                  <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" placeholder="<%=t.new_booking.return_place%>"/>  
 	               </div>
 	               <input type="hidden" name="return_place_value" id="return_place_value"/>
 	          </div>
@@ -168,7 +170,7 @@
 
       <div id="other-tabs" class="bottom-margin" style="display:none">
 
-        <!-- The summary header -->
+        <!-- The summary header (shown in all the other tabs) -->
         <div id="other-tabs-header" class="guiblock">
           <div class="container_12">
             <div >
@@ -261,7 +263,6 @@
         <!-- EXTRAS SELECTION TAB -->
         <div id="extras-selection" class="bottom-margin" style="display:none">
       	  <form>
-
 	        <fieldset id="fs_summary_extras">
 	          <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
 	          <table id="tblextras">
@@ -269,7 +270,6 @@
 	            </tbody>
 	          </table>
 	        </fieldset>
-
 	        <div class="content_data_box">
 	          <fieldset>
 	            <input type="button" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
@@ -469,13 +469,18 @@
             <% else %>
               <input type="hidden" name="booking[payment]" value="total"/>          
             <% end %> 	
+
             <div id="payment_methods">
                <h4 class="top-margin bottom-margin"><%=t.new_booking.payment_methods%></h4>
                <div id="payment_methods_selector"></div>
             </div>
-            <div class="formrow-botonera">
-               <input type="submit" class="form-button botones" value="<%=t.new_booking.booking%>"/>
-            </div>
+
+	        <div class="content_data_box top-margin-2lines bottom-margin-1line">
+	          <fieldset>
+               <input id="button_confirmar_reserva" type="submit" class="form-button botones" value="<%=t.new_booking.pay%>"/>
+	          </fieldset>
+	        </div>
+
 	        <div id="payment_error">
 	        </div>	          
           </form>
@@ -570,7 +575,8 @@
   
   <script type="text/tpml" id="script_booking_summary">
 
-      <p class="content_data_box" style="text-align: center; margin-left:auto; margin-right: auto; display: table">
+      <p class="content_data_box all-full-space box-shadow background-color-highlight-2" 
+         style="text-align: center; margin-left:auto; margin-right: auto; display: table">
          <%=t.new_booking.confirm_message%>
       </p>
 
