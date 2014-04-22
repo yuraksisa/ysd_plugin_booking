@@ -708,7 +708,7 @@
        	 // Configure the pickup_place and return_place behaviour
        	 $('#pickup_place').bind('change',
        	   function() {
-       	   	 bookingController.change_pickup_place_select($(this).text());
+       	   	 bookingController.change_pickup_place_select($('#pickup_place option:selected').text());
        	   });
        	 $('#pickup_place_other').bind('blur',
        	   function() {
@@ -718,7 +718,7 @@
        	   
        	 $('#return_place').bind('change',
        	   function() {
-       	   	 bookingController.change_return_place_select($(this).val());
+       	   	 bookingController.change_return_place_select($('#return_place option:selected').text());
        	   });
        	 $('#return_place_other').bind('blur',
        	   function() {

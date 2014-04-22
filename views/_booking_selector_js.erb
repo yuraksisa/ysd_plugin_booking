@@ -91,7 +91,7 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
 
          $('#pickup_place').bind('change',
            function() {
-             selectorController.change_pickup_place_select($(this).text());
+             selectorController.change_pickup_place_select($('#pickup_place option:selected').text());
            });
          $('#pickup_place_other').bind('blur',
            function() {
@@ -101,7 +101,7 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
            
          $('#return_place').bind('change',
            function() {
-             selectorController.change_return_place_select($(this).val());
+             selectorController.change_return_place_select($('#return_place option:selected').text());
            });
          $('#return_place_other').bind('blur',
            function() {
