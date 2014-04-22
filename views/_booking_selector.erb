@@ -53,10 +53,11 @@
                    <select name="pickup_place" class="fieldcontrol" id="pickup_place">
                    </select>
                 </div>
-                <div>
-                   <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.pickup_place%>"/>
+                <div id="other_pickup_place" style="display:none;">
+                   <span class="columna1">&nbsp;</span>
+                   <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
                 </div>
-                <input type="hidden" name="booking[pickup_place]" id="booking[pickup_place]"/>
+                <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
           </div>                      
           <% end %>             
 		      <div class="formrow">
@@ -139,14 +140,15 @@
           <% if booking_item_family.pickup_return_place %>
           <div class="formrow">
                  <div class="return_place">
-                    <label for="return_place" class="fieldtitle columna1"><%=t.new_booking.place%> * </label>
+                    <label for="return_place" class="fieldtitle columna1"><%=t.new_booking.place%></label>
                     <select name="return_place" id="return_place" class="fieldcontrol">
                     </select>
+                   </div>
+                 <div id="other_return_place" style="display:none;">
+                    <span class="columna1">&nbsp;</span>
+                    <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" placeholder="<%=t.new_booking.return_place%>"/>  
                  </div>
-                 <div>
-                    <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" style="display:none;" placeholder="<%=t.new_booking.return_place%>"/>  
-                 </div>
-                 <input type="hidden" name="booking[return_place]" id="booking[return_place]"/>
+                 <input type="hidden" name="return_place_value" id="return_place_value"/>
           </div>
           <% end %>
 
@@ -156,5 +158,5 @@
 		  </form>
     </div>
 
-<%= partial(:booking_selector_js, :locals => {:booking_min_days => booking_min_days, :booking_item_family => booking_item_family, :booking_item_type => booking_item_type, :booking_js => booking_js})%> 
+<%= partial(:booking_selector_js, :locals => {:booking_min_days => booking_min_days, :booking_item_family => booking_item_family, :booking_item_type => booking_item_type, :booking_js => booking_js, :booking_allow_custom_pickup_return_place => booking_allow_custom_pickup_return_place})%> 
 

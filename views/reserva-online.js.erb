@@ -778,9 +778,15 @@
             $('#dateto').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", dateto)); 
             $('#timeto').val(timeto);    
             $('#pickup_place').val(pickup_place);
-            $('#pickup_place_other').val(pickup_place_other);
+            $('#pickup_place_other').val(pickup_place_other.replace(/\+/g, ' '));
+            if (pickup_place == '<%=t.new_booking.other%>') {
+              $('#other_pickup_place').show();
+            }
             $('#return_place').val(return_place);
-            $('#return_place_other').val(return_place);
+            $('#return_place_other').val(return_place.replace(/\+/g, ' '));
+            if (return_place == '<%=t.new_booking.other%>') {
+              $('other_return_place').show();
+            }
             this.configureDates();   	   
             this.calculate_prices();
        	  }
@@ -1215,7 +1221,7 @@
               comboItems.appendChild(optionItem);
           }
 
-          <% if booking_allow_custom_pick_return_place %>
+          <% if booking_allow_custom_pickup_return_place %>
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
               optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
@@ -1256,7 +1262,7 @@
               comboItems.appendChild(optionItem);
           }
 
-          <% if booking_allow_custom_pick_return_place %>
+          <% if booking_allow_custom_pickup_return_place %>
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
               optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
@@ -1494,26 +1500,27 @@
                 if ($('#booking\\[payment_method_id\\]_container').children().length == 0) {
                    $('#payments_methods h3').hide();	
                 } 
-     	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
+     	   	      this.tabs['tab-choose-item'].setState('not-enabled'); 
        	   	    this.tabs['tab-choose-extras'].setState('not-enabled');       	   	    
        	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
        	   	    this.tabs['tab-payment'].setState('active');                
                 break;
        	   	  
               case 'process_completed': /* Summary tab */
-                $('#other-tabs').hide();
-         	    $('#item-selection').hide();
-         	    $('#extras-selection').hide();
-         	    $('#form-reservation').hide();
-         	    $('#booking-payment').hide();
-		       	var data = $('#form-reservation').formParams(false);
-		       	data.bookingConfiguration = bookingDataSystem.configuration;   
-		       	var message = tmpl('script_booking_finished', data);
-		       	$('#booking-complete-message').html(message);
+                $('#other-tabs').show();
+                $('#other-tabs-header').hide();
+         	      $('#item-selection').hide();
+         	      $('#extras-selection').hide();
+         	      $('#form-reservation').hide();
+         	      $('#booking-payment').hide();
+		       	    var data = $('#form-reservation').formParams(false);
+		       	    data.bookingConfiguration = bookingDataSystem.configuration;   
+		       	    var message = tmpl('script_booking_finished', data);
+		       	    $('#booking-complete-message').html(message);
        	        $('#booking-complete-message').show();
        	        
-     	   	    this.tabs['tab-choose-item'].setState('not-enabled');
-     	   	    this.tabs['tab-choose-extras'].setState('not-enabled');  
+     	   	      this.tabs['tab-choose-item'].setState('not-enabled');
+     	   	      this.tabs['tab-choose-extras'].setState('not-enabled');  
        	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
        	   	    this.tabs['tab-payment'].setState('not-enabled');  
 
