@@ -6,6 +6,25 @@ module Sinatra
       
       def self.registered(app)
         
+        app.get '/booking/statistics', :allowed_usergroups => ['booking_manager', 'staff']  do
+
+          received = BookingDataSystem::Booking.reservations_received
+          confirmed = BookingDataSystem::Booking.reservations_confirmed
+          
+          result = {}
+
+          received.each do |item|
+            result.store(item.period, :requests => item.occurrences, :confirmed => 0)
+          end
+          
+          confirmed.each do |item|
+            result.fetch(item.period).store(:confirmed, item.occurrences)
+          end
+
+          result.to_json
+
+        end
+
         # Booking scheduler
         app.get '/booking/scheduler' do
 

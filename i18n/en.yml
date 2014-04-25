@@ -15,6 +15,18 @@ booking_settings:
     payment: Enable online payment
     general_group: General
     payment_group: Payment
+booking_console:
+  title: Reservations
+  configuration: Configuration
+  categories: Categories
+  extras: Extras
+  items: Items
+  rates: Rates 
+  reservations: Reservations
+  planning: Planning    
+  period: Period
+  requested: Requests
+  confirmed: Confirmed  
 booking_status:
   pending_confirmation: Pending
   confirmed: Confirmed

@@ -11,6 +11,18 @@ booking_settings:
     deposit: % Dipòsit
     min_days: Numero mínim de dies
     family: Tipus de producte en lloger
+booking_console:
+  title: Reserves
+  configuration: Configuració
+  categories: Categories
+  extras: Extres
+  items: Items
+  rates: Tarifes 
+  reservations: Reserves
+  planning: Planning
+  period: Període
+  requested: Solicituds
+  confirmed: Confirmades
 booking_status:
   pending_confirmation: Pendent
   confirmed: Confirmat
