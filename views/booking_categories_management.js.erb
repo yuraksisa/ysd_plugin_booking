@@ -1,0 +1,38 @@
+require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks", "jquery.ui", "YSDjson2"], function($, EntityManagement, EntityManagementComplementHooks) {
+    
+  var bookingItemCategory = {
+     
+       
+    entityKey : function(entity) {
+      return entity.code;
+    },
+
+    onEdit : function(entity) {
+      $('#code').attr('code', true);
+      $('#name').focus();
+    },
+  
+    onNew : function() {
+      $('#reference').focus();
+    }          
+
+
+  };
+
+  var urls = { query_url  : '/api/booking-categories',
+               create_url : '/api/booking-category',
+               update_url : '/api/booking-category',
+               delete_url : '/api/booking-category',
+               get_url    : '/api/booking-category'
+             };
+  
+  var hooks = [bookingItemCategory];
+  
+  // Add the complement hooks
+  hooks = hooks.concat(EntityManagementComplementHooks.complements);
+                 
+  var contentsManager = new EntityManagement(urls, 'booking_category', 20, hooks,
+    {prefix: '/admin'});
+
+  
+});

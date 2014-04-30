@@ -4,13 +4,20 @@ system_admin_menu:
       title: Gestió de reserves
       bookings: Reserves
       bookings_scheduler: Agenda
+      booking_categories: Categories
+      booking_items: Items      
 booking_settings:
   form:
     title: Configuració sistema de reserves
     notification_email: Email de notificació
-    deposit: % Dipòsit
+    deposit: \% Dipòsit
     min_days: Numero mínim de dies
     family: Tipus de producte en lloger
+booking_rates:
+  title: Gestió temporades i preus
+  seasons: Temporades
+  how_many_seasons: Quantes temporades?
+  rates: Preus      
 booking_console:
   title: Reserves
   configuration: Configuració
@@ -101,6 +108,26 @@ booking_management:
     other: Més informació
     free_access_id: Accès directe   
     payment_method: Forma de pagament 
+booking_category_management:
+  form:
+    title: Gestió de categories
+    code:
+      label: Codi
+    name:
+      label: Nom
+    description:
+      label: Descripció
+booking_item_management:
+  form:
+    title: Gestió items de reserva
+    reference: 
+      label: Referència
+    category:
+      label: Categoria
+    name:
+      label: Nom
+    description:
+      label: Descripció      
 booking:
   days: !!pl
     1: 1 dia

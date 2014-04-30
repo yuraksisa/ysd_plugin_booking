@@ -1,0 +1,99 @@
+<%= include('entity-management') %>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_title">
+  <h2 class="entity-title"><%=t.booking_category_management.form.title%></h2> 
+</script>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_description">
+</script>
+
+<!-- Renders the elements container -->
+<script type="text/tmpl" id="elements_container_template">
+  <table id="elements_table" class="table">
+     <thead class="table-header">
+       <tr>
+         <th class="table-header-title" scope="col" style="width:50%"><%= t.booking_category_management.form.code.label %></th>
+         <th class="table-header-title" scope="col" style="width:50%"><%= t.booking_category_management.form.name.label %></th>
+       </tr>
+     </thead>
+     <tbody id="elements_tbody" class="table-tbody">             
+     </tbody>
+  </table>
+</script>
+
+<!-- Renders one element in the elements list view -->
+        
+<script type="text/tmpl" id="elements_list_template">
+    <tr class="table-row element-navigation-detail" rel="<%%= index %>" id="element_row_<%%=index%>">
+      <td class="table-cell"><%%= entity.code %></td>
+      <td class="table-cell"><%%= entity.name %></td>
+    </tr>
+</script>
+
+<!-- Renders one element in the element view (full detailed) -->
+
+<script type="text/tmpl" id="element_template">
+   
+</script>
+
+<!-- Renders the form to edit an element -->
+
+<script type="text/tmpl" id="element_template_form">
+              
+     <form name="element" method="POST">
+        
+        <div class="form-fields">
+                                   
+          <div class="container_12"> 
+            <div class="grid_12">
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.code.label %></label>
+                <input type="text" maxlength="20" id="code" name="code" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.code %>" <%% } %>/>
+              </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.name.label %></label>
+                <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
+              </div>              
+              <div class="formrow">
+                 <label class="fieldtitle"><%= t.booking_category_management.form.description.label %></label>
+                 <textarea rows="20" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+              </div>
+            </div>
+          </div>
+
+          <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
+                                            :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
+                                            :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
+                                            :new_element_form_above => new_element_form_above,
+                                            :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
+                                            :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
+
+          <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
+                                            :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
+                                            :edit_element_form_ingroup => edit_element_form_ingroup,
+                                            :new_element_form => new_element_form,
+                                            :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
+                                            :new_element_form_ingroup => new_element_form_ingroup}) %>
+                        
+        </div>
+                       
+        <div class="bottom-navigation-bar navigation-bar">
+             <div class="navigation-bar-crud-buttons">
+                <%% if (entity) { %>
+                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                <%% } 
+                   else { %>
+                  <input type="submit" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                <%% } %>
+             </div>
+        </div>
+     
+     </form>
+     
+</script>
+
+<%= element_form_extension if defined?element_form_extension %>
+<%= element_extension if defined?element_extension %>
+<%= element_action_extension if defined?element_action_extension %>

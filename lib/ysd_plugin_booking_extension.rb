@@ -154,7 +154,7 @@ module Huasi
       locals.store(:booking_min_days,
         SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
       locals.store(:booking_item_family, 
-        ::Yito::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+        ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
       locals.store(:booking_item_type,
         SystemConfiguration::Variable.get_value('booking.item_type')) 
       locals.store(:booking_allow_custom_pickup_return_place,
@@ -191,8 +191,22 @@ module Huasi
                      :options => {:title => app.t.system_admin_menu.apps.bookings_menu.title,
                                   :description => 'Bookings',
                                   :module => :booking,
-                                  :weight => 2}
+                                  :weight => 5}
                     },
+                    {:path => '/apps/bookings/booking-categories',              
+                     :options => {:title => app.t.system_admin_menu.apps.bookings_menu.booking_categories,
+                                  :link_route => "/admin/booking-categories",
+                                  :description => 'Booking categories management',
+                                  :module => :booking,
+                                  :weight => 4}
+                    },
+                    {:path => '/apps/bookings/bookings',              
+                     :options => {:title => app.t.system_admin_menu.apps.bookings_menu.booking_items,
+                                  :link_route => "/admin/booking-items",
+                                  :description => 'Booking items management',
+                                  :module => :booking,
+                                  :weight => 3}
+                    },                                        
                     {:path => '/apps/bookings/bookings',              
                      :options => {:title => app.t.system_admin_menu.apps.bookings_menu.bookings,
                                   :link_route => "/admin/bookings",
@@ -226,12 +240,22 @@ module Huasi
                  :description => 'Formulario para realizar reserva',
                  :fit => 1,
                  :module => :booking},
+               {:path => '/apps/bookings/booking-categories',
+                  :regular_expression => /^\/admin\/booking-categories/,
+                  :title => 'Booking categories',
+                  :fit => 1,
+                  :module => :booking}, 
+                {:path => '/apps/bookings/booking-items',
+                  :regular_expression => /^\/admin\/booking-items/,
+                  :title => 'Booking items',
+                  :fit => 1,
+                  :module => :booking},                 
                 {:path => '/apps/bookings/bookings',
                  :regular_expression => /^\/admin\/bookings/, 
                  :title => 'Bookings', 
                  :description => 'Booking management',
                  :fit => 1,
-                 :module => :booking },
+                 :module => :booking },   
                 {:path => '/apps/bookings/scheduler',
                  :regular_expression => /^\/admin\/bookings\/scheduler/, 
                  :title => 'Scheduler', 
@@ -242,19 +266,5 @@ module Huasi
         
     end
     
-    #
-    # It gets the style sheets defined in the module
-    #
-    # @param [Context]
-    #
-    # @return [Array]
-    #   An array which contains the css resources used by the module
-    #
-    #def page_style(context={})
-    #  [
-    #    '/booking/css/booking.css'         
-    #  ]       
-    #end
-
   end
 end

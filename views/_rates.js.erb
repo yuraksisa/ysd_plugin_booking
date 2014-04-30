@@ -1,0 +1,25 @@
+require(['YSDSpreadSheet'], function(Spreadsheet) {
+
+  seasonsModel = {
+
+  };
+
+  seasonsController = {
+
+  };
+
+  seasonsView = {
+
+    spreadsheet : null,
+
+    init : function() {
+
+      spreadsheet = new Spreadsheet("rates_table", [1,2,3,4,5,6,7,8,9,10],
+         ["A","B","C","D","E","F","G"], 10, "temporada/categoría", "rates", 6, "rates");
+
+    }
+
+  };
+
+  seasonsView.init();
+});

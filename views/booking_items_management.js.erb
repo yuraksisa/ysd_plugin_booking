@@ -1,0 +1,55 @@
+
+require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
+         "YSDRemoteDataSource", "jquery.ui", "YSDjson2"],
+         function($, EntityManagement, EntityManagementComplementHooks, YSDRemoteDataSource) {
+    
+  var bookingItemHook = {
+     
+    entity: null,
+       
+    entityKey : function(entity) {
+      return entity.reference;
+    },
+
+    onEdit : function(entity) {
+      this.entity = entity;
+      $('#reference').attr('readonly', true);
+      $('#name').focus();
+      this.configForm(); 
+    },
+  
+    onNew : function() {
+      this.entity = null;
+      $('#reference').focus();
+      this.configForm();
+    },
+        
+    /* ------- Internal function --------- */
+    
+    configForm : function() {
+      var categoryDataSource = new RemoteDataSource('/api/booking-category');
+      var categoryValue = (entity && entity.category_id)?entity.category_id:null;
+      var categorySelector = new SelectSelector('category', categoryDataSource, categoryValue); 
+    },
+      
+
+
+  };
+
+  var urls = { query_url  : '/api/booking-items',
+               create_url : '/api/booking-item',
+               update_url : '/api/booking-item',
+               delete_url : '/api/booking-item',
+               get_url    : '/api/booking-item'
+             };
+  
+  var hooks = [bookingItemHook];
+  
+  // Add the complement hooks
+  hooks = hooks.concat(EntityManagementComplementHooks.complements);
+                 
+  var contentsManager = new EntityManagement(urls, 'booking_item', 20, hooks,
+    {prefix: '/admin'});
+
+  
+});

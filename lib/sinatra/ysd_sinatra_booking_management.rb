@@ -23,14 +23,32 @@ module Sinatra
         # Booking configuration
         #
         app.get '/config/booking', :allowed_usergroups => ['booking_manager', 'staff'] do
-          locals = {:families => Hash[ *::Yito::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ]  }
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ]  }
           load_page(:config_booking, {:locals => locals})
+        end
+
+        #
+        # Booking rates management
+        #
+        app.get '/admin/bookings/rates', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          context = {:app => self}
+          locals = {}
+          
+          seasonBlock = ::Yito::View::Block::SeasonBlock.new
+          ratesBlock = ::Yito::View::Block::RatesBlock.new
+
+          locals.store(:season_block, seasonBlock.html(context))
+          locals.store(:rates_block, ratesBlock.html(context))
+          locals.store(:scripts, seasonBlock.jscript(context) << ratesBlock.jscript(context))
+
+          load_page(:booking_rates, :locals => locals)
         end
 
         #
         # Bookings scheduler
         #
-        app.get '/admin/bookings/scheduler', :allowed_usergroups => ['booking_manager'] do
+        app.get '/admin/bookings/scheduler', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           load_page(:bookings_scheduler)
 

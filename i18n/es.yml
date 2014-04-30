@@ -4,17 +4,24 @@ system_admin_menu:
       title: Gestión de reservas
       bookings: Reservas
       bookings_scheduler: Agenda
+      booking_categories: Categorías
+      booking_items: Items
 booking_settings:
   form:
     title: Configuración sistema de reservas
     notification_email: Email de notificación
-    deposit: % Depósito
+    deposit: \% Depósito
     min_days: Numero mínimo de días    
     family: Tipo de producto en alquiler
     custom_pickup_return_place: Permitir otros lugares de entrega/recogida
     payment: Habilitar pago online
     general_group: General
     payment_group: Pagos
+booking_rates:
+  title: Tarifas    
+  seasons: Temporadas
+  how_many_seasons: ¿Cuántas temporadas?
+  rates: Precios  
 booking_console:
   title: Reservas
   configuration: Configuración
@@ -280,11 +287,31 @@ booking_management:
     drive_address_zip: Código postal
     other: Otra información
     free_access_id: Acceso directo
-    payment_method: Forma de pago    
+    payment_method: Forma de pago 
+booking_category_management:
+  form:
+    title: Gestión de categories
+    code:
+      label: Código
+    name:
+      label: Nombre
+    description:
+      label: Descripción    
+booking_item_management:
+  form:
+    title: Gestión items de reserva
+    reference: 
+      label: Referencia
+    category:
+      label: Categoría      
+    name:
+      label: Nombre
+    description:
+      label: Descripción            
 booking:
   days: !!pl
     1: 1 día
-    n: %1 días
+    n: \%1 días
   title: Reserva %1
   id: Su identificador de reserva es <strong>%1</strong>. <span class="less_contrast_text smaller_text">Use su identificador de reserva en todas las comunicaciones.</span>
   arrival: Entrada

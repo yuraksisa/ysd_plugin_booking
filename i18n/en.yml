@@ -4,17 +4,24 @@ system_admin_menu:
       title: Booking management
       bookings: Bookings
       bookings_scheduler: Scheduler
+      booking_categories: Categories
+      booking_items: Items      
 booking_settings:
   form:
     title: Booking configuration
     notification_email: Notification email address
-    deposit: % Diposit
+    deposit: \∫% Diposit
     min_days: Minimum days   
     family: Product type
     custom_pickup_return_place: Custom pickup/return places
     payment: Enable online payment
     general_group: General
     payment_group: Payment
+booking_rates:
+  title: Rates
+  seasons: Seasons
+  how_many_seasons: How many seasons?
+  rates: Prices
 booking_console:
   title: Reservations
   configuration: Configuration
@@ -277,11 +284,31 @@ booking_management:
     other: Other information
     free_access_id: Direct access    
     payment_method: Payment method
+booking_category_management:
+  form:
+    title: Categories management
+    code:
+      label: Code
+    name:
+      label: Name
+    description:
+      label: Description    
+booking_item_management:
+  form:
+    title: Booking item management 
+    reference: 
+      label: Reference
+    category:
+      label: Category      
+    name:
+      label: Name
+    description:
+      label: Description   
 booking:
   days: !!pl
     1: 1 day
-    n: %1 days
-  title: %1 booking
+    n: \%1 days
+  title: \%1 booking
   id: Your booking id is <strong>%1</strong>. <span class="smaller_text less_contrast_text">Use the above booking id in all your communications.</span>
   arrival: Arrival
   departure: Departure 

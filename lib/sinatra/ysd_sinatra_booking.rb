@@ -57,7 +57,7 @@ module Sinatra
           locals = {}
 
           locals.store(:booking_item_family, 
-            ::Yito::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+            ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
 
           locals.store(:booking_item_type,
             SystemConfiguration::Variable.get_value('booking.item_type'))
