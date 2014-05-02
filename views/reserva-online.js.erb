@@ -483,7 +483,12 @@
       /* calculate the prices */
       	
       calculate_prices : function (date_from, time_from, date_to, time_to, pickup_place, return_place) {
-      	bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
+        
+        if (typeof _gaq != 'undefined') {
+          _gaq.push(['_trackEvent', 'Reservations', 'Show prices', date_from.toString("dd-MM-yyyy") + ' ' + date_to.toString("dd-MM-yyyy")]);
+        }
+      	
+        bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
       	bookingView.show_prices();
       },	
     
@@ -491,12 +496,37 @@
       
       start_booking : function (item, optional) {
       	
+        if (typeof _gaq != 'undefined') {
+          _gaq.push(['_trackEvent', 'Reservations', 'Choose item', item]);
+        }
+
         bookingModel.booking.pickup_place = $('#pickup_place_value').val();
         bookingModel.booking.return_place = $('#return_place_value').val();
       	bookingModel.choose_item(item, optional);
          
       },
       
+     go_to_fill_data_click : function() { /* Go to fill data button click */
+
+        if (typeof _gaq != 'undefined') {
+          _gaq.push(['_trackEvent', 'Reservations', 'Filling reservation']);
+        }
+      
+        bookingModel.go_to_fill_data();
+
+      },
+      
+      go_to_booking_payment_click: function() { /* Go to payment button click */
+
+        bookingModel.go_to_payment();
+
+      },
+
+      confirm_booking : function (data) { /* Confirm button click */
+        bookingModel.confirm_booking(data);
+      },
+
+
       change_item : function (item, optional) {
       	
       	bookingModel.change_item(item, optional);
@@ -561,22 +591,6 @@
           $('return_place_value').val(return_place);
         }
       	
-      },
-
-      go_to_fill_data_click : function() { /* Go to fill data button click */
-      
-        bookingModel.go_to_fill_data();
-
-      },
-      
-      go_to_booking_payment_click: function() { /* Go to payment button click */
-
-        bookingModel.go_to_payment();
-
-      },
-
-      confirm_booking : function (data) { /* Confirm button click */
-        bookingModel.confirm_booking(data);
       },
         
       /* Copy customer name to driver name */
