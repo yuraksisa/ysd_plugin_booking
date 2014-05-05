@@ -797,12 +797,20 @@
             $('#pickup_place').val(pickup_place);
             $('#pickup_place_other').val(pickup_place_other.replace(/\+/g, ' '));
             if (pickup_place == '<%=t.new_booking.other%>') {
+              $('#pickup_place_value').val($('#pickup_place_other').val());
               $('#other_pickup_place').show();
+            }
+            else {
+              $('#pickup_place_value').val($('#pickup_place option:selected').text()); 
             }
             $('#return_place').val(return_place);
             $('#return_place_other').val(return_place.replace(/\+/g, ' '));
             if (return_place == '<%=t.new_booking.other%>') {
+              $('#return_place_value').val($('#return_place_other').val());
               $('other_return_place').show();
+            }
+            else {
+              $('#return_place_value').val($('#return_place option:selected').text()); 
             }
             this.configureDates();   	   
             this.calculate_prices();
