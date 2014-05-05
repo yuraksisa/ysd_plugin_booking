@@ -523,6 +523,9 @@
       },
 
       confirm_booking : function (data) { /* Confirm button click */
+        if (typeof _gaq != 'undefined') {
+          _gaq.push(['_trackEvent', 'Reservations', 'Confirm Booking']);
+        }        
         bookingModel.confirm_booking(data);
       },
 

@@ -191,18 +191,20 @@ color:#999999;
 /* ----------------------------- */
 
 #content-reserva #wizard-navigation {
- height: 40px;
- margin-top:10px;
+ margin-top: 0.808em;
+ margin-bottom: 0.808em;
 }
 
 #content-reserva #wizard-options {
  font-size: 20px;
  list-style-type: none;
- display: inline;
+ display: inline-block;
 }
 
 #content-reserva #wizard-options li {
  float: left;
+ margin-bottom: 0.808em;
+ height: 2.5em;
 }
 
 #content-reserva #wizard-options a {
@@ -210,8 +212,8 @@ color:#999999;
 }
 
 #content-reserva #wizard-options a span {
- font-size: 20px;	
- padding: 5px 10px;  
+ font-size: 1.618em;	
+ padding: 0px 10px;  
  text-decoration: none;
  /* Esquinas redondeadas */
  -webkit-border-radius: 5px 5px; /* Safari  */ 
@@ -259,22 +261,16 @@ color:#999999;
 /*    Search Item Form           */
 /* ----------------------------- */
 
-#timefrom, #timeto {
-  height: 34px;
-  position: relative;
-  top: -1px;
+#timefrom, #timeto, #pickup_place, #return_place {
+  height: 2em;
 }
 
 #form-search-item {
-  padding: 10px 10px 5px 10px;
+  padding: 0px 10px 10px 10px;
 }
 
 #form-search-item div { /* Each components lines is displayed in a div */ 
   overflow: hidden;
-  clear: left; /* Para limpiar los floats */
-  /*margin-right: 30px; */
-  /*margin-bottom: 5px;*/
-  /*margin-top: 5px;*/
 }
 
 #button_calcular_tarifas {
@@ -285,7 +281,7 @@ color:#999999;
   background-image: -webkit-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
   background-image: -ms-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
   background-image: -webkit-gradient( linear, left top, left bottom, color-stop(0.25, rgb(70, 136, 207)), color-stop(0.71, rgb(121, 169, 214)));  
-  padding: 9px;
+  padding: 1.618em;
   color: white;
   text-transform: uppercase;
   font-size: small;  
@@ -317,6 +313,16 @@ color:#999999;
 /* ------------------------------------------------ */
 /*           Search Items RESULT                    */
 /* ------------------------------------------------ */
+
+@media(max-width:600px) {
+  #result img {
+    margin: 0 auto;
+    display: block;
+  }
+  .car_detail_description, .car_detail_cars, .car_price_total, .car_price_booking {
+     text-align: center;
+  }
+}
 
 #content-reserva div.car{	
   margin-top: 5px; /* Margin between cars */
@@ -353,8 +359,7 @@ color:#999999;
 }
 
 #content-reserva div.car_price_booking {
-  margin: 0 auto;
-  width: 75px;		
+  text-align: center;		
 }
 
 #content-reserva .car_price span{	
