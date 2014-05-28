@@ -16,6 +16,7 @@ module Sinatra
         app.settings.translations = Array(app.settings.translations).push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'i18n')))      
       
         app.set :bookingcharge_gateway_return_ok, '/p/booking/payment-gateway-return/ok'
+        app.set :bookingcharge_gateway_return_cancel, '/p/booking/payment-gateway-return/cancel'
         app.set :bookingcharge_gateway_return_nok, '/p/booking/payment-gateway-return/nok'
         
         #
@@ -122,11 +123,15 @@ module Sinatra
 
         #
         # It returns from the payment gateway when the payment has been done
+        # 
+        # Notifies to the user that the reservation has finished
         #   
         app.get '/p/booking/payment-gateway-return/ok' do
-          if session.has_key?('booking_id')
+
+          if session[:charge_id]
+            booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
             locals = {}
-            locals.store(:booking, BookingDataSystem::Booking.get(session['booking_id']))
+            locals.store(:booking, booking)
             locals.store(:booking_deposit, SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
             load_page('reserva-finalizada'.to_sym, :locals => locals)
           else
@@ -136,12 +141,36 @@ module Sinatra
         end
 
         #
+        # It returns from the payment gateway when the user returns or cancel
+        #
+        # Shows the reservation information
+        #
+        app.get '/p/booking/payment-gateway-return/cancel' do
+
+          if session[:charge_id]
+             booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
+             locals = {:booking => booking}
+             locals.store(:booking_deposit, 
+                 SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)            
+             locals.store(:booking_payment,
+                 SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
+             load_page :reserva, :locals => locals
+          else
+             logger.error "Back from payment gateway NOT booking in session"
+             status 404
+          end
+        end
+
+        #
         # It returns from the payment gateway when the payment has been denied
         #
+        # Shows the reservation payment denied
+        #
         app.get '/p/booking/payment-gateway-return/nok' do
-          if session.has_key?('booking_id')
+          if session[:charge_id]
+            booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
             locals = {}
-            locals.store(:booking, BookingDataSystem::Booking.get(session['booking_id']))
+            locals.store(:booking, booking)
             locals.store(:booking_deposit, SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
             load_page('reserva-denegada'.to_sym, :locals => locals)
           else

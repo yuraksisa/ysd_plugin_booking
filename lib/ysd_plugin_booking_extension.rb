@@ -1,7 +1,7 @@
 require 'ysd-plugins_viewlistener' unless defined?Plugins::ViewListener
 require 'ysd_md_configuration' unless defined?SystemConfiguration::Variable
 require 'ysd_md_cms' unless defined?ContentManagerSystem::Template
-require 'ysd_md_booking' unless defined?Yito::Booking::ProductFamily
+require 'ysd_md_booking' unless defined?Yito::Model::Booking::ProductFamily
 
 #
 # Huasi CMS Extension
@@ -75,7 +75,7 @@ module Huasi
          :description => 'Booking page keywords',
          :module => :booking})
 
-      Yito::Booking::ProductFamily.first_or_create({:code => 'place'},
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
         {:driver => false,
          :guests => true,
          :flight => true,
@@ -83,7 +83,7 @@ module Huasi
          :time_to_from => false,
          :start_date_literal => :arrival} )
 
-      Yito::Booking::ProductFamily.first_or_create({:code => 'car'},
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car'},
         {:driver => true,
          :guests => false,
          :flight => true,
@@ -91,7 +91,7 @@ module Huasi
          :time_to_from => true,
          :start_date_literal => :pickup} )
 
-      Yito::Booking::ProductFamily.first_or_create({:code => 'bike'},
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'bike'},
         {:driver => false,
          :guests => false,
          :flight => false,

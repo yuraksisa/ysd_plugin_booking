@@ -10,7 +10,7 @@
             </div>
             <div class="radio-block">
               <input type="radio" name="payment" value="deposit"><%=t.booking.payment_type.deposit.label%></input>
-              <p class="radio-info less_contrast_text"><%= "%.2f €" % booking.booking_amount%></p>
+              <p class="radio-info less_contrast_text"><%= "%.2f €" % booking.booking_deposit%></p>
             </div>
           <% else %>
             <input type="hidden" name="payment" value="total"/>
