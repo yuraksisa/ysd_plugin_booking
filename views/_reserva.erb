@@ -1,5 +1,9 @@
       <h2><%=t.booking.title("#{t[:booking][:state][booking.status.to_sym]}".downcase)%></h2>
       
+      <div class="booking-message">
+        <%= message %>
+      </div>
+
       <div class="bottom-margin">
         <p><%=t.booking.id(booking.id)%></p>
       </div>

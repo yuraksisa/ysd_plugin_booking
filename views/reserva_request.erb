@@ -1,0 +1,10 @@
+ <div class="container_12">
+   <div class="grid_8">
+   	 <div class="highlight_block top-margin">
+       <%= partial(:reserva, :locals => {:booking => booking, :message => booking_summary_message}) %>  
+     </div>
+   </div>
+   <div class="grid_4 top-margin">
+     <%= partial(:booking_price, :locals => {:booking => booking}) %>  
+   </div>
+ </div>

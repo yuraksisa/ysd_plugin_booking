@@ -91,6 +91,29 @@ module Sinatra
         end
         
         #
+        # Booking summary (booking request)
+        #
+        app.get '/p/booking/summary/?' do
+
+          if session[:booking_id]
+            booking = BookingDataSystem::Booking.get(session[:booking_id])
+            locals = {:booking => booking}
+            if summary_message=ContentManagerSystem::Template.find_by_name('booking_summary_message') and
+              not summary_message.text.empty?
+              template = ERB.new summary_message.text     
+              message = template.result(binding)
+              locals.store(:booking_summary_message, message)
+            else
+              locals.store(:booking_summary_message, t.new_booking.summary_message)
+            end
+            load_page :reserva_request, :locals => locals
+          else
+             status 404
+          end
+
+        end
+
+        #
         # Integration in facebook as a tab
         #
         app.post '/p/booking/start/?' do

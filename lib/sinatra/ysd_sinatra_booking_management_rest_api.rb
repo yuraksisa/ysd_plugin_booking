@@ -164,6 +164,8 @@ module Sinatra
         # Booking creation
         #
         app.post '/booking/?' do
+
+          options = extract_request_query_string
               
           request.body.rewind 
           data = JSON.parse request.body.read     
@@ -179,19 +181,28 @@ module Sinatra
 
           booking = BookingDataSystem::Booking.new(booking_data)
           booking.save
+
+          session[:booking_id] = booking.id
           
-          if not booking.charges.empty?
-            session[:booking_id] = booking.id
-            session[:charge_id] = booking.charges.first.id
-            status, header, body = call! env.merge("PATH_INFO" => "/charge", 
-              "REQUEST_METHOD" => 'GET') 
-          else
-            content_type :json
-            booking.to_json
-          end
+          # Pay booking
+          response = if booking.pay_now
+                       <<-HTML
+                         <script type="text/javascript">
+                         window.location.href= "/p/mybooking/#{booking.free_access_id}"
+                         </script>
+                       HTML
+                     else
+                       <<-HTML
+                         <script type="text/javascript">
+                         window.location.href= "/p/booking/summary"
+                         </script>
+                       HTML
+                     end
+          
+          status 200
+          body response
 
         end
-
 
       end
 

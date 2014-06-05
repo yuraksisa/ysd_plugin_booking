@@ -85,7 +85,11 @@ new_booking:
   conditions_confirm: I have read and accept <a href="%1" target="_blank">their conditions of this service</a>
   continue: Continue
   confirm: Apply for a reservation
-  pay: Confirm
+  confirm_line1: Apply for a
+  confirm_line2: reservation
+  go_to_pay_line1: Pay now
+  go_to_pay_line2: (Confirm Reservation)  
+  pay: Pay
   booking: Select
   payment_methods: Payment methods
   sending_booking_request: Sending booking request

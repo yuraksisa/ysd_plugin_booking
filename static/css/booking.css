@@ -457,6 +457,7 @@ label.form-reservation-error {
 #button_confirmar_reserva {
   display: block;
   margin: 0 auto;
+  min-width: 200px;
 }
 
 /* -------------- SENDING BOOKING ------------------------- */
@@ -528,4 +529,9 @@ label.form-reservation-error {
 
 }
 
+.booking-message {
+  padding: 0.5em;
+  font-size: smaller;
+  margin-bottom: 2em;
+}
 

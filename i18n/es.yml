@@ -85,7 +85,11 @@ new_booking:
   conditions_confirm: He leído y acepto <a href="%1" target="_blank">las condiciones del alquiler</a>
   continue: Continuar
   confirm: Solicitar reserva
-  pay: Confirmar reserva
+  confirm_line1: Solicitar
+  confirm_line2: Reserva
+  go_to_pay_line1: Pagar ahora
+  go_to_pay_line2: (Confirmar Reserva)
+  pay: Pagar
   booking: Seleccionar
   payment_methods: Formas de pago
   sending_booking_request: Enviando la solicitud de reserva
