@@ -1,12 +1,37 @@
 require 'ysd_md_configuration' unless defined?SystemConfiguration::Variable
 require 'ysd_md_booking' unless defined?BookingDataSystem::Booking
+require 'date'
 module Sinatra
   module YSD
   	module BookingManagementRESTApi
       
       def self.registered(app)
-        
-        app.get '/booking/statistics', :allowed_usergroups => ['booking_manager', 'staff']  do
+
+        #
+        # Check availability
+        #        
+        app.get '/api/booking/availability' do
+
+          cats = if params['from'].nil? or params['to'].nil?
+                  []
+                 else
+                   begin
+                     from = DateTime.strptime(params[:from], '%Y-%m-%d')
+                     to = DateTime.strptime(params[:to], '%Y-%m-%d')
+                     ::Yito::Model::Booking::Availability.instance.categories_available(from, to)
+                   rescue ArgumentError => ex
+                     []
+                   end
+                 end  
+          
+          cats.to_json
+
+        end
+
+        #
+        # Booking statistics
+        #
+        app.get '/api/booking/statistics', :allowed_usergroups => ['booking_manager', 'staff']  do
 
           received = BookingDataSystem::Booking.reservations_received
           confirmed = BookingDataSystem::Booking.reservations_confirmed
@@ -25,8 +50,10 @@ module Sinatra
 
         end
 
-        # Booking scheduler
-        app.get '/booking/scheduler' do
+        #
+        # Bookings scheduler
+        #
+        app.get '/api/booking/scheduler' do
 
           from = params['start']
           to = params['end']
@@ -45,6 +72,46 @@ module Sinatra
              :backgroundColor => (booking.status==:confirmed)? 'rgb(41, 158, 69)' : (booking.status==:in_progress)? 'rgb(13, 124, 226)' : (booking.status == :pending_confirmation)? 'rgb(241, 248, 69)' : 'rgb(0,0,0)',
              :textColor => (booking.status == :pending_confirmation)? 'black' : 'white'}
           end
+
+          bookings.to_json
+
+        end
+
+        #
+        # Bookings (planning)
+        #
+        app.get '/api/booking/planning' do
+
+          from = params['start']
+          to = params['end']
+
+          bookings = BookingDataSystem::Booking.all(
+             :date_from.gte => Time.at(from.to_i),
+             :date_to.lte => Time.at(to.to_i), 
+             :status => [:confirmed],
+             :booking_item.not => nil,
+             :order => [:item_id.asc]
+            )
+
+          bookings.to_json
+
+        end
+
+        #
+        # Get the not assigned bookings
+        #
+        app.get '/api/booking/not-assigned' do
+
+          from = params['start']
+          to = params['end']
+
+          bookings = BookingDataSystem::Booking.all(
+             :date_from.gte => Time.at(from.to_i),
+             :date_to.lte => Time.at(to.to_i), 
+             #:status => [:confirmed],
+             #:booking_item => nil,
+             :order => [:item_id.asc]
+            )
 
           bookings.to_json
 

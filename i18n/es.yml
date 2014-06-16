@@ -90,8 +90,10 @@ new_booking:
   go_to_pay_line1: Pagar ahora
   go_to_pay_line2: (Confirmar Reserva)
   pay: Pagar
+  not_available: No está disponible en estas fechas
   booking: Seleccionar
   payment_methods: Formas de pago
+  checking_availability: Comprobando disponibilidad
   sending_booking_request: Enviando la solicitud de reserva
   concept: Concepto
   days: Días
@@ -248,6 +250,7 @@ booking_management:
       pickup: Recogida/Entrada
       return_item: Devolución/Salida
     payment_status: Pago
+    item: Item    
     booking_data_title: Datos reserva    
     date_from: Fecha inicio
     date_to: Fecha fin
@@ -351,3 +354,13 @@ booking:
     in_progress: En progreso
     done: Finalizada
     cancelled: Cancelada
+bookings_planning:
+  title: Planning    
+not_assigned_bookings:
+  title: Reservas no asignadas
+  table:
+    id: Numero
+    category: Categoría
+    dates: Fechas
+    customer: Cliente
+    status: Estado

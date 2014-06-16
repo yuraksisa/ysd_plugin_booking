@@ -142,7 +142,17 @@
               <span class="entity-fieldlabel"><%= t.booking_management.form.source %></span>
               <span class="entity-fieldvalue"><%%= entity.source %></span>
             </div>
-          <%% } %>               
+          <%% } %>     
+          <div class="element_template">
+            <div class="entity-field">
+              <span class="entity-fieldlabel"><%= t.booking_management.form.item %></span>
+              <span class="entity-fieldvalue">
+                  <%% if (entity.booking_item) { %>
+                  <%%= entity.booking_item.reference %>
+                  <%% } %>
+              </span>
+            </div>
+          </div>                           
         </div>
         <h3><%=t.booking_management.form.booking_data_title%></h3>        
         <div class="element_template">

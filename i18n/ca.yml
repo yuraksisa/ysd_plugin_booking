@@ -167,3 +167,13 @@ booking:
     in_progress: En progrès
     done: Finalitzada
     cancelled: Cancelada
+bookings_planning:
+  title: Planning
+not_assigned_bookings:
+  title: Reserves no assignades
+  table:
+    id: Numero
+    category: Categoria
+    dates: Dates
+    customer: Client
+    status: Estat  

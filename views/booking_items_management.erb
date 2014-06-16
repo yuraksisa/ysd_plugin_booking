@@ -53,8 +53,8 @@
                 <input type="text" maxlength="50" id="reference" name="reference" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.reference %>" <%% } %>/>
               </div>
               <div class="formrow">
-                <label for="category" class="fieldtitle"><%=t.booking_item_management.form.category.label%></label>
-                <select name="category" id="category" class="fieldcontrol"/>
+                <label for="category[code]" class="fieldtitle"><%=t.booking_item_management.form.category.label%></label>
+                <select name="category[code]" id="category[code]" class="fieldcontrol"/>
               </div>              
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_item_management.form.name.label %></label>

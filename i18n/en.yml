@@ -90,8 +90,10 @@ new_booking:
   go_to_pay_line1: Pay now
   go_to_pay_line2: (Confirm Reservation)  
   pay: Pay
+  not_available: It\'s not available on this dates
   booking: Select
   payment_methods: Payment methods
+  checking_availability: Checking availability
   sending_booking_request: Sending booking request
   concept: Concept
   days: Days
@@ -244,6 +246,7 @@ booking_management:
     status: Status
     source: Source
     payment_status: Payment
+    item: Item
     booking_data_title: Boooking information    
     date_from: Date from
     date_to: Date to
@@ -347,3 +350,13 @@ booking:
     in_progress: In progress
     done: Done
     cancelled: Cancelled
+bookings_planning:
+  title: Planning    
+not_assigned_bookings:
+  title: Not assigned bookings
+  table:
+    id: Id
+    category: Category
+    dates: Dates
+    customer: Customer
+    status: Status

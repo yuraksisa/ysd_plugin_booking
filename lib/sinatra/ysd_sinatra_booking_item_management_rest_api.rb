@@ -35,6 +35,16 @@ module Sinatra
         
         end
         
+        app.get "/api/booking-items" do
+
+          booking_items = ::Yito::Model::Booking::BookingItem.all
+
+          status 200
+          content_type :json
+          booking_items.to_json
+
+        end
+
         #
         # Get a booking items
         #
@@ -48,19 +58,6 @@ module Sinatra
         
         end
         
-        #
-        # Get booking items
-        #
-        app.get "/api/booking-items" do
-
-          booking_items = ::Yito::Model::Booking::BookingItem.all
-
-          status 200
-          content_type :json
-          booking_items.to_json
-
-        end
-
         #
         # Create a new booking item
         #

@@ -79,13 +79,6 @@ module Sinatra
              not booking_js.text.empty?
             locals.store(:booking_js, booking_js.text) 
           end
-          
-          if summary_message=ContentManagerSystem::Template.find_by_name('booking_summary_message') and
-             not summary_message.text.empty?
-            locals.store(:booking_summary_message, summary_message.text)
-          else
-            locals.store(:booking_summary_message, t.new_booking.summary_message)
-          end
                  
           load_page('reserva-online'.to_sym, options.merge(:locals => locals))
         end

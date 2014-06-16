@@ -1,7 +1,7 @@
 
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
-         "YSDRemoteDataSource", "jquery.ui", "YSDjson2"],
-         function($, EntityManagement, EntityManagementComplementHooks, YSDRemoteDataSource) {
+         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
+         function($, EntityManagement, EntityManagementComplementHooks, RemoteDataSource, SelectSelector) {
     
   var bookingItemHook = {
      
@@ -27,9 +27,9 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     /* ------- Internal function --------- */
     
     configForm : function() {
-      var categoryDataSource = new RemoteDataSource('/api/booking-category');
-      var categoryValue = (entity && entity.category_id)?entity.category_id:null;
-      var categorySelector = new SelectSelector('category', categoryDataSource, categoryValue); 
+      var categoryDataSource = new RemoteDataSource('/api/booking-categories',{'id':'code','description':'name'});
+      var categoryValue = (this.entity && this.entity.category_id)?this.entity.category_id:null;
+      var categorySelector = new SelectSelector('category[code]', categoryDataSource, categoryValue); 
     },
       
 

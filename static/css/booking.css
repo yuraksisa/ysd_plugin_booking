@@ -462,7 +462,8 @@ label.form-reservation-error {
 
 /* -------------- SENDING BOOKING ------------------------- */
 
-#sending-booking img {
+#sending-booking img,
+#checking-availability img {
   display: block;
   margin: 0 auto;
   margin-top:15px;
@@ -535,3 +536,8 @@ label.form-reservation-error {
   margin-bottom: 2em;
 }
 
+.booking-not-available {
+  padding: 0.5em;
+  color: red;
+  border: 1px solid;
+}
