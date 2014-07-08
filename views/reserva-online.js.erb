@@ -405,7 +405,7 @@
        	 $.ajax( 
        	         {
        	           type : 'POST',
-       	           url : bookingDataSystem.configuration.booking_url || '/booking',
+       	           url :  '<%=confirm_booking_url%>', //bookingDataSystem.configuration.booking_url ||
        	           data : json_request,
                    dataType: 'html',  /* Response expected from the server */
                    contentType: 'application/json; charset=utf-8', /* Data type sent to the server */
@@ -679,14 +679,22 @@
             bookingController.go_to_fill_data_click();
          });
 
-         <% if booking_payment %>
-           $('#button_ir_a_pagar_reserva').show();
-           $('#button_confirmar_reserva').show();
-         <% else %>  
-           $('#button_ir_a_pagar_reserva').hide();
-           $('#button_confirmar_reserva').show();
-         <% end %>
-       	 
+         <% if admin_mode %>
+             $('#button_confirmar_reserva_manager').show();         
+         <% else %>
+           <% if booking_payment %>
+             $('#button_ir_a_pagar_reserva').show();
+             $('#button_confirmar_reserva').show();
+           <% else %>  
+             $('#button_ir_a_pagar_reserva').hide();
+             $('#button_confirmar_reserva').show();
+           <% end %>
+       	 <% end %>
+
+         $('#button_confirmar_reserva_manager').bind('click', function(event) {
+            bookingView.buttonPressed = 'request';
+         });
+
          $('#button_confirmar_reserva').bind('click', function(event) {
             bookingView.buttonPressed = 'request';
          });
@@ -1020,8 +1028,9 @@
            	'booking[driver_date_of_birth]': {
            	  required: "#fs_driver:visible"	
            	},
-           	'conditions_read' : 'required'
-           	
+           	'conditions_read' :  {
+              required: '#conditions_read:visible'
+            }
            },
            
            messages : {
@@ -1093,7 +1102,13 @@
          container.empty();
       
          var prices = bookingModel.all_prices;
-      
+         
+         <% if (admin_mode) %>
+         var notAvailable = '<span class="booking-not-available"><%=t.new_booking.not_available_manager%></span>';
+         <% else %>
+         var notAvailable = '<span class="booking-not-available"><%=t.new_booking.not_available%></span>';
+         <% end %>
+
          // Puts the prices      
          for (var family in prices) 
          {
@@ -1112,8 +1127,12 @@
       	     content += '<div class="grid_6">';
              for (var option in bookingDataSystem.optionals) {
               var buttonSelect = '<input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" />';
-              var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : '<span class="booking-not-available"><%=t.new_booking.not_available%></span>';
-             	content += 
+              <% if admin_mode %>
+                var available = notAvailable + '<br/><br/>' + buttonSelect;
+              <% else %>
+                var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable ;
+             	<% end%>
+              content += 
              	  '<div class="car_price_optional" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
              	    '<div class="car_price_optional_text" itemprop="name">' + bookingDataSystem.optionals[option].name + '</div>' +
                     '<div class="car_price_total"><span itemprop="price">' + prices[family][option].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +
@@ -1127,7 +1146,12 @@
       	   }
       	   else {      
     	     var buttonSelect = '<input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" />';
-           var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : '<span class="booking-not-available"><%=t.new_booking.not_available%></span>';
+           <% if admin_mode %>
+             var available = notAvailable + '<br/><br/>' + buttonSelect;
+           <% else %>
+             var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable ;
+           <% end%>
+
            content += 
               '<div class="grid_6" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
                 '<div class="car_price_total"><span itemprop="price">'+prices[family].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +

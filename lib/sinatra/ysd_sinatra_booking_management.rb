@@ -62,6 +62,44 @@ module Sinatra
         end
 
         #
+        # Create new booking (administation)
+        #
+        app.get '/admin/bookings/new', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          locals = {}
+
+          locals.store(:admin_mode, true)
+          locals.store(:confirm_booking_url, '/booking-from-manager')
+
+          locals.store(:booking_item_family, 
+            ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+
+          locals.store(:booking_item_type,
+            SystemConfiguration::Variable.get_value('booking.item_type'))
+       
+          locals.store(:booking_payment,
+            SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
+
+          locals.store(:booking_deposit,
+            SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
+
+          locals.store(:booking_min_days,
+            SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
+
+          locals.store(:booking_allow_custom_pickup_return_place,
+            SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+
+          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
+             not booking_js.text.empty?
+            locals.store(:booking_js, booking_js.text) 
+          end
+                 
+          load_page('reserva-online'.to_sym, :locals => locals)
+
+
+        end
+
+        #
         # Bookings admin page
         #
         app.get '/admin/bookings/?*', :allowed_usergroups => ['booking_manager'] do 

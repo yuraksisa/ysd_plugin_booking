@@ -22,8 +22,8 @@ module Sinatra
             end
 
             page = params[:page].to_i || 1
-            limit = settings.contents_page_size
-            offset = (page-1) * settings.contents_page_size
+            limit = 20
+            offset = (page-1) * 20
             
             data  = ::Yito::Model::Booking::BookingItem.all(:conditions => conditions, :limit => limit, :offset => offset)
             total = ::Yito::Model::Booking::BookingItem.count(conditions)
@@ -81,7 +81,7 @@ module Sinatra
           
           booking_item_request = body_as_json(::Yito::Model::Booking::BookingItem)
                               
-          if booking_item = ::Yito::Model::Booking::BookingItem.get(content_request.delete(:id))     
+          if booking_item = ::Yito::Model::Booking::BookingItem.get(booking_item_request.delete(:reference))     
             booking_item.attributes=(booking_item_request)  
             booking_item.save
           end

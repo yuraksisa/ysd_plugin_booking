@@ -183,6 +183,27 @@ module Sinatra
         end
 
         #
+        # Assign a booking item to a booking
+        #
+        app.post '/api/booking/assign/:booking_id/:booking_item_reference',
+          :allowed_usergroups => ['booking_manager','staff'] do
+
+          if booking = BookingDataSystem::Booking.get(params[:booking_id].to_i)
+            if booking_item = Yito::Model::Booking::BookingItem.get(params[:booking_item_reference])
+              booking.booking_item = booking_item
+              booking.save
+              content_type :json
+              booking.to_json
+            else
+              status 404
+            end  
+          else
+            status 404
+          end 
+
+        end
+
+        #
         # Pickup/Arrival 
         #
         app.post '/booking/pickup/:booking_id',
@@ -228,7 +249,7 @@ module Sinatra
         end
 
         #
-        # Booking creation
+        # Booking creation (customer)
         #
         app.post '/booking/?' do
 
@@ -270,6 +291,44 @@ module Sinatra
           body response
 
         end
+
+        #
+        # Booking creation (manager)
+        #
+        app.post '/booking-from-manager/?' do
+
+          options = extract_request_query_string
+              
+          request.body.rewind 
+          data = JSON.parse request.body.read     
+          
+          booking_data = data['booking'].keep_if do |key, value| 
+            BookingDataSystem::Booking.properties.field_map.keys.include?(key) or 
+            BookingDataSystem::Booking.relationships.named?(key)
+          end
+          booking_data.symbolize_keys!
+          unless booking_data.has_key?(:customer_language)
+            booking_data[:customer_language] = session[:locale] || 'es'
+          end
+
+          booking = BookingDataSystem::Booking.new(booking_data)
+          booking.created_by_manager = true
+          booking.save
+
+          session[:booking_id] = booking.id
+          
+          # Pay booking
+          response =  <<-HTML
+                         <script type="text/javascript">
+                         window.location.href= "/admin/bookings"
+                         </script>
+                       HTML
+          
+          status 200
+          body response
+
+        end
+
 
       end
 

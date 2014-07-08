@@ -28,7 +28,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     
     configForm : function() {
       var categoryDataSource = new RemoteDataSource('/api/booking-categories',{'id':'code','description':'name'});
-      var categoryValue = (this.entity && this.entity.category_id)?this.entity.category_id:null;
+      var categoryValue = (this.entity && this.entity.category_code)?this.entity.category_code:null;
       var categorySelector = new SelectSelector('category[code]', categoryDataSource, categoryValue); 
     },
       

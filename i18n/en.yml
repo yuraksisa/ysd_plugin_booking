@@ -1,4 +1,4 @@
-system_admin_menu:
+confirm_line1system_admin_menu:
   apps:
     bookings_menu:
       title: Booking management
@@ -10,7 +10,8 @@ booking_settings:
   form:
     title: Booking configuration
     notification_email: Notification email address
-    deposit: \∫% Diposit
+    deposit: \% Diposit
+    allow_total_payment: Allow to pay the total of the reservation    
     min_days: Minimum days   
     family: Product type
     custom_pickup_return_place: Custom pickup/return places
@@ -33,7 +34,8 @@ booking_console:
   planning: Planning    
   period: Period
   requested: Requests
-  confirmed: Confirmed  
+  confirmed: Confirmed
+  new_booking: New reservation    
 booking_status:
   pending_confirmation: Pending
   confirmed: Confirmed
@@ -87,10 +89,13 @@ new_booking:
   confirm: Apply for a reservation
   confirm_line1: Apply for a
   confirm_line2: reservation
+  confirm_line1_manager: Save
+  confirm_line2_manager: reservation
   go_to_pay_line1: Pay now
   go_to_pay_line2: (Confirm Reservation)  
   pay: Pay
   not_available: It\'s not available on this dates
+  not_available_manager: It\'s not available on this dates
   booking: Select
   payment_methods: Payment methods
   checking_availability: Checking availability
@@ -337,6 +342,9 @@ booking:
   payment:
     label: Payment
     description: You can make the payment of the booking, <strong>%1</strong>
+  deposit_payment:
+    label: Payment
+    description: You can pay the deposit of the booking, <strong>%1</strong>
   pending_payment: 
     label: 2nd charge
     description: You can make the payment of the pending amount, <strong>%1</strong>

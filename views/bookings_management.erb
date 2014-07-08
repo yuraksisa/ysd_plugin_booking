@@ -147,9 +147,12 @@
             <div class="entity-field">
               <span class="entity-fieldlabel"><%= t.booking_management.form.item %></span>
               <span class="entity-fieldvalue">
-                  <%% if (entity.booking_item) { %>
-                  <%%= entity.booking_item.reference %>
-                  <%% } %>
+                  <!--form name="assign_booking">
+                    <select name="booking_item[reference]" id="booking_item[reference]"/>
+                    <button class="form-button" id="assign_item_button">
+                      <%=t.booking_assign.assign%> 
+                    </button>
+                  </form-->
               </span>
             </div>
           </div>                           
@@ -409,7 +412,7 @@
 
 <script type="text/javascript">
  
- require(['jquery', 'YSDEntityManagement'], function($, EntityManagement) {
+ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelector'], function($, EntityManagement, RemoteDataSource, SelectSelector) {
 
  
   function BookingHook() {
@@ -441,6 +444,27 @@
   	
     this.onRenderEntities = function(entities) {
       $('.elements-search').show(); 
+    }
+
+    this.onEdit = function(entity) {
+
+       var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
+       var valueModel = (entity != null && entity.booking_item != null) ? entity.booking_item.reference : null; 
+       var selectorModel = new SelectSelector('booking_item[reference]', dataSourceModel, valueModel, true );
+
+       /*
+       $('#assign_item_button').bind('click', function() {
+
+           var url = '/api/booking/assign/' + entity.id + '/' + $('booking_item[reference]').val();
+
+           $.ajax({
+              url: url,
+              type: 'POST',
+           })
+
+       });
+      */
+
     }
 
     this.statusClass = function(entity) {

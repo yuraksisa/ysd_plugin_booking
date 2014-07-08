@@ -431,6 +431,7 @@
 	      </div>
 
 	      <div id="reservation-summary" class="content_data_box">
+	      	<% unless admin_mode %>
 	        <fieldset id="fs_conditions">
 	          <div>
 	            <input type="checkbox" name="conditions_read" id="conditions_read">
@@ -440,6 +441,7 @@
 	            </input>
 	          </div>        
 	        </fieldset>	      
+	        <% end %>
 	        <fieldset id="fs_confirm">
 	        	<div style="text-align:center">
 	        	  <div style="display:inline-block">
@@ -454,6 +456,12 @@
                        <span><%=t.new_booking.confirm_line2%></span>
 	                </button>
 	              </div>
+	        	  <div style="display:inline-block">	            
+	                <button type="submit" id="button_confirmar_reserva_manager" class="form-button botones" style="display:none">
+                       <span><%=t.new_booking.confirm_line1_manager%></span><br/>
+                       <span><%=t.new_booking.confirm_line2_manager%></span>
+	                </button>
+	              </div>	              
 	            </div>
 	        </fieldset>
 	        <div id="reservation_error">

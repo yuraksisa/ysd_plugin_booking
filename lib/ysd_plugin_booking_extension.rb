@@ -29,6 +29,12 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.allow_total_payment'},
+        {:value => 'true',
+         :description => 'Allow total payment. Values: true, false',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.payment'},
         {:value => 'false',
          :description => 'Integrate the payment in the booking process. Values: true, false',

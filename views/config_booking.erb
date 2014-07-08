@@ -11,8 +11,9 @@
   
   <h3><%=t.booking_settings.form.payment_group%></h3>
   <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
+  <%= render_variable_checkbox_boolean('booking.allow_total_payment', t.booking_settings.form.allow_total_payment) %>  
   <%= render_variable_checkbox_boolean('booking.payment', t.booking_settings.form.payment) %>
-  
+
   <div class="formrow-botonera">
   	<input type="submit" value="<%=t.entitymanagement.update%>" 
   	       class="button blue-button">

@@ -454,7 +454,8 @@ label.form-reservation-error {
 
 #button_continua_rellenar_datos,
 #button_ir_a_pagar_reserva,
-#button_confirmar_reserva {
+#button_confirmar_reserva,
+#button_confirmar_reserva_manager {
   display: block;
   margin: 0 auto;
   min-width: 200px;
@@ -540,4 +541,5 @@ label.form-reservation-error {
   padding: 0.5em;
   color: red;
   border: 1px solid;
+  display: inline-block;
 }

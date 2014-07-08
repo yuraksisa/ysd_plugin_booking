@@ -1,27 +1,37 @@
+<% if (booking_payment) and ((booking_allow_total_payment and booking.total_pending > 0) or (booking_deposit > 0 and booking.total_paid == 0)) %>
    <form name="form-payment" id="form-payment" action="/p/booking/pay" method="POST">
    	  <input type="hidden" name="id" value="<%=booking.id%>"/>
       <h3 class="guiblock-title"><%=t.booking.payment.label%></h3>
       <% if booking.total_paid == 0 %>
         <div class="formrow">
           <% if booking_deposit > 0 %>
-            <div class="radio-block">
-              <input type="radio" name="payment" value="total" checked="true"><%=t.booking.payment_type.total.label%></input>
-              <p class="radio-info less_contrast_text"><%= "%.2f €" % booking.total_cost%></p>
-            </div>
-            <div class="radio-block">
-              <input type="radio" name="payment" value="deposit"><%=t.booking.payment_type.deposit.label%></input>
-              <p class="radio-info less_contrast_text"><%= "%.2f €" % booking.booking_deposit%></p>
-            </div>
+            <% if booking_allow_total_payment %>
+              <div class="radio-block">
+                <input type="radio" name="payment" value="total" checked="true"><%=t.booking.payment_type.total.label%></input>
+                <p class="radio-info less_contrast_text"><%= "%.2f €" % booking.total_cost%></p>
+              </div>
+              <div class="radio-block">
+                <input type="radio" name="payment" value="deposit"><%=t.booking.payment_type.deposit.label%></input>
+                <p class="radio-info less_contrast_text"><%= "%.2f €" % booking.booking_deposit%></p>
+              </div>
+            <% else %>
+              <input type="hidden" name="payment" value="deposit"/>
+              <p><%= t.booking.deposit_payment.description("%.2f €" % booking.booking_deposit)%></p>
+            <% end %>
           <% else %>
-            <input type="hidden" name="payment" value="total"/>
-            <p><%= t.booking.payment.description("%.2f €" % booking.total_cost)%></p>
+            <% if booking_allow_total_payment %>
+              <input type="hidden" name="payment" value="total"/>
+              <p><%= t.booking.payment.description("%.2f €" % booking.total_cost)%></p>
+            <% end %>
           <% end %>
         </div>
       <% else %>
-        <div class="formrow">
-          <input type="hidden" name="payment" value="pending"/>
-          <p><%= t.booking.pending_payment.description("%.2f €" % booking.total_pending)%></p>
-        </div>
+        <% if booking_allow_total_payment %>
+          <div class="formrow">
+            <input type="hidden" name="payment" value="pending"/>
+            <p><%= t.booking.pending_payment.description("%.2f €" % booking.total_pending)%></p>
+          </div>
+        <% end %>  
       <% end %>
       <div class="formrow">
         <div id="payment_methods">
@@ -110,3 +120,5 @@ require (['jquery','YSDListSelector', 'YSDRemoteDataSource', 'jquery.validate',
 });
 
 </script>
+
+<% end %>

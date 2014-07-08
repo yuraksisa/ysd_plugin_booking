@@ -1,0 +1,50 @@
+require(['YSDRemoteDataSource', 'YSDSelectSelector', 'jquery'],function(YSDRemoteDataSource, YSDSelectSelector, $) {
+
+  var bookingAssignModel = {
+
+    bookingId: null,
+    bookingItemId: null,
+
+    assign: function() {
+
+       $.ajax({
+               type: 'POST',
+               url : '/api/booking/assign/'+bookingId+'/'+bookingItemId;
+               success: function(data, textStatus, jqXHR) {
+               },
+               error: function(data, textStatus, jqXHR) {
+               }
+          });
+
+    }
+
+  }
+
+  var bookingAssignController = {
+
+    assignBookingItemButtonClick: function() {
+    	bookingAssignModel.assign();
+    }
+
+  }
+
+  var bookingAssignView = {
+
+   init : function() {
+
+       var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
+       var valueModel = null; 
+       var selectorModel = new SelectSelector('booking_item[reference]', dataSourceModel, valueModel, false );
+
+       $('#assign_booking').bind('onSubmit', function() {
+         bookingAssignController.assignBookingItemButtonClick();
+       });
+
+   }
+  
+
+  }
+
+  bookingAssignView.init();
+
+});
