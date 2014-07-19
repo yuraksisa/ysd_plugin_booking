@@ -183,13 +183,30 @@ module Sinatra
         end
 
         #
+        # Allow payment
+        #
+        app.post '/booking/allow-payment/:booking_id', 
+          :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
+            booking.force_allow_payment = true
+            booking.save
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
         # Assign a booking item to a booking
         #
         app.post '/api/booking/assign/:booking_id/:booking_item_reference',
           :allowed_usergroups => ['booking_manager','staff'] do
 
           if booking = BookingDataSystem::Booking.get(params[:booking_id].to_i)
-            if booking_item = Yito::Model::Booking::BookingItem.get(params[:booking_item_reference])
+            if booking_item = ::Yito::Model::Booking::BookingItem.get(params[:booking_item_reference])
               booking.booking_item = booking_item
               booking.save
               content_type :json

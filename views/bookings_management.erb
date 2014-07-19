@@ -134,6 +134,20 @@
                 <span class="<%%=self.model.entityHooks[0].paymentStatusClass(entity)%> smaller_text element-status">
                   <%%= self.model.entityHooks[0].paymentStatusDescription[entity.payment_status] %>
                 </span>
+                <%% if (!entity.force_allow_payment) { %>
+                <span class="left-margin">
+                  <button class="form-button element-action-button" id="confirm_booking_button" 
+                      title="<%=t.booking_management.form.allow_payment_button.label%>" 
+                      data-action-method="POST"
+                      data-action-url="/booking/allow-payment/<%%=entity.id%>"
+                      data-confirm-message="<%=t.booking_management.form.allow_payment_button.message%>">
+                    <%=t.booking_management.form.allow_payment_button.label%>
+                  </button>
+                </span>
+                <%% } 
+                   else { %>
+                <span class="left-margin smaller_text element-status"><%=t.booking_management.form.force_allow_payment%></span>    
+                <%% } %>
               </span>
             </div>
           </div>       
@@ -147,12 +161,17 @@
             <div class="entity-field">
               <span class="entity-fieldlabel"><%= t.booking_management.form.item %></span>
               <span class="entity-fieldvalue">
-                  <!--form name="assign_booking">
-                    <select name="booking_item[reference]" id="booking_item[reference]"/>
-                    <button class="form-button" id="assign_item_button">
-                      <%=t.booking_assign.assign%> 
+                  <form name="assign_booking">
+                    <select name="booking_item_reference" id="booking_item_reference"/>
+                    <button class="form-button element-action-button" id="assign_item_button"
+                      type="button" 
+                      title="<%=t.booking_management.form.assign_button.label%>" 
+                      data-action-method="POST"
+                      data-action-url="/api/booking/assign/<%%=entity.id%>/"
+                      data-confirm-message="<%=t.booking_management.form.assign_button.message%>">
+                      <%=t.booking_management.form.assign_button.label%>
                     </button>
-                  </form-->
+                  </form>
               </span>
             </div>
           </div>                           
@@ -450,20 +469,12 @@
 
        var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
        var valueModel = (entity != null && entity.booking_item != null) ? entity.booking_item.reference : null; 
-       var selectorModel = new SelectSelector('booking_item[reference]', dataSourceModel, valueModel, true );
+       var selectorModel = new SelectSelector('booking_item_reference', dataSourceModel, valueModel, true );
 
-       /*
-       $('#assign_item_button').bind('click', function() {
-
-           var url = '/api/booking/assign/' + entity.id + '/' + $('booking_item[reference]').val();
-
-           $.ajax({
-              url: url,
-              type: 'POST',
-           })
-
+       $('#booking_item_reference').bind('change', function() {
+         var url = '/api/booking/assign/' + entity.id + '/' + encodeURIComponent($('#booking_item_reference').val());
+         $('#assign_item_button').attr('data-action-url', url);
        });
-      */
 
     }
 

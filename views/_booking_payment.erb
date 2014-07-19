@@ -1,4 +1,4 @@
-<% if (booking_payment) and ((booking_allow_total_payment and booking.total_pending > 0) or (booking_deposit > 0 and booking.total_paid == 0)) %>
+<% if (booking_payment or booking.force_allow_payment) and ((booking_allow_total_payment and booking.total_pending > 0) or (booking_deposit > 0 and booking.total_paid == 0)) %>
    <form name="form-payment" id="form-payment" action="/p/booking/pay" method="POST">
    	  <input type="hidden" name="id" value="<%=booking.id%>"/>
       <h3 class="guiblock-title"><%=t.booking.payment.label%></h3>

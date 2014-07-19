@@ -28,6 +28,13 @@ module Sinatra
         end
 
         #
+        # Booking availability
+        #
+        app.get '/admin/bookings/availability', :allowed_usergroups => ['booking_manager', 'staff'] do
+          redirect '/admin/calendars' 
+        end
+
+        #
         # Bookings planning
         # 
         app.get '/admin/bookings/planning', :allowed_usergroups => ['booking_manager', 'staff'] do

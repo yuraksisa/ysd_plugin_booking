@@ -543,3 +543,7 @@ label.form-reservation-error {
   border: 1px solid;
   display: inline-block;
 }
+
+#booking_item_reference {
+  height: 2.2em;
+}

@@ -36,6 +36,7 @@ booking_console:
   requested: Requests
   confirmed: Confirmed
   new_booking: New reservation    
+  availability: Availability
 booking_status:
   pending_confirmation: Pending
   confirmed: Confirmed
@@ -246,6 +247,13 @@ booking_management:
     cancel_button: 
       label: Cancel
       message: Do you want to cancel the reservation?
+    allow_payment:
+      label: Allow payment
+      message: Do you want to allow the reservation payment?
+    assign_button: 
+      label: Assign
+      message: Do you want to assign the car?
+    force_allow_payment: Payment allowed
     id: Booking number
     creation_date: Received date
     status: Status

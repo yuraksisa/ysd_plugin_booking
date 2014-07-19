@@ -32,6 +32,7 @@ booking_console:
   requested: Solicituds
   confirmed: Confirmades
   new_booking: Nova reserva
+  availability: Disponibilitat
 booking_status:
   pending_confirmation: Pendent
   confirmed: Confirmat
@@ -66,6 +67,13 @@ booking_management:
     cancel_button:   
       label: Cancelar
       message: Vol cancelar la reserva?
+    allow_payment:
+      label: Permetre pagament
+      message: Vol permetre el pagament de la reserva?
+    assign_button: 
+      label: Assignar
+      message: Vol assignar el cotxe?
+    force_allow_payment: Pagament permès
     id: Numero de reserva
     creation_date: Data
     status: Estat

@@ -85,7 +85,7 @@ module Sinatra
           
           booking_category_request = body_as_json(::Yito::Model::Booking::BookingCategory)
                               
-          if booking_category = ::Yito::Model::Booking::BookingCategory.get(content_request.delete(:id))     
+          if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking_category_request.delete(:id))     
             booking_category.attributes=(booking_category_request)  
             booking_category.save
           end
