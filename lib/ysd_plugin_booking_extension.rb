@@ -105,6 +105,15 @@ module Huasi
          :time_to_from => true,
          :start_date_literal => :pickup} )
 
+      if Yito::Model::Calendar::EventType.count(:name => 'not_available') == 0
+        Yito::Model::Calendar::EventType.create(:name => 'not_available', 
+          :description => 'Not available')
+      end
+
+      if Yito::Model::Calendar::EventType.count(:name => 'payment_enabled') == 0
+        Yito::Model::Calendar::EventType.create(:name => 'payment_enabled', 
+          :description => 'Payment enabled')
+      end
 
       Users::Group.first_or_create({:group => 'booking_manager'},
           {:name => 'Booking manager', :description => 'Booking manager'})

@@ -550,7 +550,7 @@
             <td class="total_column first_column"><%=t.new_booking.total.upcase%></td>
             <td class="quantity_column"></td>
             <td class="quantity_column"></td>
-            <td class="quantity_column total_column"><%%= booking.total_cost %>€ </td>
+            <td class="quantity_column total_column"><%%= booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) %>€ </td>
           </tr>
         </tbody>      
       </table>

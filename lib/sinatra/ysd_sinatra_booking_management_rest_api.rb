@@ -3,29 +3,76 @@ require 'ysd_md_booking' unless defined?BookingDataSystem::Booking
 require 'date'
 module Sinatra
   module YSD
+    
+    module BookingManagementRESTApiHelper
+
+      def booking_availability(params)
+
+        if params['from'].nil? or params['to'].nil?
+           []
+        else
+           begin
+             from = DateTime.strptime(params[:from], '%Y-%m-%d')
+             to = DateTime.strptime(params[:to], '%Y-%m-%d')
+             ::Yito::Model::Booking::Availability.instance.categories_available(from, to)
+           rescue ArgumentError => ex
+             []
+           end
+        end  
+
+      end
+
+      def booking_payment_enabled(params)
+
+        if params['from'].nil? or params['to'].nil?
+          []
+        else
+          begin
+            from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            ::Yito::Model::Booking::Availability.instance.categories_payment_enabled(from, to)
+          rescue ArgumentError => ex
+              []
+          end
+        end  
+        
+      end
+
+    end
+
   	module BookingManagementRESTApi
       
       def self.registered(app)
+
+        #
+        # Check availability and payment
+        #
+        app.get '/api/booking/check' do
+         
+          result = {:availability => booking_availability(params),
+                    :payment => booking_payment_enabled(params)}
+          result.to_json          
+
+        end
 
         #
         # Check availability
         #        
         app.get '/api/booking/availability' do
 
-          cats = if params['from'].nil? or params['to'].nil?
-                  []
-                 else
-                   begin
-                     from = DateTime.strptime(params[:from], '%Y-%m-%d')
-                     to = DateTime.strptime(params[:to], '%Y-%m-%d')
-                     ::Yito::Model::Booking::Availability.instance.categories_available(from, to)
-                   rescue ArgumentError => ex
-                     []
-                   end
-                 end  
-          
+          cats = booking_availability(params)
           cats.to_json
 
+        end
+
+        #
+        # Check the categories that have payment enabled
+        #
+        app.get '/api/booking/payment-enabled' do
+
+          cats = booking_payment_enabled(params)
+          cats.to_json
+        
         end
 
         #

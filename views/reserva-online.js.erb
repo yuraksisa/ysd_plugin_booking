@@ -84,6 +84,7 @@
          'process_error' ],
        process_state : 'item_selection',
        categoriesAvailable: [],
+       categoriesPaymentEnabled: [],
        confirmBookingResponse : null, /* It holds the confirm booking response */       
        booking : {
 
@@ -145,7 +146,8 @@
           },
   
           addCost : function (value) { /* Add cost */
-   	         this.total_cost += value;
+             this.total_cost += value;
+             this.total_cost = new Number(this.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0)).valueOf();
    	         this.booking_amount = new Number(this.total_cost * 
              	<%=booking_deposit%> / 100).toFixed(0);
           },          
@@ -317,12 +319,13 @@
           $.ajax( 
                  {
                    type : 'GET',
-                   url : '/api/booking/availability?from='+from+'&to='+to,
+                   url : '/api/booking/check?from='+from+'&to='+to,
                    dataType: 'json',
                    contentType: 'application/json; charset=utf-8', 
                                        
                    success : function(data, textStatus, jqXHR) { /* RESPONSE OK */
-                     bookingModel.categoriesAvailable = data;
+                     bookingModel.categoriesAvailable = data.availability || [];
+                     bookingModel.categoriesPaymentEnabled = data.payment || [];
                      bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
                      bookingView.show_prices();
                      bookingModel.change_state('check_availability_finished');
@@ -330,6 +333,7 @@
                    
                    error: function(jqXHR, textStatus, errorThrow){ /* RESPONSE ERROR */
                      bookingModel.categoriesAvailable = [];
+                     bookingModel.categoriesPaymentEnabled = [];
                      bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
                      bookingView.show_prices();
                      bookingModel.change_state('check_availability_finished');
@@ -1337,6 +1341,18 @@
 
        },
 
+       /* ------ Check payment --------- */
+
+       check_payment: function() {
+
+          if (!$('#button_ir_a_pagar_reserva').is(":visible")) {
+            if (bookingModel.categoriesPaymentEnabled.indexOf(bookingModel.booking.item_id) > -1) {
+              $('#button_ir_a_pagar_reserva').show();
+            }
+          }
+
+       },
+
        /* ------ Reflect the state change ----------- */
        
        state_changed : function(new_state) {
@@ -1360,6 +1376,7 @@
        	     this.update_information('booking_data');      	               	   
        	     this.load_items();
        	     this.load_extras();
+             this.check_payment();
              break;
 
        	   case 'completing_booking' : /* Third state (user choose an item and starts booking) */
@@ -1423,7 +1440,7 @@
        	     $('#item_image').attr('src',path);
 
        	   case 'booking_cost' :
-       	     $('#total_cost').val( bookingModel.booking.total_cost.toFixed(0) + '€' );
+       	     $('#total_cost').val( bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
        	     $('#detailed_summary').html( 
        	      tmpl('script_detailed_price', {booking: bookingModel.booking, 
                             bookingDataSystem: bookingDataSystem}) );
