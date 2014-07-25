@@ -93,6 +93,9 @@ module Sinatra
           locals.store(:booking_min_days,
             SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
 
+          locals.store(:booking_payment_cadence,
+            SystemConfiguration::Variable.get_value('booking.payment_cadence', '0').to_i)          
+
           locals.store(:booking_allow_custom_pickup_return_place,
             SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
 
