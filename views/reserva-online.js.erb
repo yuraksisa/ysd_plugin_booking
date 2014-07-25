@@ -85,7 +85,8 @@
        process_state : 'item_selection',
        categoriesAvailable: [],
        categoriesPaymentEnabled: [],
-       confirmBookingResponse : null, /* It holds the confirm booking response */       
+       confirmBookingResponse : null, /* It holds the confirm booking response */
+       pendingTimeToStartBooking: 0,       
        booking : {
 
           date_from : null, /* the booking date from */
@@ -363,6 +364,8 @@
        	 var dias_diferencia = (date_to - date_from) / (1000*60*60*24);
        	 var horas_diferencia = (_date_to - _date_from) / (1000*60*60);
        	 
+         this.pendingTimeToStartBooking = (date_from - new Date()) / (1000*60*60);
+
        	 this.booking.days = Math.max(Math.floor(dias_diferencia),0);
        	 this.booking.date_to_price_calculation = new Date(this.booking.date_to.getTime());
        	 
@@ -1345,9 +1348,15 @@
 
        check_payment: function() {
 
-          if (!$('#button_ir_a_pagar_reserva').is(":visible")) {
-            if (bookingModel.categoriesPaymentEnabled.indexOf(bookingModel.booking.item_id) > -1) {
-              $('#button_ir_a_pagar_reserva').show();
+          if ($('#button_ir_a_pagar_reserva').is(":visible") && 
+              bookingModel.pendingTimeToStartBooking < <%= booking_payment_cadence %>) {
+            $('#button_ir_a_pagar_reserva').hide();
+          }
+          else {
+            if (!$('#button_ir_a_pagar_reserva').is(":visible")) {
+              if (bookingModel.categoriesPaymentEnabled.indexOf(bookingModel.booking.item_id) > -1) {
+                $('#button_ir_a_pagar_reserva').show();
+              }
             }
           }
 
@@ -1376,12 +1385,9 @@
        	     this.update_information('booking_data');      	               	   
        	     this.load_items();
        	     this.load_extras();
-             this.check_payment();
              break;
 
        	   case 'completing_booking' : /* Third state (user choose an item and starts booking) */
-       	     break;
-
            case 'continue_booking' : /* Alternative state (user comes back to complete booking) */
              break;
                  	 	
@@ -1539,6 +1545,7 @@
        	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
        	   	    this.tabs['tab-choose-extras'].setState('not-enabled');       	   	    
        	   	    this.tabs['tab-complete-reservation'].setState('active');
+                bookingView.check_payment();
        	   	    break;
        	   	  
        	   }

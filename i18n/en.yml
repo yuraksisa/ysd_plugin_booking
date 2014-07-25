@@ -18,6 +18,8 @@ booking_settings:
     payment: Enable online payment
     general_group: General
     payment_group: Payment
+    item_hold_time: Expiration time (in hours)
+    payment_cadence: Payment cadence    
 booking_rates:
   title: Rates
   seasons: Seasons
@@ -254,6 +256,7 @@ booking_management:
       label: Assign
       message: Do you want to assign the car?
     force_allow_payment: Payment allowed
+    expired: Expired
     id: Booking number
     creation_date: Received date
     status: Status
@@ -329,6 +332,7 @@ booking:
     1: 1 day
     n: \%1 days
   title: \%1 booking
+  expired: Expired time to deposit  
   id: Your booking id is <strong>%1</strong>. <span class="smaller_text less_contrast_text">Use the above booking id in all your communications.</span>
   arrival: Arrival
   departure: Departure 

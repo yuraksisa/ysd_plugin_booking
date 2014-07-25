@@ -41,6 +41,18 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.payment_cadence'},
+        {:value => '48',
+         :description => 'Cadence in hours from the reservation date to today',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.item_hold_time'},
+        {:value => '72',
+         :description => 'Reservation expiration time',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.min_days'},
         {:value => '1',
          :description => 'Minimum number of days you must book',

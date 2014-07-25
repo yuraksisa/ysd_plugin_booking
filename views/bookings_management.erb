@@ -157,6 +157,11 @@
               <span class="entity-fieldvalue"><%%= entity.source %></span>
             </div>
           <%% } %>     
+          <%% if (entity.is_expired) { %>
+            <div class="entity-field">
+              <span class="entity-fieldlabel"><%= t.booking_management.form.expired %></span>
+            </div>
+          <%% } %>               
           <div class="element_template">
             <div class="entity-field">
               <span class="entity-fieldlabel"><%= t.booking_management.form.item %></span>

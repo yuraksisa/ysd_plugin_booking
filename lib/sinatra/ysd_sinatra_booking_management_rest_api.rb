@@ -29,8 +29,12 @@ module Sinatra
         else
           begin
             from = DateTime.strptime(params[:from], '%Y-%m-%d')
-            to = DateTime.strptime(params[:to], '%Y-%m-%d')
-            ::Yito::Model::Booking::Availability.instance.categories_payment_enabled(from, to)
+            if (BookingDataSystem::Booking.payment_cadence?(from))
+              to = DateTime.strptime(params[:to], '%Y-%m-%d')
+              ::Yito::Model::Booking::Availability.instance.categories_payment_enabled(from, to)
+            else
+              []
+            end
           rescue ArgumentError => ex
               []
           end

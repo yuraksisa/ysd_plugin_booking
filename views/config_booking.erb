@@ -13,6 +13,8 @@
   <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
   <%= render_variable_checkbox_boolean('booking.allow_total_payment', t.booking_settings.form.allow_total_payment) %>  
   <%= render_variable_checkbox_boolean('booking.payment', t.booking_settings.form.payment) %>
+  <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2) %>
+  <%= render_variable_input_text('booking.payment_cadence', t.booking_settings.form.payment_cadence, 2, 2) %>
 
   <div class="formrow-botonera">
   	<input type="submit" value="<%=t.entitymanagement.update%>" 

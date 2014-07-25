@@ -14,6 +14,8 @@ booking_settings:
     allow_total_payment: Permetre pagar el total de la reserva
     min_days: Numero mínim de dies
     family: Tipus de producte en lloger
+    item_hold_time: Caducitat (en hores)
+    payment_cadence: Cadència de pagament
 booking_rates:
   title: Gestió temporades i preus
   seasons: Temporades
@@ -74,6 +76,7 @@ booking_management:
       label: Assignar
       message: Vol assignar el cotxe?
     force_allow_payment: Pagament permès
+    expired: Excedit temps pagament depòsit
     id: Numero de reserva
     creation_date: Data
     status: Estat
@@ -143,6 +146,7 @@ booking:
     1: 1 dia
     n: %1 dies
   title: Reserva %1
+  expired: Excedit el temps per fer diposit/pagament
   id: El seu identificador de reserva és <strong>%1</strong>. <span class="less_contrast_text smaller_text">Si us plau utilitzi el seu identificador de reserva en totes les comunicacions.</span>
   arrival: Entrada
   departure: Sortida

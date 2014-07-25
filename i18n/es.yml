@@ -18,6 +18,8 @@ booking_settings:
     payment: Habilitar pago online
     general_group: General
     payment_group: Pagos
+    item_hold_time: Caducidad (en horas) de la reserva
+    payment_cadence: Cadencia de pago    
 booking_rates:
   title: Tarifas    
   seasons: Temporadas
@@ -254,6 +256,7 @@ booking_management:
       label: Permitir pago
       message: ¿Desea habilitar el pago de esta reserva?
     force_allow_payment: Pago permitido
+    expired: Excedido tiempo pago depósito
     id: Localizador reserva
     creation_date: Fecha reserva
     status: Estado
@@ -333,6 +336,7 @@ booking:
     1: 1 día
     n: \%1 días
   title: Reserva %1
+  expired: Excedido el tiempo para realizar depósito/pago
   id: Su identificador de reserva es <strong>%1</strong>. <span class="less_contrast_text smaller_text">Use su identificador de reserva en todas las comunicaciones.</span>
   arrival: Entrada
   departure: Salida
