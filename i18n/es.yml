@@ -38,7 +38,29 @@ booking_console:
   requested: Solicitudes
   confirmed: Confirmadas
   new_booking: Nueva reserva
-  availability: Disponibilidad       
+  availability: Disponibilidad
+  summary: Resumen
+booking_summary:
+  title: Resumen reservas
+booking_forecast:
+  title: Previsión reservas  
+booking_incoming:
+  title: Previsión económica
+  period: Período
+  total: Total    
+booking_pickup:
+  title: Entregas/Entradas
+booking_return:
+  title: Recogidas/Salidas
+booking_list:
+  id: Localizador
+  item: Item
+  date_from: Fecha entrega
+  date_to: Fecha devolución
+  place: Lugar
+  customer: Cliente
+  customer_phone: Teléfono
+  status: Estado
 booking_status:
   pending_confirmation: Pendiente
   confirmed: Confirmado

@@ -102,6 +102,23 @@ module Sinatra
         end
 
         #
+        # Incoming money
+        #
+        app.get '/api/booking/incoming-money', :allowed_usergroups => ['booking_manager', 'staff']  do
+
+          data = BookingDataSystem::Booking.incoming_money_summary
+
+          result = {}
+
+          data.each do |item|
+            result.store(item.period, :total => sprintf("%.2f", item.total))
+          end
+
+          result.to_json
+
+        end 
+
+        #
         # Bookings scheduler
         #
         app.get '/api/booking/scheduler' do
@@ -145,6 +162,56 @@ module Sinatra
             )
 
           bookings.to_json
+
+        end
+
+        #
+        # Get the items that have to be pick up
+        #
+        app.get '/api/booking/pickedup' do
+
+           from = DateTime.now
+           if params[:from]
+             from = DateTime.strptime(params[:from], '%Y-%m-%d')
+           end
+
+           to = from
+           if params[:to]
+             to = DateTime.strptime(params[:to], '%Y-%m-%d')
+           end
+
+           data = BookingDataSystem::Booking.all(
+            :date_from.gte => from,
+            :date_from.lte => to,
+            :status => [:confirmed, :in_progress, :done],
+            :order => [:date_from.asc, :time_from.asc])
+
+           data.to_json
+
+        end
+
+        #
+        # Get the items that have to be returned
+        #
+        app.get '/api/booking/returned' do
+
+           from = DateTime.now
+           if params[:from]
+             from = DateTime.strptime(params[:from], '%Y-%m-%d')
+           end
+
+           to = from
+           if params[:to]
+             to = DateTime.strptime(params[:to], '%Y-%m-%d')
+           end
+
+           data = BookingDataSystem::Booking.all(
+            :date_to.gte => from,
+            :date_to.lte => to,
+            :status => [:confirmed, :in_progress, :done],
+            :order => [:date_to.asc, :time_to.asc])
+
+           data.to_json
 
         end
 

@@ -39,6 +39,28 @@ booking_console:
   confirmed: Confirmed
   new_booking: New reservation    
   availability: Availability
+  summary: Summary
+booking_summary:
+  title: Booking summary  
+booking_forecast:
+  title: Booking forecast    
+booking_incoming:
+  title: Incoming forecast
+  period: Period
+  total: Total  
+booking_pickup:
+  title: Pickup/Arrivals
+booking_return:
+  title: Return/Departures 
+booking_list:
+  id: Id
+  item: Item
+  date_from: Pickup date
+  date_to: Return date
+  place: Place
+  customer: Customer
+  customer_phone: Phone number
+  status: Status
 booking_status:
   pending_confirmation: Pending
   confirmed: Confirmed

@@ -35,6 +35,28 @@ booking_console:
   confirmed: Confirmades
   new_booking: Nova reserva
   availability: Disponibilitat
+  summary: Resum  
+booking_summary:
+  title: Resum reserves 
+booking_forecast:
+  title: Previsió reserves    
+booking_incoming:
+  title: Previsió econòmica
+  period: Període
+  total: Total
+booking_pickup:
+  title: Entregues/Entrades
+booking_return:
+  title: Recollides/Sortides  
+booking_list:
+  id: Id
+  item: Item
+  date_from: Data entrega
+  date_to: Data devolució
+  place: Lloc
+  customer: Client
+  customer_phone: Telèfon
+  status: Estat
 booking_status:
   pending_confirmation: Pendent
   confirmed: Confirmat

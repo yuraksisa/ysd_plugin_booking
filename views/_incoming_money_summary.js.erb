@@ -1,0 +1,71 @@
+require(['jquery','charts','ysdtemplate'], function($, Chart, tmpl) {
+
+
+  bookingIncomingModel = {
+
+     result : null,
+
+     graphData : { labels   : [] ,
+                   datasets : [
+                     { 
+                  	   fillColor : "rgba(220, 220, 220, 0.5)",
+			                 strokeColor : "rgba(220, 220, 220, 1)",
+			                 pointColor : "rgba(220, 220, 220,1)",
+			                 pointStrokeColor : "#fff",
+			                 data : []
+			              }] 
+                },
+
+     loadData: function() {
+
+  	   $.ajax({
+  	   	       type: 'GET',
+  	   	       url : '/api/booking/incoming-money',
+  	   	       contentType: 'application/json; charset=utf-8',
+  		       dataType : 'json',
+  		       success: function(data, textStatus, jqXHR) {
+                  bookingIncomingModel.result = data;
+                  for (item in data) {
+                    bookingIncomingModel.graphData.labels.push(item);
+                    bookingIncomingModel.graphData.datasets[0].data.push(new Number(data[item].total));
+                  }
+
+                  bookingIncomingView.update('data_available');
+              }
+          });
+
+     }
+
+  };
+
+  bookingIncomingController = {
+
+  };
+
+  bookingIncomingView = {
+
+     ctx : null,
+     chart: null,
+
+     init : function() {
+     	this.ctx = document.getElementById("incoming_money_graphic").getContext("2d");
+     },
+
+     update: function(status) {
+
+        switch(status) {
+        	case 'data_available':
+        	  this.chart = new Chart(this.ctx).Bar(bookingIncomingModel.graphData);
+        	  $("#incoming_money_data").html(tmpl('booking_incoming_table', {data: bookingIncomingModel.result}));
+        	  break;
+        }
+
+       
+     }
+
+  };
+
+  bookingIncomingView.init();
+  bookingIncomingModel.loadData();
+
+});

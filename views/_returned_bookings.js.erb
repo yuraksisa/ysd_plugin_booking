@@ -1,0 +1,74 @@
+require(['jquery', 'ysdtemplate', 'datejs'], function($, tmpl) {
+
+
+  bookingReturnedModel = {
+
+     result : null,
+
+     loadData: function(date) {
+
+       var strDate = date.toString("yyyy-MM-dd");
+
+  	   $.ajax({
+  	   	       type: 'GET',
+  	   	       url : '/api/booking/returned?from='+strDate,
+  	   	       contentType: 'application/json; charset=utf-8',
+  		         dataType : 'json',
+  		         success: function(data, textStatus, jqXHR) {
+                  bookingReturnedModel.result = data;
+                  bookingReturnedView.update('data_available');
+               }
+          });
+
+     }
+
+  };
+
+  bookingReturnedController = {
+
+    dateChanged : function() {
+
+      var date = $('#return_date').datepicker('getDate');
+      bookingReturnedModel.loadData(date);
+
+    }
+
+  };
+
+  bookingReturnedView = {
+
+     chart: null,
+
+     init : function() {
+
+         var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];             
+         $('#return_date').datepicker(
+                 {controlType: 'select', showTimezone: false, useLocalTimezone: true, numberOfMonths:1, 
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function(dateText) {
+                    bookingReturnedController.dateChanged();
+                  }},
+                  locale
+                  );
+         $('#return_date').datepicker('setDate', new Date());
+
+     },
+
+     update: function(status) {
+
+        switch(status) {
+        	case 'data_available':
+        	  $("#returned_booking_data").html(tmpl('returned_bookings_table', {data: bookingReturnedModel.result}));
+        	  break;
+        }
+
+       
+     }
+
+  };
+
+  bookingReturnedView.init();
+  var date = $('#return_date').datepicker('getDate');
+  bookingReturnedModel.loadData(date);
+
+});

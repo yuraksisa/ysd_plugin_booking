@@ -42,6 +42,13 @@ module Sinatra
         end
 
         #
+        # Bookings summary
+        #
+        app.get '/admin/bookings/summary', :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:bookings_statistics)
+        end
+
+        #
         # Booking rates management
         #
         app.get '/admin/bookings/rates', :allowed_usergroups => ['booking_manager', 'staff'] do

@@ -1,0 +1,80 @@
+require(['jquery','charts','ysdtemplate'], function($, Chart, tmpl) {
+
+
+  reservationsForecastModel = {
+
+     result : null,
+
+     graphData : { labels   : [] ,
+                   datasets : [
+                     { 
+                 	   fillColor : "rgba(220, 220, 220, 0.5)",
+			           strokeColor : "rgba(220, 220, 220, 1)",
+			           pointColor : "rgba(220, 220, 220,1)",
+			           pointStrokeColor : "#fff",
+			           data : []
+			         },
+                     {
+			           fillColor : "rgba(151,187,205,0.5)",
+			           strokeColor : "rgba(151,187,205,1)",
+			           pointColor : "rgba(151,187,205,1)",
+			           pointStrokeColor : "#fff",
+			           data : []
+		             }			         
+                   ] 
+               },
+
+     loadData: function() {
+
+  	   $.ajax({
+  	   	       type: 'GET',
+  	   	       url : '/api/booking/statistics',
+  	   	       contentType: 'application/json; charset=utf-8',
+  		       dataType : 'json',
+  		       success: function(data, textStatus, jqXHR) {
+                  reservationsForecastModel.result = data;
+                  for (item in data) {
+                    reservationsForecastModel.graphData.labels.push(item);
+                    reservationsForecastModel.graphData.datasets[0].data.push(data[item].requests);
+                    reservationsForecastModel.graphData.datasets[1].data.push(data[item].confirmed);                  	
+                  }
+
+                  reservationsForecastView.update('data_available');
+              }
+          });
+
+     }
+
+  };
+
+  reservationsForecastController = {
+
+  };
+
+  reservationsForecastView = {
+
+     ctx : null,
+     chart: null,
+
+     init : function() {
+     	this.ctx = document.getElementById("booking_graphic").getContext("2d");
+     },
+
+     update: function(status) {
+
+        switch(status) {
+        	case 'data_available':
+        	  this.chart = new Chart(this.ctx).Bar(reservationsForecastModel.graphData);
+        	  $("#booking_data").html(tmpl('booking_data_table', {data: reservationsForecastModel.result}));
+        	  break;
+        }
+
+       
+     }
+
+  };
+
+  reservationsForecastView.init();
+  reservationsForecastModel.loadData();
+
+});

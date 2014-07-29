@@ -1,0 +1,74 @@
+require(['jquery', 'ysdtemplate', 'datejs'], function($, tmpl) {
+
+
+  bookingPickedupModel = {
+
+     result : null,
+
+     loadData: function(date) {
+
+       var strDate = date.toString("yyyy-MM-dd");
+
+  	   $.ajax({
+  	   	       type: 'GET',
+  	   	       url : '/api/booking/pickedup?from='+strDate,
+  	   	       contentType: 'application/json; charset=utf-8',
+  		         dataType : 'json',
+  		         success: function(data, textStatus, jqXHR) {
+                  bookingPickedupModel.result = data;
+                  bookingPickedupView.update('data_available');
+               }
+          });
+
+     }
+
+  };
+
+  bookingPickupedController = {
+
+    dateChanged : function() {
+
+      var date = $('#pickup_date').datepicker('getDate');
+      bookingPickedupModel.loadData(date);
+
+    }
+
+  };
+
+  bookingPickedupView = {
+
+     chart: null,
+
+     init : function() {
+
+         var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];             
+         $('#pickup_date').datepicker(
+                 {controlType: 'select', showTimezone: false, useLocalTimezone: true, numberOfMonths:1, 
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function(dateText) {
+                    bookingPickupedController.dateChanged();
+                  }},
+                  locale
+                  );
+         $('#pickup_date').datepicker('setDate', new Date());
+
+     },
+
+     update: function(status) {
+
+        switch(status) {
+        	case 'data_available':
+        	  $("#pickedup_booking_data").html(tmpl('pickedup_bookings_table', {data: bookingPickedupModel.result}));
+        	  break;
+        }
+
+       
+     }
+
+  };
+
+  bookingPickedupView.init();
+  var date = $('#pickup_date').datepicker('getDate');
+  bookingPickedupModel.loadData(date);
+
+});
