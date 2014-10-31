@@ -33,12 +33,12 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
 
       var calendarDataSource= new RemoteDataSource('/api/calendars',
           {'id':'id','description':'name'});
-      var calendarValue = (entity && entity.calendar_id)?entity.calendar_id:null; 
+      var calendarValue = (this.entity && this.entity.calendar_id)?this.entity.calendar_id:null; 
       var calendarSelector = new SelectSelector('calendar[id]', calendarDataSource, calendarValue, true);   
 
       var priceDefinitionDataSource= new RemoteDataSource('/api/rate-price-defs',
           {'id':'id','description':'name'});
-      var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
+      var priceDefinitionValue = (this.entity && this.entity.price_definition_id)?this.entity.price_definition_id:null; 
       var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
 
     },
