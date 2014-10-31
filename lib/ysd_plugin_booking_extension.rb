@@ -201,6 +201,21 @@ module Huasi
       
     end
 
+    # ========= Pages ====================
+
+    #
+    # Return the pages managed by the module
+    # @return [Hash] Name - Url
+    #
+    def public_pages
+
+      pages = {}
+      pages.store(t.booking_pages.new_booking, '/p/booking/start')
+
+      return pages
+
+    end
+
 
     # --------- Menus --------------------
     

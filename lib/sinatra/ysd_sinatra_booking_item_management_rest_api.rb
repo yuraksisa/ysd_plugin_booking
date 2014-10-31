@@ -102,7 +102,7 @@ module Sinatra
           key = booking_item_request.delete(:reference)
           
           if booking_item = ::Yito::Model::Booking::BookingItem.get(key)
-            content.delete
+            booking_item.destroy
           end
           
           content_type :json

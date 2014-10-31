@@ -53,17 +53,19 @@ module Sinatra
         #
         app.get '/admin/bookings/rates', :allowed_usergroups => ['booking_manager', 'staff'] do
           
-          context = {:app => self}
-          locals = {}
+          redirect '/admin/console/rates'
+
+          #context = {:app => self}
+          #locals = {}
           
-          seasonBlock = ::Yito::View::Block::SeasonBlock.new
-          ratesBlock = ::Yito::View::Block::RatesBlock.new
+          #seasonBlock = ::Yito::View::Block::SeasonBlock.new
+          #ratesBlock = ::Yito::View::Block::RatesBlock.new
 
-          locals.store(:season_block, seasonBlock.html(context))
-          locals.store(:rates_block, ratesBlock.html(context))
-          locals.store(:scripts, seasonBlock.jscript(context) << ratesBlock.jscript(context))
+          #locals.store(:season_block, seasonBlock.html(context))
+          #locals.store(:rates_block, ratesBlock.html(context))
+          #locals.store(:scripts, seasonBlock.jscript(context) << ratesBlock.jscript(context))
 
-          load_page(:booking_rates, :locals => locals)
+          #load_page(:booking_rates, :locals => locals)
         end
 
         #

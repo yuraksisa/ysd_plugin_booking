@@ -1,9 +1,9 @@
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
-         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
+         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"], 
          function($, EntityManagement, EntityManagementComplementHooks,
-          RemoteDataSource, SelectSelector) {
+           RemoteDataSource, SelectSelector) {
     
-  var bookingItemCategory = {
+  var bookingItemExtra = {
      
        
     entityKey : function(entity) {
@@ -13,12 +13,6 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     onEdit : function(entity) {
       $('#code').attr('code', true);
       $('#name').focus();
-
-      var calendarDataSource= new RemoteDataSource('/api/calendars',
-          {'id':'id','description':'name'});
-      var calendarValue = (entity && entity.calendar_id)?entity.calendar_id:null; 
-      var calendarSelector = new SelectSelector('calendar[id]', calendarDataSource, calendarValue, true);   
-
       var priceDefinitionDataSource= new RemoteDataSource('/api/rate-price-defs',
           {'id':'id','description':'name'});
       var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
@@ -27,38 +21,35 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     },
   
     onNew : function() {
-      $('#reference').focus();
-    },          
+      $('#code').focus();
+    },
 
     adaptFormData : function(data) {
             
-      if (data.calendar.id == '') {
-        data.calendar = null;
-      }
-
       if (data.price_definition.id == '') {
         data.price_definition = null;
       }
 
       return data;  
       
-    }
+    }              
+
 
   };
 
-  var urls = { query_url  : '/api/booking-categories',
-               create_url : '/api/booking-category',
-               update_url : '/api/booking-category',
-               delete_url : '/api/booking-category',
-               get_url    : '/api/booking-category'
+  var urls = { query_url  : '/api/booking-extras',
+               create_url : '/api/booking-extra',
+               update_url : '/api/booking-extra',
+               delete_url : '/api/booking-extra',
+               get_url    : '/api/booking-extra'
              };
   
-  var hooks = [bookingItemCategory];
+  var hooks = [bookingItemExtra];
   
   // Add the complement hooks
   hooks = hooks.concat(EntityManagementComplementHooks.complements);
                  
-  var contentsManager = new EntityManagement(urls, 'booking_category', 20, hooks,
+  var hooksManager = new EntityManagement(urls, 'booking-extra', 20, hooks,
     {prefix: '/admin'});
 
   

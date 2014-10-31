@@ -2,11 +2,12 @@
 
 <!-- Renders the element description -->
 <script type="text/tmpl" id="elements_title">
-  <h2 class="entity-title"><%=t.booking_item_management.form.title%></h2> 
+  <h2 class="entity-title"><%=t.booking_extra_management.title%></h2> 
 </script>
 
 <!-- Renders the element description -->
 <script type="text/tmpl" id="elements_description">
+<%=t.booking_extra_management.description%>
 </script>
 
 <!-- Renders the elements container -->
@@ -15,10 +16,10 @@
      <thead class="table-header">
        <tr>
          <th class="table-header-title" scope="col" style="width:30%">
-            <%= t.booking_item_management.form.reference.label %>
+            <%= t.booking_extra_management.table.code %>
          </th>
          <th class="table-header-title" scope="col" style="width:30%">
-            <%= t.booking_item_management.form.name.label %>
+            <%= t.booking_extra_management.table.name %>
          </th>
          <th class="table-header-title" scope="col" style="width:40%">
          </th>         
@@ -34,27 +35,19 @@
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row" id="element_row_<%%=index%>">
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
-         <%%= entity.reference %>
+        <%%= entity.code %>
       </td>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
-         <%%= entity.name %>
+        <%%= entity.name %>
       </td>
       <td class="table-cell">
-           <%% if (entity.calendar_id && entity.calendar_id != null) { %>
-              <div>
-                <a href="/admin/events/<%%=entity.calendar_id%>">
-                  <%=t.booking_category_management.table.calendar%>
-                </a>
-              </div> 
-           <%% } %>
-
            <%% if (entity.price_definition_id && entity.price_definition_id != null) { %>
               <div>
                 <a href="/admin/rates/prices/<%%=entity.price_definition_id%>">
-                  <%=t.booking_category_management.table.prices%>
+                  <%=t.booking_extra_management.table.prices%>
                 </a>
               </div>           
-           <%% } %> 
+           <%% } %>
       </td>
     </tr>
 </script>
@@ -76,29 +69,25 @@
           <div class="container_12"> 
             <div class="grid_12">
               <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.reference.label %></label>
-                <input type="text" maxlength="50" id="reference" name="reference" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.reference %>" <%% } %>/>
+                <label class="fieldtitle"><%= t.booking_extra_management.form.code.label %></label>
+                <input type="text" maxlength="20" id="code" name="code" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.code %>" <%% } %>/>
               </div>
               <div class="formrow">
-                <label for="category[code]" class="fieldtitle"><%=t.booking_item_management.form.category.label%></label>
-                <select name="category[code]" id="category[code]" class="fieldcontrol"/>
-              </div>              
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.name.label %></label>
+                <label class="fieldtitle"><%= t.booking_extra_management.form.name.label %></label>
                 <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
               </div>              
               <div class="formrow">
-                 <label class="fieldtitle"><%= t.booking_item_management.form.description.label %></label>
-                 <textarea rows="20" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+                 <label class="fieldtitle"><%= t.booking_extra_management.form.description.label %></label>
+                 <textarea rows="5" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
               </div>
               <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.calendar.label %></label>
-                <select name="calendar[id]" id="calendar[id]"/>
-              </div>     
+                <label class="fieldtitle"><%= t.booking_extra_management.form.max_quantity.label %></label>
+                <input type="text" maxlength="2" id="max_quantity" name="max_quantity" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.max_quantity%>" <%% } else { %> value="0"<%% }%>/>
+              </div>      
               <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.price_definition.label %></label>
+                <label class="fieldtitle"><%= t.booking_extra_management.form.price_definition.label %></label>
                 <select name="price_definition[id]" id="price_definition[id]"/>
-              </div>               
+              </div>                                     
             </div>
           </div>
 

@@ -14,8 +14,14 @@
   <table id="elements_table" class="table">
      <thead class="table-header">
        <tr>
-         <th class="table-header-title" scope="col" style="width:50%"><%= t.booking_category_management.form.code.label %></th>
-         <th class="table-header-title" scope="col" style="width:50%"><%= t.booking_category_management.form.name.label %></th>
+         <th class="table-header-title" scope="col" style="width:30%">
+           <%= t.booking_category_management.form.code.label %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:30%">
+           <%= t.booking_category_management.form.name.label %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:40%">
+         </th>
        </tr>
      </thead>
      <tbody id="elements_tbody" class="table-tbody">             
@@ -26,9 +32,30 @@
 <!-- Renders one element in the elements list view -->
         
 <script type="text/tmpl" id="elements_list_template">
-    <tr class="table-row element-navigation-detail" rel="<%%= index %>" id="element_row_<%%=index%>">
-      <td class="table-cell"><%%= entity.code %></td>
-      <td class="table-cell"><%%= entity.name %></td>
+    <tr class="table-row" id="element_row_<%%=index%>">
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+        <%%= entity.code %>
+      </td>
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+        <%%= entity.name %>
+      </td>
+      <td class="table-cell">
+           <%% if (entity.calendar_id && entity.calendar_id != null) { %>
+              <div>
+                <a href="/admin/events/<%%=entity.calendar_id%>">
+                  <%=t.booking_category_management.table.calendar%>
+                </a>
+              </div> 
+           <%% } %>
+
+           <%% if (entity.price_definition_id && entity.price_definition_id != null) { %>
+              <div>
+                <a href="/admin/rates/prices/<%%=entity.price_definition_id%>">
+                  <%=t.booking_category_management.table.prices%>
+                </a>
+              </div>           
+           <%% } %>
+      </td>
     </tr>
 </script>
 
@@ -58,8 +85,16 @@
               </div>              
               <div class="formrow">
                  <label class="fieldtitle"><%= t.booking_category_management.form.description.label %></label>
-                 <textarea rows="20" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+                 <textarea rows="5" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
               </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.calendar.label %></label>
+                <select name="calendar[id]" id="calendar[id]"/>
+              </div>     
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.price_definition.label %></label>
+                <select name="price_definition[id]" id="price_definition[id]"/>
+              </div>                           
             </div>
           </div>
 

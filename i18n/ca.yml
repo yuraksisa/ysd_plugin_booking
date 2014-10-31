@@ -1,3 +1,5 @@
+booking_pages:
+  new_booking: Nova reserva
 system_admin_menu:
   apps:
     bookings_menu:
@@ -144,6 +146,9 @@ booking_management:
     free_access_id: Accès directe   
     payment_method: Forma de pagament 
 booking_category_management:
+  table:
+    calendar: Gestió del calendari
+    prices: Gestió dels preus
   form:
     title: Gestió de categories
     code:
@@ -152,7 +157,32 @@ booking_category_management:
       label: Nom
     description:
       label: Descripció
+    calendar:
+      label: Calendari
+    price_definition:
+      label: Preus       
+booking_extra_management:
+  title: Gestió d\'extras
+  description: Gestió d\'extras
+  table:
+    code: Codi
+    name: Nom
+    prices: Gestió dels preus    
+  form:
+    code:
+      label: Codi
+    name:
+      label: Nom
+    description:
+      label: Descripció    
+    max_quantity:
+      label: Quantitat màxima
+    price_definition:
+      label: Preus                
 booking_item_management:
+  table:
+    calendar: Gestió del calendari
+    prices: Gestió dels preus
   form:
     title: Gestió items de reserva
     reference: 
@@ -163,6 +193,10 @@ booking_item_management:
       label: Nom
     description:
       label: Descripció      
+    calendar:
+      label: Calendari
+    price_definition:
+      label: Preus         
 booking:
   days: !!pl
     1: 1 dia

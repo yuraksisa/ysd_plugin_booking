@@ -14,6 +14,8 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YSD::BookingManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingCategoryManagement
    sinatra_extension Sinatra::YitoExtension::BookingCategoryManagementRESTApi
+   sinatra_extension Sinatra::YitoExtension::BookingExtraManagement
+   sinatra_extension Sinatra::YitoExtension::BookingExtraManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingItemManagement
    sinatra_extension Sinatra::YitoExtension::BookingItemManagementRESTApi
 

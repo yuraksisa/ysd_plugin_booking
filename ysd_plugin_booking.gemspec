@@ -22,6 +22,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "ysd_md_comparison"
   
   s.add_runtime_dependency "ysd_plugin_payment"
+  s.add_runtime_dependency "ysd_plugin_rates"
+  s.add_runtime_dependency "ysd_plugin_calendar"
   s.add_runtime_dependency "ysd_plugin_auth"
 
   s.add_development_dependency "dm-sqlite-adapter" # Model testing using sqlite

@@ -1,3 +1,5 @@
+booking_pages:
+  new_booking: Nueva reserva
 system_admin_menu:
   apps:
     bookings_menu:
@@ -5,7 +7,7 @@ system_admin_menu:
       bookings: Reservas
       bookings_scheduler: Agenda
       booking_categories: Categorías
-      booking_items: Items
+      booking_items: Items en alquiler
 booking_settings:
   form:
     title: Configuración sistema de reservas
@@ -30,7 +32,7 @@ booking_console:
   configuration: Configuración
   categories: Categorías
   extras: Extras
-  items: Items
+  items: Items en alquiler
   rates: Tarifas
   reservations: Reservas
   planning: Planning    
@@ -334,15 +336,43 @@ booking_management:
     free_access_id: Acceso directo
     payment_method: Forma de pago 
 booking_category_management:
+  table:
+    calendar: Gestión del calendario
+    prices: Gestión de precios  
   form:
-    title: Gestión de categories
+    title: Gestión de categorías
+    code:
+      label: Código
+    name:
+      label: Nombre
+    description:
+      label: Descripción
+    calendar:
+      label: Calendario
+    price_definition:
+      label: Precio
+booking_extra_management:
+  title: Gestión de extras
+  description: Gestión de extras
+  table:
+    code: Código
+    name: Nombre
+    prices: Gestión de precios      
+  form:
     code:
       label: Código
     name:
       label: Nombre
     description:
       label: Descripción    
+    max_quantity:
+      label: Cantidad máxima
+    price_definition:
+      label: Precio               
 booking_item_management:
+  table:
+    calendar: Gestió del calendario
+    prices: Gestión de precios    
   form:
     title: Gestión items de reserva
     reference: 
@@ -352,7 +382,11 @@ booking_item_management:
     name:
       label: Nombre
     description:
-      label: Descripción            
+      label: Descripción
+    calendar:
+      label: Calendario
+    price_definition:
+      label: Precio                  
 booking:
   days: !!pl
     1: 1 día

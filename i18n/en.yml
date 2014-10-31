@@ -1,3 +1,5 @@
+booking_pages:
+  new_booking: Start booking
 confirm_line1system_admin_menu:
   apps:
     bookings_menu:
@@ -5,7 +7,7 @@ confirm_line1system_admin_menu:
       bookings: Bookings
       bookings_scheduler: Scheduler
       booking_categories: Categories
-      booking_items: Items      
+      booking_items: Renting items      
 booking_settings:
   form:
     title: Booking configuration
@@ -30,7 +32,7 @@ booking_console:
   configuration: Configuration
   categories: Categories
   extras: Extras
-  items: Items
+  items: Renting items
   rates: Rates 
   reservations: Reservations
   planning: Planning    
@@ -330,6 +332,9 @@ booking_management:
     free_access_id: Direct access    
     payment_method: Payment method
 booking_category_management:
+  table:
+    calendar: Calendar management
+    prices: Prices management
   form:
     title: Categories management
     code:
@@ -337,8 +342,33 @@ booking_category_management:
     name:
       label: Name
     description:
-      label: Description    
+      label: Description
+    calendar:
+      label: Calendar
+    price_definition:
+      label: Prices    
+booking_extra_management:
+  title: Extras management
+  description: Extras management
+  table:
+    code: Code
+    name: Name
+    prices_definition: Prices management
+  form:
+    code:
+      label: Code
+    name:
+      label: Name
+    description:
+      label: Descripction    
+    max_quantity:
+      label: Max quantity 
+    price:
+      label: Prices                 
 booking_item_management:
+  table:
+    calendar: Calendar management
+    prices: Prices management
   form:
     title: Booking item management 
     reference: 
@@ -349,6 +379,10 @@ booking_item_management:
       label: Name
     description:
       label: Description   
+    calendar:
+      label: Calendar
+    price_definition:
+      label: Prices 
 booking:
   days: !!pl
     1: 1 day

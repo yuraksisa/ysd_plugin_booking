@@ -30,9 +30,32 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       var categoryDataSource = new RemoteDataSource('/api/booking-categories',{'id':'code','description':'name'});
       var categoryValue = (this.entity && this.entity.category_code)?this.entity.category_code:null;
       var categorySelector = new SelectSelector('category[code]', categoryDataSource, categoryValue); 
+
+      var calendarDataSource= new RemoteDataSource('/api/calendars',
+          {'id':'id','description':'name'});
+      var calendarValue = (entity && entity.calendar_id)?entity.calendar_id:null; 
+      var calendarSelector = new SelectSelector('calendar[id]', calendarDataSource, calendarValue, true);   
+
+      var priceDefinitionDataSource= new RemoteDataSource('/api/rate-price-defs',
+          {'id':'id','description':'name'});
+      var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
+      var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
+
     },
       
+    adaptFormData : function(data) {
+            
+      if (data.calendar.id == '') {
+        data.calendar = null;
+      }
 
+      if (data.price_definition.id == '') {
+        data.price_definition = null;
+      }
+
+      return data;  
+      
+    }
 
   };
 

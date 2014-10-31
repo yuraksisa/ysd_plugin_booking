@@ -390,6 +390,17 @@ define(function() {
      }
   }
    
+  /*******************************
+   FixedFactorFinder
+   *******************************/
+  rates.FixedSeasonFactorFinder = function(value) {
+     this.value = value;
+
+     this.get_factor = function(season, family, ndays) {
+        return this.value[season];
+     }
+  }
+
   /**
    * Session factor finder (factors defined by session)
    */
