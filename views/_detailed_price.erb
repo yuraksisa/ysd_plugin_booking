@@ -1,0 +1,35 @@
+  <script type="text/tpml" id="script_detailed_price">
+      <table class="detailed_price">
+        <thead>
+          <tr>
+            <th><%=t.new_booking.concept%></th>
+            <th><%=t.new_booking.quantity%></th>
+            <th><%=t.new_booking.days%></th>
+            <th><%=t.new_booking.price%></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="first_column"><%%= bookingDataSystem.families[booking.item_id].cars %> <%% if (booking.optional) { %> <%%='('+bookingDataSystem.optionals[booking.optional].name+')'%> <%% } %> </td>
+            <td class="quantity_column"><%%= booking.quantity %> </td>
+            <td class="quantity_column"><%%= booking.days %> </td>
+            <td class="quantity_column"><%%= booking.item_cost %>€ </td>
+          </tr>
+          <%% for (extra in booking.booking_extras) { %>
+            <tr>
+              <td class="first_column"><%%= bookingDataSystem.extras[booking.booking_extras[extra].extra_id].the_name %></td>
+              <td class="quantity_column"><%%= booking.booking_extras[extra].quantity %></td>
+              <td class="quantity_column"><%%= booking.days %> </td>
+              <td class="quantity_column"><%%= booking.booking_extras[extra].extra_cost %>€</td>
+            </tr>
+          <%% } %>
+          <tr>
+            <td class="total_column first_column"><%=t.new_booking.total.upcase%></td>
+            <td class="quantity_column"></td>
+            <td class="quantity_column"></td>
+            <td class="quantity_column total_column"><%%= booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) %>€ </td>
+          </tr>
+        </tbody>      
+      </table>
+  
+  </script>

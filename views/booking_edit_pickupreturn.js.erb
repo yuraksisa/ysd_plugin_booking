@@ -1,0 +1,246 @@
+  <% if defined?booking_js %>
+    <%= booking_js %>
+  <% end %>
+  require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
+  	       <% if defined?booking_js %>'booking_js'<% else %>'/js/booking.js'<%end%>, 
+           'YSDListSelector', 'YSDRemoteDataSource', 'json2', 'jquery.validate', 
+  	       'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
+  	       'jquery.ui.datepicker.validation',
+  	       'jquery.tools', 'jquery.formparams', 'datejs'], 
+  	       function($, YSDForms, DateControl, tmpl, bookingDataSystem,  
+  	       ListSelector, RemoteDataSource) {  
+  
+  bookingEditModel = {
+
+        exceeded_hours: 2,
+        
+        all_prices: null,
+        item_unit_cost: <%=booking.item_unit_cost%>,
+
+        booking : {
+
+          date_from: null,
+          time_from: null,
+          date_to: null,
+          time_to: null,
+          pickup_place: '<%=booking.pickup_place%>',
+          return_place: '<%=booking.return_place%>',
+          days: null,
+          date_to_price_calculation: null,
+          item_cost: <%=booking.item_cost%>,
+          extras_cost: <%=booking.extras_cost%>,
+          total_cost: <%=booking.total_cost%>,
+          total_paid: <%=booking.total_paid%>,
+          total_pending: <%=booking.total_pending%>,
+          booking_extras: [
+            <% booking.booking_extras.each do |extra| %>
+              {'id':<%=extra.id%>, 'extra_id':'<%=extra.extra_id%>', 'extra_description':'<%=extra.extra_description%>',
+               'extra_unit_cost':new Number(<%=extra.extra_unit_cost%>), 'extra_cost':new Number(<%=extra.extra_cost%>),
+               'quantity':new Number(<%=extra.quantity%>), 'unit_cost': new Number(<%=extra.extra_unit_cost / booking.days%>)
+              },
+            <% end %>
+          ]
+
+        },
+
+     
+        update: function() {
+
+        	 var request = JSON.stringify(this.booking);
+
+             $.ajax( 
+       	         {
+       	           type : 'PUT',
+       	           url :  '/api/booking/<%=booking.id%>/price', 
+       	           data : request,
+                   dataType: 'json', 
+                   contentType: 'application/json; charset=utf-8', /* Data type sent to the server */
+       	                  	           
+       	           success : function(data, textStatus, jqXHR) { /* RESPONSE OK */
+       	           	 location.href="/admin/bookings/<%=booking.id%>"
+       	           },	
+       	           
+       	           error: function(jqXHR, textStatus, errorThrow){ /* RESPONSE ERROR */
+       	           	 alert('Error'); 
+       	           }
+       	           
+       	         });       
+       	
+
+        },
+
+        calculatePrice : function(date_from, time_from, date_to, time_to, pickup_place, return_place) {
+       	
+       	  this.booking.date_from = date_from;
+       	  this.booking.time_from = time_from;
+       	 
+       	  this.booking.date_to = date_to;
+       	  this.booking.time_to = time_to;
+
+       	  this.booking.pickup_place = pickup_place;
+       	  this.booking.return_place = return_place;
+       	        	 
+       	  var _date_from = new Date( date_from.toString("MM/dd/yyyy ") + time_from);
+       	  var _date_to = new Date( date_to.toString("MM/dd/yyyy ") + time_to);
+       	        	 
+       	  var dias_diferencia = (date_to - date_from) / (1000*60*60*24);
+       	  var horas_diferencia = (_date_to - _date_from) / (1000*60*60);
+       	 
+       	  this.booking.days = Math.max(Math.floor(dias_diferencia),0);
+       	  this.booking.date_to_price_calculation = new Date(this.booking.date_to.getTime());
+       	 
+       	  if (this.exceeded_hours > 0 && (horas_diferencia/24 > dias_diferencia + this.exceeded_hours/24) ) {
+       	    this.booking.date_to_price_calculation.add( {days:1});
+       	    this.booking.days++;
+       	  }
+
+       	  this.all_prices = bookingDataSystem.calculate_items_price(this.booking.date_from, 
+       	                                                            this.booking.date_to_price_calculation);
+       	  this.booking.item_cost = this.all_prices['<%=booking.item_id%>'];
+       	  this.booking.extras_cost = 0;
+       	  for (var i=0;i<this.booking.booking_extras.length;i++) {
+       	  	 this.booking.booking_extras[i].extra_unit_cost = this.booking.booking_extras[i].unit_cost * this.booking.days;
+       	  	 this.booking.booking_extras[i].extra_cost = this.booking.booking_extras[i].extra_unit_cost * this.booking.booking_extras[i].quantity;       	  	 
+       	     this.booking.extras_cost += this.booking.booking_extras[i].extra_cost;
+       	  }
+       	  this.booking.total_cost = this.booking.item_cost + this.booking.extras_cost;
+          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
+
+       	  bookingEditView.showNewPrices();
+       	  bookingEditView.showNewExtras();
+       	  $('#situation_change').fadeIn();
+       	       	       	
+       },  
+
+       updateItemPrice: function(itemCost) {
+          
+          this.booking.item_cost = itemCost;
+          this.booking.total_cost = this.booking.item_cost + this.booking.extras_cost;
+          bookingEditView.showNewPrices();
+          bookingEditView.showNewExtras(); 
+       },
+
+       updateExtraCost: function(index, value) {
+          var oldValue = this.booking.booking_extras[index].extra_cost;
+       	  this.booking.booking_extras[index].extra_unit_cost = value;
+       	  this.booking.booking_extras[index].extra_cost = value * this.booking.booking_extras[index].quantity;
+
+          this.booking.extras_cost = this.booking.extras_cost - oldValue + this.booking.booking_extras[index].extra_cost;
+
+          this.booking.total_cost = this.booking.item_cost + this.booking.extras_cost;
+          bookingEditView.showNewPrices();
+          bookingEditView.showNewExtras();       	
+       }
+
+
+  }
+
+  bookingEditController = { 
+
+     dateFromChanged: function() {
+       bookingEditModel.calculatePrice($('#date_from').datepicker("getDate"), 
+                                       $('#time_from').val(),
+                                       $('#date_to').datepicker("getDate"), 
+                                       $('#time_to').val(),
+                                       $('#pickup_place_value').val(),
+                                       $('#return_place_value').val());
+     },
+
+     dateToChanged: function() {
+        bookingEditModel.calculatePrice($('#date_from').datepicker("getDate"), 
+                                        $('#time_from').val(),
+                                        $('#date_to').datepicker("getDate"), 
+                                        $('#time_to').val(),
+                                        $('#pickup_place_value').val(),
+                                        $('#return_place_value').val());
+     },
+
+     itemCostBlur: function() {
+     	bookingEditModel.updateItemPrice(new Number($('#item_cost').val()));
+     },
+
+     extraCostBlur: function(index, value) {
+     	bookingEditModel.updateExtraCost(index, value);
+     },
+
+     update: function() {
+     	bookingEditModel.update();
+     }
+
+
+  }
+
+  bookingEditView = {
+
+    init : function() {
+
+      $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+
+      $('#date_from').datepicker({numberOfMonths:2, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+      $('#date_to').datepicker({numberOfMonths:2, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+      $('#date_from').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_from.strftime('%d/%m/%y')%>")); 
+      $('#date_to').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to.strftime('%d/%m/%y')%>"));
+
+      $('#date_from').bind('change', function() {
+         bookingEditController.dateFromChanged();
+      });
+      $('#time_from').bind('change', function(){
+      	 bookingEditController.dateFromChanged();
+      })
+      $('#date_to').bind('change', function() {
+         bookingEditController.dateToChanged();
+      });
+      $('#time_to').bind('change', function() {
+      	 bookingEditController.dateToChanged();
+      });
+      $('#update_button').bind('click', function() {
+         bookingEditController.update();
+      });
+
+      // Add the new options
+      var comboItems = document.getElementById('pickup_place');
+      for (var pickup_place_id in bookingDataSystem.pickup_places)
+      {
+          var optionItem = document.createElement('option');
+          optionItem.setAttribute('value', pickup_place_id);	
+          optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
+          comboItems.appendChild(optionItem);
+      }
+
+      // Add the new options
+      comboItems = document.getElementById('return_place');
+      for (var pickup_place_id in bookingDataSystem.pickup_places)
+      {
+          var optionItem = document.createElement('option');
+          optionItem.setAttribute('value', pickup_place_id);	
+          optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
+          comboItems.appendChild(optionItem);
+      }
+      bookingEditView.loadExtras();
+    },
+
+    loadExtras: function() {
+    	$('#extras').html(tmpl('script_extras', {booking: bookingEditModel.booking}));
+    },
+
+    showNewExtras: function() {
+    	$('#new_extras').html(tmpl('script_new_extras', {booking: bookingEditModel.booking}));  
+    	$('.extra-cost').bind('blur', function(event) {
+           bookingEditController.extraCostBlur($(event.currentTarget).attr('rel'), $(event.currentTarget).val());
+    	});	
+    },
+
+    showNewPrices: function() {
+    	$('#new_prices').html(tmpl('new_cost', 
+    		             {booking: bookingEditModel.booking, 
+                          bookingDataSystem: bookingDataSystem}));
+    	$('#item_cost').bind('blur', function(event) {
+    		bookingEditController.itemCostBlur();
+    	});
+    }
+
+  }
+
+  bookingEditView.init();
+
+});

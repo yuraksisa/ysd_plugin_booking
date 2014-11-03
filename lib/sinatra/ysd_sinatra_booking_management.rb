@@ -55,17 +55,6 @@ module Sinatra
           
           redirect '/admin/console/rates'
 
-          #context = {:app => self}
-          #locals = {}
-          
-          #seasonBlock = ::Yito::View::Block::SeasonBlock.new
-          #ratesBlock = ::Yito::View::Block::RatesBlock.new
-
-          #locals.store(:season_block, seasonBlock.html(context))
-          #locals.store(:rates_block, ratesBlock.html(context))
-          #locals.store(:scripts, seasonBlock.jscript(context) << ratesBlock.jscript(context))
-
-          #load_page(:booking_rates, :locals => locals)
         end
 
         #
@@ -115,6 +104,25 @@ module Sinatra
                  
           load_page('reserva-online'.to_sym, :locals => locals)
 
+
+        end
+
+        #
+        # Edit the pick-up/return date
+        #
+        app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager'] do
+
+          booking = BookingDataSystem::Booking.get(params[:booking_id])
+
+          locals = {}
+          locals.store(:booking_item_family, 
+            ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+          locals.store(:booking, booking)
+          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
+             not booking_js.text.empty?
+            locals.store(:booking_js, booking_js.text) 
+          end
+          load_page(:booking_edit_pickupreturn, :locals => locals)
 
         end
 

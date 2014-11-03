@@ -248,6 +248,10 @@ new_driving_booking:
     required: El lugar de entrega es obligatorio
   return_place:
     required: El lugar de devolución es obligatorio
+booking_management_edit:
+  form:
+    current_price: Precio actual
+    new_price: Nuevo precio
 booking_management:
   title: Gestión de reservas
   description: <p>Consultar las reservas.</p>
@@ -261,6 +265,14 @@ booking_management:
     date_to: Fecha fin
     notifications: Notificaciones
   form:
+    reservation_tab: Datos de la reserva
+    extra_tab: Extras
+    price_tab: Precio y estado del cobro
+    customer_tab: Datos cliente
+    driver_tab: Datos conductor
+    payment_tab: Resumen cobros
+    other_tab: Otros datos
+    deposit_received: Depósito
     confirm_button: 
       label: Confirmar
       message: ¿Desea confirmar la reserva?
@@ -289,28 +301,36 @@ booking_management:
       confirm: Confirmar
       pickup: Recogida/Entrada
       return_item: Devolución/Salida
-    payment_status: Pago
+    payment_status: Estado cobro
+    payment_title: Cobros
     item: Item    
-    booking_data_title: Datos reserva    
-    date_from: Fecha inicio
-    date_to: Fecha fin
+    booking_data_title: Datos reserva
+    pickup_return: Entrega y devolución    
+    date_from: Entrega / Entrada
+    date_to: Devolución / Salida
     pickup_place: Lugar de entrega
     return_place: Lugar de devolución
     item: Item
     extras_title: Extras
     extra_description: Descripción
-    extra_quantity: Cantidad    
+    extra_quantity: Cantidad 
+    extra_cost: Coste total 
+    extra_unit_cost: Precio
+    extra_cost_1unit: Coste u.
     charges_title: Cobros
     charge_date: Fecha
     charge_amount: Cantidad
     charge_status: Estado      
     days: Días
-    item_cost: Precio
-    extras_cost: Precio extras
+    cost: Precio
+    item_cost: Precio item (global)
+    item_unit_cost: Precio item (x día)    
+    extras_cost: Precio extras (global)
     total_cost: Precio total 
     total_paid: Pagado
     total_pending: Pendiente   
-    booking_amount: Importe depósito reserva
+    booking_amount: Importe depósito
+    deposit_state: Info. depósito 
     comments: Comentarios    
     customer_title: Cliente
     customer_name: Nombre

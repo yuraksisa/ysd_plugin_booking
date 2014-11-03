@@ -1,0 +1,248 @@
+
+      <style>
+        #new_extras .table, #new_extras .table-row {
+        	background-color:rgb(253, 253, 212);
+        }
+        #extras tbody .table-cell {
+        	padding: 16px 4px 16px 4px;
+        }
+      </style>
+
+      <div class="guiblock">
+        <div class="container_12">
+      	  <div class="grid_6">
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.id %></span>
+                <span class="entity-fieldvalue"><%= booking.id %></span>
+              </div>
+            </div>  
+          </div>
+      	  <div class="grid_6">
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_title %></span>
+                <span class="entity-fieldvalue"><%= booking.customer_name %> <%= booking.customer_surname %></span>
+              </div>
+            </div>      	 	
+      	  </div>
+        </div>
+      </div>
+
+	  <div id="item-selection" class="element-form-detail">
+		<form id="reservation" class="top-margin" name="reservation">
+		  <div class="container_12">
+		    <div class="grid_4">
+		      <div class="formrow">
+		      	<label for="datefrom" id="labeldatefrom" class="fieldtitle">
+		      		<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
+		      	</label> 
+		      	<input type="text" name="date_from" id="date_from" class="date_control" size="10" maxlength="10"/>
+		      	<% if booking_item_family.time_to_from %>
+		      	<input type="text" name="time_from" id="time_from" maxlength="5" size="5" value="<%=booking.time_from%>"/>
+                <% end %>
+		      </div>
+              <% if booking_item_family.pickup_return_place %>
+		      <div class="formrow">
+	              <div class="collection_place">
+	                 <label for="pickup_place" class="fieldtitle"><%=t.new_booking.pickup_place%></label>
+	                 <select name="pickup_place" class="fieldcontrol" id="pickup_place">
+	                 </select>
+	              </div>
+	              <div id="other_pickup_place" style="display:none;">
+	                 <span class="columna1">&nbsp;</span>
+	                 <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
+	              </div>
+	              <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
+	          </div>          		      	
+	          <% end %>	    
+	        </div>
+	        <div class="grid_4">   
+		      <div class="formrow">
+		      	  <label for="dateto" id="labeldateto" class="fieldtitle">
+		      	  <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
+		      	  </label> 
+		      	  <input type="text" name="date_to" id="date_to" class="date_control" size="10" maxlength="10"/>
+		      	  <% if booking_item_family.time_to_from %>
+		      	  <input type="text" name="time_to" id="time_to" maxlength="5" size="5" value="<%=booking.time_to%>"/>
+		      	  <% end %>
+		      </div>
+	          <% if booking_item_family.pickup_return_place %>
+	          <div class="formrow">
+	               <div class="return_place">
+	                  <label for="return_place" class="fieldtitle"><%=t.new_booking.return_place%></label>
+	      	          <select name="return_place" id="return_place" class="fieldcontrol">
+	                  </select>
+                   </div>
+	               <div id="other_return_place" style="display:none;">
+	               	  <span class="columna1">&nbsp;</span>
+	                  <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" placeholder="<%=t.new_booking.return_place%>"/>  
+	               </div>
+	               <input type="hidden" name="return_place_value" id="return_place_value"/>
+	          </div>
+	          <% end %>
+	        </div>
+		  </div>
+
+          <div id="situation_change" style="display:none">
+            
+            <div class="container_12 top-separator top-margin-2lines">
+             <div class="grid_6">
+               <h3 class="centered_text">Situación actual</h3>            	
+             </div>
+             <div class="grid_6" style="background-color:rgb(253, 253, 212)">
+               <h3 class="centered_text">Nueva situación</h3>
+             </div>             	
+            </div>
+
+            <div class="container_12">
+             <div class="grid_6">
+                  <div class="element_template">
+                    <div class="entity-field">
+                       <span><%= t.booking_management.form.days %>:</span>
+                       <span style="width: 70px; text-align: right;"><%= booking.days %></span>
+                    </div>
+                  </div> 
+                  <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.extras_title %></div>                 	
+                  <div id="extras">
+                  </div>
+                  <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management_edit.form.current_price %></div>    
+                  <div class="element_template">
+                    <div class="entity-field">
+                       <span class="entity-fieldlabel"><%= t.booking_management.form.item_cost %></span>
+                       <span class="entity-fieldvalue" style="width: 70px; text-align: right; padding-top:12px; padding-bottom:10px"><%= "%.2f" % booking.item_cost %></span>
+                    </div>
+                  </div> 
+                  <div class="element_template">
+                    <div class="entity-field">
+                       <span class="entity-fieldlabel"><%= t.booking_management.form.extras_cost %></span>
+                       <span class="entity-fieldvalue" style="width: 70px; text-align: right"><%= "%.2f" % booking.extras_cost %></span>
+                    </div>
+                  </div>                     
+                  <div class="element_template top-separator top-space bottom-margin">
+                    <div class="entity-field">
+                       <span class="entity-fieldlabel highlighted_text uppercase_text"><%= t.booking_management.form.total_cost %></span>
+                       <span class="entity-fieldvalue highlighted_text" style="width: 70px; text-align: right;"><%= "%.2f" % booking.total_cost %></span>
+                    </div>
+                  </div>
+             </div>
+             <div class="grid_6" style="background-color:rgb(253, 253, 212)">
+               <div id="new_prices">
+               </div>                
+             </div>             	
+            </div>
+
+          </div>
+
+
+		  <div class="top-separator bottom-margin overflow">
+		     <div class="top-margin right-float">
+	             <input id="update_button" type="button" value="<%=t.entitymanagement.update%>" class="form-button update-entity-button action-button entity-management-button"/>
+		        </div>  
+		     </div>		  
+		  </div>
+
+		</form>
+
+	  </div>
+
+
+    <script type="text/tmpl" id="script_extras">
+              <div class="element_template smaller_text">
+                     <table class="table">
+                        <thead class="table-header">
+                          <tr>
+                            <th class="table-cell left_text" scope="col" style="width:30%"><%=t.booking_management.form.extra_description%></th>
+                            <th class="table-cell right_text" scope="col" style="width:15%"><%=t.booking_management.form.extra_quantity%></th>
+                            <th class="table-cell right_text" scope="col" style="width:15%"><%=t.booking_management.form.extra_unit_cost%></th>
+                            <th class="table-cell right_text" scope="col" style="width:15%"><%=t.booking_management.form.extra_cost_1unit%></th>
+                            <th class="table-cell right_text" scope="col" style="width:25%"><%=t.booking_management.form.extra_cost%></th>        
+                          </tr>
+                        </thead>
+                        <tbody class="table-tbody">
+                          <%% for (var extraIdx=0; extraIdx < booking.booking_extras.length; extraIdx++) { %>
+                            <tr class="table-row">
+                               <td class="table-cell"><%%=booking.booking_extras[extraIdx].extra_id%> - <%%= booking.booking_extras[extraIdx].extra_description %></td>
+                               <td class="table-cell right_text"><%%= booking.booking_extras[extraIdx].quantity %></td>
+                               <td class="table-cell right_text"><%%= booking.booking_extras[extraIdx].unit_cost %></td>
+                               <td class="table-cell right_text">
+                                  <%%= new Number(booking.booking_extras[extraIdx].extra_unit_cost).toFixed(2) %>
+                               </td>
+                               <td class="table-cell right_text">
+                                  <%%= new Number(booking.booking_extras[extraIdx].extra_cost).toFixed(2) %>
+                               </td>
+                            </tr>
+                          <%% } %>
+                        </tbody>
+                     </table>        
+              </div>
+    </script>
+
+
+    <script type="text/tmpl" id="script_new_extras">
+              <div class="element_template smaller_text">
+                     <table class="table">
+                        <thead class="table-header">
+                          <tr>
+                            <th class="table-cell left_text" scope="col" style="width:30%"><%=t.booking_management.form.extra_description%></th>
+                            <th class="table-cell right_text" scope="col" style="width:15%"><%=t.booking_management.form.extra_quantity%></th>
+                            <th class="table-cell right_text" scope="col" style="width:15%"><%=t.booking_management.form.extra_unit_cost%></th>
+                            <th class="table-cell centered_text" scope="col" style="width:15%"><%=t.booking_management.form.extra_cost_1unit%></th>
+                            <th class="table-cell centered_text" scope="col" style="width:25%"><%=t.booking_management.form.extra_cost%></th>        
+                          </tr>
+                        </thead>
+                        <tbody class="table-tbody">
+                          <%% for (var extraIdx=0; extraIdx < booking.booking_extras.length; extraIdx++) { %>
+                            <tr class="table-row">
+                               <td class="table-cell"><%%=booking.booking_extras[extraIdx].extra_id%> - <%%= booking.booking_extras[extraIdx].extra_description %></td>
+                               <td class="table-cell right_text"><%%= booking.booking_extras[extraIdx].quantity %></td>
+                               <td class="table-cell right_text"><%%= booking.booking_extras[extraIdx].unit_cost %></td>
+                               <td class="table-cell centered_text">
+                                  <input type="text" size="5" maxlength="10" class="extra-cost" id="booking_extra[<%%=extraIdx%>][extra_unit_cost]" rel="<%%=extraIdx%>"
+                                     name="booking_extra[<%%=extraIdx%>][extra_unit_cost]" value="<%%= new Number(booking.booking_extras[extraIdx].extra_unit_cost).toFixed(2) %>"/>
+                               </td>
+                               <td class="table-cell centered_text">
+                                  <%%= new Number(booking.booking_extras[extraIdx].extra_cost).toFixed(2) %> 
+                               </td>
+                            </tr>
+                          <%% } %>
+                        </tbody>
+                     </table>        
+              </div>
+    </script>  
+
+    <script type="text/template" id="new_cost">
+        <div>
+               <div class="element_template">
+                 <div class="entity-field">
+                   <span><%= t.booking_management.form.days %>:</span>
+                   <span class="more_contrast_text" style="width: 70px; text-align: right;"><%%= booking.days %></span>
+                 </div>
+               </div>
+               <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.extras_title %></div>               	
+               <div id="new_extras">
+               </div>
+               <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management_edit.form.new_price %></div>                
+               <div class="element_template">
+                  <div class="entity-field">
+                    <span class="entity-fieldlabel"><%= t.booking_management.form.item_cost %></span>
+                    <span class="entity-fieldvalue" style="width: 70px; text-align: right;">
+                      <input type="text" maxlength="10" size="5" class="right_text" id="item_cost" name="item_cost" value="<%%= new Number(booking.item_cost).toFixed(2) %>"/>
+                    </span>
+                  </div>
+               </div> 
+               <div class="element_template">
+                 <div class="entity-field">
+                   <span class="entity-fieldlabel"><%= t.booking_management.form.extras_cost %></span>
+                   <span class="entity-fieldvalue" style="width: 70px; text-align: right;"><%%= new Number(booking.extras_cost).toFixed(2) %>
+                   </span>
+                 </div>
+               </div>                     
+               <div class="element_template top-separator top-space bottom-margin">
+                 <div class="entity-field">
+                   <span class="entity-fieldlabel highlighted_text uppercase_text"><%= t.booking_management.form.total_cost %></span>
+                   <span class="entity-fieldvalue highlighted_text" style="width: 70px; text-align: right;"><%%= new Number(booking.total_cost).toFixed(2) %></span>
+                 </div>
+               </div>           
+        </div>
+    </script>

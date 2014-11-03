@@ -383,6 +383,26 @@ module Sinatra
 
         end
 
+        app.put '/api/booking/:id/price' do
+
+          booking_request = body_as_json(BookingDataSystem::Booking)
+          extras_request = booking_request.delete(:booking_extras)
+ 
+          booking = BookingDataSystem::Booking.get(params[:id])
+          booking.transaction do |transaction|
+            booking.attributes = booking_request
+            booking.save
+            extras_request.each do |extra_booking|
+              booking_extra = BookingDataSystem::BookingExtra.get(extra_booking[:id])
+              booking_extra.extra_cost = extra_booking[:extra_cost]
+              booking_extra.extra_unit_cost = extra_booking[:extra_unit_cost]
+              booking_extra.save
+            end
+            transaction.commit
+          end
+
+        end
+
         #
         # Booking creation (customer)
         #

@@ -1,0 +1,141 @@
+require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelector'], function($, EntityManagement, RemoteDataSource, SelectSelector) {
+
+ 
+  function BookingHook() {
+
+    this.statusDescription = {
+       'pending_confirmation' : '<%= t.booking_status.pending_confirmation%>',
+       'confirmed' : '<%= t.booking_status.confirmed%>',
+       'in_progress' : '<%= t.booking_status.in_progress%>',
+       'done' : '<%= t.booking_status.done%>',
+       'cancelled' : '<%= t.booking_status.cancelled%>'
+    }
+ 	   
+    this.paymentStatusDescription = {
+       'none' : '<%= t.booking_payment_status.none%>',
+       'deposit' : '<%= t.booking_payment_status.deposit%>',
+       'total' : '<%= t.booking_payment_status.total%>'
+    }
+
+    this.chargeStatusDescription = {
+       'pending': '<%= t.charge_status.pending %>',
+       'processing': '<%= t.charge_status.processing %>',
+       'done': '<%= t.charge_status.done %>',
+       'denied': '<%= t.charge_status.denied %>'
+    };
+
+    this.entityKey = function(entity) {
+      return entity.id;
+    }    
+  	
+    this.onRenderEntities = function(entities) {
+      $('.elements-search').show(); 
+    }
+
+    this.onEdit = function(entity) {
+
+       this.configForm(entity);
+       
+       var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
+       var valueModel = (entity != null && entity.booking_item != null) ? entity.booking_item.reference : null; 
+       var selectorModel = new SelectSelector('booking_item_reference', dataSourceModel, valueModel, true );
+
+       $('#booking_item_reference').bind('change', function() {
+         var url = '/api/booking/assign/' + entity.id + '/' + encodeURIComponent($('#booking_item_reference').val());
+         $('#assign_item_button').attr('data-action-url', url);
+       });
+
+    }
+
+    this.configForm = function(entity) {
+
+      $("#content > div").hide(); // Initially hide all content
+      $("#content_tabs li:first").attr("id","current"); // Activate first tab
+      $("#content > div:first").fadeIn(); // Show first tab content
+      $('#content_tabs a').click(function(e) {
+        e.preventDefault();
+        if ($(this).attr("name") == 'preview') {
+          ($('#home_frame')[0]).contentWindow.location.reload();
+        }
+        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+         return;       
+        }
+        else{             
+          $("#content > div").hide(); //Hide all content
+          $("#content_tabs li").attr("id",""); //Reset id's
+          $(this).parent().attr("id","current"); // Activate this
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab
+        }
+      });
+
+    }
+
+    this.statusClass = function(entity) {
+      var className = null;
+      switch (entity.status) {
+        case 'pending_confirmation' :
+          className = 'pending-status';
+          break;
+        case 'confirmed':
+          className = 'confirmed-status';
+          break;
+        case 'in_progress':
+          className = 'doing-status';
+          break;
+        case 'done':
+          className = 'done-status';
+          break;
+        case 'cancelled':
+          className = 'error-status';
+          break;          
+      }
+      return className;
+    }
+
+    this.paymentStatusClass = function(entity) {
+      var className = null;
+      switch (entity.payment_status) {
+        case 'none' :
+          className = 'pending-status';
+          break;
+        case 'deposit':
+          className = 'doing-status';
+          break;
+        case 'total':
+          className = 'done-status';
+          break;
+      }
+      return className; 
+    }
+
+    this.chargeStatusClass = function(entity) {
+      var className = null;
+      switch (entity.status) {
+        case 'pending' :
+          className = 'pending-status';
+          break;
+        case 'processing':
+          className = 'doing-status';
+          break; 
+        case 'done':
+          className = 'done-status';
+          break;
+        case 'denied':
+          className = 'error-status';
+          break;
+      }
+      return className;
+    }    
+
+
+  };
+  
+  var urls = { 
+  	           query_url  : '/bookings',
+  	           get_url : '/booking'
+             };
+  
+  var bookingHook = new BookingHook();
+  var bookingManager = new EntityManagement(urls, 'bookings', <%=bookings_page_size%>, bookingHook, {prefix: '/admin'});
+ 
+ });
