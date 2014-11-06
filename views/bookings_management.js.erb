@@ -1,4 +1,6 @@
-require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelector'], function($, EntityManagement, RemoteDataSource, SelectSelector) {
+require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelector', 'YSDForms', 
+         'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation'],
+    function($, EntityManagement, RemoteDataSource, SelectSelector, YSDForms) {
 
  
   function BookingHook() {
@@ -35,6 +37,13 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
     this.onEdit = function(entity) {
 
        this.configForm(entity);
+       
+       $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+
+       $('#driver_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+       $('#driver_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_date_of_birth, 'dd/MM/yyyy')));
+       $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+       $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
        
        var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
        var valueModel = (entity != null && entity.booking_item != null) ? entity.booking_item.reference : null; 
@@ -132,10 +141,11 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
   
   var urls = { 
   	           query_url  : '/bookings',
-  	           get_url : '/booking'
+  	           get_url : '/booking',
+               update_url: '/api/booking'
              };
   
   var bookingHook = new BookingHook();
-  var bookingManager = new EntityManagement(urls, 'bookings', <%=bookings_page_size%>, bookingHook, {prefix: '/admin'});
+  var bookingManager = new EntityManagement(urls, 'bookings', <%=bookings_page_size%>, bookingHook, {prefix: '/admin', hold_form_after_action:true});
  
  });

@@ -1,13 +1,13 @@
 module Sinatra
   module YitoExtension
-    module BookingExtraManagementRESTApi
+    module BookingPickupReturnPlaceDefinitionsManagementRESTApi
 
       def self.registered(app)
 
         #                    
-        # Query booking-extra
+        # Query booking-place-def
         #
-        ["/api/booking-extras","/api/booking-extras/page/:page"].each do |path|
+        ["/api/booking-place-defs","/api/booking-place-defs/page/:page"].each do |path|
           
           app.post path do
 
@@ -26,8 +26,8 @@ module Sinatra
             limit = settings.contents_page_size
             offset = (page-1) * settings.contents_page_size
             
-            data  = ::Yito::Model::Booking::BookingExtra.all(:conditions => conditions, :limit => limit, :offset => offset)
-            total = ::Yito::Model::Booking::BookingExtra.count(conditions)
+            data  = ::Yito::Model::Booking::PickupReturnPlaceDefinition.all(:conditions => conditions, :limit => limit, :offset => offset)
+            total = ::Yito::Model::Booking::PickupReturnPlaceDefinition.count(conditions)
           
             content_type :json
             {:data => data, :summary => {:total => total}}.to_json
@@ -37,11 +37,11 @@ module Sinatra
         end
         
         #
-        # Get booking-extra
+        # Get booking-place-def
         #
-        app.get "/api/booking-extras" do
+        app.get "/api/booking-place-defs" do
 
-          data = ::Yito::Model::Booking::BookingExtra.all()
+          data = ::Yito::Model::Booking::PickupReturnPlaceDefinition.all()
 
           status 200
           content_type :json
@@ -50,11 +50,11 @@ module Sinatra
         end
 
         #
-        # Get a booking-extra
+        # Get a booking-place-def
         #
-        app.get "/api/booking-extra/:id" do
+        app.get "/api/booking-place-def/:id" do
         
-          data = ::Yito::Model::Booking::BookingExtra.get(params[:code])
+          data = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(params[:id].to_i)
           
           status 200
           content_type :json
@@ -63,12 +63,12 @@ module Sinatra
         end
         
         #
-        # Create a booking-extra
+        # Create a booking-place-def
         #
-        app.post "/api/booking-extra" do
+        app.post "/api/booking-place-def" do
         
-          data_request = body_as_json(::Yito::Model::Booking::BookingExtra)
-          data = ::Yito::Model::Booking::BookingExtra.create(data_request)
+          data_request = body_as_json(::Yito::Model::Booking::PickupReturnPlaceDefinition)
+          data = ::Yito::Model::Booking::PickupReturnPlaceDefinition.create(data_request)
          
           status 200
           content_type :json
@@ -77,13 +77,13 @@ module Sinatra
         end
         
         #
-        # Updates a booking-extra
+        # Updates a booking-place-def
         #
-        app.put "/api/booking-extra" do
+        app.put "/api/booking-place-def" do
           
-          data_request = body_as_json(::Yito::Model::Booking::BookingExtra)
+          data_request = body_as_json(::Yito::Model::Booking::PickupReturnPlaceDefinition)
                               
-          if data = ::Yito::Model::Booking::BookingExtra.get(data_request.delete(:code))     
+          if data = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(data_request.delete(:id))     
             data.attributes=data_request  
             data.save
           end
@@ -94,15 +94,15 @@ module Sinatra
         end
         
         #
-        # Deletes a booking-extra 
+        # Deletes a booking-place-def 
         #
-        app.delete "/api/booking-extra" do
+        app.delete "/api/booking-place-def" do
         
-          data_request = body_as_json(::Yito::Model::Booking::BookingExtra)
+          data_request = body_as_json(::Yito::Model::Booking::PickupReturnPlaceDefinition)
           
-          key = data_request.delete(:code)
+          key = data_request.delete(:id).to_i
           
-          if data = ::Yito::Model::Booking::BookingExtra.get(key)
+          if data = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(key)
             data.destroy
           end
           

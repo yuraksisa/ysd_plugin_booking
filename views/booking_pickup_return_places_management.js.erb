@@ -1,0 +1,35 @@
+require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"], 
+         function($, EntityManagement, EntityManagementComplementHooks) {
+    
+  var placeDefinitionHook = {
+     
+       
+    entityKey : function(entity) {
+      return entity.id;
+    },
+
+    onEdit : function(entity) {
+      $('#name').focus();
+    },
+  
+    onNew : function() {
+      $('#name').focus();
+    }
+        
+
+  };
+
+  var urls = { query_url  : '/api/booking-places',
+               create_url : '/api/booking-place',
+               update_url : '/api/booking-place',
+               delete_url : '/api/booking-place',
+               get_url    : '/api/booking-place'
+             };
+  
+  var hooks = [placeDefinitionHook];
+                 
+  var hooksManager = new EntityManagement(urls, 'booking-place',
+     <%=booking_pickup_return_places%>, hooks, {prefix: '/admin',parent_filtered:true});
+
+  
+});

@@ -71,6 +71,18 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.season_definition.id'},
+        {:value => '0',
+         :description => 'Default season definition',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.factor_definition.id'},
+        {:value => '0',
+         :description => 'Default factor definition',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.allow_custom_pickup_return_place'},
         {:value => 'false',
          :description => 'Allow custom pickup and return places'})

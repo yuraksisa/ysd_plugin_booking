@@ -1,0 +1,116 @@
+<%= include('entity-management') %>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_title">
+  <h2 class="entity-title"><%=t.booking_places_management.title%> <%=pickup_return_place_definition.name%></h2> 
+</script>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_description">
+<%=t.booking_places_management.description%>
+</script>
+
+<!-- Renders the elements container -->
+<script type="text/tmpl" id="elements_container_template">
+  <table id="elements_table" class="table">
+     <thead class="table-header">
+       <tr>
+         <th class="table-header-title" scope="col" style="width:20%">
+            <%= t.booking_places_management.table.id %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:20%">
+            <%= t.booking_places_management.table.name %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:20%">
+           <%= t.booking_places_management.table.is_pickup %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:20%">
+           <%= t.booking_places_management.table.is_return %>
+         </th> 
+         <th class="table-header-title" scope="col" style="width:20%">
+           <%= t.booking_places_management.table.price %>
+         </th>                            
+       </tr>
+     </thead>
+     <tbody id="elements_tbody" class="table-tbody">             
+     </tbody>
+  </table>
+</script>
+
+<!-- Renders one element in the elements list view -->
+        
+<script type="text/tmpl" id="elements_list_template">
+    <tr class="table-row" id="element_row_<%%=index%>">
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+        <%%= entity.id %>
+      </td>
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+        <%%= entity.name %>
+      </td>
+      <td class="table-cell">
+        <%%= entity.is_pickup%>           
+      </td>
+      <td class="table-cell">
+        <%%= entity.is_return%>           
+      </td>
+      <td class="table-cell">
+        <%%= entity.price%>           
+      </td>            
+    </tr>
+</script>
+
+<!-- Renders one element in the element view (full detailed) -->
+
+<script type="text/tmpl" id="element_template">
+   
+</script>
+
+<!-- Renders the form to edit an element -->
+
+<script type="text/tmpl" id="element_template_form">
+              
+     <form name="element" method="POST">
+        <input type="hidden" id="pickup_return_place_definition[id]" name="pickup_return_place_definition[id]" value="<%=pickup_return_place_definition.id%>"/>
+        <div class="form-fields">
+                                   
+          <div class="container_12"> 
+            <div class="grid_12">
+              <%% if (entity) { %>
+              <input type="hidden" name="id" value="<%%=entity.id%>"/>
+              <%% } %>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_places_management.form.name.label %></label>
+                <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
+              </div>                         
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_places_management.form.is_pickup.label %></label>
+                <input type="checkbox" value="true" name="is_pickup" <%% if (entity && entity.is_pickup) { %> checked="true" <%% } %> />
+              </div> 
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_places_management.form.is_return.label %></label>
+                <input type="checkbox" value="true" name="is_return" <%% if (entity && entity.is_return) { %> checked="true" <%% } %> />
+              </div>  
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_places_management.form.price.label %></label>
+                <input type="text" maxlength="5" id="price" name="price" class="fieldcontrol" <%% if (entity) { %> value="<%%= new Number(entity.price).toFixed(2) %>" <%% } else { %> value="0" <%% } %> />
+              </div>                               
+            </div>
+          </div>
+                        
+        </div>
+                       
+        <div class="bottom-navigation-bar navigation-bar">
+             <div class="navigation-bar-crud-buttons">
+                <%% if (entity) { %>
+                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                <%% } 
+                   else { %>
+                  <input type="submit" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                <%% } %>
+             </div>
+        </div>
+     
+     </form>
+     
+</script>
+

@@ -40,8 +40,10 @@ booking_console:
   requested: Solicitudes
   confirmed: Confirmadas
   new_booking: Nueva reserva
-  availability: Disponibilidad
+  availability: Calendarios
   summary: Resumen
+  places: Entrega y recogida
+  create_rates: Preparar tarifas
 booking_summary:
   title: Resumen reservas
 booking_forecast:
@@ -266,9 +268,7 @@ booking_management:
     notifications: Notificaciones
   form:
     reservation_tab: Datos de la reserva
-    extra_tab: Extras
-    price_tab: Precio y estado del cobro
-    customer_tab: Datos cliente
+    flight_tab: Datos del vuelo
     driver_tab: Datos conductor
     payment_tab: Resumen cobros
     other_tab: Otros datos
@@ -291,6 +291,7 @@ booking_management:
     allow_payment_button:
       label: Permitir pago
       message: ¿Desea habilitar el pago de esta reserva?
+    change_dates: Cambiar fechas
     force_allow_payment: Pago permitido
     expired: Excedido tiempo pago depósito
     id: Localizador reserva
@@ -311,6 +312,7 @@ booking_management:
     pickup_place: Lugar de entrega
     return_place: Lugar de devolución
     item: Item
+    assign_item: Asignar item
     extras_title: Extras
     extra_description: Descripción
     extra_quantity: Cantidad 
@@ -343,18 +345,24 @@ booking_management:
     driver_title: Conductor
     driver_name: Nombre
     driver_date_of_birth: Fecha de nacimiento
+    driver_document_id: Numero documento
     driver_license_number: Permiso de conducir
     driver_license_date: Fecha permiso conducir
     driver_license_country: País permiso conducir
     driver_address_title : Dirección
     driver_address_street: Calle
+    driver_address_number: Número
+    driver_address_complement: Complemento
     driver_address_city: Población
     driver_address_state: Provincia
     driver_address_country: País
-    drive_address_zip: Código postal
+    driver_address_zip: Código postal
     other: Otra información
     free_access_id: Acceso directo
     payment_method: Forma de pago 
+    flight_company: Compañía
+    flight_number: Número de vuelo
+    flight_time: Hora de llegada
 booking_category_management:
   table:
     calendar: Gestión del calendario
@@ -406,7 +414,35 @@ booking_item_management:
     calendar:
       label: Calendario
     price_definition:
+      label: Precio
+booking_places_definition_management:
+  title: Definición de lugares de entrega y recogida
+  table:
+    id: Id
+    name: Nombre
+    places: Gestión de los lugares de entrega y recogida    
+  form:
+    name:
+      label: Nombre
+    name_required: Nombre obligatorio
+booking_places_management:
+  title: Lugares de entrega y recogida
+  table:
+    id: Id
+    name: Nombre
+    is_pickup: Es lugar de entrega
+    is_return: Es lugar de recogida
+    price: Precio
+  form:
+    name:
+      label: Nombre
+    is_pickup:
+      label: Es lugar de entrega
+    is_return: 
+      label: Es lugar de recollida
+    price:
       label: Precio                  
+    name_required: Nombre obligatorio                            
 booking:
   days: !!pl
     1: 1 día

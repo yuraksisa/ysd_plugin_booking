@@ -38,6 +38,7 @@ booking_console:
   new_booking: Nova reserva
   availability: Disponibilitat
   summary: Resum  
+  places: Entrega i recollida
 booking_summary:
   title: Resum reserves 
 booking_forecast:
@@ -197,6 +198,34 @@ booking_item_management:
       label: Calendari
     price_definition:
       label: Preus         
+booking_places_definition_management:
+  title: Definició del llocs d'\entrega i recollida
+  table:
+    id: Id
+    name: Nom
+    places: Gestió dels llocs d'\entrega i recollida
+  form:
+    name:
+      label: Nom
+    name_required: Nom obligatori
+booking_places_management:
+  title: Gestió del llocs d'\entrega i recollida
+  table:
+    id: Id
+    name: Nom
+    is_pickup: És lloc d\'entrega
+    is_return: És lloc de recollida
+    price: Preu
+  form:
+    name:
+      label: Nom
+    is_pickup:
+      label: Entrega
+    is_return: 
+      label: Recollida
+    price:
+      label: Preu                  
+    name_required: Nom obligatori    
 booking:
   days: !!pl
     1: 1 dia

@@ -383,7 +383,10 @@ module Sinatra
 
         end
 
-        app.put '/api/booking/:id/price' do
+        #
+        # Update the booking price
+        #
+        app.put '/api/booking/:id/price', :allowed_usergroups => ['booking_manager'] do
 
           booking_request = body_as_json(BookingDataSystem::Booking)
           extras_request = booking_request.delete(:booking_extras)
@@ -400,6 +403,43 @@ module Sinatra
             end
             transaction.commit
           end
+
+        end
+
+        #
+        # Updates booking
+        #
+        app.put '/api/booking/:id', :allowed_usergroups => ['booking_manager']  do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys! 
+
+          if booking = BookingDataSystem::Booking.get(params[:id])
+            booking.attributes = data
+            booking.save
+            body booking.to_json
+          else
+            status 404
+          end
+          
+
+        end
+
+        #
+        # Update booking
+        #
+        app.put '/api/booking' do
+
+          data_request = body_as_json(BookingDataSystem::Booking)
+                              
+          if data = BookingDataSystem::Booking.get(data_request.delete(:id).to_i)     
+            data.attributes=data_request  
+            data.save
+          end
+      
+          content_type :json
+          data.to_json        
 
         end
 
@@ -484,6 +524,25 @@ module Sinatra
 
         end
 
+        #
+        # Regenerates the booking_js template
+        #
+        app.get '/api/booking/create-rates', :allowed_usergroups => ['booking_manager'] do
+
+          rates = ::Yito::Model::Booking::Generator.instance.build_script
+
+          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js')
+             booking_js.text = rates
+             booking_js.save
+          else
+             ContentManagerSystem::Template.create({:name => 'booking_js', 
+                :description => 'Definición de los productos en alquiler y las tarifas',
+                :text => rates})
+          end
+
+          rates
+
+        end
 
       end
 
