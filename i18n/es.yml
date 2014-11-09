@@ -251,9 +251,17 @@ new_driving_booking:
   return_place:
     required: El lugar de devolución es obligatorio
 booking_management_edit:
+  title: Modificación entrega/recogida
+  description: >
+               <p>Desde aquí puede cambiar la fecha de entrega/recogida.</p>
+               <p>El cambio puede suponer el <em>recálculo del precio de la reserva</em>, aunque podrá
+               ajustarlo antes de confirmar los cambios</p>
   form:
     current_price: Precio actual
     new_price: Nuevo precio
+    current_situation: Situación actual
+    new_situation: Nueva situación
+    day_cost: al día
 booking_management:
   title: Gestión de reservas
   description: <p>Consultar las reservas.</p>

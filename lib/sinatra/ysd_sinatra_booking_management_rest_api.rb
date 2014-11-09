@@ -150,18 +150,32 @@ module Sinatra
         #
         app.get '/api/booking/planning' do
 
-          from = params['start']
-          to = params['end']
+          today = DateTime.now
+          month = today.month
+          year = today.year
+
+          if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
+            month = params[:month].to_i
+          end
+           
+          if params[:year]
+            year = params[:year].to_i
+          end
+
+          from = DateTime.new(year, month, 1, 0, 0, 0, 0)
+          to = from >> 1
+
 
           bookings = BookingDataSystem::Booking.all(
-             :date_from.gte => Time.at(from.to_i),
-             :date_to.lte => Time.at(to.to_i), 
-             :status => [:confirmed],
-             :booking_item.not => nil,
-             :order => [:item_id.asc]
-            )
+             :fields => [:id, :date_from, :date_to, :booking_item_reference],
+             :conditions=> { :date_from.gte => from,
+                             :date_from.lt => to, 
+                             :status => [:confirmed],
+                             :booking_item.not => nil},
+             :order => [:booking_item_reference.asc, :date_from.asc]
+            ) 
 
-          bookings.to_json
+          bookings.to_json(:only => [:id, :date_from, :date_to, :booking_item_reference])
 
         end
 

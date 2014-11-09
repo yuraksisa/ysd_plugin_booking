@@ -115,8 +115,13 @@ module Sinatra
           booking = BookingDataSystem::Booking.get(params[:booking_id])
 
           locals = {}
+
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+
+          locals.store(:booking_allow_custom_pickup_return_place,
+            SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+
           locals.store(:booking, booking)
           if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
              not booking_js.text.empty?

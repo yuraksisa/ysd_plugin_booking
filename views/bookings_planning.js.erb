@@ -3,10 +3,33 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
   planningModel = {
 
      bookingItems: [],
-     month:6,
-     year:2014,
+     bookings: [],
+     month:new Date().getMonth()+1,
+     year:new Date().getFullYear(),
 
-     getBookingItems: function() {
+     prevMonth: function() {
+       if (this.month == 0) {
+         this.month = 12;
+         this.year--;
+       }
+       else {
+        this.month--;
+       }
+       planningView.update('month_navigation');
+     },
+
+     nextMonth: function() {
+       if (this.month == 12) {
+         this.month = 1;
+         this.year++;
+       }
+       else {
+         this.month++;
+       }
+       planningView.update('month_navigation');
+     },
+
+     loadBookingItems: function() { /* Load the booking items */
 
        $.ajax({
                type: 'GET',
@@ -21,11 +44,35 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
               }
           });
 
+     },
+
+     loadBookings: function() { /* Load the bookings */
+
+        $.ajax({
+                 type: 'GET',
+                 url: '/api/booking/planning?month=' + this.month + '&year=' + this.year,
+                 contentType: 'application/json; charset=utf-8',
+                 dataType: 'json',
+                 success: function(data, textStatus, jqXHR) {
+                   planningModel.bookings = data;
+                   planningView.update('bookings_available');
+                 }
+        });
+
+
      }
 
   };
 
   planningController = {
+
+    prevMonthClick: function() {
+       planningModel.prevMonth();
+    },
+
+    nextMonthClick: function() {
+       planningModel.nextMonth();
+    } 
 
   };
 
@@ -34,20 +81,40 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
     spreadsheet : null,
 
     init : function() {
-      planningModel.getBookingItems();
+      planningModel.loadBookingItems();
+      $('#month').html(planningModel.month);
+      $('#year').html(planningModel.year);
+      $('#prev').bind('click', function() {
+         planningController.prevMonthClick();
+      });
+      $('#next').bind('click', function() {
+         planningController.nextMonthClick();
+      });
+
     },
 
     update: function(event) {
 
       switch (event) {
+         case 'month_navigation':
+           $('#month').html(planningModel.month);
+           $('#year').html(planningModel.year);     
+           planningModel.loadBookings();     
+           break;
+
          case 'items_available':
            this.buildSpreadsheet();
+           planningModel.loadBookings();
+           break;
+
+         case 'bookings_available':
+           this.updateBookings();
            break;
       }
 
     },
 
-    buildSpreadsheet: function() {
+    buildSpreadsheet: function() { // Builds the spreadsheet with the booking items
 
       spreadsheet = new Spreadsheet("planning_table",  
           planningModel.bookingItems,            // items
@@ -55,9 +122,36 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
           planningModel.bookingItems.length,     // number of rows (items.count)
           "Planning",                            // 0-0 title
           "planning",                            // input prefix
-          1,                                    // input size
-          "",                                    // class
+          1,                                     // input size
+          "centered_text",                                    // class
           true);                                 // readonly
+
+    },
+
+    updateBookings: function() {
+
+      var idx = 0;
+      var reference;
+      var from, to;
+      for (var i=0;i<planningModel.bookings.length;i++) {
+         reference = planningModel.bookings[i].booking_item_reference;
+         idx = planningModel.bookingItems.indexOf(reference);
+         if (idx > 0) {
+           from = planningModel.bookings[i].date_from.getDate();
+           if (planningModel.bookings[i].date_to.getMonth() != planningModel.bookings[i].date_from.getMonth()) {
+             var d = new Date();
+             d.setFullYear(planningModel.bookings[i].date_to.getYear(), planningModel.bookings[i].date_to.getMonth() + 1, 0);
+             to = d.getDate();
+           }
+           else {
+             to = Math.min(planningModel.bookings[i].date_to.getDate())
+           }
+           for (var day=from;day<to;day++) {
+             $('#\\[planning\\]\\['+reference+'\\]\\['+day+'\\]').val('X');
+           }
+         }
+
+      }
 
     }
 
