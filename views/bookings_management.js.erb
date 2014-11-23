@@ -140,12 +140,12 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
   };
   
   var urls = { 
-  	           query_url  : '/bookings',
-  	           get_url : '/booking',
+  	           query_url  : '/api/bookings',
+  	           get_url : '/api/booking',
                update_url: '/api/booking'
              };
   
   var bookingHook = new BookingHook();
-  var bookingManager = new EntityManagement(urls, 'bookings', <%=bookings_page_size%>, bookingHook, {prefix: '/admin', hold_form_after_action:true});
+  var bookingManager = new EntityManagement(urls, 'bookings', <%=bookings_page_size%>, bookingHook, {prefix: '/admin/booking', hold_form_after_action:true});
  
  });

@@ -22,7 +22,7 @@ module Sinatra
         #
         # Shows a booking: To be managed by the customer
         #   
-        app.get '/p/mybooking/:id' do
+        app.get '/p/mybooking/:id/?*' do
           if booking = BookingDataSystem::Booking.get_by_free_access_id(params[:id])
             locals = {:booking => booking}
             locals.store(:booking_deposit,
@@ -40,7 +40,7 @@ module Sinatra
         #
         # It starts a booking process
         #
-        app.get '/p/booking/start/?' do          
+        app.get '/p/booking/start/?*' do          
           
           options = {}
 
@@ -60,7 +60,7 @@ module Sinatra
           locals = {}
 
           locals.store(:admin_mode, false)
-          locals.store(:confirm_booking_url, '/booking')
+          locals.store(:confirm_booking_url, '/api/booking')
 
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
@@ -94,7 +94,7 @@ module Sinatra
         #
         # Booking summary (booking request)
         #
-        app.get '/p/booking/summary/?' do
+        app.get '/p/booking/summary/?*' do
 
           if session[:booking_id]
             booking = BookingDataSystem::Booking.get(session[:booking_id])
@@ -105,7 +105,9 @@ module Sinatra
               message = template.result(binding)
               locals.store(:booking_summary_message, message)
             else
-              locals.store(:booking_summary_message, t.new_booking.summary_message)
+              template = ERB.new t.new_booking.summary_message
+              message = template.result(binding)
+              locals.store(:booking_summary_message, message)
             end
             load_page :reserva_request, :locals => locals
           else
@@ -117,7 +119,7 @@ module Sinatra
         #
         # Integration in facebook as a tab
         #
-        app.post '/p/booking/start/?' do
+        app.post '/p/booking/start/?*' do
           status, header, body = call! env.merge("PATH_INFO" => "/p/booking/start", 
                 "REQUEST_METHOD" => 'GET')
         end
@@ -125,7 +127,7 @@ module Sinatra
         #
         # Register a deposit payment on the booking 
         #
-        app.post '/p/booking/pay/?', 
+        app.post '/p/booking/pay/?*', 
           :allowed_origin => lambda { SystemConfiguration::Variable.get_value('site.domain') } do
           
           if booking = BookingDataSystem::Booking.get(params[:id].to_i)

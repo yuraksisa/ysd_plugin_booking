@@ -7,7 +7,7 @@ module Sinatra
         #
         # Factor definition page
         #
-        app.get '/admin/booking-extras/?*', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.get '/admin/booking/booking-extras/?*', :allowed_usergroups => ['booking_manager','staff'] do 
 
           locals = {:booking_extras_page_size => 20}
           load_em_page :booking_extras_management, :bookingextra, false, :locals => locals

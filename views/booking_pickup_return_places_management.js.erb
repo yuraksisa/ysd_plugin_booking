@@ -29,7 +29,7 @@ require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"],
   var hooks = [placeDefinitionHook];
                  
   var hooksManager = new EntityManagement(urls, 'booking-place',
-     <%=booking_pickup_return_places%>, hooks, {prefix: '/admin',parent_filtered:true});
+     <%=booking_pickup_return_places%>, hooks, {prefix: '/admin/booking',parent_filtered:true});
 
   
 });

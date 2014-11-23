@@ -861,7 +861,7 @@
             $('#timefrom').val(timefrom);
             $('#dateto').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", dateto)); 
             $('#timeto').val(timeto);    
-            $('#pickup_place').val(pickup_place);
+            $('#pickup_place').val(pickup_place.replace(/\+/g, ' '));
             $('#pickup_place_other').val(pickup_place_other.replace(/\+/g, ' '));
             if (pickup_place == '<%=t.new_booking.other%>') {
               $('#pickup_place_value').val($('#pickup_place_other').val());
@@ -870,8 +870,8 @@
             else {
               $('#pickup_place_value').val($('#pickup_place option:selected').text()); 
             }
-            $('#return_place').val(return_place);
-            $('#return_place_other').val(return_place.replace(/\+/g, ' '));
+            $('#return_place').val(return_place.replace(/\+/g, ' '));
+            $('#return_place_other').val(return_place_other.replace(/\+/g, ' '));
             if (return_place == '<%=t.new_booking.other%>') {
               $('#return_place_value').val($('#return_place_other').val());
               $('other_return_place').show();

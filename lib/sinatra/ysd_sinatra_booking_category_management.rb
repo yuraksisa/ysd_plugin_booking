@@ -6,7 +6,7 @@ module Sinatra
         #
         # Booking categories page
         #
-        app.get '/admin/booking-categories/?*', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.get '/admin/booking/booking-categories/?*', :allowed_usergroups => ['booking_manager','staff'] do 
 
           load_em_page :booking_categories_management, :bookingcategory, false
 

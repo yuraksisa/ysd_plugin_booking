@@ -15,14 +15,14 @@ module Sinatra
         #
         # Booking console
         #
-        app.get '/console/booking', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/console', :allowed_usergroups => ['booking_manager', 'staff'] do
           load_page(:console_booking)
         end
 
         #
         # Booking configuration
         #
-        app.get '/config/booking', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/config', :allowed_usergroups => ['booking_manager', 'staff'] do
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ]  }
           load_page(:config_booking, {:locals => locals})
         end
@@ -30,28 +30,28 @@ module Sinatra
         #
         # Booking availability
         #
-        app.get '/admin/bookings/availability', :allowed_usergroups => ['booking_manager', 'staff'] do
-          redirect '/admin/calendars' 
+        app.get '/admin/booking/availability', :allowed_usergroups => ['booking_manager', 'staff'] do
+          redirect '/admin/calendar/calendars' 
         end
 
         #
         # Bookings planning
         # 
-        app.get '/admin/bookings/planning', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/planning', :allowed_usergroups => ['booking_manager', 'staff'] do
           load_page(:bookings_planning)
         end
 
         #
         # Bookings summary
         #
-        app.get '/admin/bookings/summary', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/summary', :allowed_usergroups => ['booking_manager', 'staff'] do
           load_page(:bookings_statistics)
         end
 
         #
         # Booking rates management
         #
-        app.get '/admin/bookings/rates', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/rates', :allowed_usergroups => ['booking_manager', 'staff'] do
           
           redirect '/admin/console/rates'
 
@@ -60,7 +60,7 @@ module Sinatra
         #
         # Bookings scheduler
         #
-        app.get '/admin/bookings/scheduler', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/scheduler', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           load_page(:bookings_scheduler)
 
@@ -69,12 +69,12 @@ module Sinatra
         #
         # Create new booking (administation)
         #
-        app.get '/admin/bookings/new', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/new', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           locals = {}
 
           locals.store(:admin_mode, true)
-          locals.store(:confirm_booking_url, '/booking-from-manager')
+          locals.store(:confirm_booking_url, '/api/booking-from-manager')
 
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
@@ -134,7 +134,7 @@ module Sinatra
         #
         # Bookings admin page
         #
-        app.get '/admin/bookings/?*', :allowed_usergroups => ['booking_manager'] do 
+        app.get '/admin/booking/bookings/?*', :allowed_usergroups => ['booking_manager'] do 
 
           context = {:app => self}
           

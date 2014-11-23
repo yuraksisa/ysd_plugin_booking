@@ -252,7 +252,7 @@ module Sinatra
         #
         # Booking querying 
         #
-        ["/bookings", "/bookings/page/:page"].each do |path|
+        ["/api/bookings", "/api/bookings/page/:page"].each do |path|
           app.post path, :allowed_usergroups => ['booking_manager'] do
         	
             page = [params[:page].to_i, 1].max  
@@ -287,7 +287,7 @@ module Sinatra
         #
         # Booking access
         #
-        app.get '/booking/:booking_id',
+        app.get '/api/booking/:booking_id',
           :allowed_usergroups => ['booking_manager'] do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id])
@@ -302,7 +302,7 @@ module Sinatra
         #
         # Confirm a booking
         #
-        app.post '/booking/confirm/:booking_id',
+        app.post '/api/booking/confirm/:booking_id',
           :allowed_usergroups => ['booking_manager'] do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
@@ -317,7 +317,7 @@ module Sinatra
         #
         # Allow payment
         #
-        app.post '/booking/allow-payment/:booking_id', 
+        app.post '/api/booking/allow-payment/:booking_id', 
           :allowed_usergroups => ['booking_manager', 'staff'] do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
@@ -355,7 +355,7 @@ module Sinatra
         #
         # Pickup/Arrival 
         #
-        app.post '/booking/pickup/:booking_id',
+        app.post '/api/booking/pickup/:booking_id',
           :allowed_usergroups => ['booking_manager']  do
        
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
@@ -370,7 +370,7 @@ module Sinatra
         #
         # Return/Departure
         #
-        app.post '/booking/return/:booking_id',
+        app.post '/api/booking/return/:booking_id',
           :allowed_usergroups => ['booking_manager']  do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
@@ -385,7 +385,7 @@ module Sinatra
         #
         # Cancel
         #
-        app.post '/booking/cancel/:booking_id',
+        app.post '/api/booking/cancel/:booking_id',
           :allowed_usergroups => ['booking_manager']  do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
@@ -460,7 +460,7 @@ module Sinatra
         #
         # Booking creation (customer)
         #
-        app.post '/booking/?' do
+        app.post '/api/booking/?' do
 
           options = extract_request_query_string
               
@@ -504,7 +504,7 @@ module Sinatra
         #
         # Booking creation (manager)
         #
-        app.post '/booking-from-manager/?' do
+        app.post '/api/booking-from-manager/?' do
 
           options = extract_request_query_string
               

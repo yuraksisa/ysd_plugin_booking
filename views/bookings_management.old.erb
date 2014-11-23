@@ -93,14 +93,14 @@
                 <button class="form-button green-button element-action-button" id="confirm_booking_button" 
                       title="<%=t.booking_management.form.confirm_button.label%>" 
                       data-action-method="POST"
-                      data-action-url="/booking/confirm/<%%=entity.id%>"
+                      data-action-url="/api/booking/confirm/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.confirm_button.message%>">
                   <%=t.booking_management.form.confirm_button.label%>
                 </button>
                 <button class="form-button red-button element-action-button" id="cancel_booking_button" 
                       title="<%=t.booking_management.form.cancel_button.label%>" 
                       data-action-method="POST"
-                      data-action-url="/booking/cancel/<%%=entity.id%>"
+                      data-action-url="/api/booking/cancel/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
                   <%=t.booking_management.form.cancel_button.label%>
                 </button>                            
@@ -109,7 +109,7 @@
                 <button class="form-button blue-button element-action-button" id="pickup_booking_button" 
                       title="<%=t.booking_management.form.pickup_button.label%>" 
                       data-action-method="POST"
-                      data-action-url="/booking/pickup/<%%=entity.id%>"
+                      data-action-url="/api/booking/pickup/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.pickup_button.message%>">
                   <%=t.booking_management.form.pickup_button.label%>
                 </button>
@@ -118,7 +118,7 @@
                 <button class="form-button black-button element-action-button" id="return_booking_button" 
                       title="<%=t.booking_management.form.return_button.label%>" 
                       data-action-method="POST"
-                      data-action-url="/booking/return/<%%=entity.id%>"
+                      data-action-url="/api/booking/return/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.return_button.message%>">
                   <%=t.booking_management.form.return_button.label%>
                 </button>
@@ -139,7 +139,7 @@
                   <button class="form-button element-action-button" id="confirm_booking_button" 
                       title="<%=t.booking_management.form.allow_payment_button.label%>" 
                       data-action-method="POST"
-                      data-action-url="/booking/allow-payment/<%%=entity.id%>"
+                      data-action-url="/api/booking/allow-payment/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.allow_payment_button.message%>">
                     <%=t.booking_management.form.allow_payment_button.label%>
                   </button>
@@ -544,8 +544,8 @@
   };
   
   var urls = { 
-  	           query_url  : '/bookings',
-  	           get_url : '/booking'
+  	           query_url  : '/api/bookings',
+  	           get_url : '/api/booking'
              };
   
   var bookingHook = new BookingHook();

@@ -7,7 +7,7 @@ module Sinatra
         #
         # Pickup/return places
         #
-        app.get '/admin/booking-places/:place_def_id?*', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.get '/admin/booking/booking-places/:place_def_id?*', :allowed_usergroups => ['booking_manager','staff'] do 
           
           if pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(params[:place_def_id])
             locals = {:booking_pickup_return_places => 20,
