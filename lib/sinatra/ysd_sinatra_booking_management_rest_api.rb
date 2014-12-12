@@ -121,21 +121,42 @@ module Sinatra
         #
         # Bookings scheduler
         #
-        app.get '/api/booking/scheduler' do
+        app.get '/api/booking/scheduler/:booking_item_reference' do
 
-          from = params['start']
-          to = params['end']
+          from = Time.at(params['start'].to_i)
+          to = Time.at(params['end'].to_i)
 
-          bookings = BookingDataSystem::Booking.all(
-             :date_from.gte => Time.at(from.to_i),
-             :date_to.lte => Time.at(to.to_i), 
-             :status.not => :cancelled,
+          condition = Conditions::JoinComparison.new('$and',
+           [Conditions::Comparison.new(:status, '$ne', :cancelled),
+            Conditions::Comparison.new(:booking_item_reference, '$eq', params[:booking_item_reference]),
+            Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new(:date_from,'$lte', from),
+                  Conditions::Comparison.new(:date_to,'$gte', from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', to),
+                  Conditions::Comparison.new(:date_to,'$gte', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$eq', from),
+                  Conditions::Comparison.new(:date_to,'$eq', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from, '$gte', from),
+                  Conditions::Comparison.new(:date_to, '$lte', to)])               
+              ]
+            ),
+            ]
+          )
+
+          bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
              :order => [:item_id.asc]).map do |booking|
             {:id => booking.id,
-             :title => "#{booking.item_description} - #{booking.customer_name.upcase} #{booking.customer_surname.upcase} #{(booking.customer_phone.nil? or booking.customer_phone.empty?)? booking.customer_mobile_phone : booking.customer_phone}",
+             :title => "#{booking.date_from.strftime('%Y-%m-%d')} #{booking.time_from} \n #{booking.date_to.strftime('%Y-%m-%d')} #{booking.time_to} \n #{booking.customer_name.upcase} #{booking.customer_surname.upcase} #{(booking.customer_phone.nil? or booking.customer_phone.empty?)? booking.customer_mobile_phone : booking.customer_phone}",
              :start => booking.date_from,
              :end => booking.date_to,
-             :url => "/admin/bookings/#{booking.id}",
+             :url => "/admin/booking/bookings/#{booking.id}",
              :editable => false,
              :backgroundColor => (booking.status==:confirmed)? 'rgb(41, 158, 69)' : (booking.status==:in_progress)? 'rgb(13, 124, 226)' : (booking.status == :pending_confirmation)? 'rgb(241, 248, 69)' : 'rgb(0,0,0)',
              :textColor => (booking.status == :pending_confirmation)? 'black' : 'white'}
@@ -165,13 +186,32 @@ module Sinatra
           from = DateTime.new(year, month, 1, 0, 0, 0, 0)
           to = from >> 1
 
+          condition = Conditions::JoinComparison.new('$and',
+           [Conditions::Comparison.new(:status, '$eq', :confirmed),
+            Conditions::Comparison.new(:booking_item, '$ne', nil),
+            Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new(:date_from,'$lte', from),
+                  Conditions::Comparison.new(:date_to,'$gte', from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', to),
+                  Conditions::Comparison.new(:date_to,'$gte', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$eq', from),
+                  Conditions::Comparison.new(:date_to,'$eq', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from, '$gte', from),
+                  Conditions::Comparison.new(:date_to, '$lte', to)])               
+              ]
+            ),
+            ]
+          )
 
-          bookings = BookingDataSystem::Booking.all(
+          bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
              :fields => [:id, :date_from, :date_to, :booking_item_reference],
-             :conditions=> { :date_from.gte => from,
-                             :date_from.lt => to, 
-                             :status => [:confirmed],
-                             :booking_item.not => nil},
              :order => [:booking_item_reference.asc, :date_from.asc]
             ) 
 

@@ -117,6 +117,7 @@
           
           this.booking.item_cost = itemCost;
           this.booking.total_cost = this.booking.item_cost + this.booking.extras_cost;
+          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
           bookingEditView.showNewPrices();
           bookingEditView.showNewExtras(); 
        },
@@ -129,6 +130,7 @@
           this.booking.extras_cost = this.booking.extras_cost - oldValue + this.booking.booking_extras[index].extra_cost;
 
           this.booking.total_cost = this.booking.item_cost + this.booking.extras_cost;
+          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
           bookingEditView.showNewPrices();
           bookingEditView.showNewExtras();       	
        },

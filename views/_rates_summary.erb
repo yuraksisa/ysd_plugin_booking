@@ -1,0 +1,87 @@
+
+    <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
+      <% booking_categories.each do |booking_category|%>
+        <li class="no-border no-background" style="border:none; backgrond:none">
+         	  <a name="<%=booking_category.code%>" href="#<%=booking_category.code%>"><%=booking_category.name%></a>
+        </li>
+      <% end %>        
+    </ul>
+
+    <div id="content" class="all-border-solid all-space top-margin">    
+      <% booking_categories.each do |booking_category|%>
+    	<div id="<%=booking_category.code%>" class="top-margin">
+    	  <div class="container_12">
+          <% if booking_category.price_definition %>
+            <div class="grid_6">
+              <div class="all-space">
+                <span class="bigger_text more_contrast_text"><%=t.booking_rates_summary.current_rates.base_price%>:</span>
+                <% if booking_category.price_definition.base_price %>
+                  <span class="bigger_text"><%="%.2f" % booking_category.price_definition.base_price%></span>
+                <% else %>
+                  <span class="bigger_text">0.0</span>
+                <% end %> 
+              </div>  
+            </div>
+          <% end %>
+          </div>
+          <div class="container_12">
+            <div class="grid_6">
+              <div class="all-space">
+                <h3><%=t.booking_rates_summary.current_rates.prices%></h3>
+                <table id="elements_table" class="table">
+                  <thead class="table-header">
+                    <tr>
+                      <th class="table-header-title left_text" scope="col" style="width:50%"><%=t.booking_rates_summary.current_rates.season%></th>
+                      <th class="table-header-title left_text" scope="col" style="width:50%"><%=t.booking_rates_summary.current_rates.price%></th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-tbody">  
+                    <% if booking_category.price_definition %>
+                      <% booking_category.price_definition.prices.each do |price| %> 
+                        <tr class="table-row"> 
+                          <td class="table-cell">
+                            <% if price.season %>
+                              <%= price.season.to_s %>
+                            <% end %>
+                          </td>
+                          <td class="table-cell">
+                            <span class="less_contrast_text"><%= t.booking_rates_summary.current_rates.days(price.units)%>:</span> <span><%= "%.2f" % price.price %></span>
+                          </td>
+                        </tr>               
+                      <% end %>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <% if booking_category.price_definition.factor_definition%>
+              <div class="grid_6">
+                <div class="all-space">
+               	  <h3><%=t.booking_rates_summary.current_rates.factors%></h3>
+                  <table id="elements_table" class="table">
+                    <thead class="table-header">
+                      <tr>
+                        <th class="table-header-title left_text" scope="col" style="width:50%"><%=t.booking_rates_summary.current_rates.from%></th>
+                        <th class="table-header-title left_text" scope="col" style="width:50%"><%=t.booking_rates_summary.current_rates.to%></th>
+                        <th class="table-header-title left_text" scope="col" style="width:50%"><%=t.booking_rates_summary.current_rates.factor%></th>
+                     </tr>
+                    </thead>
+                    <tbody class="table-tbody">  
+                   	  <% booking_category.price_definition.factor_definition.factors.each do |factor|%>
+                        <tr class="table-row"> 
+                          <td class="table-cell"><%= factor.from%></td>
+                          <td class="table-cell"><%= factor.to%></td>
+                          <td class="table-cell"><%= "%.2f" % factor.factor %></td>
+                        </tr> 
+                      <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            <% end %>           
+
+          </div>
+        </div>
+      <% end %>
+    </div>

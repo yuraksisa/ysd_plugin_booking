@@ -1,3 +1,4 @@
+<h2 class="bottom-border-solid color-1"><%=booking_item.reference%></h2>
 <script type="text/javascript">
 
   $(document).ready(function() {
@@ -7,8 +8,11 @@
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
+			year: <%=year%>,
+			month: <%=month%>,
 			editable: true,
-			events: '/api/booking/scheduler',
+			lang: '<%=session[:locale]%>',
+			events: '/api/booking/scheduler/<%=booking_item.reference%>',
 			eventClick: function(event) {
                if (event.url) {
                  window.open(event.url);

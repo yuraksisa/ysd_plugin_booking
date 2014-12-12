@@ -22,9 +22,20 @@ module Sinatra
         #
         # Booking configuration
         #
-        app.get '/admin/booking/config', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get "/admin/booking/config", :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:console_booking_configuration)
+        end
+
+        #
+        # Booking configuration (general)
+        #
+        app.get '/admin/booking/config/general', :allowed_usergroups => ['booking_manager', 'staff'] do
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ]  }
           load_page(:config_booking, {:locals => locals})
+        end
+
+        app.get '/admin/booking/config/templates', :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:console_booking_configuration_templates)
         end
 
         #
@@ -42,6 +53,22 @@ module Sinatra
         end
 
         #
+        # Bookings scheduler
+        #
+        app.get '/admin/booking/scheduler/:booking_item_reference', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          year = params[:year]
+          month = params[:month]
+          booking_item = ::Yito::Model::Booking::BookingItem.get(params[:booking_item_reference])
+          if booking_item
+            load_page(:bookings_scheduler, :locals => {:booking_item => booking_item, :year => year, :month => month})
+          else
+            status 404
+          end
+
+        end
+
+        #
         # Bookings summary
         #
         app.get '/admin/booking/summary', :allowed_usergroups => ['booking_manager', 'staff'] do
@@ -53,16 +80,9 @@ module Sinatra
         #
         app.get '/admin/booking/rates', :allowed_usergroups => ['booking_manager', 'staff'] do
           
-          redirect '/admin/console/rates'
-
-        end
-
-        #
-        # Bookings scheduler
-        #
-        app.get '/admin/booking/scheduler', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          load_page(:bookings_scheduler)
+          locals = {}
+          locals.store(:booking_categories, ::Yito::Model::Booking::BookingCategory.all)
+          load_page(:console_booking_rates, :locals => locals)
 
         end
 

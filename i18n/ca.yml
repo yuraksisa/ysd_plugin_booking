@@ -12,7 +12,7 @@ booking_settings:
   form:
     title: Configuració sistema de reserves
     notification_email: Email de notificació
-    deposit: \% Dipòsit
+    deposit: % Dipòsit
     allow_total_payment: Permetre pagar el total de la reserva
     min_days: Numero mínim de dies
     family: Tipus de producte en lloger
