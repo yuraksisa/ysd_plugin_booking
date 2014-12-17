@@ -142,6 +142,34 @@ module Huasi
       Users::Group.first_or_create({:group => 'booking_manager'},
           {:name => 'Booking manager', :description => 'Booking manager'})
 
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_manager_notification'},
+          {:description=>'Mensaje que se envía al gestor de reservas al recibir una nueva solicitud',
+           :text => BookingDataSystem::Booking.manager_notification_template})
+
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_manager_notification_pay_now'},
+          {:description => 'Mensaje que se envía al gestor de reservas cuando un cliente realiza una solicitud de reserva con pago',
+           :text => BookingDataSystem::Booking.manager_notification_pay_now_template})
+
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_customer_req_notification'},
+          {:description=>'Mensaje que se envía al cliente cuando realiza solicitud de reserva (sin pago)',
+           :text => BookingDataSystem::Booking.customer_notification_booking_request_template}) 
+
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_customer_req_pay_now_notification'},
+          {:description=>'Mensaje que se envía al cliente cuando realiza solicitud de reserva (con pago)',
+           :text => BookingDataSystem::Booking.customer_notification_request_pay_now_template}) 
+
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_customer_notification'},
+          {:description=>'Mensaje que se envía al cliente cuando se confirma la solicitud de reserva',
+           :text => BookingDataSystem::Booking.customer_notification_booking_confirmed_template}) 
+
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_contract'},
+          {:description=>'Contrato',
+           :text => ::Yito::Model::Booking::Templates.contract}) 
+
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_summary_message'},
+          {:description=>'Mensaje al finalizar la reserva',
+           :text => ::Yito::Model::Booking::Templates.summary_message}) 
+
     end
     
     # ----------- Blocks ------------------------------------

@@ -121,7 +121,7 @@ module Sinatra
         #
         # Bookings scheduler
         #
-        app.get '/api/booking/scheduler/:booking_item_reference' do
+        app.get '/api/booking/scheduler/:booking_item_reference', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           from = Time.at(params['start'].to_i)
           to = Time.at(params['end'].to_i)
@@ -169,7 +169,7 @@ module Sinatra
         #
         # Bookings (planning)
         #
-        app.get '/api/booking/planning' do
+        app.get '/api/booking/planning', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           today = DateTime.now
           month = today.month
@@ -222,7 +222,7 @@ module Sinatra
         #
         # Get the items that have to be pick up
         #
-        app.get '/api/booking/pickedup' do
+        app.get '/api/booking/pickedup', :allowed_usergroups => ['booking_manager', 'staff'] do
 
            from = DateTime.now
            if params[:from]
@@ -247,7 +247,7 @@ module Sinatra
         #
         # Get the items that have to be returned
         #
-        app.get '/api/booking/returned' do
+        app.get '/api/booking/returned', :allowed_usergroups => ['booking_manager', 'staff'] do
 
            from = DateTime.now
            if params[:from]
@@ -272,7 +272,7 @@ module Sinatra
         #
         # Get the not assigned bookings
         #
-        app.get '/api/booking/not-assigned' do
+        app.get '/api/booking/not-assigned', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           from = params['start']
           to = params['end']
@@ -293,7 +293,7 @@ module Sinatra
         # Booking querying 
         #
         ["/api/bookings", "/api/bookings/page/:page"].each do |path|
-          app.post path, :allowed_usergroups => ['booking_manager'] do
+          app.post path, :allowed_usergroups => ['booking_manager', 'staff'] do
         	
             page = [params[:page].to_i, 1].max  
             page_size = SystemConfiguration::Variable.
@@ -328,7 +328,7 @@ module Sinatra
         # Booking access
         #
         app.get '/api/booking/:booking_id',
-          :allowed_usergroups => ['booking_manager'] do
+          :allowed_usergroups => ['booking_manager','staff'] do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id])
             status 200
@@ -343,7 +343,7 @@ module Sinatra
         # Confirm a booking
         #
         app.post '/api/booking/confirm/:booking_id',
-          :allowed_usergroups => ['booking_manager'] do
+          :allowed_usergroups => ['booking_manager','staff'] do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
             content_type :json
@@ -396,7 +396,7 @@ module Sinatra
         # Pickup/Arrival 
         #
         app.post '/api/booking/pickup/:booking_id',
-          :allowed_usergroups => ['booking_manager']  do
+          :allowed_usergroups => ['booking_manager','staff']  do
        
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
             content_type :json
@@ -411,7 +411,7 @@ module Sinatra
         # Return/Departure
         #
         app.post '/api/booking/return/:booking_id',
-          :allowed_usergroups => ['booking_manager']  do
+          :allowed_usergroups => ['booking_manager','staff']  do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
             content_type :json
@@ -426,7 +426,7 @@ module Sinatra
         # Cancel
         #
         app.post '/api/booking/cancel/:booking_id',
-          :allowed_usergroups => ['booking_manager']  do
+          :allowed_usergroups => ['booking_manager','staff']  do
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
             content_type :json
@@ -440,7 +440,7 @@ module Sinatra
         #
         # Update the booking price
         #
-        app.put '/api/booking/:id/price', :allowed_usergroups => ['booking_manager'] do
+        app.put '/api/booking/:id/price', :allowed_usergroups => ['booking_manager','staff'] do
 
           booking_request = body_as_json(BookingDataSystem::Booking)
           extras_request = booking_request.delete(:booking_extras)
@@ -463,7 +463,7 @@ module Sinatra
         #
         # Updates booking
         #
-        app.put '/api/booking/:id', :allowed_usergroups => ['booking_manager']  do
+        app.put '/api/booking/:id', :allowed_usergroups => ['booking_manager','staff']  do
 
           request.body.rewind
           data = JSON.parse(URI.unescape(request.body.read))
@@ -483,7 +483,7 @@ module Sinatra
         #
         # Update booking
         #
-        app.put '/api/booking' do
+        app.put '/api/booking', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           data_request = body_as_json(BookingDataSystem::Booking)
                               
@@ -544,7 +544,7 @@ module Sinatra
         #
         # Booking creation (manager)
         #
-        app.post '/api/booking-from-manager/?' do
+        app.post '/api/booking-from-manager/?', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           options = extract_request_query_string
               
@@ -581,7 +581,7 @@ module Sinatra
         #
         # Regenerates the booking_js template
         #
-        app.get '/api/booking/create-rates', :allowed_usergroups => ['booking_manager'] do
+        app.get '/api/booking/create-rates', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           rates = ::Yito::Model::Booking::Generator.instance.build_script
 

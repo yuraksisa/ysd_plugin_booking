@@ -35,7 +35,24 @@ module Sinatra
         end
 
         app.get '/admin/booking/config/templates', :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:console_booking_configuration_templates)
+          
+          contract = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+          summary_message = ContentManagerSystem::Template.first({:name => 'booking_summary_message'})      
+          b_m_n = ContentManagerSystem::Template.first({:name => 'booking_manager_notification'})
+          b_m_n_pay_now = ContentManagerSystem::Template.first({:name => 'booking_manager_notification_pay_now'})
+          b_m_r_c = ContentManagerSystem::Template.first({:name => 'booking_customer_req_notification'})
+          b_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
+          b_m_c_c = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
+          
+          locals = {:contract => contract,
+                    :summary_message => summary_message,
+                    :b_m_n => b_m_n, 
+                    :b_m_n_pay_now => b_m_n_pay_now, 
+                    :b_m_r_c => b_m_r_c,
+                    :b_m_r_c_pay_now => b_m_r_c_pay_now, 
+                    :b_m_c_c => b_m_c_c}
+
+          load_page(:console_booking_configuration_templates, :locals => locals)
         end
 
         #

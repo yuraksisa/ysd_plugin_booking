@@ -15,15 +15,18 @@ booking_console_configuration:
   templates: Plantillas      
 booking_configuration_templates:
   title: Plantillas sistema de reservas
-  contract: Contrato
+  general: General
+  contract: Contrato de alquiler
+  summary_message: Mensaje al finalizar la reserva (en la página web)
   emails: Correos electrónicos
-  customer_emails: Al cliente
-  manager_emails: Al gestor de las reservas
-  email_customer_request_received: Al recibir solucitud
-  email_customer_payment_request_received: Al recibir solucitud (con pago)
+  template: Plantilla
+  customer_emails: Se envían al cliente
+  manager_emails: Se envían al gestor de las reservas
+  email_customer_request_received: Cuando se recibe una solicitud
+  email_customer_payment_request_received: Cuando se recibe una solicitud con pago online
   email_customer_reservation_confirmed: Cuando se confirma la reserva
-  email_manager_request_received: Al recibir solucitud
-  email_manager_payment_request_received: Al iniciar el proceso de cobro
+  email_manager_request_received: Cuando se recibe una nueva solucitud
+  email_manager_payment_request_received: Cuando se recibe una nueva solicitud con pago online
 booking_settings:
   form:
     title: Configuración General

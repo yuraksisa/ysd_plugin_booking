@@ -1,41 +1,73 @@
 <h2><%=t.booking_configuration_templates.title%></h2>
+<h3 class="bottom-border-solid"><%=t.booking_configuration_templates.general%></h3>
 <div class="container_12">
-  <div class="grid_3">
-    <div class="box box-shadow guiblock background-color-1" style="padding: 3em">
-      <p class="centered_text"><a href="/admin/booking/config/general"><%=t.booking_configuration_templates.contract%></a></p>
-    </div>
+  <div class="grid_6">
+    <table class="table" style="background:none">
+      <thead class="table-header-title" style="background:none">
+        <tr class="table-row" style="background:none">
+          <th class="table-header-title" scope="col" style="width:75%"><%=t.booking_configuration_templates.template%></th>
+          <th class="table-header-title" scope="col" style="width:25%"></th>
+        </tr>
+      </thead>
+      <tbody class="table-tbody">
+        <tr class="table-row" style="background:none">
+           <td class="table-cell"><%=t.booking_configuration_templates.summary_message%></td>
+              <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=summary_message.nil? ? nil : summary_message.id%>"><%=t.entitymanagement.edit%></a></div></td>
+        </tr>    
+        <tr class="table-row" style="background:none">
+           <td class="table-cell"><%=t.booking_configuration_templates.contract%></td>
+           <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=contract.nil? ? nil : contract.id%>"><%=t.entitymanagement.edit%></a></div></td>
+        </tr>
+      </tbody>      
+    </table> 
   </div>
 </div>
-<h3><%=t.booking_configuration_templates.emails%></h3>
+<h3 class="top-margin-1line bottom-border-solid"><%=t.booking_configuration_templates.emails%></h3>
 <div class="container_12">
-  <h4><%=t.booking_configuration_templates.customer_emails%></h4>  
-  <div class="grid_3">
-    <div class="box box-shadow guiblock background-color-2"  style="padding: 3em; height: 4em">
-      <p class="centered_text"><a href="/admin/booking/config/payment"><%=t.booking_configuration_templates.email_customer_request_received%></a></p>
-    </div>     
-  </div>
-  <div class="grid_3">
-    <div class="box box-shadow guiblock background-color-1"  style="padding: 3em; height: 4em">
-      <p class="centered_text"><a href="/admin/booking/config/templates"><%=t.booking_configuration_templates.email_customer_payment_request_received%></a></p>
-    </div>
-  </div>
-  <div class="grid_3">
-    <div class="box box-shadow guiblock background-color-1"  style="padding: 3em; height: 4em">
-      <p class="centered_text"><a href="/admin/booking/config/templates"><%=t.booking_configuration_templates.email_customer_reservation_confirmed%></a></p>
-    </div>
-  </div>        
-</div>
-<div class="container_12">
-  <h4><%=t.booking_configuration_templates.manager_emails%></h4>  
-  <div class="grid_3">
-    <div class="box box-shadow guiblock background-color-2"  style="padding: 3em; height: 4em">
-      <p class="centered_text"><a href="/admin/booking/config/payment"><%=t.booking_configuration_templates.email_manager_request_received%></a></p>
-    </div>     
-  </div>
-  <div class="grid_3">
-    <div class="box box-shadow guiblock background-color-1"  style="padding: 3em; height: 4em">
-      <p class="centered_text"><a href="/admin/booking/config/templates"><%=t.booking_configuration_templates.email_manager_payment_request_received%></a></p>
-    </div>
-  </div>
-      
+  <div class="grid_6">
+    <h4><%=t.booking_configuration_templates.customer_emails%></h4>  
+    <table class="table" style="background:none">
+      <thead class="table-header-title" style="background:none">
+        <tr class="table-row" style="background:none">
+          <th class="table-header-title" scope="col" style="width:75%"><%=t.booking_configuration_templates.template%></th>
+          <th class="table-header-title" scope="col" style="width:25%"></th>
+        </tr>
+      </thead>
+      <tbody class="table-tbody">
+        <tr class="table-row" style="background:none">
+           <td class="table-cell"><%=t.booking_configuration_templates.email_customer_request_received%></td>
+           <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=b_m_r_c.nil? ? nil : b_m_r_c.id%>"><%=t.entitymanagement.edit%></a></div></td>
+        </tr>
+        <tr class="table-row" style="background:none">
+           <td class="table-cell"><%=t.booking_configuration_templates.email_customer_payment_request_received%></td>
+              <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=b_m_r_c_pay_now.nil? ? nil : b_m_r_c_pay_now.id%>"><%=t.entitymanagement.edit%></a></div></td>
+        </tr>
+        <tr class="table-row" style="background:none">
+              <td class="table-cell"><%=t.booking_configuration_templates.email_customer_reservation_confirmed%></td>
+              <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=b_m_c_c.nil? ? nil : b_m_c_c.id%>"><%=t.entitymanagement.edit%></a></div></td>
+        </tr>                        
+      </tbody>      
+    </table>   
+  </div>  
+  <div class="grid_6">
+    <h4><%=t.booking_configuration_templates.manager_emails%></h4>  
+    <table class="table" style="background:none">
+      <thead class="table-header-title" style="background:none">
+        <tr class="table-row" style="background:none">
+          <th class="table-header-title" scope="col" style="width:75%"><%=t.booking_configuration_templates.template%></th>
+          <th class="table-header-title" scope="col" style="width:25%"></th>
+        </tr>
+      </thead>
+      <tbody class="table-tbody">
+        <tr class="table-row" style="background:none">
+           <td class="table-cell"><%=t.booking_configuration_templates.email_manager_request_received%></td>
+           <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=b_m_n.nil? ? nil : b_m_n.id%>"><%=t.entitymanagement.edit%></a></div></td>
+        </tr>
+        <tr class="table-row" style="background:none">
+           <td class="table-cell"><%=t.booking_configuration_templates.email_manager_payment_request_received%></td>
+              <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=b_m_n_pay_now.nil? ? nil : b_m_n_pay_now.id%>"><%=t.entitymanagement.edit%></a></div></td>
+        </tr>                      
+      </tbody>      
+    </table>   
+  </div>    
 </div>
