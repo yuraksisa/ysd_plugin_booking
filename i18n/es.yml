@@ -7,12 +7,20 @@ system_admin_menu:
       bookings: Reservas
       bookings_scheduler: Agenda
       booking_categories: Categorías
-      booking_items: Items en alquiler
+      booking_items: Recursos
 booking_console_configuration:
   title: Configuración sistema de reservas
   general_configuration: General
   payment: Forma de Pago
   templates: Plantillas      
+  create_rates: Generar tarifas web
+booking_create_rates:
+  title: Generar tarifas
+  description: > 
+          <p>Es necesario ejecutar este proceso cada vez que modifica una tarifa o una categoría o 
+          cambia la configuración para generar las tarifas que se utilizarán en la web.</p>
+  proceed: Pulse el botón <strong>generar tarifas</strong> para proceder.
+  button_generate: Generar tarifas 
 booking_configuration_templates:
   title: Plantillas sistema de reservas
   general: General
@@ -31,6 +39,10 @@ booking_settings:
   form:
     title: Configuración General
     notification_email: Email de notificación
+    reservation_starts_with:
+      title: La reserva empieza seleccionando
+      dates: Las fechas
+      categories: Las categorías
     deposit: \% Depósito
     allow_total_payment: Permitir pagar el total de la reserva
     min_days: Numero mínimo de días    
@@ -60,13 +72,14 @@ booking_rates_summary:
     factor: Factor
     days: !!pl
       1: 1 día
-      n: \%1 días    
+      n: \%1 días
+    edit_prices: Editar precios    
 booking_console:
   title: Reservas
   configuration: Configuración
   categories: Categorías
   extras: Extras
-  items: Items en alquiler
+  items: Recursos
   rates: Tarifas
   reservations: Reservas
   planning: Planning    
@@ -297,7 +310,7 @@ booking_management_edit:
     new_situation: Nueva situación
     day_cost: al día
 booking_management:
-  title: Gestión de reservas
+  title: Reservas
   description: <p>Consultar las reservas.</p>
   table:
     id: Id
@@ -334,7 +347,7 @@ booking_management:
       label: Permitir pago
       message: ¿Desea habilitar el pago de esta reserva?
     change_dates: Cambiar fechas
-    force_allow_payment: Pago permitido
+    force_allow_payment: Pago habilitado por el gestor
     expired: Excedido tiempo pago depósito
     id: Localizador reserva
     creation_date: Fecha reserva
@@ -345,16 +358,15 @@ booking_management:
       pickup: Recogida/Entrada
       return_item: Devolución/Salida
     payment_status: Estado cobro
-    payment_title: Cobros
-    item: Item    
+    payment_title: Cobros  
     booking_data_title: Datos reserva
     pickup_return: Entrega y devolución    
     date_from: Entrega / Entrada
     date_to: Devolución / Salida
     pickup_place: Lugar de entrega
     return_place: Lugar de devolución
-    item: Item
-    assign_item: Asignar item
+    item: Categoría
+    assign_item: Asignar recurso
     extras_title: Extras
     extra_description: Descripción
     extra_quantity: Cantidad 
@@ -376,6 +388,7 @@ booking_management:
     booking_amount: Importe depósito
     deposit_state: Info. depósito 
     comments: Comentarios    
+    anotations: Notas
     customer_title: Cliente
     customer_name: Nombre
     customer_phone: Teléfono
@@ -410,7 +423,7 @@ booking_category_management:
     calendar: Gestión del calendario
     prices: Gestión de precios  
   form:
-    title: Gestión de categorías
+    title: Categorías
     code:
       label: Código
     name:
@@ -422,7 +435,7 @@ booking_category_management:
     price_definition:
       label: Precio
 booking_extra_management:
-  title: Gestión de extras
+  title: Extras
   description: Gestión de extras
   table:
     code: Código
@@ -444,7 +457,7 @@ booking_item_management:
     calendar: Gestió del calendario
     prices: Gestión de precios    
   form:
-    title: Gestión items de reserva
+    title: Recursos
     reference: 
       label: Referencia
     category:
@@ -458,11 +471,11 @@ booking_item_management:
     price_definition:
       label: Precio
 booking_places_definition_management:
-  title: Definición de lugares de entrega y recogida
+  title: Lugares de entrega y recogida
   table:
     id: Id
     name: Nombre
-    places: Gestión de los lugares de entrega y recogida    
+    places: Lugares de entrega y recogida    
   form:
     name:
       label: Nombre
@@ -529,7 +542,9 @@ booking:
     done: Finalizada
     cancelled: Cancelada
 bookings_planning:
-  title: Planning    
+  title: Planning 
+bookings_scheduler:
+  title: Agenda     
 not_assigned_bookings:
   title: Reservas no asignadas
   table:

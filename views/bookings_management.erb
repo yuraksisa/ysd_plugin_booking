@@ -163,12 +163,14 @@
                    <%%= self.formatDate(entity.date_from, 'dd.MM.yyyy') %> <%%= entity.time_from?' , '+entity.time_from:'' %>
                </span>
              </div>
+             <% if booking_item_family.pickup_return_place %>
              <div class="entity-field">
                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.pickup_place %></span>
                <span class="entity-fieldvalue">
                    <%%= entity.pickup_place %>
                </span>
-             </div>             
+             </div>            
+             <% end %> 
            </div>
            <div class="element_template">
              <div class="entity-field">
@@ -176,13 +178,15 @@
                <span class="entity-fieldvalue">
                   <%%= self.formatDate(entity.date_to, 'dd.MM.yyyy') %> <%%= entity.time_to?' , '+entity.time_to:'' %> 
                </span>
-             </div>
+             </div> 
+             <% if booking_item_family.pickup_return_place %>
              <div class="entity-field">
                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.return_place %></span>
                <span class="entity-fieldvalue">
                   <%%= entity.return_place %>
                </span>
-             </div>             
+             </div>
+             <% end %>             
            </div>         
            <%% if (entity.number_of_adults > 0) { %>
              <div class="element_template">
@@ -216,7 +220,7 @@
      </div>  
         
      <div class="container_12">
-        <div class="grid_7">
+        <div class="grid_6">
           <form name="customer" style="border:1px solid #EEE">
             <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.customer_title %></div> 
             <input type="hidden" name="id" value="<%%=entity.id%>"/>
@@ -262,40 +266,10 @@
                 <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
               </div>
             </div>             
-          </form>            
-        </div>
-        <div class="grid_5">
-           <div class="left-margin bottom-margin" style="border:1px solid #EEE">
-             <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.comments %></div>
-             <div class="element_template bottom-margin">
-               <span class="all-space"><%%= entity.comments %></span>
-           </div>             
-           </div>
-           <div class="left-margin" style="border:1px solid #EEE">
-             <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.assign_item %></div>           
-             <div class="element_template bottom-margin left-margin">
-                   <form name="assign_booking" style="display:inline">
-                     <select name="booking_item_reference" id="booking_item_reference" style="width:70%"/>
-                     <button class="form-button element-action-button" id="assign_item_button"
-                       type="button" 
-                       title="<%=t.booking_management.form.assign_button.label%>" 
-                       style="position: relative; top: 1px;"
-                       data-action-method="POST"
-                       data-action-url="/api/booking/assign/<%%=entity.id%>/"
-                       data-confirm-message="<%=t.booking_management.form.assign_button.message%>">
-                       <%=t.booking_management.form.assign_button.label%>
-                     </button>
-                   </form>
-             </div> 
-           </div>
-        </div>
-     </div>
+          </form>    
 
-     <div class="top-margin bottom-margin" style="border:1px solid #EEE">
-
-        <div class="container_12">
-          <div class="grid_8">
-            <div class="more_contrast_text top-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.extras_title %></div>
+            <div class="top-margin bottom-margin bottom-space" style="border:1px solid #EEE">
+              <div class="more_contrast_text top-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.extras_title %></div>
             
               <%% if (entity.booking_extras.length > 0) { %>
               <div class="element_template">
@@ -320,12 +294,53 @@
                         </tbody>
                      </table>        
               </div>    
-              <%% } %>
-            </div>
-          </div>
+              <%% } else { %>
+              <p class="left-margin"><%=t.entitymanagement.no_data%></p>
+              <%% } %>                
+            </div>   
         </div>
-     </div>     
+        <div class="grid_6">
+           <div class="left-margin bottom-margin" style="border:1px solid #EEE">
+             <div class="left-margin more_contrast_text top-margin bottom-margin" style="text-decoration:underline;"><%= t.booking_management.form.comments %></div>
+             <div class="element_template bottom-margin">
+               <span class="all-space"><%%= entity.comments %></span>
+             </div>          
+           </div>
+           <div class="left-margin bottom-margin" style="border:1px solid #EEE">
+             <form name="anotations" class="all-space">
+               <input type="hidden" name="id" value="<%%=entity.id%>"/>             
+               <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline"><%= t.booking_management.form.anotations %></div>
+               <div class="formrow top-space bottom-margin">
+                 <textarea name="notes" rows="5" class="fieldcontrol"><%%= entity.notes %></textarea>
+               </div>
+               <div class="navigation-bar bottom-margin">
+                 <div class="navigation-bar-crud-buttons right-float">
+                   <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                 </div>
+               </div>             
+             </form>               
+           </div>     
+           <div class="left-margin" style="border:1px solid #EEE">
+             <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.assign_item %></div>           
+             <div class="element_template bottom-margin left-margin">
+                   <form name="assign_booking" style="display:inline">
+                     <select name="booking_item_reference" id="booking_item_reference" style="width:70%"/>
+                     <button class="form-button element-action-button" id="assign_item_button"
+                       type="button" 
+                       title="<%=t.booking_management.form.assign_button.label%>" 
+                       style="position: relative; top: 1px;"
+                       data-action-method="POST"
+                       data-action-url="/api/booking/assign/<%%=entity.id%>/"
+                       data-confirm-message="<%=t.booking_management.form.assign_button.message%>">
+                       <%=t.booking_management.form.assign_button.label%>
+                     </button>
+                   </form>
+             </div> 
+           </div>
+        </div>
 
+     </div>
+ 
      <div class="top-margin bottom-margin" style="border:1px solid #EEE">
           <div class="container_12">
              <div class="grid_6">
@@ -347,7 +362,13 @@
                    <span class="entity-fieldlabel highlighted_text uppercase_text"><%= t.booking_management.form.total_cost %></span>
                    <span class="entity-fieldvalue highlighted_text" style="width: 70px; text-align: right;"><%%= new Number(entity.total_cost).toFixed(2) %></span>
                  </div>
-               </div>              
+               </div>
+               <div class="element_template">
+                 <div class="entity-field">
+                   <span class="entity-fieldlabel"><%= t.booking_management.form.booking_amount %></span>
+                   <span class="entity-fieldvalue" style="width: 70px; text-align: right;"><%%= new Number(entity.booking_amount).toFixed(2) %></span>
+                 </div>
+               </div>                                
              </div>
              <div class="grid_6">
                <div class="more_contrast_text top-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.payment_title %></div>                         
@@ -374,7 +395,7 @@
                <%% if (entity.is_expired) { %>
                <div class="element_template">
                  <div class="entity-field">
-                    <span class="error-status">
+                    <span class="entity-fieldvalue error-status">
                       <%= t.booking_management.form.expired %>
                     </span>
                  </div>              
@@ -393,7 +414,7 @@
                       </button>
                     <%% } 
                         else { %>
-                       <span class="confirmed-status"><%=t.booking_management.form.force_allow_payment%></span>    
+                       <span class="confirmed-status entity-fieldvalue"><%=t.booking_management.form.force_allow_payment%></span>    
                     <%% } %>  
                   <%% } %>  
                  </div>
@@ -427,12 +448,16 @@
         </div>
 
         <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
+          <% if booking_item_family.driver %>
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
             <a name="driver_tab" href="#driver_tab"><%=t.booking_management.form.driver_tab%></a>
           </li>
+          <% end %>
+          <% if booking_item_family.flight %>
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
             <a name="flight_tab" href="#driver_tab"><%=t.booking_management.form.flight_tab%></a>
           </li>          
+          <% end %>
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
               <a name="other_tab" href="#other_tab"><%=t.booking_management.form.other_tab%></a>
           </li>          
@@ -440,6 +465,7 @@
 
        <div id="content">
 
+         <% if booking_item_family.driver %>
          <div id="driver_tab"  class="top-margin bottom-margin">
            <form name="driver" style="border:1px solid #EEE">
            <input type="hidden" name="id" value="<%%=entity.id%>"/>
@@ -575,7 +601,8 @@
             </div> 
            </form>
          </div>
-
+         <% end %>
+         <% if booking_item_family.flight %>
          <div id="flight_tab"  class="top-margin bottom-margin">
            <form name="flight" style="border:1px solid #EEE">
                 <input type="hidden" name="id" value="<%%=entity.id%>"/>
@@ -613,13 +640,13 @@
                 </div>          
            </form>
          </div>
-
+         <% end %>
          <div id="other_tab"  class="top-margin-1line">
          
             <div class="element_template">
               <div class="entity-field">
                <span class="entity-fieldlabel"><%= t.booking_management.form.free_access_id %></span>
-               <span class="entity-fieldvalue"><a href="/p/mybooking/<%%=entity.free_access_id%>">/p/mybooking/<%%=entity.free_access_id%></a></span>
+               <span class="entity-fieldvalue"><a href="/p/mybooking/<%%=entity.free_access_id%>" target="_blank">/p/mybooking/<%%=entity.free_access_id%></a></span>
               </div>
             </div>
             <div class="top-margin">

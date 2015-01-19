@@ -1,4 +1,24 @@
-<h2 class="bottom-border-solid color-1"><%=booking_item.reference%></h2>
+<h2><%=t.bookings_scheduler.title%></h2>
+<div class="container_12">
+  <div class="guiblock">
+   <div class="all-space overflow">  	
+      <div class="grid_6">
+        <div>
+          <span class="entity-fieldlabel more_contrast_text"><%=t.booking_item_management.form.reference.label%></span>
+          <span class="entity-fieldvalue"><%=booking_item.reference%></span>
+        </div>
+        <div>
+          <span class="entity-fieldlabel more_contrast_text"><%=t.booking_item_management.form.name.label%></span>
+          <span class="entity-fieldvalue"><%=booking_item.name%></span>
+        </div>
+        <div>
+          <span class="entity-fieldlabel more_contrast_text"><%=t.booking_item_management.form.description.label%></span>
+          <span class="entity-fieldvalue"><%=booking_item.description%></span>
+        </div>                
+      </div>
+    </div>  
+  </div>
+</div>
 <script type="text/javascript">
 
   $(document).ready(function() {
@@ -24,4 +44,4 @@
 
 </script>
 
-<div id="calendar" class="top-margin"></div>
+<div id="calendar" class="top-margin "></div>

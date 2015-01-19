@@ -1,0 +1,16 @@
+<h2><%=t.booking_create_rates.title%></h2>
+<div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000">
+</div>
+<div>
+   <div class="grid_6">  
+	 <div class="guiblock">
+  	    <%= t.booking_create_rates.description %> 
+	 </div>
+	 <form name="create_rates" class="top-margin-1line bottom-space-1line" action="/api/booking/create-rates" method="POST" 
+      data-remote="ajax" data-remote-method="POST">
+	 	  <p class="centered_text bottom-margin-1line"><%=t.booking_create_rates.proceed%></p>
+          <input type="submit" id="create_rates_button" class="form-button green-button" style="display:block; margin: 0 auto" value="<%=t.booking_create_rates.button_generate%>"/>
+	 </form>
+    </div>
+
+</div>

@@ -527,14 +527,20 @@ define(function() {
       	for (var idxdays = 0; idxdays < seasonDaysLength; idxdays++)
       	{
       	  var season = seasonDays[idxdays].season;
-          price += this.priceCalculationFunction(rate[season], seasonDays[idxdays].days);
+          if (families[family].detailedPrice) {
+            price += rates.PriceCalculatorDaysRate(rate[season], seasonDays[idxdays].days);
+          }
+          else {
+            price += rates.PriceCalculatorSimpleRate(rate[season], seasonDays[idxdays].days);
+          }
       	}
       	
         // apply factor
-        if (this.factorFinder != null) {
-      	  price = price * this.factorFinder.get_factor(firstPeriodSeason, family, ndays);
+        if (!families[family].detailedPrice) {
+          if (this.factorFinder != null) {
+      	    price = price * this.factorFinder.get_factor(firstPeriodSeason, family, ndays);
+          }
         }
-
         price += base;
 
         result[family] = new Number(price.toFixed(scale)); 

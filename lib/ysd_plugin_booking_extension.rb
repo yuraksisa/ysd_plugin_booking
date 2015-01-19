@@ -53,6 +53,12 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.reservation_starts_with'},
+        {:value => 'dates',
+         :description => 'Reservation start with: dates or category',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.min_days'},
         {:value => '1',
          :description => 'Minimum number of days you must book',
@@ -197,6 +203,9 @@ module Huasi
         :theme => Themes::ThemeManager.instance.selected_theme.name},
        {:name => 'booking_selector_inline',
         :module_name => :booking,
+        :theme => Themes::ThemeManager.instance.selected_theme.name},
+       {:name => 'booking_admin_menu',
+        :module_name => :booking,
         :theme => Themes::ThemeManager.instance.selected_theme.name}        
       ]
         
@@ -236,7 +245,9 @@ module Huasi
         when 'booking_selector'    
           app.partial(:booking_selector, :locals => locals)
         when 'booking_selector_inline'         
-          app.partial(:booking_selector_inline, :locals => locals)          
+          app.partial(:booking_selector_inline, :locals => locals)
+        when 'booking_admin_menu'
+          app.partial(:booking_menu)          
       end
       
     end

@@ -287,10 +287,16 @@
        
        /* Choose item */
        
-       choose_item : function(item, optional) { 
+       select_item : function(item) { // Select the item
+
+         bookingView.calculate_prices();
+
+       }, 
+
+       choose_item : function(item, optional) { // Choose the item for reservation
          	
          this.booking.set_optional(optional);
-         this.booking.set_item(item); // Sets the item
+         this.booking.set_item(item); 
        	 
        	 this.change_state('select_item');
        	
@@ -328,7 +334,11 @@
                      bookingModel.categoriesAvailable = data.availability || [];
                      bookingModel.categoriesPaymentEnabled = data.payment || [];
                      bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
+                     <% if booking_reservation_starts_with == :dates %>
                      bookingView.show_prices();
+                     <% else %>
+                     bookingView.show_family_form();
+                     <% end %>
                      bookingModel.change_state('check_availability_finished');
                    }, 
                    
@@ -336,7 +346,11 @@
                      bookingModel.categoriesAvailable = [];
                      bookingModel.categoriesPaymentEnabled = [];
                      bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
+                     <% if booking_reservation_starts_with == :dates %>
                      bookingView.show_prices();
+                     <% else %>
+                     bookingView.show_family_form();
+                     <% end %>
                      bookingModel.change_state('check_availability_finished');
                    }
                    
@@ -522,6 +536,16 @@
         	
       },
     	
+      select_family: function(item) {
+
+        if (typeof _gaq != 'undefined') {
+          _gaq.push(['_trackEvent', 'Reservations', 'Choose item family', item]);
+        }
+
+        bookingModel.select_item(item);
+
+      },
+
       /* calculate the prices */
       	
       calculate_prices : function (date_from, time_from, date_to, time_to, pickup_place, return_place) {
@@ -531,8 +555,7 @@
         }
       	
         bookingModel.check_availability(date_from, time_from, date_to, time_to, pickup_place, return_place);
-        //bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
-      	//bookingView.show_prices();
+
       },	
     
       /* start booking */
@@ -824,17 +847,63 @@
              }
            );
          
+         <% if booking_reservation_starts_with == :categories %>
+         this.init_families_selection();
+         <% end %>
+
        	 // Configure validations	
        	 this.configure_validations();
        	
        	 // Configure state
        	 this.state_changed(bookingModel.process_state);
     
-         //
+         // Initialize the form
          this.init_form();   	
        	
        },	
        
+       init_families_selection: function() {
+
+         var familiesHtml = '';
+         var families = bookingDataSystem.families;
+         
+         for (family in families) {
+           familiesHtml += tmpl('script_families', {category: families[family]});
+         }  
+         
+         $('#items_families').html(familiesHtml); 
+
+         $('.select_family').bind('click', function() {
+            var family = $(this).attr('rel');
+            $('.family').removeClass('guiblock');
+            $('#family_'+family).addClass('guiblock');
+            $('#families_to_extras').attr('rel', family );
+            bookingController.select_family(family);
+         });        
+
+         $('#families_to_extras').bind('click', function() {
+           bookingController.start_booking($(this).attr('rel'));
+         });
+
+         $('#datefrom').bind('change', function() {
+            bookingView.calculate_prices();
+         });
+
+         $('#timefrom').bind('change', function() {
+            bookingView.calculate_prices();
+         });
+
+         $('#dateto').bind('change', function() {
+            bookingView.calculate_prices();
+         });
+         
+         $('#timeto').bind('change', function() {
+            bookingView.calculate_prices();
+         });
+
+
+       },
+
        init_form : function () {
        	
        	  var url_vars = bookingModel.getUrlVars();
@@ -1097,7 +1166,16 @@
        	
 
        },
-              
+         
+       show_family_form: function() { /* Show the family form (when selecting by category) */
+         
+         bookingModel.booking.set_item($('#families_to_extras').attr('rel'));
+         var price = bookingModel.all_prices[bookingModel.booking.item_id] + '€';
+         $('#price').html(price);
+         $('#family-selection').show();
+
+       },
+
        show_prices : function() { /* Show search result */
 
          var container = $('#result');

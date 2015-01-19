@@ -7,11 +7,15 @@ confirm_line1system_admin_menu:
       bookings: Bookings
       bookings_scheduler: Scheduler
       booking_categories: Categories
-      booking_items: Renting items      
+      booking_items: Resources      
 booking_settings:
   form:
     title: Booking configuration
     notification_email: Notification email address
+    reservation_starts_with:
+      title: The reservations starts selecting
+      dates: Dates
+      categories: Categories    
     deposit: \% Diposit
     allow_total_payment: Allow to pay the total of the reservation    
     min_days: Minimum days   
@@ -32,7 +36,7 @@ booking_console:
   configuration: Configuration
   categories: Categories
   extras: Extras
-  items: Renting items
+  items: Resources
   rates: Rates 
   reservations: Reservations
   planning: Planning    
@@ -308,7 +312,8 @@ booking_management:
     total_paid: Total paid
     total_pending: Total pending
     booking_amount: Deposit amount
-    comments: Comments    
+    comments: Comments   
+    anotations: Anotations 
     customer_title: Customer
     customer_name: Name
     customer_phone: Phone
@@ -371,7 +376,7 @@ booking_item_management:
     calendar: Calendar management
     prices: Prices management
   form:
-    title: Booking item management 
+    title: Resources management 
     reference: 
       label: Reference
     category:
@@ -457,6 +462,8 @@ booking:
     cancelled: Cancelled
 bookings_planning:
   title: Planning    
+bookings_scheduler:
+  title: Scheduler  
 not_assigned_bookings:
   title: Not assigned bookings
   table:

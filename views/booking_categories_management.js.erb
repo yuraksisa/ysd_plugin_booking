@@ -1,3 +1,4 @@
+<%= partial('price_definition_creation.js'.to_sym) %>
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
          "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
          function($, EntityManagement, EntityManagementComplementHooks,
@@ -13,7 +14,33 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     onEdit : function(entity) {
       $('#code').attr('code', true);
       $('#name').focus();
+      this.configForm(entity);
+    },
+  
+    onNew : function() {
+      $('#reference').focus();
+      this.configForm(null);
+      $('#create_category_calendar').bind('change', function() {
+         if ($('#create_category_calendar').prop('checked')) {
+           $('#calendar\\[id\\]').prop('disabled', true);
+         }
+         else {
+           $('#calendar\\[id\\]').prop('disabled', false);
+         }
+       });
+      $('#create_category_price').bind('change', function() {
+         if ($('#create_category_price').prop('checked')) {
+           $('#price_definition\\[id\\]').prop('disabled', true);
+           $('#category_price').show();
+         }
+         else {
+           $('#price_definition\\[id\\]').prop('disabled', false);
+           $('#category_price').hide();
+         }
+      });
+    },          
 
+    configForm: function(entity) {
       var calendarDataSource= new RemoteDataSource('/api/calendars',
           {'id':'id','description':'name'});
       var calendarValue = (entity && entity.calendar_id)?entity.calendar_id:null; 
@@ -23,12 +50,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           {'id':'id','description':'name'});
       var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
       var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
-
     },
-  
-    onNew : function() {
-      $('#reference').focus();
-    },          
 
     adaptFormData : function(data) {
             
@@ -36,9 +58,22 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         data.calendar = null;
       }
 
-      if (data.price_definition.id == '') {
-        data.price_definition = null;
+      if ($('#create_category_price').prop('checked')) {
+        data.calendar = {'name' : data.code, 'description': data.name};
       }
+
+/*
+      if (data.price_definition.id == '') {
+        if (!data.price_definition.type) {
+          data.price_definition = null;
+        }
+        else {
+          delete data.price_definition.id;
+          data.price_definition.name = data.name;
+          data.price_definition.description = data.name;          
+        }
+      }
+*/
 
       return data;  
       

@@ -19,14 +19,17 @@
                   <span class="bigger_text"><%="%.2f" % booking_category.price_definition.base_price%></span>
                 <% else %>
                   <span class="bigger_text">0.0</span>
-                <% end %> 
+                <% end %>
               </div>  
+            </div>
+            <div class="grid_6">
+                <div class="form-button right-float"><a href="/admin/rates/prices/<%=booking_category.price_definition.id%>"><%=t.booking_rates_summary.current_rates.edit_prices%></a></div>              
             </div>
           <% end %>
           </div>
           <div class="container_12">
             <div class="grid_6">
-              <div class="all-space">
+              <div class="all-space">      
                 <h3><%=t.booking_rates_summary.current_rates.prices%></h3>
                 <table id="elements_table" class="table">
                   <thead class="table-header">

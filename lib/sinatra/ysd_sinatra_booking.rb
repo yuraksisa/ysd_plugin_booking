@@ -62,6 +62,9 @@ module Sinatra
           locals.store(:admin_mode, false)
           locals.store(:confirm_booking_url, '/api/booking')
 
+          locals.store(:booking_reservation_starts_with,
+              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
+
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
 

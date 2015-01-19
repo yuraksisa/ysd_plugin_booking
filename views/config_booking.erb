@@ -3,21 +3,30 @@
 <form name="variables" action="/api/variables" method="PUT" 
       data-remote="ajax" data-remote-method="PUT">
 
+  <div class="grid_6">
+    <div class="element-container all-space">
   <h3><%=t.booking_settings.form.general_group%></h3>
   <%= render_variable_select('booking.item_family', t.booking_settings.form.family, families) %>
   <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>  
   <%= render_variable_textarea('booking.notification_email', t.booking_settings.form.notification_email) %>
   <%= render_variable_checkbox_boolean('booking.allow_custom_pickup_return_place', t.booking_settings.form.custom_pickup_return_place) %>
-  
+  <%= render_variable_select('booking.reservation_starts_with', t.booking_settings.form.reservation_starts_with.title, reservation_starts_with) %>
+</div>
+  </div>
+  <div class="grid_6">
+    <div class="left-margin element-container all-space">
   <h3><%=t.booking_settings.form.payment_group%></h3>
   <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
   <%= render_variable_checkbox_boolean('booking.allow_total_payment', t.booking_settings.form.allow_total_payment) %>  
   <%= render_variable_checkbox_boolean('booking.payment', t.booking_settings.form.payment) %>
   <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2) %>
   <%= render_variable_input_text('booking.payment_cadence', t.booking_settings.form.payment_cadence, 2, 2) %>
-
-  <div class="formrow-botonera">
+</div>
+  </div>
+  <div class="grid_12">
+  <div class="formrow-botonera top-separator top-space">
   	<input type="submit" value="<%=t.entitymanagement.update%>" 
   	       class="button blue-button">
+  </div>
   </div>
 </form>

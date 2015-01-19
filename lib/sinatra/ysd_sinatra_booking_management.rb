@@ -27,10 +27,19 @@ module Sinatra
         end
 
         #
+        # Booking create rates
+        #
+        app.get "/admin/booking/create-rates", :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:booking_create_rates)
+        end
+
+        #
         # Booking configuration (general)
         #
         app.get '/admin/booking/config/general', :allowed_usergroups => ['booking_manager', 'staff'] do
-          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ]  }
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ],
+                    :reservation_starts_with => {:dates => t.booking_settings.form.reservation_starts_with.dates, 
+                       :categories => t.booking_settings.form.reservation_starts_with.categories} }
           load_page(:config_booking, {:locals => locals})
         end
 
@@ -113,6 +122,9 @@ module Sinatra
           locals.store(:admin_mode, true)
           locals.store(:confirm_booking_url, '/api/booking-from-manager')
 
+          locals.store(:booking_reservation_starts_with,
+              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
+
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
 
@@ -181,6 +193,8 @@ module Sinatra
           
           locals = aspects_render.render(BookingDataSystem::Booking)
           locals.store(:bookings_page_size, 20)
+          locals.store(:booking_item_family, 
+            ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
 
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 

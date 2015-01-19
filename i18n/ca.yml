@@ -7,11 +7,15 @@ system_admin_menu:
       bookings: Reserves
       bookings_scheduler: Agenda
       booking_categories: Categories
-      booking_items: Items      
+      booking_items: Recursos      
 booking_settings:
   form:
     title: Configuració sistema de reserves
     notification_email: Email de notificació
+    reservation_starts_with:
+      title: La reserva comença escollint
+      dates: Les dates
+      categories: Les categories    
     deposit: \% Dipòsit
     allow_total_payment: Permetre pagar el total de la reserva
     min_days: Numero mínim de dies
@@ -28,7 +32,7 @@ booking_console:
   configuration: Configuració
   categories: Categories
   extras: Extres
-  items: Items
+  items: Recursos
   rates: Tarifes 
   reservations: Reserves
   planning: Planning
@@ -123,6 +127,7 @@ booking_management:
     total_pending: Pendent   
     booking_amount: Import depòsit reserva
     comments: Comentaris
+    anotations: Anotacions
     customer_title: Client
     customer_name: Nom
     customer_phone: Telèfon
@@ -185,7 +190,7 @@ booking_item_management:
     calendar: Gestió del calendari
     prices: Gestió dels preus
   form:
-    title: Gestió items de reserva
+    title: Gestió de recursos
     reference: 
       label: Referència
     category:
@@ -268,6 +273,8 @@ booking:
     cancelled: Cancelada
 bookings_planning:
   title: Planning
+bookings_scheduler:
+  title: Agenda
 not_assigned_bookings:
   title: Reserves no assignades
   table:

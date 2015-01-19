@@ -153,7 +153,7 @@ module Sinatra
           bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
              :order => [:item_id.asc]).map do |booking|
             {:id => booking.id,
-             :title => "#{booking.date_from.strftime('%Y-%m-%d')} #{booking.time_from} \n #{booking.date_to.strftime('%Y-%m-%d')} #{booking.time_to} \n #{booking.customer_name.upcase} #{booking.customer_surname.upcase} #{(booking.customer_phone.nil? or booking.customer_phone.empty?)? booking.customer_mobile_phone : booking.customer_phone}",
+             :title => "#ID: #{booking.id} \n #{booking.date_from.strftime('%Y-%m-%d')} #{booking.time_from} \n #{booking.date_to.strftime('%Y-%m-%d')} #{booking.time_to} \n #{booking.customer_name.upcase} #{booking.customer_surname.upcase} #{(booking.customer_phone.nil? or booking.customer_phone.empty?)? booking.customer_mobile_phone : booking.customer_phone}",
              :start => booking.date_from,
              :end => booking.date_to,
              :url => "/admin/booking/bookings/#{booking.id}",
@@ -219,6 +219,26 @@ module Sinatra
 
         end
 
+
+        #
+        # Regenerates the booking_js template
+        #
+        app.post '/api/booking/create-rates', :allowed_usergroups => ['booking_manager', 'staff']  do
+  
+          rates = ::Yito::Model::Booking::Generator.instance.build_script
+
+          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js')
+             booking_js.text = rates
+             booking_js.save
+          else
+             ContentManagerSystem::Template.create({:name => 'booking_js', 
+                :description => 'Definición de los productos en alquiler y las tarifas',
+                :text => rates})
+          end
+
+          rates
+
+        end
         #
         # Get the items that have to be pick up
         #
@@ -577,27 +597,7 @@ module Sinatra
           body response
 
         end
-
-        #
-        # Regenerates the booking_js template
-        #
-        app.get '/api/booking/create-rates', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          rates = ::Yito::Model::Booking::Generator.instance.build_script
-
-          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js')
-             booking_js.text = rates
-             booking_js.save
-          else
-             ContentManagerSystem::Template.create({:name => 'booking_js', 
-                :description => 'Definición de los productos en alquiler y las tarifas',
-                :text => rates})
-          end
-
-          rates
-
-        end
-
+      
       end
 
     end #BookingManagementRESTApi

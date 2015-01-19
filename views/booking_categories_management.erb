@@ -41,19 +41,15 @@
       </td>
       <td class="table-cell">
            <%% if (entity.calendar_id && entity.calendar_id != null) { %>
-              <div>
-                <a href="/admin/calendar/events/<%%=entity.calendar_id%>">
+                <div class="form-button"><a href="/admin/calendar/events/<%%=entity.calendar_id%>">
                   <%=t.booking_category_management.table.calendar%>
-                </a>
-              </div> 
+                </a></div>
            <%% } %>
 
            <%% if (entity.price_definition_id && entity.price_definition_id != null) { %>
-              <div>
-                <a href="/admin/rates/prices/<%%=entity.price_definition_id%>">
+                <div class="form-button"><a href="/admin/rates/prices/<%%=entity.price_definition_id%>">
                   <%=t.booking_category_management.table.prices%>
-                </a>
-              </div>           
+                </a></div>
            <%% } %>
       </td>
     </tr>
@@ -74,7 +70,7 @@
         <div class="form-fields">
                                    
           <div class="container_12"> 
-            <div class="grid_12">
+            <div class="grid_6">
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.code.label %></label>
                 <input type="text" maxlength="20" id="code" name="code" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.code %>" <%% } %>/>
@@ -87,30 +83,47 @@
                  <label class="fieldtitle"><%= t.booking_category_management.form.description.label %></label>
                  <textarea rows="5" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
               </div>
+            </div>
+            <div class="grid_6">  
+              <div class="left-margin">
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.calendar.label %></label>
-                <select name="calendar[id]" id="calendar[id]"/>
+                <select class="fieldcontrol" name="calendar[id]" id="calendar[id]"/>
               </div>     
+              <%% if (!entity) { %>
               <div class="formrow">
+                <input type="checkbox" id="create_category_calendar">Crear calendario</input>
+              </div>
+              <%% } %> 
+              <div class="formrow bottom-space">
                 <label class="fieldtitle"><%= t.booking_category_management.form.price_definition.label %></label>
-                <select name="price_definition[id]" id="price_definition[id]"/>
+                <select class="fieldcontrol" name="price_definition[id]" id="price_definition[id]"/>
               </div>                           
-            </div>
-          </div>
+              <%% if (!entity) { %>
+              <div class="formrow">
+                <input type="checkbox" id="create_category_price">Crear precio</input>
+              </div>
+              <div id="category_price" class="element-form-detail" style="display:none">
+                <%= partial(:price_definition_creation)%>
+              </div>
+              <%% } %> 
 
-          <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
+              <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
                                             :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
                                             :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
                                             :new_element_form_above => new_element_form_above,
                                             :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
                                             :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
 
-          <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
+              <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
                                             :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
                                             :edit_element_form_ingroup => edit_element_form_ingroup,
                                             :new_element_form => new_element_form,
                                             :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
                                             :new_element_form_ingroup => new_element_form_ingroup}) %>
+            </div>
+            </div>
+          </div>
                         
         </div>
                        

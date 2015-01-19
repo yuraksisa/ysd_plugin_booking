@@ -69,8 +69,9 @@ module Sinatra
         app.post "/api/booking-category" do
         
           booking_category_request = body_as_json(::Yito::Model::Booking::BookingCategory)
-          booking_category = ::Yito::Model::Booking::BookingCategory.create(booking_category_request)
-
+          booking_category = ::Yito::Model::Booking::BookingCategory.new(booking_category_request)
+          booking_category.save
+          
           # Return          
           status 200
           content_type :json
