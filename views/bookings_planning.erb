@@ -2,16 +2,30 @@
   .rowTitle {
     text-align: center;
     display: block;
+    margin-bottom: 10px;
   }
   .spread_input {
   	width: 1.2em;
   }
+  #planning_table tbody tr td {
+  	padding-bottom: 2px;
+  	padding-right: 2px;
+  }
 </style>
 <h2><%=t.bookings_planning.title%></h2>
 <div class="top-margin bottom-margin-1line">
-	<div class="centered_text"><span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid">&lt;</span>&nbsp;<span id="month"></span> - <span id="year"></span>&nbsp;<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid">&gt;</span></div>
+	<div class="more_contrast_text centered_text top-margin-1line bottom-margin-2lines">
+		<span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid">&lt;</span>
+		<span class="all-space">
+		  <span id="month" class="left-margin"></span> - <span id="year" class="right-margin"></span>
+	    </span>
+		<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid">&gt;</span>
+	</div>
 </div>
 <div>
-<table id="planning_table" style="table-layout: fixed;">
+<table id="planning_table" style="table-layout: fixed; margin: 0 auto">
 </table>
+<div class="top-margin-2lines">
+  <%= partial(:not_assigned_bookings) %>
+</div>
 </div>

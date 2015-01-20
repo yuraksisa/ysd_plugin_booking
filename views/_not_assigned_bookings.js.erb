@@ -1,19 +1,41 @@
-<script type="text/javascript">
+define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'jquery'], 
+  function(tmpl, ysdFormatter, $) {
 
-  notAssignedBookingModel = {
+  confirmedBookingsModel = {
 
-     getBookings: function() {
+     data: [],
+     filter: 'pending',
+     resources: {},
+
+     changeFilter: function(filter) {
+       this.filter = filter;
+       confirmedBookingsView.update('filter_changed');
+     },
+
+     setResources: function(data) {
+        this.resources = data;
+        if (this.resources != {} && this.data.length > 0) {
+          confirmedBookingsView.update('data_available');
+        }
+     },
+
+     getBookings: function(month, year) {
+
+       var url = '/api/booking/confirmed';
+       if (month && year) {
+         url += '?month='+month+'&year='+year;
+       }
 
        $.ajax({
                type: 'GET',
-               url : '/api/booking/not-assigned',
+               url : url,
                contentType: 'application/json; charset=utf-8',
                dataType : 'json',
                success: function(data, textStatus, jqXHR) {
-                  planningModel.bookingItems = data.map(function(value, index, array) {
-                    return value.reference;
-                  });
-                  planningView.update('items_available');
+                  confirmedBookingsModel.data = data;
+                  if (confirmedBookingsModel.resources != {} && confirmedBookingsModel.data.length > 0) {
+                    confirmedBookingsView.update('data_available');
+                  }
               }
           });
 
@@ -22,12 +44,58 @@
 
   };
 
-  notAssignedBookingController = {
+  confirmedBookingsController = {
 
   };
 
-  notAssignedBookingView = {
+  confirmedBookingsView = {
+
+    init: function() {
+      $('#filter').bind('change', function() {
+        confirmedBookingsModel.changeFilter($(this).val());
+      });
+    },
+
+    update: function(event) {
+
+      switch (event) {
+        case 'data_available':
+          var template = tmpl('script_booking_line');
+          var result = '';
+          for (var i=0;i<confirmedBookingsModel.data.length;i++) {
+             if (confirmedBookingsModel.filter == 'all' || confirmedBookingsModel.data[i].booking_item_reference == null) {
+               result += template({entity: confirmedBookingsModel.data[i],
+               resources: confirmedBookingsModel.resources[confirmedBookingsModel.data[i].item_id],
+               formatter: ysdFormatter});
+             }
+          }
+          $('#elements_tbody').html(result);
+          break;
+        case 'filter_changed':
+          var template = tmpl('script_booking_line');
+          var result = '';
+          for (var i=0;i<confirmedBookingsModel.data.length;i++) {
+             if (confirmedBookingsModel.filter == 'all' || confirmedBookingsModel.data[i].booking_item_reference == null) {
+               result += template({entity: confirmedBookingsModel.data[i], 
+                  resources: confirmedBookingsModel.resources[confirmedBookingsModel.data[i].item_id],
+                  formatter: ysdFormatter});
+             }
+          }
+          $('#elements_tbody').html(result);
+          break;
+      }
+
+    }
 
   };
 
-</script>
+  confirmedBookings = {
+      model: confirmedBookingsModel,
+      controller: confirmedBookingsController,
+      view: confirmedBookingsView
+  }
+
+  confirmedBookingsView.init();
+
+  return confirmedBookings;
+});

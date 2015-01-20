@@ -265,6 +265,7 @@ booking_management:
     date_from: Date from
     date_to: Date to
     notifications: Notifications
+    category: Category    
   form:
     confirm_button: 
       label: Confirm
@@ -472,3 +473,5 @@ not_assigned_bookings:
     dates: Dates
     customer: Customer
     status: Status
+  form:  
+    assign: Assign    

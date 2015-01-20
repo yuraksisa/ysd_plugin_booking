@@ -42,6 +42,87 @@ module Sinatra
         
       end
 
+      def booking_planning_conditions(params)
+          today = DateTime.now
+          month = today.month
+          year = today.year
+
+          if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
+            month = params[:month].to_i
+          end
+           
+          if params[:year]
+            year = params[:year].to_i
+          end
+
+          from = DateTime.new(year, month, 1, 0, 0, 0, 0)
+          to = from >> 1
+
+          condition = Conditions::JoinComparison.new('$and',
+           [Conditions::Comparison.new(:status, '$eq', :confirmed),
+            Conditions::Comparison.new(:booking_item, '$ne', nil),
+            Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new(:date_from,'$lte', from),
+                  Conditions::Comparison.new(:date_to,'$gte', from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', to),
+                  Conditions::Comparison.new(:date_to,'$gte', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$eq', from),
+                  Conditions::Comparison.new(:date_to,'$eq', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from, '$gte', from),
+                  Conditions::Comparison.new(:date_to, '$lte', to)])               
+              ]
+            ),
+            ]
+          )
+      end
+
+      def booking_confirmed_conditions(params)
+          today = DateTime.now
+          month = today.month
+          year = today.year
+
+          if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
+            month = params[:month].to_i
+          end
+           
+          if params[:year]
+            year = params[:year].to_i
+          end
+
+          from = DateTime.new(year, month, 1, 0, 0, 0, 0)
+          to = from >> 1
+
+          condition = Conditions::JoinComparison.new('$and',
+           [Conditions::Comparison.new(:status, '$eq', :confirmed),
+            Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new(:date_from,'$lte', from),
+                  Conditions::Comparison.new(:date_to,'$gte', from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', to),
+                  Conditions::Comparison.new(:date_to,'$gte', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$eq', from),
+                  Conditions::Comparison.new(:date_to,'$eq', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from, '$gte', from),
+                  Conditions::Comparison.new(:date_to, '$lte', to)])               
+              ]
+            ),
+            ]
+          )
+      end
+
     end
 
   	module BookingManagementRESTApi
@@ -171,74 +252,40 @@ module Sinatra
         #
         app.get '/api/booking/planning', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          today = DateTime.now
-          month = today.month
-          year = today.year
-
-          if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
-            month = params[:month].to_i
-          end
-           
-          if params[:year]
-            year = params[:year].to_i
-          end
-
-          from = DateTime.new(year, month, 1, 0, 0, 0, 0)
-          to = from >> 1
-
-          condition = Conditions::JoinComparison.new('$and',
-           [Conditions::Comparison.new(:status, '$eq', :confirmed),
-            Conditions::Comparison.new(:booking_item, '$ne', nil),
-            Conditions::JoinComparison.new('$or', 
-              [Conditions::JoinComparison.new('$and', 
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', from)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', to),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$eq', from),
-                  Conditions::Comparison.new(:date_to,'$eq', to)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from, '$gte', from),
-                  Conditions::Comparison.new(:date_to, '$lte', to)])               
-              ]
-            ),
-            ]
-          )
+          condition = booking_planning_conditions(params)
 
           bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-             :fields => [:id, :date_from, :date_to, :booking_item_reference],
-             :order => [:booking_item_reference.asc, :date_from.asc]
+             :fields => [:id, :date_from, :date_to, :booking_item_reference, :item_id],
+             :order => [:item_id.asc, :booking_item_reference.asc, :date_from.asc]
             ) 
 
-          bookings.to_json(:only => [:id, :date_from, :date_to, :booking_item_reference])
+          bookings.to_json(:only => [:id, :date_from, :date_to, :booking_item_reference, :item_id])
 
         end
 
-
         #
-        # Regenerates the booking_js template
+        # Get the confirmed bookings that have not been assigned
         #
-        app.post '/api/booking/create-rates', :allowed_usergroups => ['booking_manager', 'staff']  do
-  
-          rates = ::Yito::Model::Booking::Generator.instance.build_script
+        # Params
+        #
+        # @param [month]
+        # @param [year]
+        #
+        app.get '/api/booking/confirmed', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          condition = booking_confirmed_conditions(params)
 
-          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js')
-             booking_js.text = rates
-             booking_js.save
-          else
-             ContentManagerSystem::Template.create({:name => 'booking_js', 
-                :description => 'Definición de los productos en alquiler y las tarifas',
-                :text => rates})
-          end
+          bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
+             :fields => [:id, :date_from, :date_to, :item_id, :customer_name, :customer_surname,
+              :customer_phone, :customer_mobile_phone, :status, :booking_item_reference],
+             :order => [:item_id.asc, :date_from.asc]
+            )
 
-          rates
+          bookings.to_json(:only => [:id, :date_from, :date_to, :item_id, :customer_name, :customer_surname,
+              :customer_phone, :customer_mobile_phone, :status, :booking_item_reference])
 
         end
+
         #
         # Get the items that have to be pick up
         #
@@ -290,24 +337,26 @@ module Sinatra
         end
 
         #
-        # Get the not assigned bookings
+        # Regenerates the booking_js template
         #
-        app.get '/api/booking/not-assigned', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.post '/api/booking/create-rates', :allowed_usergroups => ['booking_manager', 'staff']  do
+  
+          rates = ::Yito::Model::Booking::Generator.instance.build_script
 
-          from = params['start']
-          to = params['end']
+          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js')
+             booking_js.text = rates
+             booking_js.save
+          else
+             ContentManagerSystem::Template.create({:name => 'booking_js', 
+                :description => 'Definición de los productos en alquiler y las tarifas',
+                :text => rates})
+          end
 
-          bookings = BookingDataSystem::Booking.all(
-             :date_from.gte => Time.at(from.to_i),
-             :date_to.lte => Time.at(to.to_i), 
-             #:status => [:confirmed],
-             #:booking_item => nil,
-             :order => [:item_id.asc]
-            )
+          rates
 
-          bookings.to_json
+        end        
 
-        end
+        # ---------------------------------------------------------------
 
         #
         # Booking querying 
@@ -589,7 +638,7 @@ module Sinatra
           # Pay booking
           response =  <<-HTML
                          <script type="text/javascript">
-                         window.location.href= "/admin/bookings"
+                         window.location.href= "/admin/booking/bookings"
                          </script>
                        HTML
           

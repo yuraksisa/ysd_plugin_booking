@@ -17,11 +17,12 @@
        <tr>
          <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_management.table.id %></th>
          <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.booking_management.table.creation_date %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:25%"><%= t.booking_management.table.customer %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:24%"><%= t.booking_management.table.customer %></th>
          <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.booking_management.table.status %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.payment_status %></th>         
-         <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.booking_management.table.date_from %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.booking_management.table.date_to %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.payment_status %></th>  
+         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.category %></th>                
+         <th class="table-header-title centered_text" scope="col" style="width:12%"><%= t.booking_management.table.date_from %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:12%"><%= t.booking_management.table.date_to %></th>
          <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.notifications %></th>
        </tr>
      </thead>
@@ -46,6 +47,7 @@
          <%% if (entity.payment_status == 'deposit') { %><span class="element-status doing-status smaller_text">d</span> <%% } %>
          <%% if (entity.payment_status == 'total') { %><span class="element-status done-status smaller_text">t</span> <%%}%>
       </td>       
+      <td class="table-cell centered_text"><%%= entity.item_id %> </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_from,'dd.MM.yyyy') %> </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_to,'dd.MM.yyyy') %> </td>
       <td class="table-cell centered_text">

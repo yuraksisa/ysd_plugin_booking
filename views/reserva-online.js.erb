@@ -1170,9 +1170,27 @@
        show_family_form: function() { /* Show the family form (when selecting by category) */
          
          bookingModel.booking.set_item($('#families_to_extras').attr('rel'));
-         var price = bookingModel.all_prices[bookingModel.booking.item_id] + '€';
+         var family = bookingModel.booking.item_id;
+         var price = bookingModel.all_prices[family] + '€';
          $('#price').html(price);
          $('#family-selection').show();
+
+         <% if (admin_mode) %>
+         var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available_manager%></span>';
+         <% else %>
+         var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available%></span>';
+         <% end %>
+
+         if (bookingModel.categoriesAvailable.indexOf(family) == - 1) {
+            $('#availability').html(notAvailable); 
+            <% unless (admin_mode) %>
+              $('#families_to_extras').hide();
+            <% end %>
+         }
+         else {
+            $('#availability').html('');
+            $('#families_to_extras').show();
+         }
 
        },
 
@@ -1213,7 +1231,7 @@
              for (var option in bookingDataSystem.optionals) {
               var buttonSelect = '<input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" />';
               <% if admin_mode %>
-                var available = notAvailable + '<br/><br/>' + buttonSelect;
+                var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable + '<br/><br/>' + buttonSelect;
               <% else %>
                 var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable ;
              	<% end%>
@@ -1232,7 +1250,7 @@
       	   else {      
     	     var buttonSelect = '<input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" />';
            <% if admin_mode %>
-             var available = notAvailable + '<br/><br/>' + buttonSelect;
+             var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable + '<br/><br/>' + buttonSelect;
            <% else %>
              var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable ;
            <% end%>

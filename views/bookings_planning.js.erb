@@ -1,12 +1,26 @@
-require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
+<%= partial('not_assigned_bookings.js'.to_sym) %>
+
+require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'], 
+        function(Spreadsheet, EventTarget, $, confirmedBooking) {
 
   planningModel = {
 
      bookingItemsDescription: [],
      bookingItems: [],
+     bookingItemsDetail: [],
+     bookingItemsCategory: {},
      bookings: [],
      month:new Date().getMonth()+1,
      year:new Date().getFullYear(),
+     events: new EventTarget(),
+
+     addListener: function(type, listener) { /* addListener */
+       this.events.addEventListener(type, listener); 
+     },
+
+     removeListener: function(type, listener) { /* removeListener */
+       this.events.removeEventListener(type, listener);      
+     },
 
      daysInMonth: function() {
        return new Date(this.year, this.month, 0).getDate();
@@ -21,6 +35,7 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
         this.month--;
        }
        planningView.update('month_navigation');
+       this.events.fireEvent({type:'month_changed', data: {month: this.month, year: this.year}});
      },
 
      nextMonth: function() {
@@ -32,6 +47,7 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
          this.month++;
        }
        planningView.update('month_navigation');
+       this.events.fireEvent({type:'month_changed', data: {month: this.month, year: this.year}});
      },
 
      loadBookingItems: function() { /* Load the booking items */
@@ -42,10 +58,20 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
                contentType: 'application/json; charset=utf-8',
                dataType : 'json',
                success: function(data, textStatus, jqXHR) {
+                  for (var idx=0; idx < data.length; idx++) {
+                     if (!((data[idx].category_code) in planningModel.bookingItemsCategory)) {
+                       planningModel.bookingItemsCategory[data[idx].category_code] = [];
+                     }
+                     planningModel.bookingItemsCategory[data[idx].category_code].push(data[idx].reference);
+                  }
                   planningModel.bookingItems = data.map(function(value, index, array) {
                     return value.reference; 
                   });
+                  planningModel.bookingItemsDetail = data.map(function(value, index, array) {
+                    return {code: value.reference, category: value.category_code}; 
+                  });                  
                   planningView.update('items_available');
+                  planningModel.events.fireEvent({type:'items_available', data: planningModel.bookingItemsCategory});
               }
           });
 
@@ -86,6 +112,7 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
     spreadsheet : null,
 
     init : function() {
+      planningModel.events.fireEvent({type:'month_changed', data: {month: planningModel.month, year: planningModel.year}});                  
       planningModel.loadBookingItems();
       $('#month').html(planningModel.month);
       $('#year').html(planningModel.year);
@@ -127,8 +154,8 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
         days[i-1]=i;
       }
 
-      planningModel.bookingItemsDescription = planningModel.bookingItems.map(function(value, index, array) {
-             return '<a href="/admin/booking/scheduler/' + value +'?year=' + planningModel.year + '&month=' + (planningModel.month-1) +'" target="blank">'+value+'</a>'
+      planningModel.bookingItemsDescription = planningModel.bookingItemsDetail.map(function(value, index, array) {
+             return '<a style="margin-right:20px; margin-left:20px" href="/admin/booking/scheduler/' + value.code +'?year=' + planningModel.year + '&month=' + (planningModel.month-1) +'" target="blank">'+ value.category + ' - ' + value.code+'</a>'
       });
 
       $('#planning_table').html('');
@@ -156,7 +183,7 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
       for (var i=0;i<planningModel.bookings.length;i++) {
          reference = planningModel.bookings[i].booking_item_reference;
          idx = planningModel.bookingItems.indexOf(reference);
-         if (idx > 0) {
+         if (idx >= 0) {
            from = planningModel.bookings[i].date_from.getDate();
            if (planningModel.bookings[i].date_to.getMonth() != planningModel.bookings[i].date_from.getMonth()) {
              if (planningModel.bookings[i].date_from.getMonth()+1 == planningModel.month) {
@@ -184,5 +211,14 @@ require(['YSDSpreadSheet', 'jquery'], function(Spreadsheet, $) {
 
   };
 
+  planningModel.addListener('items_available', function(data) {
+    confirmedBooking.model.setResources(data.data);
+  });
+
+  planningModel.addListener('month_changed', function(data) {
+    confirmedBooking.model.getBookings(data.data.month, data.data.year);
+  });
+
   planningView.init();
+
 });

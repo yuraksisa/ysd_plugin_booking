@@ -321,6 +321,7 @@ booking_management:
     date_from: Fecha inicio
     date_to: Fecha fin
     notifications: Notificaciones
+    category: Categoría
   form:
     reservation_tab: Datos de la reserva
     flight_tab: Datos del vuelo
@@ -543,13 +544,19 @@ booking:
     cancelled: Cancelada
 bookings_planning:
   title: Planning 
-bookings_scheduler:
-  title: Agenda     
 not_assigned_bookings:
   title: Reservas no asignadas
   table:
-    id: Numero
+    id: Localizador
+    date_from: Fecha inicio
+    date_to: Fecha fin
     category: Categoría
-    dates: Fechas
     customer: Cliente
-    status: Estado
+    phone: Teléfono    
+    status: Estado   
+    resource: Recurso 
+  form:  
+    assign: Asignar
+    reassign: Reasignar
+bookings_scheduler:
+  title: Agenda     

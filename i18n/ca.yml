@@ -85,6 +85,7 @@ booking_management:
     date_from: Data d\'inici
     date_to: Data de fi
     notifications: Notificacions
+    category: Categoria    
   form:
     confirm_button: 
       label: Confirmar
@@ -283,3 +284,5 @@ not_assigned_bookings:
     dates: Dates
     customer: Client
     status: Estat  
+  form:  
+    assign: Assignar    
