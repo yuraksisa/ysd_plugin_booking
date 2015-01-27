@@ -42,7 +42,7 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
                dataType : 'json',
                success: function(data, textStatus, jqXHR) {
                   confirmedBookingsModel.data = data;
-                  if (confirmedBookingsModel.resources != {} && confirmedBookingsModel.data.length > 0) {
+                  if (confirmedBookingsModel.resources != {}) {
                     confirmedBookingsView.update('data_available');
                   }
               }
