@@ -38,23 +38,25 @@
         <%% if (entity.booking_item_reference) { %>
         <form>
         <div class="formrow">
+          <input type="hidden" name="id" value="<%%=entity.id%>"/>
           <select name="booking_item_reference" class="fieldcontrol">
             <%% for (var idx=0;idx<resources.length;idx++) { %>
               <option value="<%%=resources[idx]%>" <%% if (resources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=resources[idx]%></option>
             <%% } %>           
           </select>
-          <button type="button" class="form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
+          <button type="button" class="reassign_button form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
         </div>
         </form>        
         <%% } else { %>
         <form>
         <div class="formrow">
+          <input type="hidden" name="id" value="<%%=entity.id%>"/>
           <select name="booking_item_reference" class="fieldcontrol">
             <%% for (var idx=0;idx<resources.length;idx++) { %>
               <option value="<%%=resources[idx]%>" <%% if (resources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=resources[idx]%></option>
             <%% } %> 
           </select>
-          <button type="button" class="form-button green-button"><%=t.not_assigned_bookings.form.assign%></button>
+          <button type="button" class="assign_button form-button green-button"><%=t.not_assigned_bookings.form.assign%></button>
         </div>
         </form>
         <%% } %>

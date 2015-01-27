@@ -423,6 +423,7 @@ booking_category_management:
   table:
     calendar: Gestión del calendario
     prices: Gestión de precios  
+    scheduler: Agenda
   form:
     title: Categorías
     code:

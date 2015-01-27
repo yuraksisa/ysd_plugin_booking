@@ -156,6 +156,7 @@ booking_category_management:
   table:
     calendar: Gestió del calendari
     prices: Gestió dels preus
+    scheduler: Agenda    
   form:
     title: Gestió de categories
     code:

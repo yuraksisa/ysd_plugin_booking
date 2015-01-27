@@ -5,11 +5,13 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
 
   planningModel = {
 
-     bookingItemsDescription: [],
-     bookingItems: [],
-     bookingItemsDetail: [],
-     bookingItemsCategory: {},
-     bookings: [],
+     bookingItems: [],            /** Array of booking_item' reference **/
+     bookingItemsDetail: [],      /** Array of booking_item objects (reference + category) **/
+     bookingItemsDescription: [], /** Array of resources description with link **/
+     bookingItemsCategory: {},    /** Hash, the key is the category and the value an array
+                                   of booking items of this category. Used to display the table of bookings **/
+     bookings: [],                // Array of the bookings represented in the planning
+     bookingsHash: {},            // Hash where the id is booking.id and the value the booking
      month:new Date().getMonth()+1,
      year:new Date().getFullYear(),
      events: new EventTarget(),
@@ -50,6 +52,16 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
        this.events.fireEvent({type:'month_changed', data: {month: this.month, year: this.year}});
      },
 
+     reassignBooking: function(bookingId, bookingItemReference, isReassigned) {
+
+       var booking = this.bookingsHash[bookingId];
+       if (booking) {
+          booking.booking_item_reference = bookingItemReference;
+          planningView.update('booking_assigned', {booking: booking, isReassigned: isReassigned});
+       }
+
+     },
+
      loadBookingItems: function() { /* Load the booking items */
 
        $.ajax({
@@ -86,6 +98,9 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
                  dataType: 'json',
                  success: function(data, textStatus, jqXHR) {
                    planningModel.bookings = data;
+                   data.forEach(function(value, index, array) {
+                      planningModel.bookingsHash[value.id] = value;
+                   });
                    planningView.update('bookings_available');
                  }
         });
@@ -125,7 +140,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
 
     },
 
-    update: function(event) {
+    update: function(event, data) {
 
       switch (event) {
          case 'month_navigation':
@@ -140,7 +155,15 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
            break;
 
          case 'bookings_available':
-           this.updateBookings();
+           this.loadBookings();
+           break;
+
+         case 'booking_assigned':
+           if (data.isReassigned) {
+             this.unloadBooking(data.booking);
+             data.booking.planning.resource = data.booking.booking_item_reference;
+           }
+           this.loadBooking(data.booking);
            break;
       }
 
@@ -160,7 +183,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
 
       $('#planning_table').html('');
       spreadsheet = new Spreadsheet("planning_table",  
-          planningModel.bookingItems,            // items
+          planningModel.bookingItems,            // rows
           days,                                  // columns
           planningModel.bookingItems.length,     // number of rows (items.count)
           "Planning ",                           // 0-0 title
@@ -168,11 +191,11 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
           1,                                     // input size
           "centered_text",                       // class
           true,                                  // readonly
-          planningModel.bookingItemsDescription);                                 
+          planningModel.bookingItemsDescription);  // row description                               
 
     },
 
-    updateBookings: function() {
+    loadBookings: function() { // Display the bookings and the spreadsheet
 
       this.buildSpreadsheet();
 
@@ -199,14 +222,54 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
            else {
              to = Math.min(planningModel.bookings[i].date_to.getDate())
            }
-           for (var day=from;day<=to;day++) {
-             $('#\\[planning\\]\\['+reference+'\\]\\['+day+'\\]').val('X');
-           }
+           planningModel.bookings[i].planning = { resource: planningModel.bookings[i].booking_item_reference , from: from, to: to };
+           this.loadBooking(planningModel.bookings[i]);   
          }
-
       }
+    },
+
+    loadBooking: function(booking) {
+
+           for (var day=booking.planning.from;day<=booking.planning.to;day++) {
+             var selector = '#\\[planning\\]\\['+booking.booking_item_reference+'\\]\\['+day+'\\]';
+             var value = $(selector).val();
+             if (value == '') {
+               $(selector).val('X');
+             }
+             else if (value == 'X') {
+               $(selector).val('2');
+               $(selector).addClass('more_contrast_text');               
+             }
+             else {
+               if (parseInt(value) != NaN) {
+                 $(selector).val(parseInt(value)+1);
+               }
+             }
+           }
+
+    },
+
+    unloadBooking: function(booking) {
+
+           for (var day=booking.planning.from;day<=booking.planning.to;day++) {
+             var selector = '#\\[planning\\]\\['+booking.planning.resource+'\\]\\['+day+'\\]';
+             var value = $(selector).val();
+             if (value == 'X') {
+               $(selector).val('');
+             }
+             else if (value == '2') {
+               $(selector).val('X');
+               $(selector).removeClass('more_contrast_text');               
+             }
+             else {
+               if (parseInt(value) != NaN) {
+                 $(selector).val(parseInt(value)-1);
+               }
+             }
+           }
 
     }
+
 
 
   };
@@ -217,6 +280,10 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
 
   planningModel.addListener('month_changed', function(data) {
     confirmedBooking.model.getBookings(data.data.month, data.data.year);
+  });
+
+  confirmedBooking.model.addListener('booking_assigned', function(data) {
+    planningModel.reassignBooking(data.data.id, data.data.resource, data.data.reassigned);
   });
 
   planningView.init();

@@ -82,9 +82,9 @@ module Sinatra
         # Bookings scheduler
         #
         app.get '/admin/booking/scheduler/:booking_item_reference', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          year = params[:year]
-          month = params[:month]
+          today = DateTime.now
+          year = params[:year] || today.year
+          month = params[:month] || (today.month - 1)
           booking_item = ::Yito::Model::Booking::BookingItem.get(params[:booking_item_reference])
           if booking_item
             load_page(:bookings_scheduler, :locals => {:booking_item => booking_item, :year => year, :month => month})

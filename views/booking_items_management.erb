@@ -40,8 +40,13 @@
          <%%= entity.name %>
       </td>
       <td class="table-cell">
+           <div class="form-button">
+                <a href="/admin/booking/scheduler/<%%=entity.reference%>">
+                  <%=t.booking_category_management.table.scheduler%>
+                </a>
+           </div> 
            <%% if (entity.calendar_id && entity.calendar_id != null) { %>
-              <div>
+              <div class="form-button">
                 <a href="/admin/calendar/events/<%%=entity.calendar_id%>">
                   <%=t.booking_category_management.table.calendar%>
                 </a>
@@ -49,7 +54,7 @@
            <%% } %>
 
            <%% if (entity.price_definition_id && entity.price_definition_id != null) { %>
-              <div>
+              <div class="form-button">
                 <a href="/admin/rates/prices/<%%=entity.price_definition_id%>">
                   <%=t.booking_category_management.table.prices%>
                 </a>

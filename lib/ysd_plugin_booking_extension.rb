@@ -145,6 +145,11 @@ module Huasi
           :description => 'Payment enabled')
       end
 
+      if Yito::Model::Calendar::EventType.count(:name => 'activity') == 0
+        Yito::Model::Calendar::EventType.create(:name => 'activity', 
+          :description => 'Programmed activity')
+      end
+
       Users::Group.first_or_create({:group => 'booking_manager'},
           {:name => 'Booking manager', :description => 'Booking manager'})
 

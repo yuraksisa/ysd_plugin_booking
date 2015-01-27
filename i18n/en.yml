@@ -342,6 +342,7 @@ booking_category_management:
   table:
     calendar: Calendar management
     prices: Prices management
+    scheduler: Scheduler    
   form:
     title: Categories management
     code:

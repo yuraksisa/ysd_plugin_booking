@@ -1,11 +1,20 @@
-define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'jquery'], 
-  function(tmpl, ysdFormatter, $) {
+define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jquery'], 
+  function(tmpl, ysdFormatter, EventTarget, $) {
 
   confirmedBookingsModel = {
 
      data: [],
      filter: 'pending',
      resources: {},
+     events: new EventTarget(),
+
+     addListener: function(type, listener) { /* addListener */
+       this.events.addEventListener(type, listener); 
+     },
+
+     removeListener: function(type, listener) { /* removeListener */
+       this.events.removeEventListener(type, listener);      
+     },
 
      changeFilter: function(filter) {
        this.filter = filter;
@@ -39,12 +48,44 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'jquery'],
               }
           });
 
+     },
+
+     assignBooking: function(id, reference_code, isReassigned) {
+
+       var url = '/api/booking/assign/'+id+'/'+reference_code;
+       var self = this;
+
+       $.ajax({
+               type: 'POST',
+               url : url,
+               contentType: 'application/json; charset=utf-8',
+               dataType : 'json',
+               success: function(data, textStatus, jqXHR) {
+                 self.events.fireEvent({'type':'booking_assigned', data: {id: id, resource: reference_code, reassigned: isReassigned}});
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error updating');
+               }
+          });
+
      }
 
 
   };
 
   confirmedBookingsController = {
+
+    assignButtonClick: function(control) {
+       var booking_id = $(control.form['id']).val();
+       var reference_code = $(control.form['booking_item_reference']).val();
+       confirmedBookingsModel.assignBooking(booking_id, reference_code, false);
+    },
+
+    reAssignButtonClick: function(control) {
+       var booking_id = $(control.form['id']).val();
+       var reference_code = $(control.form['booking_item_reference']).val();
+       confirmedBookingsModel.assignBooking(booking_id, reference_code, true);
+    }
 
   };
 
@@ -60,18 +101,15 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'jquery'],
 
       switch (event) {
         case 'data_available':
-          var template = tmpl('script_booking_line');
-          var result = '';
-          for (var i=0;i<confirmedBookingsModel.data.length;i++) {
-             if (confirmedBookingsModel.filter == 'all' || confirmedBookingsModel.data[i].booking_item_reference == null) {
-               result += template({entity: confirmedBookingsModel.data[i],
-               resources: confirmedBookingsModel.resources[confirmedBookingsModel.data[i].item_id],
-               formatter: ysdFormatter});
-             }
-          }
-          $('#elements_tbody').html(result);
+          this.loadBookings();
           break;
         case 'filter_changed':
+          this.loadBookings();
+          break;
+      }
+    },
+
+    loadBookings: function() {
           var template = tmpl('script_booking_line');
           var result = '';
           for (var i=0;i<confirmedBookingsModel.data.length;i++) {
@@ -81,10 +119,14 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'jquery'],
                   formatter: ysdFormatter});
              }
           }
-          $('#elements_tbody').html(result);
-          break;
-      }
-
+          $('#elements_tbody').html(result);       
+          $('.assign_button').unbind('click');
+          $('.assign_button').bind('click', function() {
+            confirmedBookingsController.assignButtonClick($(this)[0]);
+          });          
+          $('.reassign_button').bind('click', function() {
+            confirmedBookingsController.reAssignButtonClick($(this)[0]);
+          });           
     }
 
   };
