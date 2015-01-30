@@ -475,4 +475,6 @@ not_assigned_bookings:
     customer: Customer
     status: Status
   form:  
-    assign: Assign    
+    assign: Assign  
+    reassign: Reassign  
+    all_resources: Show all resources

@@ -6,6 +6,7 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
      data: [],
      filter: 'pending',
      resources: {},
+     allResources: [],
      events: new EventTarget(),
 
      addListener: function(type, listener) { /* addListener */
@@ -23,6 +24,13 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
 
      setResources: function(data) {
         this.resources = data;
+        for (var resource in this.resources) {
+          if (this.resources[resource] instanceof Array) {
+            for (var idx=0;idx<this.resources[resource].length;idx++) {
+               this.allResources.push(this.resources[resource][idx]);
+            }
+          }
+        }
         if (this.resources != {} && this.data.length > 0) {
           confirmedBookingsView.update('data_available');
         }
@@ -85,6 +93,19 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
        var booking_id = $(control.form['id']).val();
        var reference_code = $(control.form['booking_item_reference']).val();
        confirmedBookingsModel.assignBooking(booking_id, reference_code, true);
+    },
+
+    showAllResourcesChanged: function(control) {
+
+       var booking_id = $(control).attr('rel');
+       if ($(control).attr('checked')) {
+         $('#filtered_resources_'+booking_id).hide();        
+         $('#not_filtered_resources_'+booking_id).show();
+       }
+       else {
+         $('#filtered_resources_'+booking_id).show();        
+         $('#not_filtered_resources_'+booking_id).hide();        
+       }
     }
 
   };
@@ -112,10 +133,12 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
     loadBookings: function() {
           var template = tmpl('script_booking_line');
           var result = '';
+          $('.show_all_resources').unbind('change');
           for (var i=0;i<confirmedBookingsModel.data.length;i++) {
              if (confirmedBookingsModel.filter == 'all' || confirmedBookingsModel.data[i].booking_item_reference == null) {
                result += template({entity: confirmedBookingsModel.data[i], 
                   resources: confirmedBookingsModel.resources[confirmedBookingsModel.data[i].item_id],
+                  allResources: confirmedBookingsModel.allResources,
                   formatter: ysdFormatter});
              }
           }
@@ -127,6 +150,9 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
           $('.reassign_button').bind('click', function() {
             confirmedBookingsController.reAssignButtonClick($(this)[0]);
           });           
+          $('.show_all_resources').bind('change', function() {
+            confirmedBookingsController.showAllResourcesChanged($(this)[0]);
+          });          
     }
 
   };

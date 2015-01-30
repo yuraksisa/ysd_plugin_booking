@@ -36,33 +36,78 @@
       <td class="table-cell centered_text"><%%= entity.customer_phone %> <%%=entity.customer_mobile_phone%></td>      
       <td class="table-cell centered_text">
         <%% if (entity.booking_item_reference) { %>
-            <%% if (resources) { %>
-        <form>
-        <div class="formrow">
-          <input type="hidden" name="id" value="<%%=entity.id%>"/>
-          <select name="booking_item_reference" class="fieldcontrol">
-            <%% for (var idx=0;idx<resources.length;idx++) { %>
-              <option value="<%%=resources[idx]%>" <%% if (resources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=resources[idx]%></option>
-            <%% } %>           
-          </select>
-          <button type="button" class="reassign_button form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
-        </div>
-        </form>        
-            <%% } %>
-        <%% } else { %>
-        <%% if (resources) { %> 
-        <form>
+        
+          <%% if (resources) { %>
+          <form id="filtered_resources_<%%=entity.id%>">
+            <div class="formrow">
+              <input type="hidden" name="id" value="<%%=entity.id%>"/>
+              <select name="booking_item_reference" class="fieldcontrol">
+                 <%% for (var idx=0;idx<resources.length;idx++) { %>
+                    <option value="<%%=resources[idx]%>" <%% if (resources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=resources[idx]%></option>
+                 <%% } %>           
+              </select>
+              <button type="button" class="reassign_button form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
+            </div>
+          </form>
+          <%% } %>
+
+          <%% if (allResources) { %>
+          <form id="not_filtered_resources_<%%=entity.id%>" <%% if (resources) { %>style="display:none"<%%}%>>
+            <div class="formrow">
+              <input type="hidden" name="id" value="<%%=entity.id%>"/>
+              <select name="booking_item_reference" class="fieldcontrol">
+                 <%% for (var idx=0;idx<allResources.length;idx++) { %>
+                    <option value="<%%=allResources[idx]%>" <%% if (allResources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=allResources[idx]%></option>
+                 <%% } %>           
+              </select>
+              <button type="button" class="reassign_button form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
+            </div>
+          </form>
+          <%% } %>
+
+          <%% if (resources && allResources && resources.length >0 && allResources.length>0) { %>
           <div class="formrow">
-             <input type="hidden" name="id" value="<%%=entity.id%>"/>
-             <select name="booking_item_reference" class="fieldcontrol">
-              <%% for (var idx=0;idx<resources.length;idx++) { %>
-                <option value="<%%=resources[idx]%>" <%% if (resources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=resources[idx]%></option>
-              <%% } %> 
-             </select>
-              <button type="button" class="assign_button form-button green-button"><%=t.not_assigned_bookings.form.assign%></button>
-             </div>
-           </form>
-           <%% } %>
+            <input type="checkbox" class="show_all_resources" rel="<%%=entity.id%>"><%=t.not_assigned_bookings.form.all_resources%></input>
+          </div>    
+          <%% } %>
+        
+        <%% } else { %>
+        
+          <%% if (resources) { %> 
+          <form id="filtered_resources_<%%=entity.id%>">
+            <div class="formrow">
+               <input type="hidden" name="id" value="<%%=entity.id%>"/>
+               <select name="booking_item_reference" class="fieldcontrol">
+                 <%% for (var idx=0;idx<resources.length;idx++) { %>
+                   <option value="<%%=resources[idx]%>" <%% if (resources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=resources[idx]%></option>
+                 <%% } %> 
+               </select>
+               <button type="button" class="assign_button form-button green-button"><%=t.not_assigned_bookings.form.assign%></button>
+            </div>
+          </form>
+          <%% } %>
+  
+          <%% if (allResources) { %> 
+          <form id="not_filtered_resources_<%%=entity.id%>" <%% if (resources) { %>style="display:none"<%%}%>>
+            <div class="formrow">
+               <input type="hidden" name="id" value="<%%=entity.id%>"/>
+               <select name="booking_item_reference" class="fieldcontrol">
+                 <%% for (var idx=0;idx<allResources.length;idx++) { %>
+                   <option value="<%%=allResources[idx]%>" <%% if (allResources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=allResources[idx]%></option>
+                 <%% } %> 
+               </select>
+               <button type="button" class="assign_button form-button green-button"><%=t.not_assigned_bookings.form.assign%></button>
+            </div>
+          </form>
+          <%% } %>
+
+          <%% if (resources && allResources && resources.length >0 && allResources.length>0) { %>
+          <div class="formrow">
+            <input type="checkbox" class="show_all_resources" rel="<%%=entity.id%>"><%=t.not_assigned_bookings.form.all_resources%></input>
+          </div>             
+          <%% } %>
+
+
         <%% } %>
       </td>      
     </tr>

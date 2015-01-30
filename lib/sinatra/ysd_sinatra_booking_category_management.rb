@@ -8,7 +8,8 @@ module Sinatra
         #
         app.get '/admin/booking/booking-categories/?*', :allowed_usergroups => ['booking_manager','staff'] do 
 
-          load_em_page :booking_categories_management, :bookingcategory, false
+          locals = {:booking_category_page_size => 20}
+          load_em_page :booking_categories_management, :bookingcategory, false, :locals => locals
 
         end
 

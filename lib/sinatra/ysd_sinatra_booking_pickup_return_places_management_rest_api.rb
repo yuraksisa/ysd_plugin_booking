@@ -12,8 +12,8 @@ module Sinatra
           app.post path do
 
             page = params[:page].to_i || 1
-            limit = settings.contents_page_size
-            offset = (page-1) * settings.contents_page_size
+            limit = 20
+            offset = (page-1) * 20
 
             data  = ::Yito::Model::Booking::PickupReturnPlace.all(:place_definition_id => params[:place_definition_id], :limit => limit, :offset => offset)
             total = ::Yito::Model::Booking::PickupReturnPlace.count

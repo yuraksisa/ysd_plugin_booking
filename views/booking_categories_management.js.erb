@@ -62,19 +62,6 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         data.calendar = {'name' : data.code, 'description': data.name};
       }
 
-/*
-      if (data.price_definition.id == '') {
-        if (!data.price_definition.type) {
-          data.price_definition = null;
-        }
-        else {
-          delete data.price_definition.id;
-          data.price_definition.name = data.name;
-          data.price_definition.description = data.name;          
-        }
-      }
-*/
-
       return data;  
       
     }
@@ -93,7 +80,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
   // Add the complement hooks
   hooks = hooks.concat(EntityManagementComplementHooks.complements);
                  
-  var contentsManager = new EntityManagement(urls, 'booking_category', 20, hooks,
+  var contentsManager = new EntityManagement(urls, 'booking_category', <%= booking_category_page_size %>, hooks,
     {prefix: '/admin/booking'});
 
   

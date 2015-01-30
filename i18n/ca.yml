@@ -286,4 +286,6 @@ not_assigned_bookings:
     customer: Client
     status: Estat  
   form:  
-    assign: Assignar    
+    assign: Assignar
+    reassign: Reassignar
+    all_resources: Mostrar tots els recursos    

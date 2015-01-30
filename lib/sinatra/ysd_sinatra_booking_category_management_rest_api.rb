@@ -23,8 +23,8 @@ module Sinatra
             end
 
             page = params[:page].to_i || 1
-            limit = settings.contents_page_size
-            offset = (page-1) * settings.contents_page_size
+            limit = 20
+            offset = (page-1) * 20
             
             data  = ::Yito::Model::Booking::BookingCategory.all(:conditions => conditions, :limit => limit, :offset => offset)
             total = ::Yito::Model::Booking::BookingCategory.count(conditions)
