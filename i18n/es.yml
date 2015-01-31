@@ -559,6 +559,6 @@ not_assigned_bookings:
   form:  
     assign: Asignar
     reassign: Reasignar
-    all_resources: Mostrar tots els recursos       
+    all_resources: Mostrar todos los recursos       
 bookings_scheduler:
   title: Agenda    

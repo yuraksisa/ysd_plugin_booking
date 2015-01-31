@@ -14,13 +14,16 @@
   <table id="elements_table" class="table">
      <thead class="table-header">
        <tr>
-         <th class="table-header-title" scope="col" style="width:30%">
+         <th class="table-header-title centered_text" scope="col" style="width:10%">
+            <%= t.booking_item_management.form.category.label %>
+         </th>
+         <th class="table-header-title centered_text" scope="col" style="width:15%">
             <%= t.booking_item_management.form.reference.label %>
          </th>
-         <th class="table-header-title" scope="col" style="width:30%">
+         <th class="table-header-title" scope="col" style="width:45%">
             <%= t.booking_item_management.form.name.label %>
          </th>
-         <th class="table-header-title" scope="col" style="width:40%">
+         <th class="table-header-title" scope="col" style="width:30%">
          </th>         
        </tr>
      </thead>
@@ -33,7 +36,10 @@
         
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row" id="element_row_<%%=index%>">
-      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+         <%%= entity.category_code %>
+      </td>  
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
          <%%= entity.reference %>
       </td>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">

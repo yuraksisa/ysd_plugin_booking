@@ -52,12 +52,19 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
        this.events.fireEvent({type:'month_changed', data: {month: this.month, year: this.year}});
      },
 
-     reassignBooking: function(bookingId, bookingItemReference, isReassigned) {
+     reassignBooking: function(bookingId, bookingItemReference, isReassigned, aBooking) {
 
        var booking = this.bookingsHash[bookingId];
        if (booking) {
           booking.booking_item_reference = bookingItemReference;
           planningView.update('booking_assigned', {booking: booking, isReassigned: isReassigned});
+       }
+       else {
+          if (this.prepareBookingForPlanning(aBooking)) {
+            this.bookings.push(aBooking);
+            this.bookingsHash[bookingId] = aBooking;
+            planningView.update('booking_assigned', {booking: aBooking, isReassigned: isReassigned});
+          }
        }
 
      },
@@ -98,6 +105,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
                  dataType: 'json',
                  success: function(data, textStatus, jqXHR) {
                    planningModel.bookings = data;
+                   planningModel.bookingsHash = {};
                    data.forEach(function(value, index, array) {
                       planningModel.bookingsHash[value.id] = value;
                    });
@@ -106,7 +114,33 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
         });
 
 
-     }
+     },
+     prepareBookingForPlanning: function(booking) {
+
+        var from, to;
+        var idx = planningModel.bookingItems.indexOf(booking.booking_item_reference);
+        if (idx >= 0) {
+           from = booking.date_from.getDate();
+           if (booking.date_to.getMonth() != booking.date_from.getMonth()) {
+             if (booking.date_from.getMonth()+1 == planningModel.month) {
+               var d = new Date();
+               d.setFullYear(booking.date_to.getYear(), booking.date_to.getMonth() + 1, 0);
+               to = d.getDate();
+             }
+             else {
+               from = 1;
+               to = booking.date_to.getDate();
+             }
+           }
+           else {
+             to = Math.min(booking.date_to.getDate())
+           }
+           booking.planning = { resource: booking.booking_item_reference , from: from, to: to };
+           return true;
+        }
+        return false;
+
+    },     
 
   };
 
@@ -204,27 +238,9 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
       var from, to;
       $('.spread_input').val('');
       for (var i=0;i<planningModel.bookings.length;i++) {
-         reference = planningModel.bookings[i].booking_item_reference;
-         idx = planningModel.bookingItems.indexOf(reference);
-         if (idx >= 0) {
-           from = planningModel.bookings[i].date_from.getDate();
-           if (planningModel.bookings[i].date_to.getMonth() != planningModel.bookings[i].date_from.getMonth()) {
-             if (planningModel.bookings[i].date_from.getMonth()+1 == planningModel.month) {
-               var d = new Date();
-               d.setFullYear(planningModel.bookings[i].date_to.getYear(), planningModel.bookings[i].date_to.getMonth() + 1, 0);
-               to = d.getDate();
-             }
-             else {
-               from = 1;
-               to = planningModel.bookings[i].date_to.getDate();
-             }
-           }
-           else {
-             to = Math.min(planningModel.bookings[i].date_to.getDate())
-           }
-           planningModel.bookings[i].planning = { resource: planningModel.bookings[i].booking_item_reference , from: from, to: to };
-           this.loadBooking(planningModel.bookings[i]);   
-         }
+        if (planningModel.prepareBookingForPlanning(planningModel.bookings[i])) {
+          this.loadBooking(planningModel.bookings[i]);           
+        }
       }
     },
 
@@ -283,7 +299,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
   });
 
   confirmedBooking.model.addListener('booking_assigned', function(data) {
-    planningModel.reassignBooking(data.data.id, data.data.resource, data.data.reassigned);
+    planningModel.reassignBooking(data.data.id, data.data.resource, data.data.reassigned, data.data.booking);
   });
 
   planningView.init();

@@ -4,6 +4,7 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
   confirmedBookingsModel = {
 
      data: [],
+     hashData: {},
      filter: 'pending',
      resources: {},
      allResources: [],
@@ -50,6 +51,12 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
                dataType : 'json',
                success: function(data, textStatus, jqXHR) {
                   confirmedBookingsModel.data = data;
+                  confirmedBookingsModel.hashData = {};
+                  if (data instanceof Array) {
+                    for (var idx=0;idx<data.length;idx++) {
+                      confirmedBookingsModel.hashData[data[idx].id] = data[idx];
+                    }
+                  }
                   if (confirmedBookingsModel.resources != {}) {
                     confirmedBookingsView.update('data_available');
                   }
@@ -69,7 +76,24 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
                contentType: 'application/json; charset=utf-8',
                dataType : 'json',
                success: function(data, textStatus, jqXHR) {
-                 self.events.fireEvent({'type':'booking_assigned', data: {id: id, resource: reference_code, reassigned: isReassigned}});
+                 if (!isReassigned) {
+                   $('button.assign_button[rel="'+id+'"]').unbind('click');               
+                   var buttons = $('button.assign_button[rel="'+id+'"]');
+                   buttons.removeClass('assign_button green-button');
+                   buttons.addClass("reassign_button blue-button");
+                   buttons.html('<%=t.not_assigned_bookings.form.reassign%>');
+                   buttons.bind('click', function() {
+                         confirmedBookingsController.reAssignButtonClick($(this)[0]);                        
+                       });
+                   var select = "select[name=\"booking_item_reference\"][rel='" + id + "']";
+                   var option =  select + " option[value='null']"; 
+                   $(option).remove();
+                 }
+                 confirmedBookingsModel.hashData[id].booking_item_reference = reference_code;
+                 self.events.fireEvent({'type':'booking_assigned', data: {id: id, 
+                     resource: reference_code, reassigned: isReassigned, 
+                     booking: confirmedBookingsModel.hashData[id]}});
+                 alert('Recurso asignado')
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error updating');
@@ -84,6 +108,10 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
   confirmedBookingsController = {
 
     assignButtonClick: function(control) {
+       if ($(control.form['booking_item_reference']).val() == 'null') {
+         alert('Seleccione el recurso a asignar');
+         return;
+       }
        var booking_id = $(control.form['id']).val();
        var reference_code = $(control.form['booking_item_reference']).val();
        confirmedBookingsModel.assignBooking(booking_id, reference_code, false);
@@ -98,6 +126,32 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
     showAllResourcesChanged: function(control) {
 
        var booking_id = $(control).attr('rel');
+       // Adjust the selector to show the assigned resource
+       var booking = confirmedBookingsModel.hashData[booking_id];
+       if (booking) {
+          if (booking.booking_item_reference != null) {          
+            var select = "#filtered_resources_" + booking_id + " " +
+                       "select[name=\"booking_item_reference\"][rel='" + booking.id + "']";
+            var selector =  select + " option[value='" + booking.booking_item_reference + "']"; 
+            if ($(selector).length == 0) {
+              $(select).append("<option value=\"" +
+                booking.booking_item_reference + "\" selected=\"selected\">" + 
+                booking.booking_item_reference + "</option>");
+            }
+          
+            select = "#not_filtered_resources_" + booking_id + " " +
+                   "select[name=\"booking_item_reference\"][rel='" + booking.id + "']";
+            selector =  select + " option[value='" + booking.booking_item_reference + "']"; 
+            if ($(selector).length == 0) {
+              $(select).append("<option value=\"" +
+                booking.booking_item_reference + "\" selected=\"selected\">" + 
+                booking.booking_item_reference + "</option>");
+            }
+            else {
+              $(select).val(booking.booking_item_reference);
+            }
+          }
+       }
        if ($(control).attr('checked')) {
          $('#filtered_resources_'+booking_id).hide();        
          $('#not_filtered_resources_'+booking_id).show();

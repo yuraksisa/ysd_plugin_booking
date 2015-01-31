@@ -25,7 +25,8 @@ module Sinatra
             limit = 20
             offset = (page-1) * 20
             
-            data  = ::Yito::Model::Booking::BookingItem.all(:conditions => conditions, :limit => limit, :offset => offset)
+            data  = ::Yito::Model::Booking::BookingItem.all(:conditions => conditions, 
+              :limit => limit, :offset => offset, :order => [:category_code, :reference])
             total = ::Yito::Model::Booking::BookingItem.count(conditions)
           
             content_type :json
