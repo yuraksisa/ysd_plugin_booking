@@ -365,7 +365,7 @@ module Sinatra
           app.post path, :allowed_usergroups => ['booking_manager', 'staff'] do
         	
             page = [params[:page].to_i, 1].max  
-            page_size = 20
+            page_size = 12
             offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]} 
 
             if request.media_type == "application/x-www-form-urlencoded"

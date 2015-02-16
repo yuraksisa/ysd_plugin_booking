@@ -71,10 +71,10 @@
 
         calculatePrice : function(date_from, time_from, date_to, time_to, pickup_place, return_place) {
        	
-       	  this.booking.date_from = date_from;
+       	  this.booking.date_from = new Date(Date.UTC(date_from.getFullYear(), date_from.getMonth(), date_from.getDate(), date_from.getHours(), date_from.getMinutes(), date_from.getSeconds()));
        	  this.booking.time_from = time_from;
        	 
-       	  this.booking.date_to = date_to;
+       	  this.booking.date_to = new Date(Date.UTC(date_to.getFullYear(), date_to.getMonth(), date_to.getDate(), date_to.getHours(), date_to.getMinutes(), date_to.getSeconds()));;
        	  this.booking.time_to = time_to;
 
        	  this.booking.pickup_place = pickup_place;

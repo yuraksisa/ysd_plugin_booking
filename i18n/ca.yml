@@ -6,7 +6,7 @@ system_admin_menu:
       title: Gestió de reserves
       bookings: Reserves
       bookings_scheduler: Agenda
-      booking_categories: Categories
+      booking_categories: Productes
       booking_items: Recursos      
 booking_settings:
   form:
@@ -15,7 +15,7 @@ booking_settings:
     reservation_starts_with:
       title: La reserva comença escollint
       dates: Les dates
-      categories: Les categories    
+      categories: Els productes    
     deposit: \% Dipòsit
     allow_total_payment: Permetre pagar el total de la reserva
     min_days: Numero mínim de dies
@@ -30,7 +30,7 @@ booking_rates:
 booking_console:
   title: Reserves
   configuration: Configuració
-  categories: Categories
+  categories: Productes
   extras: Extres
   items: Recursos
   rates: Tarifes 
@@ -154,11 +154,11 @@ booking_management:
     payment_method: Forma de pagament 
 booking_category_management:
   table:
-    calendar: Gestió del calendari
-    prices: Gestió dels preus
+    calendar: Calendari
+    prices: Preus
     scheduler: Agenda    
   form:
-    title: Gestió de categories
+    title: Gestió de productes
     code:
       label: Codi
     name:
@@ -175,7 +175,7 @@ booking_extra_management:
   table:
     code: Codi
     name: Nom
-    prices: Gestió dels preus    
+    prices: Preus    
   form:
     code:
       label: Codi
@@ -206,17 +206,17 @@ booking_item_management:
     price_definition:
       label: Preus         
 booking_places_definition_management:
-  title: Definició del llocs d'\entrega i recollida
+  title: Entrega i recollida
   table:
     id: Id
     name: Nom
-    places: Gestió dels llocs d'\entrega i recollida
+    places: Llocs 
   form:
     name:
       label: Nom
     name_required: Nom obligatori
 booking_places_management:
-  title: Gestió del llocs d'\entrega i recollida
+  title: Llocs 
   table:
     id: Id
     name: Nom

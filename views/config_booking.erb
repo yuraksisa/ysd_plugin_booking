@@ -1,10 +1,13 @@
-<h2><%=t.booking_settings.form.title%></h2>
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_settings.form.title%></h2>
+</div>
+
 <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
 <form name="variables" action="/api/variables" method="PUT" 
       data-remote="ajax" data-remote-method="PUT">
 
   <div class="grid_6">
-    <div class="element-container all-space">
+    <div class="all-space">
   <h3><%=t.booking_settings.form.general_group%></h3>
   <%= render_variable_select('booking.item_family', t.booking_settings.form.family, families) %>
   <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>  
@@ -14,7 +17,7 @@
 </div>
   </div>
   <div class="grid_6">
-    <div class="left-margin element-container all-space">
+    <div class="left-margin all-space">
   <h3><%=t.booking_settings.form.payment_group%></h3>
   <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
   <%= render_variable_checkbox_boolean('booking.allow_total_payment', t.booking_settings.form.allow_total_payment) %>  

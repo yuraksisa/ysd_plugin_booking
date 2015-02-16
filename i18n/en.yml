@@ -6,7 +6,7 @@ confirm_line1system_admin_menu:
       title: Booking management
       bookings: Bookings
       bookings_scheduler: Scheduler
-      booking_categories: Categories
+      booking_categories: Products
       booking_items: Resources      
 booking_settings:
   form:
@@ -15,7 +15,7 @@ booking_settings:
     reservation_starts_with:
       title: The reservations starts selecting
       dates: Dates
-      categories: Categories    
+      categories: Products    
     deposit: \% Diposit
     allow_total_payment: Allow to pay the total of the reservation    
     min_days: Minimum days   
@@ -34,7 +34,7 @@ booking_rates:
 booking_console:
   title: Reservations
   configuration: Configuration
-  categories: Categories
+  categories: Products
   extras: Extras
   items: Resources
   rates: Rates 
@@ -340,11 +340,11 @@ booking_management:
     payment_method: Payment method
 booking_category_management:
   table:
-    calendar: Calendar management
-    prices: Prices management
+    calendar: Calendar
+    prices: Prices
     scheduler: Scheduler    
   form:
-    title: Categories management
+    title: Products
     code:
       label: Code
     name:
@@ -361,7 +361,7 @@ booking_extra_management:
   table:
     code: Code
     name: Name
-    prices_definition: Prices management
+    prices_definition: Prices
   form:
     code:
       label: Code
@@ -392,17 +392,17 @@ booking_item_management:
     price_definition:
       label: Prices
 booking_places_definition_management:
-  title: Pickup and return place definition
+  title: Pickup and return
   table:
     id: Id
     name: Name
-    places: Places management    
+    places: Places    
   form:
     name:
       label: Name
     name_required: Name is required
 booking_places_management:
-  title: Pickup and return places
+  title: Places
   table:
     id: Id
     name: Name
