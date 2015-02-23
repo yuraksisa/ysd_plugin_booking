@@ -78,7 +78,11 @@
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.name.label %></label>
                 <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
-              </div>              
+              </div> 
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.short_description.label %></label>
+                <input type="text" maxlength="80" id="short_description" name="short_description" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.short_description%>" <%% } %>/>
+              </div>                            
               <div class="formrow">
                  <label class="fieldtitle"><%= t.booking_category_management.form.description.label %></label>
                  <textarea rows="5" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
@@ -86,6 +90,14 @@
             </div>
             <div class="grid_6">  
               <div class="left-margin">
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.type.label %></label>
+                <select class="fieldcontrol" name="type" id="type"/>
+              </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.catalog.label %></label>
+                <select class="fieldcontrol" name="booking_catalog[code]" id="booking_catalog[code]"/>
+              </div>   
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.calendar.label %></label>
                 <select class="fieldcontrol" name="calendar[id]" id="calendar[id]"/>

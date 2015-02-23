@@ -42,41 +42,9 @@
 		      	<input type="text" name="datefrom" id="datefrom" class="date_control" size="15" maxlength="10"/>
 		      	<% if booking_item_family.time_to_from %>
 		      	<select name="timefrom" id="timefrom"> 
-					<option value="7:00" selected="selected">7:00</option>
-					<option value="7:30">7:30</option>
-					<option value="8:00">8:00</option>
-					<option value="8:30">8:30</option>
-					<option value="9:00">9:00</option>
-					<option value="9:30">9:30</option>
-					<option value="10:00">10:00</option>
-					<option value="10:30">10:30</option>
-					<option value="11:00">11:00</option>
-					<option value="11:30">11:30</option>
-					<option value="12:00">12:00</option>
-					<option value="12:30">12:30</option>
-					<option value="13:00">13:00</option>
-					<option value="13:30">13:30</option>
-					<option value="14:00">14:00</option>
-					<option value="14:30">14:30</option>
-					<option value="15:00">15:00</option>
-					<option value="15:30">15:30</option>
-					<option value="16:00">16:00</option>
-					<option value="16:30">16:30</option>
-					<option value="17:00">17:00</option>
-					<option value="17:30">17:30</option>
-					<option value="18:00">18:00</option>
-					<option value="18:30">18:30</option>
-					<option value="19:00">19:00</option>
-					<option value="19:30">19:30</option>
-					<option value="20:00">20:00</option>
-					<option value="20:30">20:30</option>
-					<option value="21:00">21:00</option>
-					<option value="21:30">21:30</option>
-					<option value="22:00">22:00</option>
-					<option value="22:30">22:30</option>
-					<option value="23:00">23:00</option>
-					<option value="23:30">23:30</option>
 		      	</select>
+		      	<% else %>
+		      	   <input type="hidden" name="timefrom" id="timefrom" value="<%=booking_item_family.time_start%>">
                 <% end %>
 		      </div>
               <% if booking_item_family.pickup_return_place %>
@@ -102,41 +70,9 @@
 		      	<input type="text" name="dateto" id="dateto" class="date_control" size="15" maxlength="10"/>
 		      	<% if booking_item_family.time_to_from %>
 		      	<select name="timeto" id="timeto"> 
-					<option value="7:00" selected="selected">7:00</option>
-					<option value="7:30">7:30</option>
-					<option value="8:00">8:00</option>
-					<option value="8:30">8:30</option>
-					<option value="9:00">9:00</option>
-					<option value="9:30">9:30</option>
-					<option value="10:00">10:00</option>
-					<option value="10:30">10:30</option>
-					<option value="11:00">11:00</option>
-					<option value="11:30">11:30</option>
-					<option value="12:00">12:00</option>
-					<option value="12:30">12:30</option>
-					<option value="13:00">13:00</option>
-					<option value="13:30">13:30</option>
-					<option value="14:00">14:00</option>
-					<option value="14:30">14:30</option>
-					<option value="15:00">15:00</option>
-					<option value="15:30">15:30</option>
-					<option value="16:00">16:00</option>
-					<option value="16:30">16:30</option>
-					<option value="17:00">17:00</option>
-					<option value="17:30">17:30</option>
-					<option value="18:00">18:00</option>
-					<option value="18:30">18:30</option>
-					<option value="19:00">19:00</option>
-					<option value="19:30">19:30</option>
-					<option value="20:00">20:00</option>
-					<option value="20:30">20:30</option>
-					<option value="21:00">21:00</option>
-					<option value="21:30">21:30</option>
-					<option value="22:00">22:00</option>
-					<option value="22:30">22:30</option>
-					<option value="23:00">23:00</option>
-					<option value="23:30">23:30</option>
 		      	</select>
+		      	<% else %>
+		      	   <input type="hidden" name="timeto" id="timeto" value="<%=booking_item_family.cycle_of_24_hours ? booking_item_family.time_start : booking_item_family.time_end%>">
 		      	<% end %>
 		      </div>
 	          <% if booking_item_family.pickup_return_place %>
@@ -172,7 +108,7 @@
 		  </div>
 
 		<% else %>
-
+          <!-- CATEGORIES SELECTION -->
 	      <div id="item-selection" class="bottom-margin">
           
             <div id="items_families" class="container_12">
@@ -181,49 +117,17 @@
             <form id="family-selection" name="family-selection" style="display:none">
               <div id="items_dates" class="container_12">
                 <div class="top-margin-1line top-space top-border-nosolid">
-                  <div class="grid_4">
+                  <div class="<%unless booking_item_family.pickup_return_place%>prefix_2<%end%> grid_4">
 		            <div class="formrow">
 		      	      <label for="datefrom" id="labeldatefrom" class="fieldtitle">
 		      		  <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
 		      	      </label> 
-		      	      <input type="text" name="datefrom" id="datefrom" class="date_control" size="10" maxlength="10"/>
+		      	      <input type="text" name="datefrom" id="datefrom" class="date_control" size="15" maxlength="10"/>
 		      	      <% if booking_item_family.time_to_from %>
 		      	      <select name="timefrom" id="timefrom"> 
-					    <option value="7:00" selected="selected">7:00</option>
-					    <option value="7:30">7:30</option>
-					    <option value="8:00">8:00</option>
-					    <option value="8:30">8:30</option>
-					    <option value="9:00">9:00</option>
-					    <option value="9:30">9:30</option>
-					    <option value="10:00">10:00</option>
-					    <option value="10:30">10:30</option>
-					    <option value="11:00">11:00</option>
-					    <option value="11:30">11:30</option>
-					    <option value="12:00">12:00</option>
-					    <option value="12:30">12:30</option>
-					    <option value="13:00">13:00</option>
-					    <option value="13:30">13:30</option>
-					    <option value="14:00">14:00</option>
-				  	    <option value="14:30">14:30</option>
-					    <option value="15:00">15:00</option>
-					    <option value="15:30">15:30</option>
-					    <option value="16:00">16:00</option>
-					    <option value="16:30">16:30</option>
-					    <option value="17:00">17:00</option>
-					    <option value="17:30">17:30</option>
-					    <option value="18:00">18:00</option>
-					    <option value="18:30">18:30</option>
-					    <option value="19:00">19:00</option>
-					    <option value="19:30">19:30</option>
-					    <option value="20:00">20:00</option>
-					    <option value="20:30">20:30</option>
-					    <option value="21:00">21:00</option>
-					    <option value="21:30">21:30</option>
-					    <option value="22:00">22:00</option>
-					    <option value="22:30">22:30</option>
-					    <option value="23:00">23:00</option>
-					    <option value="23:30">23:30</option>
 		      	      </select>
+		      	      <% else %>
+		      	         <input type="hidden" name="timefrom" id="timefrom" value="<%=booking_item_family.time_start%>">	      	      
                       <% end %>
 		            </div>
                     <% if booking_item_family.pickup_return_place %>
@@ -239,51 +143,19 @@
 	                  </div>
 	                  <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
 	                </div>          		      	
-	                <% end %>	  		      
 	              </div>
 	              <div class="grid_4">      
+	                <% end %>	 
 		            <div class="formrow">
-		      	      <label for="dateto" id="labeldatefrom" class="fieldtitle">
+		      	      <label for="dateto" id="labeldateto" class="fieldtitle">
 		      	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
 		      	      </label> 
-		      	      <input type="text" name="dateto" id="dateto" class="date_control" size="10" maxlength="10"/>
+		      	      <input type="text" name="dateto" id="dateto" class="date_control" size="15" maxlength="10"/>
 		      	      <% if booking_item_family.time_to_from %>
 		      	      <select name="timeto" id="timeto"> 
-					    <option value="7:00" selected="selected">7:00</option>
-					    <option value="7:30">7:30</option>
-					    <option value="8:00">8:00</option>
-					    <option value="8:30">8:30</option>
-					    <option value="9:00">9:00</option>
-					    <option value="9:30">9:30</option>
-					    <option value="10:00">10:00</option>
-					    <option value="10:30">10:30</option>
-					    <option value="11:00">11:00</option>
-					    <option value="11:30">11:30</option>
-					    <option value="12:00">12:00</option>
-					    <option value="12:30">12:30</option>
-					    <option value="13:00">13:00</option>
-					    <option value="13:30">13:30</option>
-					    <option value="14:00">14:00</option>
-				  	    <option value="14:30">14:30</option>
-					    <option value="15:00">15:00</option>
-					    <option value="15:30">15:30</option>
-					    <option value="16:00">16:00</option>
-					    <option value="16:30">16:30</option>
-					    <option value="17:00">17:00</option>
-					    <option value="17:30">17:30</option>
-					    <option value="18:00">18:00</option>
-					    <option value="18:30">18:30</option>
-					    <option value="19:00">19:00</option>
-					    <option value="19:30">19:30</option>
-					    <option value="20:00">20:00</option>
-					    <option value="20:30">20:30</option>
-					    <option value="21:00">21:00</option>
-					    <option value="21:30">21:30</option>
-					    <option value="22:00">22:00</option>
-					    <option value="22:30">22:30</option>
-					    <option value="23:00">23:00</option>
-					    <option value="23:30">23:30</option>
 		      	      </select>
+		      	      <% else %>
+		      	        <input type="hidden" name="timeto" id="timeto" value="<%=booking_item_family.cycle_of_24_hours ? booking_item_family.time_start : booking_item_family.time_end%>">	      	      
                       <% end %>
 	                  <% if booking_item_family.pickup_return_place %>
 	                  <div class="formrow">
@@ -298,12 +170,13 @@
 	                    </div>
 	                    <input type="hidden" name="return_place_value" id="return_place_value"/>
 	                  </div>
-	                  <% end %>                      
+	                  <% end %>  
 		            </div>
                   </div>
                   <div class="grid_4">
-                  	<div class="guiblock top-margin-2lines">
+                  	<div class="guiblock top-margin-2lines bottom-margin-1line">
                  	  <span id="price" class="centered_text" style="font-size:4em; display: block; margin:0 auto">60€</span>
+                      <span id="number_of_days" class="centered_text" style="font-size:0.8em; display: block; margin:0 auto"></span>                 	  
                     </div>
                     <div id="availability">
                     </div>                    
@@ -314,7 +187,7 @@
               <div class="continue_families_to_extras" class="container_12">
                 <div class="top-margin-1line top-space-1line top-border-nosolid">
                   <button id="families_to_extras" class="form-button" type="button" 
-                    style="display:block; margin: 0 auto">Continuar</button>
+                    style="display:block; margin: 0 auto"><%=t.new_booking.continue%></button>
                 </div>
               </div>
             
@@ -330,17 +203,15 @@
           <div class="container_12">
             <div >
 	            <fieldset id="fs_summary_item">
-                  <div class="grid_3">
-	                <img id="item_image"/>
-	              </div>
-	              <div class="grid_4">
-	                <div class="right-margin smaller_text">
+	              <div class="grid_7">
+	                <img id="item_image" style="width:300px"/>	              	
+	                <div class="right-margin smaller_text centered_text">
                       <select id="booking[item_id]" name="booking[item_id]" class="item_chooser"></select>	
 	                  <div>
 	                    <label class="fieldtitle" style="display:inline-block; width:25%">
 	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
 	                    </label>
-                        <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="width:65%"/>
+                        <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="width:15em"/>
 	                  </div>
 
                       <% if booking_item_family.pickup_return_place %>
@@ -356,7 +227,7 @@
 	                    <label class="fieldtitle" style="display:inline-block; width:25%">
 	          	          <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%>
 	                    </label>
-                        <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly"/>
+                        <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly" style="width:15em"/>
 	                  </div>
 
                       <% if booking_item_family.pickup_return_place %>
@@ -404,7 +275,7 @@
 	                </div>
 	              </div>
 	              <div class="grid_5">
-	                <div class="left-margin smaller_text">
+	                <div class="top-margin right-margin left-margin smaller_text">
 	      	          <input type="hidden" name="total_cost" id="total_cost"/>
 	      	          <div id="detailed_summary" style="border: 1px solid #DDD">
 	                  </div>      
@@ -463,7 +334,7 @@
 	            <label id="label_customer_mobile_phone" for="booking[customer_mobile_phone]" class="fieldtitle"><%=t.new_booking.customer_mobile.label%></label>
 	            <input type="text" name="booking[customer_mobile_phone]" id="booking[customer_mobile_phone]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_booking.customer_mobile.placeholder%>"/>      
 	          </div>
-	          <% if booking_item_family.driver %>
+	          <% if booking_item_family.driver and booking_item_family.driver_date_of_birth%>
 	          <div class="formrow bottom-space">
 	             <label id="label_driver_date_of_birth" for="booking[driver_date_of_birth]" class="fieldtitle"><%=t.new_driving_booking.driver_date_of_birth.label%> *</label>
                  <select name="booking[driver_date_of_birth_day]" id="booking[driver_date_of_birth_day]"></select>
@@ -471,6 +342,10 @@
                  <select name="booking[driver_date_of_birth_year]" id="booking[driver_date_of_birth_year]"></select>
                  <input type="hidden" name="booking[driver_date_of_birth]" id="booking[driver_date_of_birth]"></input>
 	          </div>		        	        
+	          <% end %>
+	          <% if booking_item_family.height %>
+	          <% end %>
+	          <% if booking_item_family.weight %>
 	          <% end %>
 	        </fieldset>
 
@@ -504,6 +379,7 @@
 	              <label id="label_driver_document" for="booking[driver_document_id]" class="fieldtitle"><%=t.new_driving_booking.driver_nif.label%></label>
 	              <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_driving_booking.driver_nif.placeholder%>"/>
 	            </div>	        
+	            <% if booking_item_family.driver_license %>
                 <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_license%></legend>
 	            <div class="formrow">
 	              <label id="label_driver_driving_license_number" for="booking[driver_driving_license_number]" class="fieldtitle"><%=t.new_driving_booking.driver_license_number.label%></label>
@@ -520,6 +396,7 @@
 	              <label id="label_driver_driving_license_country" for="booking[driver_driving_license_country]" class="fieldtitle"><%=t.new_driving_booking.driver_license_country.label%></label>
 	              <input type="text" name="booking[driver_driving_license_country]" id="booking[driver_driving_license_country]" class="fieldcontrol" maxlength="50" placeholder="<%=t.new_driving_booking.driver_license_country.placeholder%>"/>
 	            </div>
+	            <% end %>
                 <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_address%></legend>
 	            <div class="formrow">
 	              <label id="label_driver_address_street" for="booking[driver_address[street]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_street.label%></label>
@@ -651,8 +528,8 @@
 
   <!-- JS TEMPLATES -->
 
-  <script type="text/tmpl" id="script_families">
-              <div class="grid_4">
+  <script type="text/tmpl" id="script_families">         
+              <div class="<%% if (currentRow == totalRows-1 && lastRowItems == 2 && currentCol == 0){%>prefix_2<%%} else if (currentRow == totalRows-1 && lastRowItems == 1 && currentCol == 0) {%>prefix_4<%%}%> grid_4">
                 <div id="family_<%%=category.family%>" class="family top-margin" style="padding:5px">
                   <div>
                     <img src="<%%=category.photo%>" style="display: block; margin: 0 auto" />
@@ -661,7 +538,7 @@
                     <span class="centered_text" style="display: block; margin: 0 auto" ><%%=category.description%></span>
                   </div>
                   <div class="top-margin">
-                    <button class="select_family centered_text form-button blue-button" style="display: block; margin: 0 auto" rel="<%%=category.family%>">Seleccionar</button>
+                    <button class="select_family centered_text form-button blue-button" style="display: block; margin: 0 auto" rel="<%%=category.family%>"><%=t.new_booking.booking%></button>
                   </div>
                 </div>
               </div>

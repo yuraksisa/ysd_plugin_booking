@@ -1,0 +1,103 @@
+<%= include('entity-management') %>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_title">
+  <h2 class="entity-title"><%=t.catalog_management.form.title%></h2> 
+</script>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_description">
+</script>
+
+<!-- Renders the elements container -->
+<script type="text/tmpl" id="elements_container_template">
+  <table id="elements_table" class="table">
+     <thead class="table-header">
+       <tr>
+         <th class="table-header-title centered_text" scope="col" style="width:25%">
+            <%= t.catalog_management.form.code.label %>
+         </th>
+         <th class="table-header-title centered_text" scope="col" style="width:50%">
+            <%= t.catalog_management.form.description.label %>
+         </th>
+         <th class="table-header-title centered_text" scope="col" style="width:25%">
+            <%= t.catalog_management.table.default %>
+         </th>
+       </tr>
+     </thead>
+     <tbody id="elements_tbody" class="table-tbody">             
+     </tbody>
+  </table>
+</script>
+
+<!-- Renders one element in the elements list view -->
+        
+<script type="text/tmpl" id="elements_list_template">
+    <tr class="table-row" id="element_row_<%%=index%>">
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+         <%%= entity.code %>
+      </td>  
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+         <%%= entity.description %>
+      </td>
+      <td class="table-cell centered_text" rel="<%%= index%>">
+         <form>
+           <input type="checkbox" name="booking.default_booking_catalog.code" rel="<%%=entity.code%>" <%% if (entity.code == self.model.entityHooks[0].defaultCatalog){%>checked="checked"<%%}%>/>
+         </form>
+      </td>
+    </tr>
+</script>
+
+<!-- Renders one element in the element view (full detailed) -->
+
+<script type="text/tmpl" id="element_template">
+   
+</script>
+
+<!-- Renders the form to edit an element -->
+
+<script type="text/tmpl" id="element_template_form">
+              
+     <form name="element" method="POST">
+        
+        <div class="form-fields">
+                                   
+          <div class="container_12"> 
+            <div class="grid_12">
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.catalog_management.form.code.label %></label>
+                <input type="text" maxlength="20" id="code" name="code" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.code %>" <%% } %>/>
+              </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.catalog_management.form.description.label %></label>
+                <input type="text" maxlength="255" id="description" name="description" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.description%>" <%% } %>/>
+              </div>  
+              <div class="formrow">
+                <label for="selector" class="fieldtitle"><%=t.catalog_management.form.selector.label%></label>
+                <select name="selector" id="selector" class="fieldcontrol">
+                  <option value="dates" <%% if (entity && entity.selector=='dates'){%>selected="selected"<%%}%>><%=t.booking_settings.form.reservation_starts_with.dates%></option>
+                  <option value="categories" <%% if (entity &&  entity.selector=='categories'){%>selected="selected"<%%}%>><%=t.booking_settings.form.reservation_starts_with.categories%></option>
+                </select>
+              </div> 
+              <div class="formrow">
+                <label for="product_family[code]" class="fieldtitle"><%=t.catalog_management.form.product_family.label%></label>
+                <select name="product_family[code]" id="product_family[code]" class="fieldcontrol"/>
+              </div>              
+          </div>
+                        
+        </div>
+                       
+        <div class="bottom-navigation-bar navigation-bar">
+             <div class="navigation-bar-crud-buttons">
+                <%% if (entity) { %>
+                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                <%% } 
+                   else { %>
+                  <input type="submit" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                <%% } %>
+             </div>
+        </div>
+     
+     </form>
+     
+</script>

@@ -77,6 +77,7 @@ booking_rates_summary:
 booking_console:
   title: Reservas
   configuration: Configuración
+  catalogs: Catálogos
   categories: Productos
   extras: Extras
   items: Recursos
@@ -126,6 +127,7 @@ booking_items:
   car: coche
   bike: bicicleta
   motorbike: motocicleta
+  kayak: kayak
   apartment: apartamento
   room: habitación 
 new_booking:
@@ -177,6 +179,7 @@ new_booking:
   checking_availability: Comprobando disponibilidad
   sending_booking_request: Enviando la solicitud de reserva
   concept: Concepto
+  day: Día
   days: Días
   total: Total
   form_errors:
@@ -419,6 +422,22 @@ booking_management:
     flight_company: Compañía
     flight_number: Número de vuelo
     flight_time: Hora de llegada
+catalog_management:
+  table:
+    code: Código
+    description: Descripción
+    default: Por defecto    
+  form:
+    title: Catálogos
+    code:
+      label: Código
+    description:
+      label: Descripción
+    selector:
+      label: Selector
+    product_family:
+      label: Configuración
+    code_required: Código obligatorio      
 booking_category_management:
   table:
     calendar: Calendario
@@ -430,8 +449,14 @@ booking_category_management:
       label: Código
     name:
       label: Nombre
+    short_description:
+      label: Descripción corta
     description:
       label: Descripción
+    type:
+      label: Tipo
+    catalog:
+      label: Catálogo
     calendar:
       label: Calendario
     price_definition:

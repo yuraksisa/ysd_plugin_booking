@@ -116,45 +116,49 @@ module Sinatra
         #
         # Create new booking (administation)
         #
-        app.get '/admin/booking/new', :allowed_usergroups => ['booking_manager', 'staff'] do
+        ['/admin/booking/new/:booking_catalog_code', '/admin/booking/new'].each do |path|
+          app.get path, :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          locals = {}
+            catalog = request_catalog
 
-          locals.store(:admin_mode, true)
-          locals.store(:confirm_booking_url, '/api/booking-from-manager')
+            locals = {}
 
-          locals.store(:booking_reservation_starts_with,
-              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
+            locals.store(:admin_mode, true)
+            locals.store(:confirm_booking_url, '/api/booking-from-manager')
 
-          locals.store(:booking_item_family, 
-            ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+            locals.store(:booking_reservation_starts_with,
+              catalog ? catalog.selector.to_sym : SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
 
-          locals.store(:booking_item_type,
-            SystemConfiguration::Variable.get_value('booking.item_type'))
+            locals.store(:booking_item_family, 
+              catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+
+            locals.store(:booking_item_type,
+              SystemConfiguration::Variable.get_value('booking.item_type'))
        
-          locals.store(:booking_payment,
-            SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
+            locals.store(:booking_payment,
+              SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
 
-          locals.store(:booking_deposit,
-            SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
+            locals.store(:booking_deposit,
+              SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
 
-          locals.store(:booking_min_days,
-            SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
+            locals.store(:booking_min_days,
+              SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
 
-          locals.store(:booking_payment_cadence,
-            SystemConfiguration::Variable.get_value('booking.payment_cadence', '0').to_i)          
+            locals.store(:booking_payment_cadence,
+              SystemConfiguration::Variable.get_value('booking.payment_cadence', '0').to_i)          
 
-          locals.store(:booking_allow_custom_pickup_return_place,
-            SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+            locals.store(:booking_allow_custom_pickup_return_place,
+              SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
 
-          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
-             not booking_js.text.empty?
-            locals.store(:booking_js, booking_js.text) 
-          end
+            booking_js = catalog_template(catalog)
+
+            if booking_js and not booking_js.text.empty?
+              locals.store(:booking_js, booking_js.text) 
+            end
                  
-          load_page('reserva-online'.to_sym, :locals => locals)
-
-
+            load_page('reserva-online'.to_sym, :locals => locals)
+          
+          end
         end
 
         #
@@ -162,22 +166,28 @@ module Sinatra
         #
         app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager'] do
 
-          booking = BookingDataSystem::Booking.get(params[:booking_id])
+          if booking = BookingDataSystem::Booking.get(params[:booking_id])
+            if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.item_id)
 
-          locals = {}
+              locals = {}
+              locals.store(:booking_item_family, 
+                ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+              locals.store(:booking_allow_custom_pickup_return_place,
+                SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+              locals.store(:booking, booking)
 
-          locals.store(:booking_item_family, 
-            ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+              if booking_js = ContentManagerSystem::Template.find_by_name(booking_category) and
+                 not booking_js.text.empty?
+                locals.store(:booking_js, booking_js.text)
+              end
 
-          locals.store(:booking_allow_custom_pickup_return_place,
-            SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
-
-          locals.store(:booking, booking)
-          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
-             not booking_js.text.empty?
-            locals.store(:booking_js, booking_js.text) 
+              load_page(:booking_edit_pickupreturn, :locals => locals)
+            else
+              status 404
+            end
+          else
+            status 404
           end
-          load_page(:booking_edit_pickupreturn, :locals => locals)
 
         end
 

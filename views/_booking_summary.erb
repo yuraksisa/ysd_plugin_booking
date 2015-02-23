@@ -1,8 +1,10 @@
       <h3 class="guiblock-title"><%=t.booking.summary%></h3>
       <div class="left-space left-margin">
           <div class="clearfix">
-            <img class="grid_2 left-float right-margin" src="<%="/img/clase-#{booking.item_id}.png"%>"/>
-            <div class="prefix_2 left-margin">
+            <% if booking.category %>
+            <img class="grid_2 left-float right-margin" src="<%=booking.category.photo_url_small%>"/>
+            <% end %>
+            <div class="<%if booking.category%>prefix_2<%else%>prefix_4<%end%> left-margin">
                <div class="bottom-margin bottom-separator"><span class="smaller_text"><%=booking.item_description%></span> <span class="less_contrast_text smaller_text">(<%=l(booking.date_from,'%d %b %Y')%> -  <%=l(booking.date_to,'%d %b %Y')%>)</span></div>
             </div>
             <div class="prefix_2 left-margin">

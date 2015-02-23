@@ -5,12 +5,14 @@
 
   require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
   	       <% if defined?booking_js %>'booking_js'<% else %>'/js/booking.js'<%end%>, 
-           'YSDListSelector', 'YSDRemoteDataSource', 'json2', 'jquery.validate', 
+           'YSDListSelector', 'YSDMemoryDataSource','YSDRemoteDataSource',
+           'YSDSelectSelector',  
+           'json2', 'jquery.validate', 
   	       'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
   	       'jquery.ui.datepicker.validation',
   	       'jquery.tools', 'jquery.formparams', 'datejs'], 
   	       function($, YSDForms, DateControl, tmpl, bookingDataSystem,  
-  	       ListSelector, RemoteDataSource) {  
+  	       ListSelector, MemoryDataSource, RemoteDataSource, SelectSelector) {  
 
     /* It represents the wizard tabs */
 
@@ -375,8 +377,8 @@
        	 var _date_from = new Date( date_from.toString("MM/dd/yyyy ") + time_from);
        	 var _date_to = new Date( date_to.toString("MM/dd/yyyy ") + time_to);
        	        	 
-       	 var dias_diferencia = (date_to - date_from) / (1000*60*60*24);
-       	 var horas_diferencia = (_date_to - _date_from) / (1000*60*60);
+       	 var dias_diferencia = Math.round((date_to - date_from) / (1000*60*60*24));
+       	 var horas_diferencia = Math.round((_date_to - _date_from) / (1000*60*60));
        	 
          this.pendingTimeToStartBooking = (date_from - new Date()) / (1000*60*60);
 
@@ -701,13 +703,24 @@
          	maxDate: new Date(bookingDataSystem.configuration.max_date).add(-1).days(), dateFormat: 'dd/mm/yy'}, locale);
          $('#datefrom').datepicker('setDate', '+0'); 
 
-         $('#dateto').datepicker({numberOfMonths:2, minDate:new Date(bookingDataSystem.configuration.min_date).add(<%=booking_min_days%>).days(),
+         $('#dateto').datepicker({numberOfMonths:2, minDate:new Date(bookingDataSystem.configuration.min_date).
+            add(<%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>).days(),
             maxDate: bookingDataSystem.configuration.max_date , dateFormat: 'dd/mm/yy'}, locale);
-         $('#dateto').datepicker('setDate', '+<%=booking_min_days%>');
+         $('#dateto').datepicker('setDate', '+<%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>');
 
          $('#button_continua_rellenar_datos').bind('click', function(event) {
             bookingController.go_to_fill_data_click();
          });
+ 
+         <% if booking_item_family.time_to_from %>
+         var timetable = ['7:00','7:30','8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30',
+         '12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00',
+         '17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00','22:30',
+         '23:00','23:30'];
+         var timetableDataSource = new MemoryDataSource(timetable);
+         var timeFromSelectSelector = new SelectSelector('timefrom',timetableDataSource,'10:00');
+         var timeToSelectSelector = new SelectSelector('timeto',timetableDataSource,'10:00');
+         <% end %>
 
          <% if admin_mode %>
              $('#button_confirmar_reserva_manager').show();         
@@ -761,9 +774,9 @@
          $('#datefrom').bind('change', function() {
            var dateFrom = $('#datefrom').datepicker('getDate');	
            var dateTo = $('#dateto').datepicker('getDate');
-           dateTo.setDate(dateFrom.getDate() + <%=booking_min_days%>);
+           dateTo.setDate(dateFrom.getDate() + <%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>);
            $('#dateto').datepicker('setDate', dateTo );
-           $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+           $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>).days());
          });
 
          $('#show_driver').bind('click',
@@ -867,16 +880,29 @@
          var familiesHtml = '';
          var families = bookingDataSystem.families;
          
+         var total = 0;
          for (family in families) {
-           familiesHtml += tmpl('script_families', {category: families[family]});
+           total++;
+         }
+         var current = 0;
+         
+         for (family in families) {
+           familiesHtml += tmpl('script_families', {category: families[family],
+              total: total, 
+              totalRows : Math.ceil(total / 3),
+              currentRow: Math.floor(current / 3),
+              lastRowItems : total % 3,
+              currentCol: current % 3
+              });
+            current++;
          }  
          
          $('#items_families').html(familiesHtml); 
 
          $('.select_family').bind('click', function() {
             var family = $(this).attr('rel');
-            $('.family').removeClass('guiblock');
-            $('#family_'+family).addClass('guiblock');
+            $('.family').removeClass('all-border-solid');
+            $('#family_'+family).addClass('all-border-solid');
             $('#families_to_extras').attr('rel', family );
             bookingController.select_family(family);
          });        
@@ -961,23 +987,23 @@
            var nDays = (dateTo - dateFrom) / (3600000*24);
 
            var dateToMin = $('#datefrom').datepicker('getDate');
-           dateToMin.add(Math.max(<%=booking_min_days%>, nDays)).days();
+           dateToMin.add(Math.max(<%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>, nDays)).days();
            
            if (dateTo < dateToMin) {
            	dateTo = dateToMin;
            }
 
            $('#dateto').datepicker('setDate', dateTo );
-           $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+           $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>).days());
 
        },
 
        calculate_prices : function() {
 
        	    bookingController.calculate_prices($('#datefrom').datepicker("getDate"), 
-                                               $('#timefrom option:selected').val(),
+                                               $('#timefrom option:selected').val() || $('#timefrom').val(),
                                                $('#dateto').datepicker("getDate"), 
-                                               $('#timeto option:selected').val(),
+                                               $('#timeto option:selected').val() || $('#timeto').val(),
                                                $('#pickup_place_value').val(),
                                                $('#return_place_value').val()); 
        	
@@ -1173,6 +1199,7 @@
          var family = bookingModel.booking.item_id;
          var price = bookingModel.all_prices[family] + '€';
          $('#price').html(price);
+         $('#number_of_days').html(bookingModel.booking.days + (bookingModel.booking.days == 1 ? ' <%=t.new_booking.day%>' : ' <%=t.new_booking.days%>'));
          $('#family-selection').show();
 
          <% if (admin_mode) %>

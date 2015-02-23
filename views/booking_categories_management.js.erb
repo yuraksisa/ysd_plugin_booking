@@ -1,8 +1,8 @@
 <%= partial('price_definition_creation.js'.to_sym) %>
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
-         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
+         "YSDRemoteDataSource", "YSDMemoryDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
          function($, EntityManagement, EntityManagementComplementHooks,
-          RemoteDataSource, SelectSelector) {
+          RemoteDataSource, MemoryDataSource, SelectSelector) {
     
   var bookingItemCategory = {
      
@@ -14,6 +14,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     onEdit : function(entity) {
       $('#code').attr('code', true);
       $('#name').focus();
+      $('#type').prop('disabled', 'true');
       this.configForm(entity);
     },
   
@@ -41,6 +42,26 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     },          
 
     configForm: function(entity) {
+
+      
+      var types = [
+                   <% types.each do |type| %>
+                   {
+                     'id': '<%=type[:id]%>',
+                     'description': '<%=type[:description]%>'
+                   },
+                   <% end %>
+                  ];
+
+      var typeDataSource= new MemoryDataSource(types);
+      var typeValue = (entity && entity.type)?entity.type:null; 
+      var typeSelector = new SelectSelector('type', typeDataSource, typeValue);   
+
+      var catalogDataSource= new RemoteDataSource('/api/booking-catalogs',
+          {'id':'code','description':'code'});
+      var catalogValue = (entity && entity.booking_catalog_code)?entity.booking_catalog_code:null; 
+      var catalogSelector = new SelectSelector('booking_catalog[code]', catalogDataSource, catalogValue, true);   
+
       var calendarDataSource= new RemoteDataSource('/api/calendars',
           {'id':'id','description':'name'});
       var calendarValue = (entity && entity.calendar_id)?entity.calendar_id:null; 

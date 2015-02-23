@@ -341,19 +341,10 @@ module Sinatra
         #
         app.post '/api/booking/create-rates', :allowed_usergroups => ['booking_manager', 'staff']  do
   
-          rates = ::Yito::Model::Booking::Generator.instance.build_script
+          ::Yito::Model::Booking::Generator.instance.create_rates
 
-          if booking_js=ContentManagerSystem::Template.find_by_name('booking_js')
-             booking_js.text = rates
-             booking_js.save
-          else
-             ContentManagerSystem::Template.create({:name => 'booking_js', 
-                :description => 'Definición de los productos en alquiler y las tarifas',
-                :text => rates})
-          end
-
-          rates
-
+          true.to_json
+          
         end        
 
         # ---------------------------------------------------------------

@@ -89,6 +89,12 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.default_booking_catalog.code'},
+        {:value => '',
+         :description => 'Default booking catalog',
+         :module => 'booking'})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.allow_custom_pickup_return_place'},
         {:value => 'false',
          :description => 'Allow custom pickup and return places'})
@@ -117,15 +123,19 @@ module Huasi
          :flight => true,
          :pickup_return_place => false,
          :time_to_from => false,
-         :start_date_literal => :arrival} )
+         :start_date_literal => :arrival,
+         :cycle_of_24_hours => true} )
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car'},
         {:driver => true,
+         :driver_date_of_birth => false,
+         :driver_license => true,
          :guests => false,
          :flight => true,
          :pickup_return_place => true,
          :time_to_from => true,
-         :start_date_literal => :pickup} )
+         :start_date_literal => :pickup,
+         :cycle_of_24_hours => true} )
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'bike'},
         {:driver => false,
@@ -133,7 +143,24 @@ module Huasi
          :flight => false,
          :pickup_return_place => false,
          :time_to_from => true,
-         :start_date_literal => :pickup} )
+         :start_date_literal => :pickup,
+         :cycle_of_24_hours => false} )
+
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'kayak'},
+        {:driver => true,
+         :driver_date_of_birth => false,
+         :driver_license => false,
+         :guests => false,
+         :pickup_return_place => false,
+         :time_to_from => true,
+         :start_date_literal => :pickup,
+         :height => true,
+         :height_mandatory => true,
+         :height_values => '150-175,175-200',
+         :weight => true,
+         :weight_mandatory => true,
+         :weight_values => '<= 75Kg,75Kg',
+         :cycle_of_24_hours => false})
 
       if Yito::Model::Calendar::EventType.count(:name => 'not_available') == 0
         Yito::Model::Calendar::EventType.create(:name => 'not_available', 

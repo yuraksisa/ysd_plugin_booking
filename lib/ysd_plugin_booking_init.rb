@@ -8,10 +8,14 @@ Plugins::SinatraAppPlugin.register :booking do
    description= 'Booking integration'
    version=     '0.1'
    hooker       Huasi::BookingExtension
+   sinatra_helper Sinatra::BookingHelpers
    sinatra_extension Sinatra::YSD::Booking
    sinatra_extension Sinatra::YSD::BookingManagement
    sinatra_helper Sinatra::YSD::BookingManagementRESTApiHelper
    sinatra_extension Sinatra::YSD::BookingManagementRESTApi
+   sinatra_extension Sinatra::YitoExtension::BookingProductFamilyManagementRESTApi   
+   sinatra_extension Sinatra::YitoExtension::BookingCatalogManagement
+   sinatra_extension Sinatra::YitoExtension::BookingCatalogManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingCategoryManagement
    sinatra_extension Sinatra::YitoExtension::BookingCategoryManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingExtraManagement

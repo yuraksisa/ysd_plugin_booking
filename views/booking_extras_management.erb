@@ -86,7 +86,16 @@
               </div>      
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_extra_management.form.price_definition.label %></label>
-                <select name="price_definition[id]" id="price_definition[id]"/>
+                <select class="fieldcontrol" name="price_definition[id]" id="price_definition[id]"/>
+              </div>                  
+              <%% if (!entity) { %>
+              <div class="formrow">
+                <input type="checkbox" id="create_extra_price">Crear precio</input>
+              </div>
+              <div id="category_price" class="element-form-detail" style="display:none">
+                <%= partial(:price_definition_creation)%>
+              </div>
+              <%% } %> 
               </div>                                     
             </div>
           </div>

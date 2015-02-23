@@ -30,6 +30,7 @@ booking_rates:
 booking_console:
   title: Reserves
   configuration: Configuració
+  catalogs: Catàlegs
   categories: Productes
   extras: Extres
   items: Recursos
@@ -120,6 +121,7 @@ booking_management:
     extras_title: Extras
     extra_description: Descripció
     extra_quantity: Quantitat
+    day: Dia
     days: Dies
     item_cost: Preu
     extras_cost: Preu extras
@@ -152,19 +154,41 @@ booking_management:
     other: Més informació
     free_access_id: Accès directe   
     payment_method: Forma de pagament 
+catalog_management:
+  table:
+    code: Codi
+    description: Descripció
+    default: Per defecte
+  form:
+    title: Catàlogs
+    code:
+      label: Codi
+    description:
+      label: Descripció
+    selector:
+      label: Selector
+    product_family:
+      label: Configuració
+    code_required: Codi obligatori
 booking_category_management:
   table:
     calendar: Calendari
     prices: Preus
     scheduler: Agenda    
   form:
-    title: Gestió de productes
+    title: Productes
     code:
       label: Codi
     name:
       label: Nom
+    short_description:
+      label: Descripció curta      
     description:
       label: Descripció
+    type:
+      label: Tipus      
+    catalog:
+      label: Catàleg      
     calendar:
       label: Calendari
     price_definition:

@@ -1,0 +1,100 @@
+
+require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
+         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
+         function($, EntityManagement, EntityManagementComplementHooks, RemoteDataSource, SelectSelector) {
+    
+  var bookingCatalogHook = {
+     
+    entity: null,
+    defaultCatalog: '<%=default_catalog%>',
+       
+    entityKey : function(entity) {
+      return entity.code;
+    },
+
+    onRenderEntities: function(entities) {
+
+      $('input[name="booking.default_booking_catalog.code"]').bind('change', function(){
+        if ($(this).is(':checked')) {
+          // Update
+          var selected = $(this);
+          var data = {'booking.default_booking_catalog.code': $(this).attr('rel')};
+          var strData = JSON.stringify(data);
+          $.ajax({
+             type: 'PUT',
+             data : strData,
+             dataType: 'json', 
+             url : '/api/variables',
+             success: function(data, textStatus, jqXHR) {
+               $('input[name="booking.default_booking_catalog.code"]').removeAttr('checked');
+               selected.attr('checked', 'checked');
+               if (selected.attr('rel') != bookingCatalogHook.defaultCatalog) {
+                 bookingCatalogHook.defaultCatalog = selected.attr('rel');
+               }
+             },
+             error: function(data, textStatus, jqXHR) {
+              alert('Error updating');
+             }
+          });          
+        }
+        else {
+          $(this).attr('checked', 'checked');
+        }
+      });
+
+    },
+
+    onEdit : function(entity) {
+      this.entity = entity;
+      $('#code').attr('readonly', true);
+      $('#description').focus();
+      this.configForm(); 
+    },
+  
+    onNew : function() {
+      this.entity = null;
+      $('#code').focus();
+      this.configForm();
+    },
+    
+    onDelete: function(entity) {
+      if (entity.code == this.defaultCatalog) {
+        this.defaultCatalog = '';
+      }
+
+    },
+
+    /* ------- Internal function --------- */
+    
+    configForm : function() {
+      var productFamilyDataSource = new RemoteDataSource('/api/booking-product-families',{'id':'code','description':'code'});
+      var productFamilyValue = (this.entity && this.entity.product_family_code)?this.entity.product_family_code:null;
+      var productFamilySelector = new SelectSelector('product_family[code]', productFamilyDataSource, productFamilyValue); 
+    },
+      
+    adaptFormData : function(data) {
+            
+      if (data.product_family.code == '') {
+        data.product_family = null;
+      }
+
+      return data;  
+      
+    }
+
+  };
+
+  var urls = { query_url  : '/api/booking-catalogs',
+               create_url : '/api/booking-catalog',
+               update_url : '/api/booking-catalog',
+               delete_url : '/api/booking-catalog',
+               get_url    : '/api/booking-catalog'
+             };
+  
+  var hooks = [bookingCatalogHook];
+  
+  var bookingCatalogsManager = new EntityManagement(urls, 'booking_catalog', 20, hooks,
+    {prefix: '/admin/booking'});
+
+  
+});

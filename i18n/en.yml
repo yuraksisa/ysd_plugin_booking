@@ -34,6 +34,7 @@ booking_rates:
 booking_console:
   title: Reservations
   configuration: Configuration
+  catalogs: Catalogs
   categories: Products
   extras: Extras
   items: Resources
@@ -82,6 +83,7 @@ booking_items:
   car: car
   bike: bike
   motorbike: motorbike
+  kayak: kayak  
   apartment: apartment
   room: room
 new_booking:
@@ -133,6 +135,7 @@ new_booking:
   checking_availability: Checking availability
   sending_booking_request: Sending booking request
   concept: Concept
+  day: Day
   days: Days
   total: Total
   form_errors:
@@ -338,6 +341,22 @@ booking_management:
     other: Other information
     free_access_id: Direct access    
     payment_method: Payment method
+catalog_management:
+  table:
+    code: Code
+    description: Description
+    default: Default    
+  form:
+    title: Catalogs
+    code:
+      label: Code
+    description:
+      label: Description
+    selector:
+      label: Selector
+    product_family:
+      label: Configuration
+    code_required: Code is required    
 booking_category_management:
   table:
     calendar: Calendar
@@ -349,8 +368,14 @@ booking_category_management:
       label: Code
     name:
       label: Name
+    short_description:
+      label: Short description      
     description:
       label: Description
+    type:
+      label: Type      
+    catalog:
+      label: Catalog      
     calendar:
       label: Calendar
     price_definition:

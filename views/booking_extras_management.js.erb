@@ -1,3 +1,4 @@
+<%= partial('price_definition_creation.js'.to_sym) %>
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
          "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"], 
          function($, EntityManagement, EntityManagementComplementHooks,
@@ -13,27 +14,32 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     onEdit : function(entity) {
       $('#code').attr('code', true);
       $('#name').focus();
+      this.configForm(entity);
+    },
+  
+    onNew : function() {
+      $('#code').focus();
+      this.configForm(null);
+      $('#create_extra_price').bind('change', function() {
+         if ($('#create_extra_price').prop('checked')) {
+           $('#price_definition\\[id\\]').prop('disabled', true);
+           $('#category_price').show();
+         }
+         else {
+           $('#price_definition\\[id\\]').prop('disabled', false);
+           $('#category_price').hide();
+         }
+      });      
+    },
+
+    configForm: function(entity) {
+
       var priceDefinitionDataSource= new RemoteDataSource('/api/rate-price-defs',
           {'id':'id','description':'name'});
       var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
       var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
 
-    },
-  
-    onNew : function() {
-      $('#code').focus();
-    },
-
-    adaptFormData : function(data) {
-            
-      if (data.price_definition.id == '') {
-        data.price_definition = null;
-      }
-
-      return data;  
-      
-    }              
-
+    }     
 
   };
 

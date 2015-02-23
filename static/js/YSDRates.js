@@ -576,13 +576,15 @@ define(function() {
       @param [String] The extra name
       @param [Numeric] Max extra quantity
       @param [Array] The optional that doesn't use the extra
+      @param [Boolean] detailed price
    */
-  rates.Extra = function(id, the_name, max_quantity, notAcceptedOptionals) {
+  rates.Extra = function(id, the_name, max_quantity, notAcceptedOptionals, detailedPrice) {
   	
     this.id = id;
     this.the_name = the_name;
     this.max_quantity = max_quantity;
     this.notAcceptedOptionals = notAcceptedOptionals || [];
+    this.detailedPrice = detailedPrice;
     
     this.optionalAccepted = function(optional) {
       if (Array.prototype.indexOf) {
@@ -594,9 +596,10 @@ define(function() {
     }
   }
   
-  rates.ExtraCalculation = function(extrasRates) {
+  rates.ExtraCalculation = function(extrasRates, extras) {
 
     this.extrasRates = extrasRates;
+    this.extras = extras;
     
     this.get_extra_rate = function( extra_id, family ) {
 
@@ -619,7 +622,19 @@ define(function() {
 
        if (ndays > 0) {
          var extraRate = this.get_extra_rate(extra_id, family);
-         return new Number( Math.min( ndays * extraRate.price, extraRate.maxPrice ).toFixed(scale) );
+         var price = 0;
+
+         if (this.extras[extra_id].detailedPrice) {
+            price = rates.PriceCalculatorDaysRate(extraRate, ndays);
+         }
+         else {
+            price = rates.PriceCalculatorSimpleRate(extraRate, ndays);
+         }
+         
+         if (extraRate.maxPrice > 0) {
+           return new Number( Math.min( price, extraRate.maxPrice ).toFixed(scale) );
+         }
+         return new Number(price).toFixed(scale);
        }
 
        return 0;

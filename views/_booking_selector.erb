@@ -7,7 +7,7 @@
               <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
             </label> 
 		      	<% if booking_item_family.time_to_from %>
-              <input type="text" name="datefrom" id="datefrom" class="date_control" size="10" maxlength="10"/>
+              <input type="text" name="datefrom" id="datefrom" class="date_control" size="15" maxlength="10"/>
 		        	<select name="timefrom" id="timefrom"> 
 					      <option value="7:00" selected="selected">7:00</option>
 					      <option value="7:30">7:30</option>
@@ -69,7 +69,7 @@
               <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
             </label> 
             <% if booking_item_family.time_to_from %>
-		      	  <input type="text" name="dateto" id="dateto" class="date_control" size="10" maxlength="10"/>
+		      	  <input type="text" name="dateto" id="dateto" class="date_control" size="15" maxlength="10"/>
 		      	  <select name="timeto" id="timeto"> 
                 <option value="7:00" selected="selected">7:00</option>
                 <option value="7:30">7:30</option>

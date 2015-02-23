@@ -83,8 +83,8 @@
        	  var _date_from = new Date( date_from.toString("MM/dd/yyyy ") + time_from);
        	  var _date_to = new Date( date_to.toString("MM/dd/yyyy ") + time_to);
        	        	 
-       	  var dias_diferencia = (date_to - date_from) / (1000*60*60*24);
-       	  var horas_diferencia = (_date_to - _date_from) / (1000*60*60);
+       	  var dias_diferencia = Math.round((date_to - date_from) / (1000*60*60*24));
+       	  var horas_diferencia = Math.round((_date_to - _date_from) / (1000*60*60));
        	 
        	  this.booking.days = Math.max(Math.floor(dias_diferencia),0);
        	  this.booking.date_to_price_calculation = new Date(this.booking.date_to.getTime());
