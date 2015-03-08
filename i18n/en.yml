@@ -1,3 +1,6 @@
+mybooking_bottom:
+  text: Reservations managed by
+  link: myBooking booking engine
 booking_pages:
   new_booking: Start booking
 confirm_line1system_admin_menu:
@@ -154,6 +157,14 @@ new_booking:
                    <p class="bf-message">Remember that you have a maximum of 72 hours to make payment and thus confirm your reservation.</p>
                    <p class="bf-footer">attentively, </p>
                    <p class="bf-footer">The <%= bookingConfiguration.company%> team</p>
+  height:
+    label: Height
+    placeholder: your height
+    required: Height is required
+  weight:
+    label: Weight
+    placeholder: your weight
+    required: Weight is required   
   customer_name: 
     label: Name
     placeholder: your name
@@ -181,6 +192,15 @@ new_booking:
   customer_mobile: 
     label: Mobile phone
     placeholder: Your cell phone
+  contact:
+    label: Contact    
+    description: Please fill the contact information
+  contact_name:
+    placeholder: Contact\'s name
+  contact_surname:
+    placeholder: Contact\'s surname
+  contact_nif:
+    placeholder: Contact\'s ID or passport        
   guests:
     title: Guests
     adults: Adults

@@ -1,3 +1,6 @@
+mybooking_bottom:
+  text: Reserves gestionades amb
+  link: myBooking motor de reserves
 booking_pages:
   new_booking: Nova reserva
 system_admin_menu:

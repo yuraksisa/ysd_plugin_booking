@@ -1130,6 +1130,12 @@
            	'booking[driver_date_of_birth]': {
            	  required: "#fs_driver:visible"	
            	},
+            <% if booking_item_family.height_mandatory %>
+            'booking[customer_height]' : 'required',
+            <% end%>
+            <% if booking_item_family.weight_mandatory %>
+            'booking[customer_weight]' : 'required',
+            <% end%>            
            	'conditions_read' :  {
               required: '#conditions_read:visible'
             }
@@ -1166,6 +1172,12 @@
            	'booking[return_place]': {
            	  'required': '<%=t.new_booking.return.required%>'	
            	},
+            <% if booking_item_family.height_mandatory %>
+            'booking[customer_height]' : '<%=t.new_booking.height.required%>',
+            <% end%>
+            <% if booking_item_family.weight_mandatory %>
+            'booking[customer_weight]' : '<%=t.new_booking.weight.required%>',
+            <% end%>               
            	'conditions_read': '<%=t.new_booking.conditions.required%>'
            	
            },
@@ -1246,17 +1258,19 @@
       	   var content =
       	      '<div class="container_12">'+	     	
       	        '<div itemscope itemtype="http://schema.org/Product" class="bottom-space bottom-separator car '+family+'">' +
-      	          '<div class="grid_3">' +
+      	          '<div class="car_photo_container grid_4">' +
       	            '<img itemprop="image" style="padding:20px" src="' + bookingDataSystem.families[family].photo + '"/>' + //src="/img/clase-'+family+'-big.png"/>' +
       	          '</div>' +
-      	          '<div class="grid_3 top-margin">' +
-      	            '<div class="car_detail_description"><span class="car_family_description" itemprop="name">'+bookingDataSystem.families[family].description+'</span></div>' +
-      	            '<div class="car_detail_cars"><span class="car_family_cars" itemprop="description">'+bookingDataSystem.families[family].cars+'</span></div>'+
-      	          '</div>';
+      	          '<div class="car_description_container grid_5 top-margin">' +
+                    '<div class="left-margin">' +
+      	              '<div class="car_detail_description"><span class="car_family_description" itemprop="name">'+bookingDataSystem.families[family].description+'</span></div>' +
+      	              '<div class="car_detail_cars"><span class="car_family_cars" itemprop="description">'+bookingDataSystem.families[family].fullDescription+'</span></div>'+
+      	            '</div>' +
+                  '</div>';
      	     if (bookingDataSystem.optionals) {
       	     content += '<div class="grid_6">';
              for (var option in bookingDataSystem.optionals) {
-              var buttonSelect = '<input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" />';
+              var buttonSelect = '<input type="button" class="form-button blue-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" />';
               <% if admin_mode %>
                 var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable + '<br/><br/>' + buttonSelect;
               <% else %>
@@ -1275,7 +1289,7 @@
                 '</div>';
       	   }
       	   else {      
-    	     var buttonSelect = '<input type="button" class="form-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" />';
+    	     var buttonSelect = '<input type="button" class="form-button blue-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" />';
            <% if admin_mode %>
              var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable + '<br/><br/>' + buttonSelect;
            <% else %>
@@ -1283,7 +1297,7 @@
            <% end%>
 
            content += 
-              '<div class="grid_6" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
+              '<div class="car_price_container grid_3" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
                 '<div class="car_price_total"><span itemprop="price">'+prices[family].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +
                 '<div class="car_price_booking top-margin">' + 
                   available + 

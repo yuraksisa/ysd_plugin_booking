@@ -47,6 +47,7 @@ module Sinatra
         app.get '/admin/booking/config/templates', :allowed_usergroups => ['booking_manager', 'staff'] do
           
           contract = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+          conditions = ContentManagerSystem::Content.first({:alias => '/renting_conditions'})
           summary_message = ContentManagerSystem::Template.first({:name => 'booking_summary_message'})      
           b_m_n = ContentManagerSystem::Template.first({:name => 'booking_manager_notification'})
           b_m_n_pay_now = ContentManagerSystem::Template.first({:name => 'booking_manager_notification_pay_now'})
@@ -54,7 +55,8 @@ module Sinatra
           b_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
           b_m_c_c = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
           
-          locals = {:contract => contract,
+          locals = {:conditions => conditions,
+                    :contract => contract,
                     :summary_message => summary_message,
                     :b_m_n => b_m_n, 
                     :b_m_n_pay_now => b_m_n_pay_now, 
@@ -169,16 +171,18 @@ module Sinatra
           if booking = BookingDataSystem::Booking.get(params[:booking_id])
             if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.item_id)
 
+              catalog = booking_category.booking_catalog
               locals = {}
               locals.store(:booking_item_family, 
-                ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+                catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
               locals.store(:booking_allow_custom_pickup_return_place,
                 SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
               locals.store(:booking, booking)
 
-              if booking_js = ContentManagerSystem::Template.find_by_name(booking_category) and
-                 not booking_js.text.empty?
-                locals.store(:booking_js, booking_js.text)
+              booking_js = catalog_template(catalog)
+
+              if booking_js and not booking_js.text.empty?
+                locals.store(:booking_js, booking_js.text) 
               end
 
               load_page(:booking_edit_pickupreturn, :locals => locals)

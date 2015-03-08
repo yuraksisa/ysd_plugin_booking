@@ -18,9 +18,13 @@
               <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=summary_message.nil? ? nil : summary_message.id%>"><%=t.entitymanagement.edit%></a></div></td>
         </tr>    
         <tr class="table-row" style="background:none">
+           <td class="table-cell"><%=t.booking_configuration_templates.conditions%></td>
+           <td class="table-cell"><div class="form-button"><a href="/admin/cms/content/edit/<%=conditions.nil? ? nil : conditions.id%>"><%=t.entitymanagement.edit%></a></div></td>
+        </tr>
+        <tr class="table-row" style="background:none">
            <td class="table-cell"><%=t.booking_configuration_templates.contract%></td>
            <td class="table-cell"><div class="form-button"><a href="/admin/cms/templates/<%=contract.nil? ? nil : contract.id%>"><%=t.entitymanagement.edit%></a></div></td>
-        </tr>
+        </tr>        
       </tbody>      
     </table> 
   </div>

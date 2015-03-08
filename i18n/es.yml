@@ -1,3 +1,6 @@
+mybooking_bottom:
+  text: Reservas gestionadas con
+  link: myBooking motor de reservas
 booking_pages:
   new_booking: Nueva reserva
 system_admin_menu:
@@ -25,6 +28,7 @@ booking_configuration_templates:
   title: Plantillas sistema de reservas
   general: General
   contract: Contrato de alquiler
+  conditions: Condiciones de alquiler
   summary_message: Mensaje al finalizar la reserva (en la página web)
   emails: Correos electrónicos
   template: Plantilla
@@ -198,6 +202,14 @@ new_booking:
                    <p class="bf-message">Recuerde que dispone de una plazo máximo de 72 horas para realizar el pago y de esta forma confirmar su reserva.</p>
                    <p class="bf-footer">Atentamente, </p>
                    <p class="bf-footer">El equipo de <%= bookingConfiguration.company %></p>
+  height:
+    label: Altura
+    placeholder: Su altura
+    required: La altura es obligatoria
+  weight:
+    label: Peso
+    placeholder: Su peso
+    required: El peso es obligatorio    
   customer_name: 
     label: Nombre
     placeholder: Su nombre
@@ -225,6 +237,15 @@ new_booking:
   customer_mobile: 
     label: Teléfono móvil
     placeholder: Su teléfono móvil
+  contact:
+    label: Datos del contacto
+    description: Si desea <strong>agilizar</strong> la reserva complete los datos del <em>contacto</em>. <em>Pulse el botón + para desplegarlos</em>.
+  contact_name:
+    placeholder: Nombre del contacto
+  contact_surname:
+    placeholder: Apellidos del contacto
+  contact_nif:
+    placeholder: Nif o pasaporte del contacto
   guests:
     title: Huéspedes
     adults: Adultos
@@ -328,7 +349,8 @@ booking_management:
   form:
     reservation_tab: Datos de la reserva
     flight_tab: Datos del vuelo
-    driver_tab: Datos conductor
+    driver_tab: Datos conductor/contacto
+    weight_height_tab: Peso/Altura
     payment_tab: Resumen cobros
     other_tab: Otros datos
     deposit_received: Depósito
@@ -369,7 +391,7 @@ booking_management:
     date_to: Devolución / Salida
     pickup_place: Lugar de entrega
     return_place: Lugar de devolución
-    item: Categoría
+    item: Producto
     assign_item: Asignar recurso
     extras_title: Extras
     extra_description: Descripción
@@ -398,10 +420,12 @@ booking_management:
     customer_phone: Teléfono
     customer_email: Correo electrónico
     customer_language: Idioma    
+    customer_height_placeholder: Altura
+    customer_weight_placeholder: Peso
     guests_title: Huéspedes
     adults: Adultos
     children: Niños (hasta 7 años)    
-    driver_title: Conductor
+    driver_title: Conductor/Contacto
     driver_name: Nombre
     driver_date_of_birth: Fecha de nacimiento
     driver_document_id: Numero documento
@@ -422,6 +446,14 @@ booking_management:
     flight_company: Compañía
     flight_number: Número de vuelo
     flight_time: Hora de llegada
+    booking_single_text: Se trata de una reserva individual
+    booking_group_text: Se trata de una reserva vinculada a otra reserva
+    booking_single: Desvincular la reserva
+    booking_group: Vincular la reserva
+    unlink_booking_button_message: ¿Está seguro que desea desvincular la reserva?
+    main_booking: Grupo de reservas
+    main_booking_search: Buscar reserva principal
+    related_bookings: Reservas relacionadas
 catalog_management:
   table:
     code: Código

@@ -45,11 +45,11 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       
     adaptFormData : function(data) {
             
-      if (data.calendar.id == '') {
+      if (data.calendar && data.calendar.id == '') {
         data.calendar = null;
       }
 
-      if (data.price_definition.id == '') {
+      if (data.price_definition && data.price_definition.id == '') {
         data.price_definition = null;
       }
 

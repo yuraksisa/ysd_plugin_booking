@@ -58,14 +58,6 @@
                 </a>
               </div> 
            <%% } %>
-
-           <%% if (entity.price_definition_id && entity.price_definition_id != null) { %>
-              <div class="form-button green-white-button">
-                <a href="/admin/rates/prices/<%%=entity.price_definition_id%>">
-                  <%=t.booking_category_management.table.prices%>
-                </a>
-              </div>           
-           <%% } %> 
       </td>
     </tr>
 </script>
@@ -100,16 +92,13 @@
               </div>              
               <div class="formrow">
                  <label class="fieldtitle"><%= t.booking_item_management.form.description.label %></label>
-                 <textarea rows="20" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+                 <textarea rows="3" cols="50" id="description" name="description" class="fieldcontrol"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
               </div>
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_item_management.form.calendar.label %></label>
                 <select name="calendar[id]" id="calendar[id]"/>
               </div>     
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.price_definition.label %></label>
-                <select name="price_definition[id]" id="price_definition[id]"/>
-              </div>               
+            
             </div>
           </div>
 

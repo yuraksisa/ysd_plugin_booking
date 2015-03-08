@@ -19,7 +19,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     },
   
     onNew : function() {
-      $('#reference').focus();
+      $('#code').focus();
       this.configForm(null);
       $('#create_category_calendar').bind('change', function() {
          if ($('#create_category_calendar').prop('checked')) {
@@ -75,8 +75,24 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
 
     adaptFormData : function(data) {
             
-      if (data.calendar.id == '') {
+      if (data.calendar && data.calendar.id == '') {
         data.calendar = null;
+      }
+
+      switch (data.type) {
+         case 1:
+           data.type = 'category_of_resources';
+           break;
+         case 2:
+           data.type = 'activity_or_show';
+           break;         
+         case 3:
+           data.type = 'resource';
+           break;         
+      }
+
+      if (data.booking_catalog && data.booking_catalog.code =='') {
+        data.booking_catalog = null;
       }
 
       if ($('#create_category_price').prop('checked')) {

@@ -384,6 +384,85 @@ module Sinatra
         end
 
         #
+        # Main booking search
+        #
+        app.get '/api/bookings/main-search/:id/?*', :allowed_usergroups => ['booking_manager', 'staff'] do
+          search_text = params[:term]
+          
+          conditions =  Conditions::JoinComparison.new('$and',
+                        [ Conditions::Comparison.new(:id, '$ne', params[:id]),
+                          Conditions::Comparison.new(:main_booking_id, '$eq', nil),
+                          Conditions::JoinComparison.new('$or', 
+                             [Conditions::Comparison.new(:id, '$eq', search_text.to_i),
+                              Conditions::Comparison.new(:customer_name, '$like', "%#{search_text}%"),
+                              Conditions::Comparison.new(:customer_surname, '$like', "%#{search_text}%"),
+                              Conditions::Comparison.new(:customer_email, '$eq', search_text)
+                             ])
+                        ])
+
+          data = conditions.build_datamapper(BookingDataSystem::Booking).all.map do |booking|
+            {:value => booking.id,
+             :label => "#{booking.id} - #{booking.date_from.strftime('%Y-%m-%d')} - #{booking.date_to.strftime('%Y-%m-%d')} - #{booking.customer_name.upcase} #{booking.customer_surname.upcase} "
+            } 
+          end
+          data.to_json
+
+        end
+        
+        #
+        # Get the reservations that linked to this one
+        #
+        app.get '/api/bookings/linked/:id/?*', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          result = if booking = BookingDataSystem::Booking.get(params[:id])
+                     conditions = if booking.main_booking 
+                                    Conditions::JoinComparison.new('$or', [
+                                      Conditions::Comparison.new(:main_booking_id, '$eq', booking.main_booking.id),
+                                      Conditions::Comparison.new(:id, '$eq', booking.main_booking.id)])
+                                  else
+                                    Conditions::JoinComparison.new('$or', [
+                                      Conditions::Comparison.new(:main_booking_id, '$eq', booking.id),
+                                      Conditions::Comparison.new(:id, '$eq', booking.id)
+                                      ])
+                                  end   
+                     conditions.build_datamapper(BookingDataSystem::Booking).all.map do |booking|
+                        {:id => booking.id,
+                         :customer_name => booking.customer_name,
+                         :customer_surname => booking.customer_surname,
+                         :item_id => booking.item_id,
+                         :date_from => booking.date_from,
+                         :time_from => booking.time_from,
+                         :date_to => booking.date_to,
+                         :time_to => booking.time_to,
+                         :main_booking_id => booking.main_booking_id,
+                         :status => booking.status}
+                     end
+                   else
+                     []
+                   end
+
+          result.to_json
+
+        end
+
+        #
+        # Unlink a booking
+        # 
+        app.post '/api/booking/unlink/:booking_id', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking = BookingDataSystem::Booking.get(params[:booking_id])
+            booking.main_booking = nil
+            booking.save
+            content_type :json
+            status 200
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
         # Booking access
         #
         app.get '/api/booking/:booking_id',
@@ -574,8 +653,9 @@ module Sinatra
           unless booking_data.has_key?(:customer_language)
             booking_data[:customer_language] = session[:locale] || 'es'
           end
-
+          
           booking = BookingDataSystem::Booking.new(booking_data)
+          booking.init_user_agent_data(request.env["HTTP_USER_AGENT"])
           booking.save
 
           session[:booking_id] = booking.id

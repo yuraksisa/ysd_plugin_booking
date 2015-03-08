@@ -417,6 +417,7 @@ color:#999999;
 
 label.form-reservation-error {
   color: #690404;	
+  display: block;
 }
 
 .readonly-field, #date_from_extended, #date_to_extended, #pickup_place_extended, #return_place_extended{
@@ -546,4 +547,12 @@ label.form-reservation-error {
 
 #booking_item_reference {
   height: 2.2em;
+}
+
+.mybooking_text {
+  color: white;
+}
+
+a.mybooking_link:visited, a.mybooking_link:link, a.mybooking_link:hover {
+  color: yellow;
 }

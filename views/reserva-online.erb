@@ -203,9 +203,17 @@
           <div class="container_12">
             <div >
 	            <fieldset id="fs_summary_item">
+                  <% if booking_item_family.pickup_return_place %>
+	              <div class="grid_3">
+	                <img id="item_image" style="width: 170px"/>	
+	              </div>
+	              <div class="grid_4">              	
+	                <div class="right-margin smaller_text left-margin">
+	              <% else %>
 	              <div class="grid_7">
-	                <img id="item_image" style="width:300px"/>	              	
-	                <div class="right-margin smaller_text centered_text">
+	                <img id="item_image" style="width: 240px"/>	
+	                <div class="right-margin smaller_text centered_text">	                
+	              <% end %>
                       <select id="booking[item_id]" name="booking[item_id]" class="item_chooser"></select>	
 	                  <div>
 	                    <label class="fieldtitle" style="display:inline-block; width:25%">
@@ -277,7 +285,7 @@
 	              <div class="grid_5">
 	                <div class="top-margin right-margin left-margin smaller_text">
 	      	          <input type="hidden" name="total_cost" id="total_cost"/>
-	      	          <div id="detailed_summary" style="border: 1px solid #DDD">
+	      	          <div id="detailed_summary" class="all-space" style="border: 1px solid #DDD">
 	                  </div>      
 	                </div>
 	              </div>
@@ -296,7 +304,7 @@
 	            </tbody>
 	          </table>
 	        </fieldset>
-	        <div class="content_data_box">
+	        <div class="top-margin-1line top-space-1line top-border-nosolid">
 	          <fieldset>
 	            <input type="button" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
 	          </fieldset>
@@ -344,8 +352,26 @@
 	          </div>		        	        
 	          <% end %>
 	          <% if booking_item_family.height %>
+	          <div class="formrow bottom-space">
+	             <label id="label_height" for="booking[customer_height]" class="fieldtitle"><%=t.new_booking.height.label%> <% if booking_item_family.height_mandatory%>*<%end%></label>
+                 <select name="booking[customer_height]" id="booking[customer_height]" class="fieldcontrol">
+                 	 <option value=""><%=t.new_booking.height.placeholder%></option>
+                     <% booking_item_family.height_values.split(',').each do |height|%>
+                     <option value="<%=height%>"><%=height%></option>
+                     <% end %>
+                 </select>  
+	          </div>
 	          <% end %>
 	          <% if booking_item_family.weight %>
+	          <div class="formrow bottom-space">
+	             <label id="label_weight" for="booking[customer_weight]" class="fieldtitle"><%=t.new_booking.weight.label%> <% if booking_item_family.weight_mandatory%>*<%end%></label>
+                 <select name="booking[customer_weight]" id="booking[customer_weight]" class="fieldcontrol">
+                 	 <option value=""><%=t.new_booking.weight.placeholder%></option>
+                     <% booking_item_family.weight_values.split(',').each do |weight|%>
+                     <option value="<%=weight%>"><%=weight%></option>
+                     <% end %>
+                 </select>  
+	          </div>	          
 	          <% end %>
 	        </fieldset>
 
@@ -361,23 +387,25 @@
 	        <% if booking_item_family.driver %>
 	        <fieldset id="fs_driver">
 	          <legend id="lg_driver" class="legend-first-level overflow">
-	        	<%=t.new_driving_booking.driver.label%>
+	        	<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver.label : t.new_booking.contact.label%>
 	        	<span id="show_driver" data-icon="&#xe06d;" aria-hidden=true class="right-float"></span>
 	          </legend>	             
-	          <p class="fieldset_description"><%=t.new_driving_booking.driver.description%></p>
+	          <p class="fieldset_description">
+	          	 <%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver.description : t.new_booking.contact.description%>
+	          </p>
 	          <div id="driver_data" class="background-color-2 top-space bottom-space left-space right-space" style="display:none">
 	            <legend class="legend-second-level"><%=t.new_driving_booking.driver_personal_data%></legend>
 	            <div class="formrow">
 	              <label id="label_driver_name" for="booking[driver_name]" class="fieldtitle"><%=t.new_driving_booking.driver_name.label%></label>
-	              <input type="text" name="booking[driver_name]" id="booking[driver_name]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_driving_booking.driver_name.placeholder%>"/>
+	              <input type="text" name="booking[driver_name]" id="booking[driver_name]" class="fieldcontrol" maxlength="40" placeholder="<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver_name.placeholder : t.new_booking.contact_name.placeholder%>"/>
 	            </div>
 	            <div class="formrow">
 	              <label id="label_driver_surname" for="booking[driver_surname]" class="fieldtitle"><%=t.new_driving_booking.driver_surname.label%></label>
-	              <input type="text" name="booking[driver_surname]" id="booking[driver_surname]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_driving_booking.driver_surname.placeholder%>"/>
+	              <input type="text" name="booking[driver_surname]" id="booking[driver_surname]" class="fieldcontrol" maxlength="40" placeholder="<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver_surname.placeholder : t.new_booking.contact_surname.placeholder%>"/>
 	            </div>
 	            <div class="formrow">
 	              <label id="label_driver_document" for="booking[driver_document_id]" class="fieldtitle"><%=t.new_driving_booking.driver_nif.label%></label>
-	              <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_driving_booking.driver_nif.placeholder%>"/>
+	              <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol" maxlength="15" placeholder="<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver_nif.placeholder : t.new_booking.contact_nif.placeholder%>"/>
 	            </div>	        
 	            <% if booking_item_family.driver_license %>
                 <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_license%></legend>
