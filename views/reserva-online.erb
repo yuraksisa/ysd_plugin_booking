@@ -30,6 +30,8 @@
     <div id="content-body" class="element-form-detail bottom-margin">
 
       <!-- ITEM SELECTION TAB -->
+
+      <!-- Dates selection -->
       <% if booking_reservation_starts_with == :dates %>
 	  <div id="item-selection" class="bottom-margin">
 		  <form id="form-search-item" name="form-search-item" class="guiblock">
@@ -107,13 +109,12 @@
 		  <div id="result" class="top-separator">
 		  </div>
 
-		<% else %>
-          <!-- CATEGORIES SELECTION -->
+		<% end 
+		   if booking_reservation_starts_with == :categories or booking_reservation_starts_with == :shopcart %>
+          <!-- Categories selection -->
 	      <div id="item-selection" class="bottom-margin">
-          
             <div id="items_families" class="container_12">
             </div>
-
             <form id="family-selection" name="family-selection" style="display:none">
               <div id="items_dates" class="container_12">
                 <div class="top-margin-1line top-space top-border-nosolid">
@@ -184,6 +185,9 @@
                 </div>
               </div>
 
+              <div id="itemized_price" class="top-margin-1line bottom-margin-1line">
+              </div>
+
               <div class="continue_families_to_extras" class="container_12">
                 <div class="top-margin-1line top-space-1line top-border-nosolid">
                   <button id="families_to_extras" class="form-button" type="button" 
@@ -201,20 +205,25 @@
         <!-- The summary header (shown in all the other tabs) -->
         <div id="other-tabs-header" class="guiblock">
           <div class="container_12">
-            <div >
+            <div>
 	            <fieldset id="fs_summary_item">
-                  <% if booking_item_family.pickup_return_place %>
-	              <div class="grid_3">
-	                <img id="item_image" style="width: 170px"/>	
-	              </div>
-	              <div class="grid_4">              	
-	                <div class="right-margin smaller_text left-margin">
-	              <% else %>
-	              <div class="grid_7">
-	                <img id="item_image" style="width: 240px"/>	
-	                <div class="right-margin smaller_text centered_text">	                
+	              <% if booking_reservation_starts_with == :shopcart %>
+	                  <div class="grid_12">
+	              	    <div class="centered_text">
+	              <% else %>	
+                    <% if booking_item_family.pickup_return_place %>
+	                  <div class="grid_3">
+	                    <img id="item_image" style="width: 170px"/>	
+	                  </div>
+	                  <div class="grid_4">              	
+	                    <div class="right-margin smaller_text left-margin">
+	                <% else %>
+	                  <div class="grid_7">
+	                    <img id="item_image" style="width: 240px"/>	
+	                    <div class="right-margin smaller_text centered_text">	                
+	                <% end %>
 	              <% end %>
-                      <select id="booking[item_id]" name="booking[item_id]" class="item_chooser"></select>	
+                      <p id="item_description"></p>
 	                  <div>
 	                    <label class="fieldtitle" style="display:inline-block; width:25%">
 	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
@@ -246,7 +255,7 @@
                         </div>
                       </div>
 	                  <% end %>	    
-                      
+ 
                       <% if (booking_item_family.guests) %>
                       <div >
 		                <div>
@@ -282,13 +291,16 @@
                       <% end %>		                
 	                </div>
 	              </div>
-	              <div class="grid_5">
+	              <div class="<% if booking_reservation_starts_with == :shopcart%>grid_12 centered_text<%else%>grid_5<%end%>">
 	                <div class="top-margin right-margin left-margin smaller_text">
 	      	          <input type="hidden" name="total_cost" id="total_cost"/>
-	      	          <div id="detailed_summary" class="all-space" style="border: 1px solid #DDD">
+	      	          <div id="detailed_summary" class="all-space">
 	                  </div>      
 	                </div>
 	              </div>
+	            <% if booking_reservation_starts_with == :shopcart %>
+	              </div>
+	            <% end %>
 	            </fieldset>
 	        </div>
 	      </div>
@@ -571,6 +583,35 @@
                 </div>
               </div>
   </script>
+
+  <script type="text/tmpl" id="script_shopping_cart">         
+              <div class="<%% if (currentRow == totalRows-1 && lastRowItems == 2 && currentCol == 0){%>prefix_2<%%} else if (currentRow == totalRows-1 && lastRowItems == 1 && currentCol == 0) {%>prefix_4<%%}%> grid_4">
+                <div id="family_<%%=category.family%>" class="family top-margin" style="padding:5px">
+                  <div>
+                    <img src="<%%=category.photo%>" style="display: block; margin: 0 auto" />
+                  </div>
+                  <div class="top-margin">
+                    <span class="centered_text" style="display: block; margin: 0 auto" ><%%=category.description%></span>
+                  </div>
+                  <div class="top-margin">
+                    <form>
+                    <select class="quantity form-control" style="display:block; margin: 0 auto" rel="<%%=category.family%>">
+                       <option value="0">0</option>
+                       <option value="1">1</option>
+                       <option value="2">2</option>
+                       <option value="3">3</option>
+                       <option value="4">4</option>
+                       <option value="5">5</option>
+                       <option value="6">6</option>
+                       <option value="7">7</option>
+                       <option value="8">8</option>
+                       <option value="9">9</option>                       
+                    </select>
+                    </form>
+                  </div>
+                </div>
+              </div>
+  </script>
   
   <script type="text/tmpl" id="script_extras">
   	          <tr class="booking_extra" id="booking_extra_<%%=extra.id%>" <%% if (!extra.optionalAccepted(optional)) {%> style="display:none" <%% } %> >
@@ -598,28 +639,34 @@
         <thead>
           <tr>
             <th><%=t.new_booking.concept%></th>
-            <th><%=t.new_booking.quantity%></th>
             <th><%=t.new_booking.days%></th>
             <th><%=t.new_booking.price%></th>
+            <th><%=t.new_booking.quantity%></th>
+            <th><%=t.new_booking.total%></th>
           </tr>
         </thead>
         <tbody>
+          <%% for (item in booking.booking_lines) { %>
           <tr>
-            <td class="first_column"><%%= bookingDataSystem.families[booking.item_id].cars %> <%% if (booking.optional) { %> <%%='('+bookingDataSystem.optionals[booking.optional].name+')'%> <%% } %> </td>
-            <td class="quantity_column"><%%= booking.quantity %> </td>
+            <td class="first_column"><%%= bookingDataSystem.families[item].cars %></td>
             <td class="quantity_column"><%%= booking.days %> </td>
-            <td class="quantity_column"><%%= booking.item_cost %>€ </td>
+            <td class="quantity_column"><%%= booking.booking_lines[item].item_unit_cost %>€ </td>
+            <td class="quantity_column"><%%= booking.booking_lines[item].quantity %> </td>
+            <td class="quantity_column"><%%= booking.booking_lines[item].item_cost %>€ </td>
           </tr>
+          <%% } %>
           <%% for (extra in booking.booking_extras) { %>
             <tr>
               <td class="first_column"><%%= bookingDataSystem.extras[booking.booking_extras[extra].extra_id].the_name %></td>
-              <td class="quantity_column"><%%= booking.booking_extras[extra].quantity %></td>
               <td class="quantity_column"><%%= booking.days %> </td>
+              <td class="quantity_column"><%%= booking.booking_extras[extra].extra_unit_cost %>€</td>
+              <td class="quantity_column"><%%= booking.booking_extras[extra].quantity %></td>
               <td class="quantity_column"><%%= booking.booking_extras[extra].extra_cost %>€</td>
             </tr>
           <%% } %>
           <tr>
             <td class="total_column first_column"><%=t.new_booking.total.upcase%></td>
+            <td class="quantity_column"></td>
             <td class="quantity_column"></td>
             <td class="quantity_column"></td>
             <td class="quantity_column total_column"><%%= booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) %>€ </td>

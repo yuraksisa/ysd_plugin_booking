@@ -40,7 +40,8 @@ module Sinatra
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ],
                     :reservation_starts_with => {
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
-                       :categories => t.booking_settings.form.reservation_starts_with.categories} }
+                       :categories => t.booking_settings.form.reservation_starts_with.categories,
+                       :shopcart => t.booking_settings.form.reservation_starts_with.shoppingcart} }
           load_page(:config_booking, {:locals => locals})
         end
 

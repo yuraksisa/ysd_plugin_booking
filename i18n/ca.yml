@@ -18,7 +18,8 @@ booking_settings:
     reservation_starts_with:
       title: La reserva comença escollint
       dates: Les dates
-      categories: Els productes    
+      categories: Els productes
+      shoppingcart: Carrito de la compra    
     deposit: \% Dipòsit
     allow_total_payment: Permetre pagar el total de la reserva
     min_days: Numero mínim de dies

@@ -18,7 +18,8 @@ booking_settings:
     reservation_starts_with:
       title: The reservations starts selecting
       dates: Dates
-      categories: Products    
+      categories: Products
+      shoppingcart: Shopping cart    
     deposit: \% Diposit
     allow_total_payment: Allow to pay the total of the reservation    
     min_days: Minimum days   
@@ -119,7 +120,7 @@ new_booking:
   extras: Extras
   extra: Extra
   quantity: Quantity
-  price: Price
+  price: Unit price
   customer: Customer
   conditions_confirm: I have read and accept <a href="%1" target="_blank">their conditions of this service</a>
   continue: Continue
