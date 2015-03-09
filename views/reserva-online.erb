@@ -31,291 +31,52 @@
 
       <!-- ITEM SELECTION TAB -->
 
-      <!-- Dates selection -->
       <% if booking_reservation_starts_with == :dates %>
-	  <div id="item-selection" class="bottom-margin">
-		  <form id="form-search-item" name="form-search-item" class="guiblock">
-		    <div class="container_12">
-		      <div class="grid_4">
-		      <div class="formrow">
-		      	<label for="datefrom" id="labeldatefrom" class="fieldtitle">
-		      		<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
-		      	</label> 
-		      	<input type="text" name="datefrom" id="datefrom" class="date_control" size="15" maxlength="10"/>
-		      	<% if booking_item_family.time_to_from %>
-		      	<select name="timefrom" id="timefrom"> 
-		      	</select>
-		      	<% else %>
-		      	   <input type="hidden" name="timefrom" id="timefrom" value="<%=booking_item_family.time_start%>">
-                <% end %>
-		      </div>
-              <% if booking_item_family.pickup_return_place %>
-		      <div class="formrow">
-	              <div class="collection_place">
-	                 <label for="pickup_place" class="fieldtitle"><%=t.new_booking.pickup_place%></label>
-	                 <select name="pickup_place" class="fieldcontrol" id="pickup_place">
-	                 </select>
-	              </div>
-	              <div id="other_pickup_place" style="display:none;">
-	                 <span class="columna1">&nbsp;</span>
-	                 <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
-	              </div>
-	              <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
-	          </div>          		      	
-	          <% end %>	    
-	          </div>
-	          <div class="grid_4">   
-		      <div class="formrow">
-		      	<label for="dateto" id="labeldateto" class="fieldtitle">
-		      	  <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
-		      	</label> 
-		      	<input type="text" name="dateto" id="dateto" class="date_control" size="15" maxlength="10"/>
-		      	<% if booking_item_family.time_to_from %>
-		      	<select name="timeto" id="timeto"> 
-		      	</select>
-		      	<% else %>
-		      	   <input type="hidden" name="timeto" id="timeto" value="<%=booking_item_family.cycle_of_24_hours ? booking_item_family.time_start : booking_item_family.time_end%>">
-		      	<% end %>
-		      </div>
-	          <% if booking_item_family.pickup_return_place %>
-	          <div class="formrow">
-	               <div class="return_place">
-	                  <label for="return_place" class="fieldtitle"><%=t.new_booking.return_place%></label>
-	      	          <select name="return_place" id="return_place" class="fieldcontrol">
-	                  </select>
-                   </div>
-	               <div id="other_return_place" style="display:none;">
-	               	  <span class="columna1">&nbsp;</span>
-	                  <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" placeholder="<%=t.new_booking.return_place%>"/>  
-	               </div>
-	               <input type="hidden" name="return_place_value" id="return_place_value"/>
-	          </div>
-	          <% end %>
-	          </div>
-              <div class="grid_4">
-		        <div class="formrow">
-		          <% if booking_item_family.pickup_return_place %>	
-		          <div class="top-margin-2lines">
-		          <% else %>
-		          <div class="top-margin">
-		          <% end %>	
-	        	    <input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones"/>
-	        	  </div>
-		        </div>  
-		      </div>
-
-		    </div>
-		  </form>
+	    <div id="item-selection" class="bottom-margin">
+          <%= partial :reserva_online_dates_selection, :locals => {:booking_item_family => booking_item_family} %>
 		  <div id="result" class="top-separator">
 		  </div>
-
-		<% end 
-		   if booking_reservation_starts_with == :categories or booking_reservation_starts_with == :shopcart %>
-          <!-- Categories selection -->
+	    </div>
+ 	  <% end %>
+	  
+	  <% if booking_reservation_starts_with == :categories or booking_reservation_starts_with == :shopcart %>
 	      <div id="item-selection" class="bottom-margin">
             <div id="items_families" class="container_12">
             </div>
-            <form id="family-selection" name="family-selection" style="display:none">
-              <div id="items_dates" class="container_12">
-                <div class="top-margin-1line top-space top-border-nosolid">
-                  <div class="<%unless booking_item_family.pickup_return_place%>prefix_2<%end%> grid_4">
-		            <div class="formrow">
-		      	      <label for="datefrom" id="labeldatefrom" class="fieldtitle">
-		      		  <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
-		      	      </label> 
-		      	      <input type="text" name="datefrom" id="datefrom" class="date_control" size="15" maxlength="10"/>
-		      	      <% if booking_item_family.time_to_from %>
-		      	      <select name="timefrom" id="timefrom"> 
-		      	      </select>
-		      	      <% else %>
-		      	         <input type="hidden" name="timefrom" id="timefrom" value="<%=booking_item_family.time_start%>">	      	      
-                      <% end %>
-		            </div>
-                    <% if booking_item_family.pickup_return_place %>
-		            <div class="formrow">
-	                  <div class="collection_place">
-	                    <label for="pickup_place" class="fieldtitle"><%=t.new_booking.pickup_place%></label>
-	                    <select name="pickup_place" class="fieldcontrol" id="pickup_place">
-	                    </select>
-	                  </div>
-	                  <div id="other_pickup_place" style="display:none;">
-	                    <span class="columna1">&nbsp;</span>
-	                    <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
-	                  </div>
-	                  <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
-	                </div>          		      	
-	              </div>
-	              <div class="grid_4">      
-	                <% end %>	 
-		            <div class="formrow">
-		      	      <label for="dateto" id="labeldateto" class="fieldtitle">
-		      	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
-		      	      </label> 
-		      	      <input type="text" name="dateto" id="dateto" class="date_control" size="15" maxlength="10"/>
-		      	      <% if booking_item_family.time_to_from %>
-		      	      <select name="timeto" id="timeto"> 
-		      	      </select>
-		      	      <% else %>
-		      	        <input type="hidden" name="timeto" id="timeto" value="<%=booking_item_family.cycle_of_24_hours ? booking_item_family.time_start : booking_item_family.time_end%>">	      	      
-                      <% end %>
-	                  <% if booking_item_family.pickup_return_place %>
-	                  <div class="formrow">
-	                    <div class="return_place">
-	                      <label for="return_place" class="fieldtitle"><%=t.new_booking.return_place%></label>
-	      	              <select name="return_place" id="return_place" class="fieldcontrol">
-	                      </select>
-                        </div>
-	                    <div id="other_return_place" style="display:none;">
-	               	      <span class="columna1">&nbsp;</span>
-	                      <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" placeholder="<%=t.new_booking.return_place%>"/>  
-	                    </div>
-	                    <input type="hidden" name="return_place_value" id="return_place_value"/>
-	                  </div>
-	                  <% end %>  
-		            </div>
-                  </div>
-                  <div class="grid_4">
-                  	<div class="guiblock top-margin-2lines bottom-margin-1line">
-                 	  <span id="price" class="centered_text" style="font-size:4em; display: block; margin:0 auto">60€</span>
-                      <span id="number_of_days" class="centered_text" style="font-size:0.8em; display: block; margin:0 auto"></span>                 	  
-                    </div>
-                    <div id="availability">
-                    </div>                    
-                  </div>
-                </div>
-              </div>
+          <%= partial :reserva_online_categories_selection, :locals => {:booking_item_family => booking_item_family} %>
+          </div>
+	  <% end %>
 
-              <div id="itemized_price" class="top-margin-1line bottom-margin-1line">
-              </div>
-
-              <div class="continue_families_to_extras" class="container_12">
-                <div class="top-margin-1line top-space-1line top-border-nosolid">
-                  <button id="families_to_extras" class="form-button" type="button" 
-                    style="display:block; margin: 0 auto"><%=t.new_booking.continue%></button>
-                </div>
-              </div>
-            
-            </form>
-
-		<% end %>
-	  </div>
+      <!-- OTHER TABS -->
 
       <div id="other-tabs" class="bottom-margin" style="display:none">
 
         <!-- The summary header (shown in all the other tabs) -->
         <div id="other-tabs-header" class="guiblock">
-          <div class="container_12">
-            <div>
-	            <fieldset id="fs_summary_item">
-	              <% if booking_reservation_starts_with == :shopcart %>
-	                  <div class="grid_12">
-	              	    <div class="centered_text">
-	              <% else %>	
-                    <% if booking_item_family.pickup_return_place %>
-	                  <div class="grid_3">
-	                    <img id="item_image" style="width: 170px"/>	
-	                  </div>
-	                  <div class="grid_4">              	
-	                    <div class="right-margin smaller_text left-margin">
-	                <% else %>
-	                  <div class="grid_7">
-	                    <img id="item_image" style="width: 240px"/>	
-	                    <div class="right-margin smaller_text centered_text">	                
-	                <% end %>
-	              <% end %>
-                      <p id="item_description"></p>
-	                  <div>
-	                    <label class="fieldtitle" style="display:inline-block; width:25%">
-	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
-	                    </label>
-                        <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="width:15em"/>
-	                  </div>
-
-                      <% if booking_item_family.pickup_return_place %>
-		              <div>
-	                     <div class="collection_place">
-	                     <label for="pickup_place_extended" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.place%></label>
-	                     <input type="text" name="pickup_place_extended" id="pickup_place_extended" class="readonly-field" readonly="readonly"/>
-	                     </div>
-	                  </div>
-	                  <% end %>	    
-
-	                  <div>
-	                    <label class="fieldtitle" style="display:inline-block; width:25%">
-	          	          <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%>
-	                    </label>
-                        <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly" style="width:15em"/>
-	                  </div>
-
-                      <% if booking_item_family.pickup_return_place %>
-		              <div >
-	                    <div class="return_place">
-	                      <label for="return_place_extended" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.place%></label>
-	      	              <input type="text" name="return_place_extended" id="return_place_extended" class="readonly-field" readonly="readonly"/>
-                        </div>
-                      </div>
-	                  <% end %>	    
- 
-                      <% if (booking_item_family.guests) %>
-                      <div >
-		                <div>
-		                  <label id="label_adult_guests" for="booking[number_of_adults]" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.guests.adults%></label>	
-		                  <select name="booking[number_of_adults]" id="booking[number_of_adults]" style="margin-right:5%"> 
-			                <option value="1" selected="selected">1</option>
-				            <option value="2">2</option>
-				            <option value="3">3</option>
-				            <option value="4">4</option>
-				            <option value="5">5</option>
-				            <option value="6">6</option>
-				            <option value="7">7</option>
-				            <option value="8">8</option>
-				            <option value="9">9</option>
-				            <option value="10">10</option>
-                          </select>
-		                  <label id="label_adult_guests" for="booking[number_of_children]" class="fieldtitle" style="display:inline-block"><%=t.new_booking.guests.children%></label>	
-		                  <select name="booking[number_of_children]" id="booking[number_of_children]"> 
-			                <option value="0" selected="selected">0</option>
-				            <option value="1">1</option>
-				            <option value="2">2</option>
-				            <option value="3">3</option>
-				            <option value="4">4</option>
-				            <option value="5">5</option>
-				            <option value="6">6</option>
-				            <option value="7">7</option>
-				            <option value="8">8</option>
-				            <option value="9">9</option>
-				            <option value="10">10</option>
-                          </select>
-                        </div>    
-                      </div>                   
-                      <% end %>		                
-	                </div>
-	              </div>
-	              <div class="<% if booking_reservation_starts_with == :shopcart%>grid_12 centered_text<%else%>grid_5<%end%>">
-	                <div class="top-margin right-margin left-margin smaller_text">
-	      	          <input type="hidden" name="total_cost" id="total_cost"/>
-	      	          <div id="detailed_summary" class="all-space">
-	                  </div>      
-	                </div>
-	              </div>
-	            <% if booking_reservation_starts_with == :shopcart %>
-	              </div>
-	            <% end %>
-	            </fieldset>
-	        </div>
-	      </div>
+          <%= partial :reserva_online_summary_header, :locals => {:booking_item_family => booking_item_family, :booking_reservation_starts_with => booking_reservation_starts_with} %>
         </div>
 
         <!-- EXTRAS SELECTION TAB -->
         <div id="extras-selection" class="bottom-margin" style="display:none">
       	  <form>
-	        <fieldset id="fs_summary_extras">
-	          <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
-	          <table id="tblextras">
-	            <tbody>
-	            </tbody>
-	          </table>
-	        </fieldset>
+      	  	<div class="container_12">
+	          <div class="grid_6">
+	            <fieldset id="fs_summary_extras">
+	              <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
+	              <table id="tblextras">
+	                <tbody>
+	                </tbody>
+	              </table>
+	            </fieldset>
+	          </div>
+	          <div class="grid_6">
+	            <fieldset id="fs_resources_attributes">
+	              <legend id="lg_summary_extras" class="legend-first-level">Recursos</legend>		 
+	              <div id="resources_attributes">
+	              </div>
+	            </fieldset>
+	          </div>
+	        </div>
 	        <div class="top-margin-1line top-space-1line top-border-nosolid">
 	          <fieldset>
 	            <input type="button" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
@@ -328,174 +89,7 @@
 
 	    <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
 	      <div>	      
-	        <fieldset id="fs_customer">
-	          <legend id="lg_customer" class="legend-first-level"><%=t.new_booking.customer%></legend>
-	          <div class="formrow">
-	            <label id="label_customer_email" for="booking[customer_name]" class="fieldtitle"><%=t.new_booking.customer_name.label%> *</label>
-	            <input type="text" name="booking[customer_name]" id="booking[customer_name]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_name.placeholder%>"/>
-	          </div>
-	          <div class="formrow">
-	            <label id="label_customer_surname" for="booking[customer_surname]" class="fieldtitle"><%=t.new_booking.customer_surname.label%> *</label>
-	            <input type="text" name="booking[customer_surname]" id="booking[customer_surname]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_surname.placeholder%>"/>	          
-	          </div>
-	          <div class="formrow">
-	            <label id="label_customer_email" for="booking[customer_email]" class="fieldtitle"><%=t.new_booking.customer_email.label%> *</label>
-	            <input type="text" name="booking[customer_email]" id="booking[customer_email]" class="fieldcontrol" placeholder="<%=t.new_booking.customer_email.placeholder%>" maxlength="40"/>
-	          </div>
-	          <div class="formrow">
-	            <label id="label_customer_email_confirmation" for="booking[customer_email_confirmation]" class="fieldtitle"><%=t.new_booking.customer_email_confirmation.label%> *</label>
-	            <input type="text" name="booking[customer_email_confirmation]" id="booking[customer_email_confirmation]" class="fieldcontrol" placeholder="<%=t.new_booking.customer_email_confirmation.placeholder%>" maxlength="40"/>
-	          </div>
-	          <div class="formrow">
-	            <label id="label_customer_phone" for="booking[customer_phone]" class="fieldtitle"><%=t.new_booking.customer_phone.label%> *</label>
-	            <input type="text" name="booking[customer_phone]" id="booking[customer_phone]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_booking.customer_phone.placeholder%>"/>      
-	          </div>
-	          <div class="formrow">
-	            <label id="label_customer_mobile_phone" for="booking[customer_mobile_phone]" class="fieldtitle"><%=t.new_booking.customer_mobile.label%></label>
-	            <input type="text" name="booking[customer_mobile_phone]" id="booking[customer_mobile_phone]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_booking.customer_mobile.placeholder%>"/>      
-	          </div>
-	          <% if booking_item_family.driver and booking_item_family.driver_date_of_birth%>
-	          <div class="formrow bottom-space">
-	             <label id="label_driver_date_of_birth" for="booking[driver_date_of_birth]" class="fieldtitle"><%=t.new_driving_booking.driver_date_of_birth.label%> *</label>
-                 <select name="booking[driver_date_of_birth_day]" id="booking[driver_date_of_birth_day]"></select>
-                 <select name="booking[driver_date_of_birth_month]" id="booking[driver_date_of_birth_month]"></select>
-                 <select name="booking[driver_date_of_birth_year]" id="booking[driver_date_of_birth_year]"></select>
-                 <input type="hidden" name="booking[driver_date_of_birth]" id="booking[driver_date_of_birth]"></input>
-	          </div>		        	        
-	          <% end %>
-	          <% if booking_item_family.height %>
-	          <div class="formrow bottom-space">
-	             <label id="label_height" for="booking[customer_height]" class="fieldtitle"><%=t.new_booking.height.label%> <% if booking_item_family.height_mandatory%>*<%end%></label>
-                 <select name="booking[customer_height]" id="booking[customer_height]" class="fieldcontrol">
-                 	 <option value=""><%=t.new_booking.height.placeholder%></option>
-                     <% booking_item_family.height_values.split(',').each do |height|%>
-                     <option value="<%=height%>"><%=height%></option>
-                     <% end %>
-                 </select>  
-	          </div>
-	          <% end %>
-	          <% if booking_item_family.weight %>
-	          <div class="formrow bottom-space">
-	             <label id="label_weight" for="booking[customer_weight]" class="fieldtitle"><%=t.new_booking.weight.label%> <% if booking_item_family.weight_mandatory%>*<%end%></label>
-                 <select name="booking[customer_weight]" id="booking[customer_weight]" class="fieldcontrol">
-                 	 <option value=""><%=t.new_booking.weight.placeholder%></option>
-                     <% booking_item_family.weight_values.split(',').each do |weight|%>
-                     <option value="<%=weight%>"><%=weight%></option>
-                     <% end %>
-                 </select>  
-	          </div>	          
-	          <% end %>
-	        </fieldset>
-
-	        <fieldset id="fs_info">
-	          <legend id="lg_info" class="legend-first-level"><%=t.new_booking.other_data%></legend>
-	          <div class="formrow">
-	            <label id="label_comments" for="booking[comments]" class="fieldtitle"><%=t.new_booking.comments.label%></label>
-	            <textarea id="booking[comments]" name="booking[comments]" class="fieldcontrol" rows="10" placeholder="<%=t.new_booking.comments.placeholder%>"></textarea>
-	          </div>	      
-	          <p class="form-reservation-right-column"> <span id="booking_comments_length"></span> <%=t.available_chars%></p>
-	        </fieldset>
-
-	        <% if booking_item_family.driver %>
-	        <fieldset id="fs_driver">
-	          <legend id="lg_driver" class="legend-first-level overflow">
-	        	<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver.label : t.new_booking.contact.label%>
-	        	<span id="show_driver" data-icon="&#xe06d;" aria-hidden=true class="right-float"></span>
-	          </legend>	             
-	          <p class="fieldset_description">
-	          	 <%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver.description : t.new_booking.contact.description%>
-	          </p>
-	          <div id="driver_data" class="background-color-2 top-space bottom-space left-space right-space" style="display:none">
-	            <legend class="legend-second-level"><%=t.new_driving_booking.driver_personal_data%></legend>
-	            <div class="formrow">
-	              <label id="label_driver_name" for="booking[driver_name]" class="fieldtitle"><%=t.new_driving_booking.driver_name.label%></label>
-	              <input type="text" name="booking[driver_name]" id="booking[driver_name]" class="fieldcontrol" maxlength="40" placeholder="<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver_name.placeholder : t.new_booking.contact_name.placeholder%>"/>
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_surname" for="booking[driver_surname]" class="fieldtitle"><%=t.new_driving_booking.driver_surname.label%></label>
-	              <input type="text" name="booking[driver_surname]" id="booking[driver_surname]" class="fieldcontrol" maxlength="40" placeholder="<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver_surname.placeholder : t.new_booking.contact_surname.placeholder%>"/>
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_document" for="booking[driver_document_id]" class="fieldtitle"><%=t.new_driving_booking.driver_nif.label%></label>
-	              <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol" maxlength="15" placeholder="<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver_nif.placeholder : t.new_booking.contact_nif.placeholder%>"/>
-	            </div>	        
-	            <% if booking_item_family.driver_license %>
-                <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_license%></legend>
-	            <div class="formrow">
-	              <label id="label_driver_driving_license_number" for="booking[driver_driving_license_number]" class="fieldtitle"><%=t.new_driving_booking.driver_license_number.label%></label>
-	              <input type="text" name="booking[driver_driving_license_number]" id="booking[driver_driving_license_number]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_driving_booking.driver_license_number.placeholder%>"/>
-	            </div>
-	            <div class="formrow">
-  	              <label id="label_driver_driving_license_date" for="booking[driver_driving_license_date]" class="fieldtitle"><%=t.new_driving_booking.driver_license_date.label%></label>
-	              <select name="booking[driver_driving_license_date_day]" id="booking[driver_driving_license_date_day]"></select>
-                  <select name="booking[driver_driving_license_date_month]" id="booking[driver_driving_license_date_month]"></select>
-                  <select name="booking[driver_driving_license_date_year]" id="booking[driver_driving_license_date_year]"></select>
-                  <input type="hidden" name="booking[driver_driving_license_date]" id="booking[driver_driving_license_date]"></select>    
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_driving_license_country" for="booking[driver_driving_license_country]" class="fieldtitle"><%=t.new_driving_booking.driver_license_country.label%></label>
-	              <input type="text" name="booking[driver_driving_license_country]" id="booking[driver_driving_license_country]" class="fieldcontrol" maxlength="50" placeholder="<%=t.new_driving_booking.driver_license_country.placeholder%>"/>
-	            </div>
-	            <% end %>
-                <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_address%></legend>
-	            <div class="formrow">
-	              <label id="label_driver_address_street" for="booking[driver_address[street]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_street.label%></label>
-	              <input type="text" name="booking[driver_address[street]]" id="booking[driver_address[street]]" class="fieldcontrol" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_street.placeholder%>"/>
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_address_number" for="booking[driver_address[number]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_number.label%></label>
-	              <input type="text" name="booking[driver_address[number]]" id="booking[driver_address[number]]" class="fieldcontrol" maxlength="10" placeholder="<%=t.new_driving_booking.driver_address_number.placeholder%>"/>
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_address_complement" for="booking[driver_address[complement]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_complement.label%></label>
-	              <input type="text" name="booking[driver_address[complement]]" id="booking[driver_address[complement]]" class="fieldcontrol" maxlength="20" placeholder="<%=t.new_driving_booking.driver_address_complement.placeholder%>"/>
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_address_city" for="booking[driver_address[city]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_city.label%></label>
-	              <input type="text" name="booking[driver_address[city]]" id="booking[driver_address[city]]" class="fieldcontrol" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_city.placeholder%>"/>      
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_address_state" for="booking[driver_address[state]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_state.label%></label>
-	              <input type="text" name="booking[driver_address[state]]" id="booking[driver_address[state]]" class="fieldcontrol" maxlength="60" placeholder="<%=t.new_driving_booking.driver_address_state.placeholder%>"/>    
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_address_country" for="booking[driver_address[country]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_country.label%></label>
-	              <input type="text" name="booking[driver_address[country]]" id="booking[driver_address[country]]" class="fieldcontrol" maxlength="50" placeholder="<%=t.new_driving_booking.driver_address_country.placeholder%>"/>      
-	            </div>
-	            <div class="formrow">
-	              <label id="label_driver_address_zip" for="booking[driver_address[zip]]" class="fieldtitle"><%=t.new_driving_booking.driver_address_zip.label%></label>
-	              <input type="text" name="booking[driver_address[zip]]" id="booking[driver_address[zip]]" class="fieldcontrol" maxlength="10" placeholder="<%=t.new_driving_booking.driver_address_zip.label%>"/>         
-	            </div>
-	          </div>
-	        </fieldset>
-	        <% end %>
-
-	        <% if booking_item_family.flight %>
-	        <fieldset id="fs_flight">
-	          <legend id="lg_flight" class="legend-first-level overflow">
-	         	<%=t.new_booking.flight.title%>
-	        	<span id="show_flight" data-icon="&#xe06d;" aria-hidden=true class="right-float"></span>
-	          </legend>	
-	          <div id="flight_data" class="background-color-2 top-space bottom-space left-space right-space" style="display:none">
-	            <div class="formrow">
-	              <label id="label_flight_company" for="booking[flight_company]" class="fieldtitle"><%=t.new_booking.flight.company.label%></label>
-	              <input type="text" name="booking[flight_company]" id="booking[flight_company]" 
-	                   class="fieldcontrol" maxlength="80" placeholder="<%=t.new_booking.flight.company.placeholder%>"/>
-	            </div>
-	            <div class="formrow">
-	              <label id="label_flight_company" for="booking[flight_number]" class="fieldtitle"><%=t.new_booking.flight.number.label%></label>
-	              <input type="text" name="booking[flight_number]" id="booking[flight_number]" 
-	                   class="fieldcontrol" maxlength="10" placeholder="<%=t.new_booking.flight.number.placeholder%>"/>
-	            </div>
-	            <div class="formrow">
-	              <label id="label_flight_company" for="booking[flight_time]" class="fieldtitle"><%=t.new_booking.flight.time.label%></label>
-	              <input type="text" name="booking[flight_time]" id="booking[flight_time]" 
-	                   class="fieldcontrol" maxlength="5" placeholder="<%=t.new_booking.flight.time.placeholder%>"/>
-	            </div>	          
-	          </div>
-	        </fieldset>
-	        <% end %>	      
-
+             <%= partial :reserva_online_data_form, :locals => {:booking_item_family => booking_item_family} %>
 	      </div>
 
 	      <div id="reservation-summary" class="content_data_box">
@@ -632,6 +226,53 @@
 	               <%% } %>            
 	            </td>
 	          </tr>
+  </script>
+
+  <script type="text/tmpl" id="script_resources_attributes">
+
+     <table class="table">
+       <thead class="table-header">
+         <tr>
+           <th class="table-header-title">Recurso</th>
+           <% if booking_item_family.height %>
+           <th class="table-header-title">Altura</th>
+           <% end %>
+           <% if booking_item_family.weight %>
+           <th class="table-header-title">Peso</th>
+           <% end %>
+         </tr>
+       </thead>
+       <tbody>
+          <%% for (item in booking.booking_lines) { %>
+             <%% for (var idx=0;idx< booking.booking_lines[item].quantity;idx++) { %>
+                <tr class="table-row"> 
+                  <td class="table-cell"><%%=booking.booking_lines[item].item_description%> <%%=idx+1%></td>
+                  <% if booking_item_family.height %>
+                  <td class="table-cell">
+                     <select class="height" rel="<%%=item%>" data-idx="<%%=idx%>" >
+                 	   <option value=""><%=t.new_booking.height.placeholder%></option>
+                       <% booking_item_family.height_values.split(',').each do |height|%>
+                         <option value="<%=height%>"><%=height%></option>
+                       <% end %>
+                     </select>
+                  </td>
+                  <% end %>
+                  <% if booking_item_family.weight %>
+                  <td class="table-cell">
+                     <select class="weight" rel="<%%=item%>" data-idx="<%%=idx%>">
+                 	   <option value=""><%=t.new_booking.weight.placeholder%></option>
+                       <% booking_item_family.weight_values.split(',').each do |weight|%>
+                         <option value="<%=weight%>"><%=weight%></option>
+                       <% end %>
+                     </select>
+                  </td>
+                  <% end %>
+                </td>
+             <%% } %>
+          <%% } %>	
+       </tbody>
+     </table>
+
   </script>
   
   <script type="text/tpml" id="script_detailed_price">

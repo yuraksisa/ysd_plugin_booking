@@ -232,6 +232,7 @@
              this.quantity = quantity;
              this.item_unit_cost =  bookingModel.all_prices[item_id];
              this.item_cost = this.quantity * this.item_unit_cost;
+             this.resources = [];
 
              this.set_quantity = function(new_quantity) {
                this.quantity = new_quantity;
@@ -520,13 +521,20 @@
            request.booking.booking_lines = [];
            var line_index = 0;
            for (var index in this.booking.booking_lines) {
-              request.booking.booking_lines[line_index++] = {
+              request.booking.booking_lines[line_index] = {
                  item_id : index,
                  item_description : this.booking.booking_lines[index].item_description,
                  item_unit_cost: this.booking.booking_lines[index].item_unit_cost,
                  item_cost: this.booking.booking_lines[index].item_cost,
-                 quantity: this.booking.booking_lines[index].quantity
+                 quantity: this.booking.booking_lines[index].quantity,
+                 booking_line_resources: this.booking.booking_lines[index].resources
               }
+              for (var idx=0;idx<this.booking.booking_lines[index].quantity;idx++) {
+                 if (!request.booking.booking_lines[line_index].booking_line_resources[idx]) {
+                   request.booking.booking_lines[line_index].booking_line_resources[idx] = {};
+                 }
+              }
+              line_index++;
            }
 
            // Copies the booking extras model data to the request
@@ -1407,7 +1415,35 @@
          }); // configure the events
          
        },
-             
+       
+       /* ------ Load resources attributes ---------- */
+
+       load_resources_attributes: function() {
+  
+         <% if booking_item_family.weight or booking_item_family.height %>
+         var resourcesHtml = tmpl('script_resources_attributes', {booking: bookingModel.booking});
+         $('#resources_attributes').html(resourcesHtml);
+         $('.weight').bind('change', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].customer_weight = $(this).val();
+         });
+         $('.height').bind('change', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].customer_height = $(this).val();
+         });         
+         <% end %>
+
+
+       },
+
        /* ------ Load the extras -------------------- */
        
        load_extras : function() {
@@ -1566,7 +1602,8 @@
              break;
 
            case 'extras_selection' : /* Second state (user choose an item and starts bookin) */
-             this.update_information('booking_data');                          
+             this.update_information('booking_data');    
+             this.load_resources_attributes();                      
              this.load_extras();
              break;
 
