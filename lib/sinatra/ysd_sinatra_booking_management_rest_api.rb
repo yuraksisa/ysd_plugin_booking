@@ -60,7 +60,7 @@ module Sinatra
 
           condition = Conditions::JoinComparison.new('$and',
            [Conditions::Comparison.new(:status, '$eq', :confirmed),
-            Conditions::Comparison.new(:booking_item, '$ne', nil),
+            #Conditions::Comparison.new(:booking_item, '$ne', nil),
             Conditions::JoinComparison.new('$or', 
               [Conditions::JoinComparison.new('$and', 
                  [Conditions::Comparison.new(:date_from,'$lte', from),
@@ -255,11 +255,11 @@ module Sinatra
           condition = booking_planning_conditions(params)
 
           bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-             :fields => [:id, :date_from, :date_to, :booking_item_reference, :item_id],
-             :order => [:item_id.asc, :booking_item_reference.asc, :date_from.asc]
+             :order => [:date_from.asc]
             ) 
 
-          bookings.to_json(:only => [:id, :date_from, :date_to, :booking_item_reference, :item_id])
+          bookings.to_json(:only => [:id, :date_from, :date_to, :booking_item_reference, :item_id],
+                           :relationships => {:booking_line_resources => {}})
 
         end
 
@@ -276,13 +276,12 @@ module Sinatra
           condition = booking_confirmed_conditions(params)
 
           bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-             :fields => [:id, :date_from, :date_to, :item_id, :customer_name, :customer_surname,
-              :customer_phone, :customer_mobile_phone, :status, :booking_item_reference],
-             :order => [:item_id.asc, :date_from.asc]
+             :order => [:date_from.asc]
             )
 
           bookings.to_json(:only => [:id, :date_from, :date_to, :item_id, :customer_name, :customer_surname,
-              :customer_phone, :customer_mobile_phone, :status, :booking_item_reference])
+              :customer_phone, :customer_mobile_phone, :status, :booking_item_reference], 
+                           :relationships => {:booking_line_resources => {}})
 
         end
 
@@ -510,21 +509,23 @@ module Sinatra
         end
 
         #
-        # Assign a booking item to a booking
+        # Assign a booking item to a booking line resource
         #
-        app.post '/api/booking/assign/:booking_id/:booking_item_reference',
+        app.post '/api/booking/assign/:id/:booking_item_reference',
           :allowed_usergroups => ['booking_manager','staff'] do
 
-          if booking = BookingDataSystem::Booking.get(params[:booking_id].to_i)
+          if booking_line_resource = BookingDataSystem::BookingLineResource.get(params[:id].to_i)
             if booking_item = ::Yito::Model::Booking::BookingItem.get(params[:booking_item_reference])
-              booking.booking_item = booking_item
-              booking.save
+              booking_line_resource.booking_item = booking_item
+              booking_line_resource.save
               content_type :json
-              booking.to_json
+              booking_line_resource.to_json
             else
+              p "Booking Line Resource not found"
               status 404
             end  
           else
+            p "Booking item not found"
             status 404
           end 
 

@@ -65,7 +65,7 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
 
      },
 
-     assignBooking: function(id, reference_code, isReassigned) {
+     assignBooking: function(booking_id, booking_resource_index, id, reference_code, isReassigned) {
 
        var url = '/api/booking/assign/'+id+'/'+reference_code;
        var self = this;
@@ -89,10 +89,14 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
                    var option =  select + " option[value='null']"; 
                    $(option).remove();
                  }
-                 confirmedBookingsModel.hashData[id].booking_item_reference = reference_code;
-                 self.events.fireEvent({'type':'booking_assigned', data: {id: id, 
+                 confirmedBookingsModel.hashData[booking_id].
+                   booking_line_resources[booking_resource_index].
+                   booking_item_reference = reference_code;                 
+                 self.events.fireEvent({'type':'booking_assigned', data: {
+                     booking_id: booking_id, 
+                     id: id, 
                      resource: reference_code, reassigned: isReassigned, 
-                     booking: confirmedBookingsModel.hashData[id]}});
+                     booking: confirmedBookingsModel.hashData[booking_id]}});
                  alert('Recurso asignado')
                },
                error: function(data, textStatus, jqXHR) {
@@ -112,15 +116,19 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
          alert('Seleccione el recurso a asignar');
          return;
        }
-       var booking_id = $(control.form['id']).val();
+       var id = $(control.form['id']).val();
+       var booking_id = $(control.form['booking_id']).val();
+       var booking_resource_index = $(control.form['booking_resource_idx']).val();
        var reference_code = $(control.form['booking_item_reference']).val();
-       confirmedBookingsModel.assignBooking(booking_id, reference_code, false);
+       confirmedBookingsModel.assignBooking(booking_id, booking_resource_index, id, reference_code, false);
     },
 
     reAssignButtonClick: function(control) {
-       var booking_id = $(control.form['id']).val();
+       var id = $(control.form['id']).val();
+       var booking_id = $(control.form['booking_id']).val();
+       var booking_resource_index = $(control.form['booking_resource_idx']).val();
        var reference_code = $(control.form['booking_item_reference']).val();
-       confirmedBookingsModel.assignBooking(booking_id, reference_code, true);
+       confirmedBookingsModel.assignBooking(booking_id, booking_resource_index, id, reference_code, true);
     },
 
     showAllResourcesChanged: function(control) {
@@ -191,7 +199,7 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
           for (var i=0;i<confirmedBookingsModel.data.length;i++) {
              if (confirmedBookingsModel.filter == 'all' || confirmedBookingsModel.data[i].booking_item_reference == null) {
                result += template({entity: confirmedBookingsModel.data[i], 
-                  resources: confirmedBookingsModel.resources[confirmedBookingsModel.data[i].item_id],
+                  resources: confirmedBookingsModel.resources,
                   allResources: confirmedBookingsModel.allResources,
                   formatter: ysdFormatter});
              }

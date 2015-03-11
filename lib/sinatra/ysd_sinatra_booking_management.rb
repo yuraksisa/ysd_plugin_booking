@@ -170,7 +170,7 @@ module Sinatra
         app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager'] do
 
           if booking = BookingDataSystem::Booking.get(params[:booking_id])
-            if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.item_id)
+            if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.booking_lines.first.item_id)
 
               catalog = booking_category.booking_catalog
               locals = {}

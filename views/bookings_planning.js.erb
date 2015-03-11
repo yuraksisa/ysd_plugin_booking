@@ -118,28 +118,38 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
      prepareBookingForPlanning: function(booking) {
 
         var from, to;
-        var idx = planningModel.bookingItems.indexOf(booking.booking_item_reference);
-        if (idx >= 0) {
-           from = booking.date_from.getDate();
-           if (booking.date_to.getMonth() != booking.date_from.getMonth()) {
-             if (booking.date_from.getMonth()+1 == planningModel.month) {
-               var d = new Date();
-               d.setFullYear(booking.date_to.getYear(), booking.date_to.getMonth() + 1, 0);
-               to = d.getDate();
-             }
-             else {
-               from = 1;
-               to = booking.date_to.getDate();
-             }
-           }
-           else {
-             to = Math.min(booking.date_to.getDate())
-           }
-           booking.planning = { resource: booking.booking_item_reference , from: from, to: to };
-           return true;
-        }
-        return false;
+        var booking_item_reference;
+        var is_in_planning = false;
+        booking.planning = [];
 
+        for (var x=0;x<booking.booking_line_resources.length;x++) {
+          
+          booking_item_reference = booking.booking_line_resources[x].booking_item_reference;
+ 
+          var idx = planningModel.bookingItems.indexOf(booking_item_reference);
+          if (idx >= 0) {
+            from = booking.date_from.getDate();
+            if (booking.date_to.getMonth() != booking.date_from.getMonth()) {
+              if (booking.date_from.getMonth()+1 == planningModel.month) {
+                var d = new Date();
+                d.setFullYear(booking.date_to.getYear(), booking.date_to.getMonth() + 1, 0);
+                to = d.getDate();
+              }
+              else {
+                from = 1;
+                to = booking.date_to.getDate();
+              }
+            }
+            else {
+              to = Math.min(booking.date_to.getDate())
+            }
+            booking.planning.push({ resource: booking_item_reference , from: from, to: to, booking_id: booking.id });
+            is_in_planning = true;
+          }
+
+        }
+
+        return is_in_planning;
     },     
 
   };
@@ -246,8 +256,14 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
 
     loadBooking: function(booking) {
 
-           for (var day=booking.planning.from;day<=booking.planning.to;day++) {
-             var selector = '#\\[planning\\]\\['+booking.booking_item_reference+'\\]\\['+day+'\\]';
+        if (!booking.planning) {
+          return;
+        }
+        var planning = null, booking_item_refrence = null;
+        for (var idx=0;idx<booking.planning.length;idx++) {
+           planning = booking.planning[idx];
+           for (var day=planning.from;day<=planning.to;day++) {
+             var selector = '#\\[planning\\]\\['+planning.resource+'\\]\\['+day+'\\]';
              var value = $(selector).val();
              if (value == '') {
                $(selector).val('X');
@@ -262,13 +278,20 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
                }
              }
            }
+        }
 
     },
 
     unloadBooking: function(booking) {
 
-           for (var day=booking.planning.from;day<=booking.planning.to;day++) {
-             var selector = '#\\[planning\\]\\['+booking.planning.resource+'\\]\\['+day+'\\]';
+        if (!booking.planning) {
+          return;
+        }
+        var planning = null;
+        for (var idx=0;idx<booking.planning.length;idx++) {
+           planning = booking.planning[idx];
+           for (var day=planning.from;day<=planning.to;day++) {
+             var selector = '#\\[planning\\]\\['+planning.resource+'\\]\\['+day+'\\]';
              var value = $(selector).val();
              if (value == 'X') {
                $(selector).val('');
@@ -283,7 +306,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
                }
              }
            }
-
+        }
     }
 
 

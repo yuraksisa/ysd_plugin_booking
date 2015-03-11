@@ -60,7 +60,7 @@
         <div id="extras-selection" class="bottom-margin" style="display:none">
       	  <form>
       	  	<div class="container_12">
-	          <div class="grid_6">
+	          <div class="grid_4">
 	            <fieldset id="fs_summary_extras">
 	              <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
 	              <table id="tblextras">
@@ -69,7 +69,7 @@
 	              </table>
 	            </fieldset>
 	          </div>
-	          <div class="grid_6">
+	          <div class="grid_8">
 	            <fieldset id="fs_resources_attributes">
 	              <legend id="lg_summary_extras" class="legend-first-level">Recursos</legend>		 
 	              <div id="resources_attributes">
@@ -230,10 +230,11 @@
 
   <script type="text/tmpl" id="script_resources_attributes">
 
-     <table class="table">
+     <table class="table smaller_text">
        <thead class="table-header">
          <tr>
            <th class="table-header-title">Recurso</th>
+           <th class="table-header-title">Usuario</th>           
            <% if booking_item_family.height %>
            <th class="table-header-title">Altura</th>
            <% end %>
@@ -247,6 +248,10 @@
              <%% for (var idx=0;idx< booking.booking_lines[item].quantity;idx++) { %>
                 <tr class="table-row"> 
                   <td class="table-cell"><%%=booking.booking_lines[item].item_description%> <%%=idx+1%></td>
+                  <td class="table-cell">
+                     <input class="resource_user_name" type="text" maxlength="80" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
+                     <input class="resource_user_surname" type="text" maxlength="80" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
+                  </td>
                   <% if booking_item_family.height %>
                   <td class="table-cell">
                      <select class="height" rel="<%%=item%>" data-idx="<%%=idx%>" >

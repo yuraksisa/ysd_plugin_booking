@@ -1423,6 +1423,22 @@
          <% if booking_item_family.weight or booking_item_family.height %>
          var resourcesHtml = tmpl('script_resources_attributes', {booking: bookingModel.booking});
          $('#resources_attributes').html(resourcesHtml);
+         $('.resource_user_name').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_name = $(this).val();
+         });
+         $('.resource_user_surname').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_surname = $(this).val();
+         });
          $('.weight').bind('change', function(event) {
            var family = $(this).attr('rel');
            var idx = $(this).attr('data-idx');
