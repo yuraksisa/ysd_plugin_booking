@@ -374,6 +374,7 @@ booking_management:
       label: Permitir pago
       message: ¿Desea habilitar el pago de esta reserva?
     change_dates: Cambiar fechas
+    payment_not_allowed: El pago online no está permitido
     force_allow_payment: Pago habilitado por el gestor
     expired: Excedido tiempo pago depósito
     id: Localizador reserva
@@ -406,9 +407,9 @@ booking_management:
     charge_status: Estado      
     days: Días
     cost: Precio
-    item_cost: Precio item (global)
+    item_cost: Total productos
     item_unit_cost: Precio item (x día)    
-    extras_cost: Precio extras (global)
+    extras_cost: Total extras
     total_cost: Precio total 
     total_paid: Pagado
     total_pending: Pendiente   
@@ -455,6 +456,25 @@ booking_management:
     main_booking: Grupo de reservas
     main_booking_search: Buscar reserva principal
     related_bookings: Reservas relacionadas
+    charges: Pagos recibidos
+    no_charges: No se ha recibido ningún pago
+    booking_line:
+      title: Productos contratados
+      item: Producto
+      days: Días
+      quantity: Cantidad
+      unit_cost: Coste unitario
+      cost: Coste total
+    booking_resources:
+      title: Recursos
+      item: Producto
+      user: Usuario
+      height: Altura
+      weight: Peso
+      resource: Recurso    
+    user_agent_browser: Navegador
+    user_agent_version: Versión
+    user_agent_os: Sistema Operativo
 catalog_management:
   table:
     code: Código

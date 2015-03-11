@@ -635,6 +635,26 @@ module Sinatra
 
         end
 
+        # Update booking resource
+        #
+        app.put '/api/booking-line-resource', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys! 
+
+          p "DATA: #{data}"
+
+          if booking_line_resource = BookingDataSystem::BookingLineResource.get(data.delete(:id).to_i)
+            booking_line_resource.attributes = data
+            booking_line_resource.save
+            body booking_line_resource.to_json
+          else
+            status 404
+          end
+
+        end         
+
         #
         # Booking creation (customer)
         #
