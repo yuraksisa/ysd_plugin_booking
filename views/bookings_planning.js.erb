@@ -12,6 +12,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
                                    of booking items of this category. Used to display the table of bookings **/
      bookings: [],                // Array of the bookings represented in the planning
      bookingsHash: {},            // Hash where the id is booking.id and the value the booking
+
      month:new Date().getMonth()+1,
      year:new Date().getFullYear(),
      events: new EventTarget(),
@@ -52,18 +53,28 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
        this.events.fireEvent({type:'month_changed', data: {month: this.month, year: this.year}});
      },
 
-     reassignBooking: function(bookingId, bookingItemReference, isReassigned, aBooking) {
+     reassignBooking: function(booking_line_resource_id,
+                               booking_line_resource_index, 
+                               bookingItemReference, 
+                               isReassigned, 
+                               aBooking) {
 
-       var booking = this.bookingsHash[bookingId];
+       var booking = this.bookingsHash[aBooking.id];
        if (booking) {
-          booking.booking_item_reference = bookingItemReference;
-          planningView.update('booking_assigned', {booking: booking, isReassigned: isReassigned});
+          if (booking.booking_line_resources && booking.booking_line_resources[booking_line_resource_index]) {
+            booking.booking_line_resources[booking_line_resource_index].booking_item_reference = bookingItemReference;
+            planningView.update('booking_assigned', {booking: booking, 
+                                                     isReassigned: isReassigned,
+                                                     booking_line_resource_index : booking_line_resource_index});
+          }
        }
        else {
           if (this.prepareBookingForPlanning(aBooking)) {
             this.bookings.push(aBooking);
             this.bookingsHash[bookingId] = aBooking;
-            planningView.update('booking_assigned', {booking: aBooking, isReassigned: isReassigned});
+            planningView.update('booking_assigned', {booking: aBooking, 
+                                                     isReassigned: isReassigned,
+                                                     booking_line_resource_index : booking_line_resource_index});
           }
        }
 
@@ -123,11 +134,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
         booking.planning = [];
 
         for (var x=0;x<booking.booking_line_resources.length;x++) {
-          
-          booking_item_reference = booking.booking_line_resources[x].booking_item_reference;
- 
-          var idx = planningModel.bookingItems.indexOf(booking_item_reference);
-          if (idx >= 0) {
+            booking_item_reference = booking.booking_line_resources[x].booking_item_reference;
             from = booking.date_from.getDate();
             if (booking.date_to.getMonth() != booking.date_from.getMonth()) {
               if (booking.date_from.getMonth()+1 == planningModel.month) {
@@ -145,8 +152,6 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
             }
             booking.planning.push({ resource: booking_item_reference , from: from, to: to, booking_id: booking.id });
             is_in_planning = true;
-          }
-
         }
 
         return is_in_planning;
@@ -204,10 +209,12 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
 
          case 'booking_assigned':
            if (data.isReassigned) {
-             this.unloadBooking(data.booking);
-             data.booking.planning.resource = data.booking.booking_item_reference;
+             this.unloadBooking(data.booking, data.booking_line_resource_index);             
            }
-           this.loadBooking(data.booking);
+           if (data.booking.planning && data.booking.planning[data.booking_line_resource_index]) {
+             data.booking.planning[data.booking_line_resource_index].resource = data.booking.booking_line_resources[data.booking_line_resource_index].booking_item_reference;
+           }           
+           this.loadBooking(data.booking, data.booking_line_resource_index);
            break;
       }
 
@@ -235,7 +242,34 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
           1,                                     // input size
           "centered_text",                       // class
           true,                                  // readonly
-          planningModel.bookingItemsDescription);  // row description                               
+          planningModel.bookingItemsDescription);  // row description  
+
+      $('.spread_input').bind('click', function(event) { /* Select the bookings */
+         var exp = /(\[\w+])/g;
+         var values = $(this).attr('name').match(exp);
+         if (values.length == 3) {
+           var resource = values[1].substring(1,values[1].length-1);
+           var day = parseInt(values[2].substring(1,values[2].length-1));
+           var selectedBookings = planningModel.bookings.filter(function(booking) {
+             var isIn = false;
+             for (var idx=0;idx<booking.planning.length;idx++) {
+               if (booking.planning[idx].resource == resource &&
+                   booking.planning[idx].from <= day && 
+                   booking.planning[idx].to >= day) {
+                 isIn = true;
+                 break;
+               }
+             }
+             return isIn;
+           }).map(function(booking) {
+             return booking.id;
+           });
+           planningModel.events.fireEvent({type:'filter',
+                 data: {resource: resource, 
+                        day : day,
+                        bookings: selectedBookings}});
+         }
+      });                             
 
     },
 
@@ -254,13 +288,17 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
       }
     },
 
-    loadBooking: function(booking) {
+    loadBooking: function(booking, booking_line_resource_index) {
 
         if (!booking.planning) {
           return;
         }
         var planning = null, booking_item_refrence = null;
-        for (var idx=0;idx<booking.planning.length;idx++) {
+
+        var from = typeof booking_line_resource_index != 'undefined' ? booking_line_resource_index : 0;
+        var to = typeof booking_line_resource_index != 'undefined' ? booking_line_resource_index + 1 : booking.planning.length;
+
+        for (var idx=from;idx<to;idx++) {
            planning = booking.planning[idx];
            for (var day=planning.from;day<=planning.to;day++) {
              var selector = '#\\[planning\\]\\['+planning.resource+'\\]\\['+day+'\\]';
@@ -277,18 +315,25 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
                  $(selector).val(parseInt(value)+1);
                }
              }
+             if (booking.planning_color) {
+               $(selector).css('background', booking.planning_color);
+               //$(selector).css('color', 'white');
+             }
            }
         }
 
     },
 
-    unloadBooking: function(booking) {
+    unloadBooking: function(booking, booking_line_resource_index) {
 
         if (!booking.planning) {
           return;
         }
         var planning = null;
-        for (var idx=0;idx<booking.planning.length;idx++) {
+        var from = typeof booking_line_resource_index != 'undefined' ? booking_line_resource_index : 0;
+        var to = typeof booking_line_resource_index != 'undefined' ? booking_line_resource_index + 1 : booking.planning.length;
+
+        for (var idx=from;idx<to;idx++) {
            planning = booking.planning[idx];
            for (var day=planning.from;day<=planning.to;day++) {
              var selector = '#\\[planning\\]\\['+planning.resource+'\\]\\['+day+'\\]';
@@ -321,8 +366,19 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
     confirmedBooking.model.getBookings(data.data.month, data.data.year);
   });
 
+  planningModel.addListener('filter', function(data) {
+    confirmedBooking.model.filterDayResourceBookings(data.data.resource,
+                                  data.data.day,
+                                  planningModel.month,
+                                  data.data.bookings);
+  });
+
   confirmedBooking.model.addListener('booking_assigned', function(data) {
-    planningModel.reassignBooking(data.data.id, data.data.resource, data.data.reassigned, data.data.booking);
+    planningModel.reassignBooking(data.data.id,
+                                  data.data.booking_resource_index,
+                                  data.data.resource, 
+                                  data.data.reassigned, 
+                                  data.data.booking);
   });
 
   planningView.init();

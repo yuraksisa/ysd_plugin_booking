@@ -258,7 +258,7 @@ module Sinatra
              :order => [:date_from.asc]
             ) 
 
-          bookings.to_json(:only => [:id, :date_from, :date_to, :booking_item_reference, :item_id],
+          bookings.to_json(:only => [:id, :date_from, :date_to, :planning_color],
                            :relationships => {:booking_line_resources => {}})
 
         end
@@ -279,8 +279,8 @@ module Sinatra
              :order => [:date_from.asc]
             )
 
-          bookings.to_json(:only => [:id, :date_from, :date_to, :item_id, :customer_name, :customer_surname,
-              :customer_phone, :customer_mobile_phone, :status, :booking_item_reference], 
+          bookings.to_json(:only => [:id, :date_from, :date_to, :customer_name, :customer_surname,
+              :customer_phone, :customer_mobile_phone, :status, :planning_color], 
                            :relationships => {:booking_line_resources => {}})
 
         end

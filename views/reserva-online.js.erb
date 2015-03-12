@@ -604,9 +604,16 @@
 
       change_item_quantity: function(item, quantity) {
 
+        if (bookingModel.all_prices.length == 0) {
+          bookingModel.calculate_price($('#datefrom').datepicker("getDate"), 
+                                        $('#timefrom option:selected').val() || $('#timefrom').val(),
+                                        $('#dateto').datepicker("getDate"), 
+                                        $('#timeto option:selected').val() || $('#timeto').val(),
+                                        $('#pickup_place_value').val(),
+                                        $('#return_place_value').val()); 
+        }
         bookingModel.set_booking_line_item_quantity(item, quantity);
         bookingView.calculate_prices();
-
       },
 
       /* calculate the prices */
