@@ -208,31 +208,32 @@ module Sinatra
           to = Time.at(params['end'].to_i)
 
           condition = Conditions::JoinComparison.new('$and',
-           [Conditions::Comparison.new(:status, '$ne', :cancelled),
+           [Conditions::Comparison.new('booking_line.booking.status', '$ne', :cancelled),
             Conditions::Comparison.new(:booking_item_reference, '$eq', params[:booking_item_reference]),
             Conditions::JoinComparison.new('$or', 
               [Conditions::JoinComparison.new('$and', 
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', from)
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$lte', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$gte', from)
                   ]),
                Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', to),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$lte', to),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$gte', to)
                   ]),
                Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$eq', from),
-                  Conditions::Comparison.new(:date_to,'$eq', to)
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$eq', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$eq', to)
                   ]),
                Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from, '$gte', from),
-                  Conditions::Comparison.new(:date_to, '$lte', to)])               
+                 [Conditions::Comparison.new('booking_line.booking.date_from', '$gte', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to', '$lte', to)])               
               ]
             ),
             ]
           )
 
-          bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-             :order => [:item_id.asc]).map do |booking|
+          bookings = condition.build_datamapper(BookingDataSystem::BookingLineResource).all(
+             ).map do |booking_line_resource|
+            booking = booking_line_resource.booking_line.booking
             {:id => booking.id,
              :title => "#ID: #{booking.id} \n #{booking.date_from.strftime('%Y-%m-%d')} #{booking.time_from} \n #{booking.date_to.strftime('%Y-%m-%d')} #{booking.time_to} \n #{booking.customer_name.upcase} #{booking.customer_surname.upcase} #{(booking.customer_phone.nil? or booking.customer_phone.empty?)? booking.customer_mobile_phone : booking.customer_phone}",
              :start => booking.date_from,
