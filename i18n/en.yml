@@ -90,6 +90,7 @@ booking_items:
   kayak: kayak  
   apartment: apartment
   room: room
+  product: product
 new_booking:
   title: Booking
   search: Search

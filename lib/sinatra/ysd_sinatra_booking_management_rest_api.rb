@@ -582,12 +582,19 @@ module Sinatra
         app.put '/api/booking/:id/price', :allowed_usergroups => ['booking_manager','staff'] do
 
           booking_request = body_as_json(BookingDataSystem::Booking)
+          lines_request = booking_request.delete(:booking_lines)
           extras_request = booking_request.delete(:booking_extras)
  
           booking = BookingDataSystem::Booking.get(params[:id])
           booking.transaction do |transaction|
             booking.attributes = booking_request
             booking.save
+            lines_request.each do |line_booking| 
+              booking_line = BookingDataSystem::BookingLine.get(line_booking[:id])
+              booking_line.item_cost = line_booking[:item_cost]
+              booking_line.item_unit_cost = line_booking[:item_unit_cost]
+              booking_line.save
+            end
             extras_request.each do |extra_booking|
               booking_extra = BookingDataSystem::BookingExtra.get(extra_booking[:id])
               booking_extra.extra_cost = extra_booking[:extra_cost]

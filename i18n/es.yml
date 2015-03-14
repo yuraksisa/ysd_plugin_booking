@@ -135,6 +135,7 @@ booking_items:
   kayak: kayak
   apartment: apartamento
   room: habitación 
+  product: producto
 new_booking:
   title: Reserva
   search: Ver precios

@@ -15,7 +15,6 @@
         exceeded_hours: 2,
         
         all_prices: null,
-        item_unit_cost: <%=booking.item_unit_cost%>,
 
         booking : {
 
@@ -32,11 +31,19 @@
           total_cost: <%=booking.total_cost%>,
           total_paid: <%=booking.total_paid%>,
           total_pending: <%=booking.total_pending%>,
+          booking_lines: [
+            <% booking.booking_lines.each do |item| %>
+              {'id':<%=item.id%>, 'item_id':'<%=item.item_id%>', 'item_description':'<%=item.item_description%>',
+               'item_unit_cost':new Number(<%=item.item_unit_cost%>), 'item_cost':new Number(<%=item.item_cost%>),
+               'quantity':new Number(<%=item.quantity%>)
+              },      
+            <% end %>                    
+          ],
           booking_extras: [
             <% booking.booking_extras.each do |extra| %>
               {'id':<%=extra.id%>, 'extra_id':'<%=extra.extra_id%>', 'extra_description':'<%=extra.extra_description%>',
                'extra_unit_cost':new Number(<%=extra.extra_unit_cost%>), 'extra_cost':new Number(<%=extra.extra_cost%>),
-               'quantity':new Number(<%=extra.quantity%>), 'unit_cost': new Number(<%=extra.extra_unit_cost / booking.days%>)
+               'quantity':new Number(<%=extra.quantity%>)
               },
             <% end %>
           ]
@@ -96,10 +103,17 @@
 
        	  this.all_prices = bookingDataSystem.calculate_items_price(this.booking.date_from, 
        	                                                            this.booking.date_to_price_calculation);
-       	  this.booking.item_cost = this.all_prices['<%=booking.item_id%>'];
-       	  this.booking.extras_cost = 0;
+       	  
+          this.booking.item_cost = 0;
+          this.booking.extras_cost = 0;
+          for (var i=0;i<this.booking.booking_lines.length;i++) {
+            this.booking.booking_lines[i].item_unit_cost = this.all_prices[this.booking.booking_lines[i].item_id] || 0;
+            this.booking.booking_lines[i].item_cost = this.booking.booking_lines[i].item_unit_cost * this.booking.booking_lines[i].quantity;
+            this.booking.item_cost += this.booking.booking_lines[i].item_cost;  
+          }
        	  for (var i=0;i<this.booking.booking_extras.length;i++) {
-       	  	 this.booking.booking_extras[i].extra_unit_cost = this.booking.booking_extras[i].unit_cost * this.booking.days;
+       	  	 this.booking.booking_extras[i].extra_unit_cost = bookingDataSystem.calculate_extra_price(this.booking.date_from, 
+              this.booking.date_to_price_calculation, this.booking.booking_extras[i].extra_id); 
        	  	 this.booking.booking_extras[i].extra_cost = this.booking.booking_extras[i].extra_unit_cost * this.booking.booking_extras[i].quantity;       	  	 
        	     this.booking.extras_cost += this.booking.booking_extras[i].extra_cost;
        	  }
@@ -107,20 +121,22 @@
           this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
 
        	  bookingEditView.showNewPrices();
-       	  bookingEditView.showNewExtras();
           $('.price').autoNumeric('init',{aSep:''});
        	  $('#situation_change').fadeIn();
           $('#update_button').show();
        	       	       	
        },  
 
-       updateItemPrice: function(itemCost) {
-          
-          this.booking.item_cost = itemCost;
+       updateItemPrice: function(index, value) {
+          var oldValue = this.booking.booking_lines[index].item_cost;
+          this.booking.booking_lines[index].item_unit_cost = value;
+          this.booking.booking_lines[index].item_cost = value * this.booking.booking_lines[index].quantity;
+
+          this.booking.item_cost = this.booking.item_cost - oldValue + this.booking.booking_lines[index].item_cost;
+
           this.booking.total_cost = this.booking.item_cost + this.booking.extras_cost;
           this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
           bookingEditView.showNewPrices();
-          bookingEditView.showNewExtras(); 
        },
 
        updateExtraCost: function(index, value) {
@@ -132,15 +148,13 @@
 
           this.booking.total_cost = this.booking.item_cost + this.booking.extras_cost;
           this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
-          bookingEditView.showNewPrices();
-          bookingEditView.showNewExtras();       	
+          bookingEditView.showNewPrices();       	
        },
 
        updatePickupPlace: function(pickupPlace) {
         
           this.booking.pickup_place = pickupPlace;
-          bookingEditView.showNewPrices();
-          bookingEditView.showNewExtras(); 
+          bookingEditView.showNewPrices(); 
           $('#situation_change').fadeIn();
           $('#update_button').show();
 
@@ -148,8 +162,7 @@
 
        updateReturnPlace: function(returnPlace) {
           this.booking.return_place = returnPlace;
-          bookingEditView.showNewPrices();
-          bookingEditView.showNewExtras(); 
+          bookingEditView.showNewPrices(); 
           $('#situation_change').fadeIn();
           $('#update_button').show();
        }
@@ -178,8 +191,8 @@
                                         $('#return_place_value').val());
      },
 
-     itemCostBlur: function() {
-     	bookingEditModel.updateItemPrice(new Number($('#item_cost').val()));
+     itemCostBlur: function(index, value) {
+      bookingEditModel.updateItemPrice(index, value);
      },
 
      extraCostBlur: function(index, value) {
@@ -342,19 +355,14 @@
     	$('#extras').html(tmpl('script_extras', {booking: bookingEditModel.booking}));
     },
 
-    showNewExtras: function() {
-    	$('#new_extras').html(tmpl('script_new_extras', {booking: bookingEditModel.booking}));  
-    	$('.extra-cost').bind('blur', function(event) {
-           bookingEditController.extraCostBlur($(event.currentTarget).attr('rel'), $(event.currentTarget).val());
-    	});	
-    },
-
     showNewPrices: function() {
-    	$('#new_prices').html(tmpl('new_cost', 
-    		             {booking: bookingEditModel.booking, 
-                          bookingDataSystem: bookingDataSystem}));
-    	$('#item_cost').bind('blur', function(event) {
-    		bookingEditController.itemCostBlur();
+
+      $('#new_prices').html(tmpl('script_new_extras', {booking: bookingEditModel.booking}));  
+      $('.extra-cost').bind('blur', function(event) {
+           bookingEditController.extraCostBlur($(event.currentTarget).attr('rel'), $(event.currentTarget).val());
+      }); 
+    	$('.item_cost').bind('blur', function(event) {
+    		bookingEditController.itemCostBlur($(event.currentTarget).attr('rel'), $(event.currentTarget).val());
     	});
     }
 
