@@ -1,26 +1,26 @@
-<h2><%=t.bookings_scheduler.title%></h2>
-<div class="container_12">
-  <div class="guiblock">
-   <div class="all-space overflow">  	
-      <div class="grid_6">
-        <div>
-          <span class="entity-fieldlabel more_contrast_text"><%=t.booking_item_management.form.reference.label%></span>
-          <span class="entity-fieldvalue"><%=booking_item.reference%></span>
-        </div>
-        <div>
-          <span class="entity-fieldlabel more_contrast_text"><%=t.booking_item_management.form.name.label%></span>
-          <span class="entity-fieldvalue"><%=booking_item.name%></span>
-        </div>
-        <div>
-          <span class="entity-fieldlabel more_contrast_text"><%=t.booking_item_management.form.description.label%></span>
-          <span class="entity-fieldvalue"><%=booking_item.description%></span>
-        </div>                
-      </div>
-    </div>  
-  </div>
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.bookings_scheduler.title%></h2>
 </div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="guiblock">
+      <div class="all-space overflow">  	
+        <div class="grid_6">
+          <div>
+            <span class="entity-fieldlabel more_contrast_text"><%=t.booking_item_management.form.reference.label%></span>
+            <span class="entity-fieldvalue"><%=booking_item.reference%></span>
+          </div>
+          <div>
+            <span class="entity-fieldlabel more_contrast_text"><%=t.booking_item_management.form.name.label%></span>
+            <span class="entity-fieldvalue"><%=booking_item.name%></span>
+          </div>               
+        </div>
+      </div>  
+    </div>
+  </div>
 
-<div id="calendar" class="top-margin "></div>
+  <div id="calendar" class="top-margin "></div>
+</div>
 
 <script type="text/javascript">
 
@@ -36,6 +36,17 @@
 			editable: true,
 			lang: '<%=session[:locale]%>',
 			events: '/api/booking/scheduler/<%=booking_item.reference%>',
+        firstDay: 1,
+        monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+        monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+        dayNames: ['Domingo', 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+        dayNamesShort: ['Domingo', 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+        buttonText: {
+           today: 'hoy',
+           month: 'mes',
+           week: 'semana',
+           day: 'día'
+        },      
 			eventClick: function(event) {
                if (event.url) {
                  window.open(event.url);
