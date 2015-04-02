@@ -30,23 +30,65 @@
              <% end %>
            </div>
            <div class="item_properties_attributes smaller_text">
+             <% booking.booking_lines.each do |booking_line| %>
              <div class="item_properties_attribute bottom-margin">
                <span class="item_properties_attribute_name left_text">
-                 <%= booking.item_description %>
+                 <%= booking_line.item_description %> X <%= booking_line.quantity %>
                </span>
                <span class="item_properties_attribute_value right_text">
-                 <%= "%.2f" % booking.item_cost %> €
+                 <%= "%.2f" % booking_line.item_cost %> €
                </span>
              </div>
+             <% end %>
              <% booking.booking_extras.each do |booking_extra| %>
              <div class="item_properties_attribute bottom-margin">
                <span class="item_properties_attribute_name left_text">
-                 <%= booking_extra.extra_description %>
+                 <%= booking_extra.extra_description %> X <%= booking_extra.quantity %>
                </span>
                <span class="item_properties_attribute_value right_text">
                 <%= "%.2f" % booking_extra.extra_cost %> €
                </span>
              </div>          
              <% end %>
+             <% if booking.time_from_cost > 0  %>
+             <div class="item_properties_attribute bottom-margin">
+               <span class="item_properties_attribute_name left_text">
+                 <%=t.new_booking.time_from_cost%> 
+               </span>
+               <span class="item_properties_attribute_value right_text">
+                <%= "%.2f" % booking.time_from_cost %> €
+               </span>
+             </div> 
+             <% end %>
+             <% if booking.time_to_cost > 0  %>
+             <div class="item_properties_attribute bottom-margin">
+               <span class="item_properties_attribute_name left_text">
+                 <%=t.new_booking.time_to_cost%> 
+               </span>
+               <span class="item_properties_attribute_value right_text">
+                <%= "%.2f" % booking.time_to_cost %> €
+               </span>
+             </div> 
+             <% end %>      
+             <% if booking.pickup_place_cost > 0  %>
+             <div class="item_properties_attribute bottom-margin">
+               <span class="item_properties_attribute_name left_text">
+                 <%=t.new_booking.pickup_place_cost%>
+               </span>
+               <span class="item_properties_attribute_value right_text">
+                <%= "%.2f" % booking.pickup_place_cost %> €
+               </span>
+             </div> 
+             <% end %>     
+             <% if booking.return_place_cost > 0  %>
+             <div class="item_properties_attribute bottom-margin">
+               <span class="item_properties_attribute_name left_text">
+                 <%=t.new_booking.return_place_cost%>
+               </span>
+               <span class="item_properties_attribute_value right_text">
+                <%= "%.2f" % booking.return_place_cost %> €
+               </span>
+             </div> 
+             <% end %>                               
            </div>
          </div>

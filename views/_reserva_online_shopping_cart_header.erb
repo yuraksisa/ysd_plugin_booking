@@ -1,7 +1,7 @@
-            <form id="family-selection" name="family-selection" style="display:none">
+            <form id="shopping-cart-header" name="shopping-cart-header">
               <div id="items_dates" class="container_12">
-                <div class="top-margin-1line top-space top-border-nosolid">
-                  <div class="<%unless booking_item_family.pickup_return_place%>prefix_2<%end%> grid_4">
+                <div class="top-margin-1line bottom-margin-1line top-space bottom-space-1line top-border-nosolid bottom-border-nosolid overflow">
+                  <div class="<% if booking_item_family.time_to_from %>prefix_2<%else%>prefix_3<%end%> grid_4">
 		            <div class="formrow">
 		      	      <label for="datefrom" id="labeldatefrom" class="fieldtitle">
 		      		  <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
@@ -26,10 +26,10 @@
 	                    <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
 	                  </div>
 	                  <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
-	                </div>          		      	
+	                </div>          		
+	                <% end %>      	
 	              </div>
-	              <div class="grid_4">      
-	                <% end %>	 
+	              <div class="grid_4">      	 
 		            <div class="formrow">
 		      	      <label for="dateto" id="labeldateto" class="fieldtitle">
 		      	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
@@ -57,24 +57,6 @@
 	                  <% end %>  
 		            </div>
                   </div>
-                  <div class="grid_4">
-                  	<div class="guiblock top-margin-2lines bottom-margin-1line">
-                 	  <span id="price" class="centered_text" style="font-size:4em; display: block; margin:0 auto">0€</span>
-                      <span id="number_of_days" class="centered_text" style="font-size:0.8em; display: block; margin:0 auto"></span>                 	  
-                    </div>
-                    <div id="availability">
-                    </div>                    
-                  </div>
-                </div>
-              </div>
-
-              <div id="itemized_price" class="top-margin-1line bottom-margin-1line">
-              </div>
-
-              <div class="continue_families_to_extras" class="container_12">
-                <div class="top-margin-1line top-space-1line top-border-nosolid">
-                  <button id="families_to_extras" class="form-button" type="button" 
-                    style="display:block; margin: 0 auto"><%=t.new_booking.continue%></button>
                 </div>
               </div>
             

@@ -37,6 +37,7 @@ booking_configuration_templates:
   email_customer_request_received: Cuando se recibe una solicitud
   email_customer_payment_request_received: Cuando se recibe una solicitud con pago online
   email_customer_reservation_confirmed: Cuando se confirma la reserva
+  email_customer_payment_enabled: Cuando se habilita el pago de la reserva
   email_manager_request_received: Cuando se recibe una nueva solucitud
   email_manager_payment_request_received: Cuando se recibe una nueva solicitud con pago online
 booking_settings:
@@ -111,7 +112,7 @@ booking_return:
   title: Recogidas/Salidas
 booking_list:
   id: Localizador
-  item: Item
+  item: Recurso
   date_from: Fecha entrega
   date_to: Fecha devolución
   place: Lugar
@@ -180,6 +181,8 @@ new_booking:
   pay: Pagar
   not_available: Confirme reserva telefónicamente
   not_available_manager: No hay disponibilidad
+  not_stock: No disponible
+  not_stock_manager: No disponible
   booking: Seleccionar
   payment_methods: Formas de pago
   checking_availability: Comprobando disponibilidad
@@ -187,6 +190,10 @@ new_booking:
   concept: Concepto
   day: Día
   days: Días
+  time_from_cost: Entrega fuera de horas
+  time_to_cost: Recogida fuera de horas
+  pickup_place_cost: Suplemento lugar de entrega
+  return_place_cost: Suplemento lugar de recogida
   total: Total
   form_errors:
     title: Formulario no válido

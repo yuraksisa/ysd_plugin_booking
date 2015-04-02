@@ -1,19 +1,21 @@
           <div class="container_12">
-            <div>
-	            <fieldset id="fs_summary_item">
+	        <fieldset id="fs_summary_item">
 	              <% if booking_reservation_starts_with == :shopcart %>
-	                  <div class="grid_12">
-	              	    <div class="centered_text">
-                           <%= partial :reserva_online_category_form, :locals => {:booking_item_family => booking_item_family} %>
+	                <div style="overflow:hidden">
+	                  <div id="summary_dates" class="grid_6" style="padding-bottom:1000px; margin-bottom: -1000px; background:white">
+	                  	<div class="all-space smaller_text">
+	                  	  <h2 style="margin-top: 0; text-decoration: underline; font-size: 1.5em;"><%=t.booking_console.places%></h2>
+                          <%= partial :reserva_online_category_form, :locals => {:booking_item_family => booking_item_family} %>
                         </div>
-	                    <div class="grid_12 centered_text">
-	                       <div class="top-margin right-margin left-margin smaller_text">
-	      	                 <input type="hidden" name="total_cost" id="total_cost"/>
-	      	                 <div id="detailed_summary" class="all-space">
-	                         </div>      
-	                       </div>
-	                    </div>                        
                       </div>
+	                  <div id="summary_costs" class="grid_6">
+                         <div class="top-margin right-margin left-margin smaller_text">
+	    	                <input type="hidden" name="total_cost" id="total_cost"/>
+	      	                <div id="detailed_summary" class="all-space">
+	                        </div>      
+	                     </div>
+                      </div>
+                    </div>  
 	              <% else %>	
                     <% if booking_item_family.pickup_return_place %>
 	                  <div class="grid_3">
@@ -21,6 +23,8 @@
 	                  </div>
 	                  <div class="grid_4">              	
 	                    <div class="right-margin smaller_text left-margin">
+                          <%= partial :reserva_online_category_form, :locals => {:booking_item_family => booking_item_family} %>
+	                    </div>
 	                  </div>
 	                  <div class="grid_5">
 	                    <div class="top-margin right-margin left-margin smaller_text">
@@ -30,11 +34,13 @@
 	                    </div>
 	                  </div>
 	                <% else %>
-	                  <div class="grid_7">
+	                  <div class="grid_6">
 	                    <img id="item_image" style="width: 240px"/>	
-	                    <div class="right-margin smaller_text centered_text">	
+	                    <div class="right-margin smaller_text centered_text">
+                          <%= partial :reserva_online_category_form, :locals => {:booking_item_family => booking_item_family} %>	       	
+	                    </div>	
 	                  </div>
-	                  <div class="grid_5">
+	                  <div class="grid_6">
 	                    <div class="top-margin right-margin left-margin smaller_text">
 	      	               <input type="hidden" name="total_cost" id="total_cost"/>
 	      	               <div id="detailed_summary" class="all-space">
@@ -43,7 +49,5 @@
 	                  </div>	                                  
 	                <% end %>
 	              <% end %>
-
-	            </fieldset>
-	        </div>
+	        </fieldset>
 	      </div>

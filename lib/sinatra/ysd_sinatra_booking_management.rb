@@ -16,7 +16,14 @@ module Sinatra
         # Booking console
         #
         app.get '/admin/booking/console', :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:console_booking)
+          
+          locals = {}
+          if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
+            product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
+            locals.store(:product_family, product_family)
+          end
+          p "EOE: #{locals.inspect}"
+          load_page(:console_booking, :locals => locals)
         end
 
         #
@@ -55,7 +62,8 @@ module Sinatra
           b_m_r_c = ContentManagerSystem::Template.first({:name => 'booking_customer_req_notification'})
           b_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
           b_m_c_c = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
-          
+          b_m_c_c_pay_enabled = ContentManagerSystem::Template.first({:name => 'booking_customer_notification_payment_enabled'})
+
           locals = {:conditions => conditions,
                     :contract => contract,
                     :summary_message => summary_message,
@@ -63,7 +71,8 @@ module Sinatra
                     :b_m_n_pay_now => b_m_n_pay_now, 
                     :b_m_r_c => b_m_r_c,
                     :b_m_r_c_pay_now => b_m_r_c_pay_now, 
-                    :b_m_c_c => b_m_c_c}
+                    :b_m_c_c => b_m_c_c,
+                    :b_m_c_c_pay_enabled => b_m_c_c_pay_enabled}
 
           load_page(:console_booking_configuration_templates, :locals => locals)
         end

@@ -62,7 +62,7 @@ booking_return:
   title: Recollides/Sortides  
 booking_list:
   id: Id
-  item: Item
+  item: Recurs
   date_from: Data entrega
   date_to: Data devolució
   place: Lloc

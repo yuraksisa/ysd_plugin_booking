@@ -811,8 +811,7 @@
                         <thead class="table-header">
                           <tr>
                             <th class="table-cell" scope="col" style="width:40%"><%=t.booking_management.form.id%></th>
-                            <th class="table-cell" scope="col" style="width:30%"><%=t.booking_management.form.customer_title%></th>
-                            <th class="table-cell" scope="col" style="width:30%"><%=t.booking_management.form.item%></th>        
+                            <th class="table-cell" scope="col" style="width:60%"><%=t.booking_management.form.customer_title%></th>
                           </tr>
                         </thead>
                         <tbody class="table-tbody">
@@ -820,7 +819,6 @@
                             <tr class="table-row <%% if (data[idx].main_booking_id==null){%>more_contrast_text<%%}%>">
                                <td class="table-cell centered_text"><%%=data[idx].id%></td>
                                <td class="table-cell centered_text"><%%=data[idx].customer_name%> <%%=data[idx].customer_surname%></td>
-                               <td class="table-cell centered_text"><%%=data[idx].item_id%></td>
                             </tr>
                           <%% } %>
                         </tbody>

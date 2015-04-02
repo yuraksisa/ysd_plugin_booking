@@ -429,7 +429,6 @@ module Sinatra
                         {:id => booking.id,
                          :customer_name => booking.customer_name,
                          :customer_surname => booking.customer_surname,
-                         :item_id => booking.item_id,
                          :date_from => booking.date_from,
                          :time_from => booking.time_from,
                          :date_to => booking.date_to,
@@ -485,7 +484,9 @@ module Sinatra
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
             content_type :json
-            booking.confirm!.to_json
+            result = booking.confirm!
+            booking.notify_customer if booking.total_paid > 0
+            result.to_json
           else
             status 404
           end
@@ -501,6 +502,7 @@ module Sinatra
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
             booking.force_allow_payment = true
             booking.save
+            booking.notify_customer_payment_enabled
             content_type :json
             booking.to_json
           else

@@ -66,7 +66,7 @@ booking_return:
   title: Return/Departures 
 booking_list:
   id: Id
-  item: Item
+  item: Resource
   date_from: Pickup date
   date_to: Return date
   place: Place
@@ -142,6 +142,10 @@ new_booking:
   concept: Concept
   day: Day
   days: Days
+  time_from_cost: Pick up outside working hours
+  time_to_cost: Return outside working hours
+  pickup_place_cost: Pick up place supplement
+  return_place_cost: Return place supplement  
   total: Total
   form_errors:
     title: Error

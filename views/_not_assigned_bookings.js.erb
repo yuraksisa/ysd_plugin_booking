@@ -156,40 +156,44 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
 
     showAllResourcesChanged: function(control) {
 
-       var booking_id = $(control).attr('rel');
+       var id = $(control).attr('rel');
+       var booking_id = $(control).attr('data-bookingid');
+       var booking_resource_index = parseInt($(control).attr('data-bookingresourceidx'));
+
        // Adjust the selector to show the assigned resource
        var booking = confirmedBookingsModel.hashData[booking_id];
-       if (booking) {
-          if (booking.booking_item_reference != null) {          
-            var select = "#filtered_resources_" + booking_id + " " +
-                       "select[name=\"booking_item_reference\"][rel='" + booking.id + "']";
-            var selector =  select + " option[value='" + booking.booking_item_reference + "']"; 
+       if (booking.booking_line_resources[booking_resource_index]) {
+          var booking_line_resource = booking.booking_line_resources[booking_resource_index];
+          if (booking_line_resource.booking_item_reference != null) {          
+            var select = "#filtered_resources_" + booking_line_resource.id + " " +
+                       "select[name=\"booking_item_reference\"][rel='" + booking_line_resource.id + "']";
+            var selector =  select + " option[value='" + booking_line_resource.booking_item_reference + "']"; 
             if ($(selector).length == 0) {
               $(select).append("<option value=\"" +
-                booking.booking_item_reference + "\" selected=\"selected\">" + 
-                booking.booking_item_reference + "</option>");
+                booking_line_resource.booking_item_reference + "\" selected=\"selected\">" + 
+                booking_line_resource.booking_item_reference + "</option>");
             }
           
-            select = "#not_filtered_resources_" + booking_id + " " +
-                   "select[name=\"booking_item_reference\"][rel='" + booking.id + "']";
-            selector =  select + " option[value='" + booking.booking_item_reference + "']"; 
+            select = "#not_filtered_resources_" + booking_line_resource.id + " " +
+                   "select[name=\"booking_item_reference\"][rel='" + booking_line_resource.id + "']";
+            selector =  select + " option[value='" + booking_line_resource.booking_item_reference + "']"; 
             if ($(selector).length == 0) {
               $(select).append("<option value=\"" +
-                booking.booking_item_reference + "\" selected=\"selected\">" + 
-                booking.booking_item_reference + "</option>");
+                booking_line_resource.booking_item_reference + "\" selected=\"selected\">" + 
+                booking_line_resource.booking_item_reference + "</option>");
             }
             else {
-              $(select).val(booking.booking_item_reference);
+              $(select).val(booking_line_resource.booking_item_reference);
             }
           }
        }
        if ($(control).attr('checked')) {
-         $('#filtered_resources_'+booking_id).hide();        
-         $('#not_filtered_resources_'+booking_id).show();
+         $('#filtered_resources_'+id).hide();        
+         $('#not_filtered_resources_'+id).show();
        }
        else {
-         $('#filtered_resources_'+booking_id).show();        
-         $('#not_filtered_resources_'+booking_id).hide();        
+         $('#filtered_resources_'+id).show();        
+         $('#not_filtered_resources_'+id).hide();        
        }
     }
 

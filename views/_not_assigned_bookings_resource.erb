@@ -40,7 +40,8 @@
 
           <%% if (item_resources && allResources && item_resources.length >0 && allResources.length>0) { %>
           <div class="formrow">
-            <input type="checkbox" class="show_all_resources" rel="<%%=item.id%>"><%=t.not_assigned_bookings.form.all_resources%></input>
+            <input type="checkbox" class="show_all_resources" data-bookingid="<%%=entity.id%>" 
+                   data-bookingresourceidx="<%%=resourceIdx%>" data-id="<%%=item.id%>" rel="<%%=item.id%>"><%=t.not_assigned_bookings.form.all_resources%></input>
           </div>    
           <%% } %>
         
@@ -82,7 +83,8 @@
 
           <%% if (item_resources && allResources && item_resources.length >0 && allResources.length>0) { %>
           <div class="formrow">
-            <input type="checkbox" class="show_all_resources" rel="<%%=item.id%>"><%=t.not_assigned_bookings.form.all_resources%></input>
+            <input type="checkbox" class="show_all_resources" data-bookingid="<%%=entity.id%>" 
+                   data-bookingresourceidx="<%%=resourceIdx%>" data-id="<%%=item.id%>" rel="<%%=item.id%>"><%=t.not_assigned_bookings.form.all_resources%></input>
           </div>             
           <%% } %>
 

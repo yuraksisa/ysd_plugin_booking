@@ -105,6 +105,10 @@
           optional: null, /* the booking optional */
           item_cost : 0, /* the item cost */
           extras_cost : 0, /* the extras cost */
+          time_from_cost: 0, /* time from cost */
+          time_to_cost: 0, /* time to cost */
+          pickup_place_cost: 0, /* pickup place cost */
+          return_place_cost: 0, /* return place cost */
           total_cost : 0, /* the total cost (item + extras) */
           booking_extras : {}, /* The booking extras */
           booking_lines: {}, /* the booking detail */
@@ -202,7 +206,9 @@
                 this.item_cost += this.booking_lines[family].item_cost;
               }
             }
-            this.total_cost = this.item_cost + this.extras_cost;
+            this.total_cost = this.time_from_cost + this.time_to_cost +
+                              this.pickup_place_cost + this.return_place_cost +
+                              this.item_cost + this.extras_cost;
             bookingView.update_information('booking_cost');
 
           },
@@ -217,7 +223,7 @@
             this.extras_cost += value;
             this.addCost( value );
           },
-  
+   
           addCost : function (value) { /* Add cost */
              this.total_cost += value;
              this.total_cost = new Number(this.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0)).valueOf();
@@ -349,6 +355,31 @@
          bookingView.update_information('booking_item');
         
        },
+
+       set_pickup_place : function(pickup_place) {
+
+        var pickupPlaceRate = bookingDataSystem.pickup_placesRates[pickup_place];
+        if (pickupPlaceRate >= 0) {
+          this.booking.addCost(-this.booking.pickup_place_cost);
+          this.booking.pickup_place_cost = pickupPlaceRate;
+          this.booking.addCost(this.booking.pickup_place_cost); 
+          bookingView.update_information('booking_cost');
+        }
+
+       },
+
+       set_return_place : function(return_place) {
+
+        var returnPlaceRate = bookingDataSystem.pickup_placesRates[return_place];
+        if (returnPlaceRate >= 0) {
+          this.booking.addCost(-this.booking.return_place_cost);
+          this.booking.return_place_cost = returnPlaceRate;
+          this.booking.addCost(this.booking.return_place_cost); 
+          bookingView.update_information('booking_cost');
+        }
+
+       },
+
 
        /* Check availability */
        
@@ -684,6 +715,9 @@
       
       change_pickup_place_select : function(pickup_place) { /* change pickup place */
         
+
+        bookingModel.set_pickup_place(pickup_place);
+
         if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
           $('#other_pickup_place').show();  
           $('#pickup_place_value').val('');
@@ -708,6 +742,8 @@
      
       change_return_place_select : function(return_place) { /* change return place */
         
+        bookingModel.set_return_place(return_place);
+
         if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
           $('#other_return_place').show();
           $('#return_place_value').val('');   
@@ -999,13 +1035,24 @@
          }
          var current = 0;
          
+         var numberOfColumns = 3;
+
+         if (total > 20) {
+           numberOfColumns = 6;
+         }
+         else
+          if (total > 10) {
+            numberOfColumns = 4;
+          }
+
          for (family in families) {
            familiesHtml += tmpl('script_shopping_cart', {category: families[family],
               total: total, 
-              totalRows : Math.ceil(total / 3),
-              currentRow: Math.floor(current / 3),
-              lastRowItems : total % 3,
-              currentCol: current % 3
+              totalCols : numberOfColumns,
+              totalRows : Math.ceil(total / numberOfColumns),
+              currentRow: Math.floor(current / numberOfColumns),
+              lastRowItems : total % numberOfColumns,
+              currentCol: current % numberOfColumns
               });
             current++;
          }  
@@ -1321,43 +1368,62 @@
          var price = bookingModel.booking.total_cost + '€';
          $('#price').html(price);
          $('#number_of_days').html(bookingModel.booking.days + (bookingModel.booking.days == 1 ? ' <%=t.new_booking.day%>' : ' <%=t.new_booking.days%>'));
-         $('#family-selection').show();
+ 
+         <% if booking_reservation_starts_with == :categories %>
+           <% if (admin_mode) %>
+              var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available_manager%></span>';
+           <% else %>
+              var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available%></span>';
+           <% end %>
 
-         <% if (admin_mode) %>
-         var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available_manager%></span>';
-         <% else %>
-         var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available%></span>';
-         <% end %>
-
-         var available = true;
-         for (family in bookingModel.booking.booking_lines) {
-           if (bookingModel.categoriesAvailable.indexOf(family) == -1) {
-             available = false;
-             break;
+           var available = true;
+           for (family in bookingModel.booking.booking_lines) {
+             if (bookingModel.categoriesAvailable.indexOf(family) == -1) {
+               available = false;
+               break;
+             }
            }
-         }
+           if (!available) {
+             $('#availability').html(notAvailable); 
+             <% unless (admin_mode) %>
+               $('#families_to_extras').hide();
+             <% end %>
+           }
+           else {
+             $('#availability').html('');
+             $('#families_to_extras').show();
+           }
+         <% elsif booking_reservation_starts_with == :shopcart %>
+           for (family in bookingDataSystem.families) {
+             if (bookingModel.categoriesAvailable.indexOf(family) == -1) {
+               if (bookingModel.booking.booking_lines[family]) {
+                 bookingController.change_item_quantity(family, 0);
+               }
+               $('.category_not_available[rel="' + family + '"]').show();
+               <% if admin_mode %>
+               $('.select-category[rel="' + family + '"]').show();
+               <% else %>
+               $('.select-category[rel="' + family + '"]').hide();
+               <% end %>                 
+             }
+             else {
+               $('.select-category[rel="' + family + '"]').show();
+               $('.category_not_available[rel="' + family + '"]').hide();            
+             }
+           }           
+         <% end %>
 
          var booking_lines = bookingModel.booking.booking_lines_as_array();
 
-         if (booking_lines.length > 1 ||
-             (booking_lines.length == 1 && booking_lines[0].quantity > 1)) {
+         if (booking_lines.length >= 1) {
              $('#itemized_price').html( 
               tmpl('script_detailed_price', {booking: bookingModel.booking, 
                             bookingDataSystem: bookingDataSystem}) );
+             $('#family-selection').show();
          }
          else {
             $('#itemized_price').html('');
-         }
-
-         if (!available) {
-            $('#availability').html(notAvailable); 
-            <% unless (admin_mode) %>
-              $('#families_to_extras').hide();
-            <% end %>
-         }
-         else {
-            $('#availability').html('');
-            $('#families_to_extras').show();
+            $('#family-selection').hide();
          }
 
        },
@@ -1700,6 +1766,10 @@
              }
 
            case 'booking_cost' :
+             $('#price').html(bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
+             $('#itemized_price').html( 
+              tmpl('script_detailed_price', {booking: bookingModel.booking, 
+                            bookingDataSystem: bookingDataSystem}) );
              $('#total_cost').val( bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
              $('#detailed_summary').html( 
               tmpl('script_detailed_price', {booking: bookingModel.booking, 

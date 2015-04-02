@@ -77,18 +77,6 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.season_definition.id'},
-        {:value => '0',
-         :description => 'Default season definition',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.factor_definition.id'},
-        {:value => '0',
-         :description => 'Default factor definition',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.default_booking_catalog.code'},
         {:value => '',
          :description => 'Default booking catalog',
@@ -98,6 +86,11 @@ module Huasi
         {:name => 'booking.allow_custom_pickup_return_place'},
         {:value => 'false',
          :description => 'Allow custom pickup and return places'})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.custom_pickup_return_place_price'},
+        {:value => '0',
+         :description => 'Custom pickup and return places cost'})
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.page_title'},
@@ -199,6 +192,10 @@ module Huasi
       ContentManagerSystem::Template.first_or_create({:name => 'booking_customer_notification'},
           {:description=>'Mensaje que se envía al cliente cuando se confirma la solicitud de reserva',
            :text => BookingDataSystem::Booking.customer_notification_booking_confirmed_template}) 
+
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_customer_notification_payment_enabled'},
+          {:description=>'Mensaje que se envía al cliente cuando se habilita el pago reserva',
+           :text => BookingDataSystem::Booking.customer_notification_payment_enabled_template}) 
 
       ContentManagerSystem::Template.first_or_create({:name => 'booking_contract'},
           {:description=>'Contrato',
