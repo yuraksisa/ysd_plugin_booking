@@ -411,6 +411,7 @@ booking_management:
     extra_cost_1unit: Coste u.
     charges_title: Cobros
     charge_date: Fecha
+    charge_payment_method: Forma pago
     charge_amount: Cantidad
     charge_status: Estado      
     days: Días
@@ -483,6 +484,15 @@ booking_management:
     user_agent_browser: Navegador
     user_agent_version: Versión
     user_agent_os: Sistema Operativo
+    new_charge: Registrar pago
+  charge_form:
+    title: Cobro
+    date: Fecha 
+    payment_method: Forma de pago
+    amount: Importe
+    bank_transfer: Transferencia bancaria
+    cash: Efectivo
+    done: Cobro registrado
 catalog_management:
   table:
     code: Código

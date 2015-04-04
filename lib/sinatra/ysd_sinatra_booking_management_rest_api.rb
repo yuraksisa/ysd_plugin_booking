@@ -462,6 +462,41 @@ module Sinatra
         end
 
         #
+        # Register a booking charge
+        #
+        app.post '/api/booking/charge', :allowed_usergroups => ['bookings_manager','staff'] do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys! 
+
+          if booking = BookingDataSystem::Booking.get(data[:id])
+            
+            booking.transaction do  
+              charge = Payments::Charge.new
+              charge.date = data[:date]
+              charge.amount = data[:amount]
+              charge.payment_method_id = data[:payment_method_id]
+              charge.status = :pending
+              charge.currency = SystemConfiguration::Variable.get_value('payments.default_currency', 'EUR')
+              charge.save
+              booking_charge = BookingDataSystem::BookingCharge.new
+              booking_charge.booking = booking
+              booking_charge.charge = charge
+              booking_charge.save
+              charge.update(:status => :done)
+              booking.reload
+            end
+            content_type :json
+            status 200
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
         # Booking access
         #
         app.get '/api/booking/:booking_id',
