@@ -13,6 +13,7 @@
   <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>  
   <%= render_variable_textarea('booking.notification_email', t.booking_settings.form.notification_email) %>
   <%= render_variable_checkbox_boolean('booking.allow_custom_pickup_return_place', t.booking_settings.form.custom_pickup_return_place) %>
+  <%= render_variable_input_text('booking.custom_pickup_return_place_price', t.booking_settings.form.custom_pickup_return_place_price, 3, 3) %>
   <%= render_variable_select('booking.reservation_starts_with', t.booking_settings.form.reservation_starts_with.title, reservation_starts_with) %>
 </div>
   </div>

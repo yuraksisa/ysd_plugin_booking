@@ -358,25 +358,37 @@
 
        set_pickup_place : function(pickup_place) {
 
-        var pickupPlaceRate = bookingDataSystem.pickup_placesRates[pickup_place];
-        if (pickupPlaceRate >= 0) {
-          this.booking.addCost(-this.booking.pickup_place_cost);
-          this.booking.pickup_place_cost = pickupPlaceRate;
-          this.booking.addCost(this.booking.pickup_place_cost); 
-          bookingView.update_information('booking_cost');
+        var pickupPlaceRate = 0;
+
+        if (pickup_place == '<%=t.new_booking.other%>') {
+          pickupPlaceRate = bookingDataSystem.custom_pickup_return_place_price;
         }
+        else {
+          pickupPlaceRate = bookingDataSystem.pickup_placesRates[pickup_place];
+        }
+       
+        this.booking.addCost(-this.booking.pickup_place_cost);
+        this.booking.pickup_place_cost = pickupPlaceRate;
+        this.booking.addCost(this.booking.pickup_place_cost); 
+        bookingView.update_information('booking_cost');
 
        },
 
        set_return_place : function(return_place) {
 
-        var returnPlaceRate = bookingDataSystem.pickup_placesRates[return_place];
-        if (returnPlaceRate >= 0) {
-          this.booking.addCost(-this.booking.return_place_cost);
-          this.booking.return_place_cost = returnPlaceRate;
-          this.booking.addCost(this.booking.return_place_cost); 
-          bookingView.update_information('booking_cost');
+        var returnPlaceRate = 0;
+
+        if (return_place == '<%=t.new_booking.other%>') {
+          returnPlaceRate = bookingDataSystem.custom_pickup_return_place_price;
         }
+        else {
+          returnPlaceRate = bookingDataSystem.pickup_placesRates[return_place];
+        }
+
+        this.booking.addCost(-this.booking.return_place_cost);
+        this.booking.return_place_cost = returnPlaceRate;
+        this.booking.addCost(this.booking.return_place_cost); 
+        bookingView.update_information('booking_cost');
 
        },
 
@@ -736,6 +748,7 @@
       
         if ($('#pickup_place_other').val() != $('#pickup_place_value').val()) {
           $('#pickup_place_value').val(pickup_place);
+          bookingModel.booking.pickup_place = pickup_place;
         }
                 
       },
@@ -760,8 +773,9 @@
       
       blur_return_place_input : function(return_place) {
         
-        if ($('#return_place_other').val() != $('return_place_value').val()) {
-          $('return_place_value').val(return_place);
+        if ($('#return_place_other').val() != $('#return_place_value').val()) {
+          $('#return_place_value').val(return_place);
+          bookingModel.booking.return_place = return_place;
         }
         
       },
@@ -914,23 +928,23 @@
          // Configure the pickup_place and return_place behaviour
          $('#pickup_place').bind('change',
            function() {
-             bookingController.change_pickup_place_select($('#pickup_place option:selected').text());
+             bookingController.change_pickup_place_select($('#pickup_place option:selected').val());
            });
          $('#pickup_place_other').bind('blur',
            function() {
              bookingController.blur_pickup_place_input($(this).val());
            });
-         $('#pickup_place_value').val($('#pickup_place option:selected').text());  
+         $('#pickup_place_value').val($('#pickup_place option:selected').val());  
            
          $('#return_place').bind('change',
            function() {
-             bookingController.change_return_place_select($('#return_place option:selected').text());
+             bookingController.change_return_place_select($('#return_place option:selected').val());
            });
          $('#return_place_other').bind('blur',
            function() {
              bookingController.blur_return_place_input($(this).val());
            });
-         $('#return_place_value').val($('#return_place option:selected').text());  
+         $('#return_place_value').val($('#return_place option:selected').val());  
                         
          // Configure the dialog(s)
          $('#checking-availability').dialog({autoOpen: false, height: 260, modal: true,
@@ -1120,7 +1134,7 @@
               $('#other_pickup_place').show();
             }
             else {
-              $('#pickup_place_value').val($('#pickup_place option:selected').text()); 
+              $('#pickup_place_value').val($('#pickup_place option:selected').val()); 
             }
             $('#return_place').val(return_place.replace(/\+/g, ' '));
             $('#return_place_other').val(return_place_other.replace(/\+/g, ' '));
@@ -1129,7 +1143,7 @@
               $('other_return_place').show();
             }
             else {
-              $('#return_place_value').val($('#return_place option:selected').text()); 
+              $('#return_place_value').val($('#return_place option:selected').val()); 
             }
             this.configureDates();       
             this.calculate_prices();
@@ -1574,6 +1588,7 @@
        },
        
        /* ------ Load pickup places ------ */
+
        load_pickup_places : function() {
 
           var comboItems = document.getElementById('pickup_place');
@@ -1596,7 +1611,11 @@
           {
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', pickup_place_id);  
-              optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
+              var text = bookingDataSystem.pickup_places[pickup_place_id];
+              if (bookingDataSystem.pickup_placesRates[pickup_place_id]>0) {
+                 text += " (" + bookingDataSystem.pickup_placesRates[pickup_place_id] + "€)";
+              }
+              optionItem.text = optionItem.innerText = text;
               comboItems.appendChild(optionItem);
           }
 
@@ -1604,11 +1623,14 @@
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
               optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              if (bookingDataSystem.custom_pickup_return_place_price > 0) {
+                optionItem.text += " (" + bookingDataSystem.custom_pickup_return_place_price + "€)";
+              }              
               comboItems.appendChild(optionItem);    
           <% end %>
 
           // stores the pick up place in the form
-          $('#pickup_place_value').val($('#pickup_place option:selected').text());
+          $('#pickup_place_value').val($('#pickup_place option:selected').val());
 
        },
 
@@ -1636,8 +1658,12 @@
           for (var return_place_id in bookingModel.return_places)
           {
               var optionItem = document.createElement('option');
-              optionItem.setAttribute('value', return_place_id);  
-              optionItem.text = optionItem.innerText = bookingDataSystem.return_places[return_place_id];
+              optionItem.setAttribute('value', return_place_id); 
+              var text = bookingDataSystem.return_places[return_place_id];
+              if (bookingDataSystem.return_placesRates[return_place_id]>0) {
+                 text += " (" + bookingDataSystem.return_placesRates[return_place_id] + "€)";
+              } 
+              optionItem.text = optionItem.innerText = text;
               comboItems.appendChild(optionItem);
           }
 
@@ -1645,11 +1671,14 @@
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
               optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              if (bookingDataSystem.custom_pickup_return_place_price > 0) {
+                optionItem.text += " (" + bookingDataSystem.custom_pickup_return_place_price + "€)";
+              }
               comboItems.appendChild(optionItem);    
           <% end %>          
 
           // stores the pick up place in the form
-          $('#return_place_value').val($('#return_place option:selected').text());
+          $('#return_place_value').val($('#return_place option:selected').val());
 
        },
 

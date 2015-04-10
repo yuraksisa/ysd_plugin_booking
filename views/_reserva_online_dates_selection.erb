@@ -20,9 +20,8 @@
 	                 <select name="pickup_place" class="fieldcontrol" id="pickup_place">
 	                 </select>
 	              </div>
-	              <div id="other_pickup_place" style="display:none;">
-	                 <span class="columna1">&nbsp;</span>
-	                 <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
+	              <div id="other_pickup_place" class="top-margin top-space" style="display:none;">
+	                    <textarea name="pickup_place_other" id="pickup_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.pickup_place%>"></textarea>
 	              </div>
 	              <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
 	          </div>          		      	
@@ -48,9 +47,8 @@
 	      	          <select name="return_place" id="return_place" class="fieldcontrol">
 	                  </select>
                    </div>
-	               <div id="other_return_place" style="display:none;">
-	               	  <span class="columna1">&nbsp;</span>
-	                  <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" placeholder="<%=t.new_booking.return_place%>"/>  
+	               <div id="other_return_place" class="top-margin top-space" style="display:none;">
+	                      <textarea name="return_place_other" id="return_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.return_place%>"></textarea>	 
 	               </div>
 	               <input type="hidden" name="return_place_value" id="return_place_value"/>
 	          </div>

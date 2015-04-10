@@ -54,6 +54,7 @@ booking_settings:
     min_days: Numero mínimo de días    
     family: Tipo de producto en alquiler
     custom_pickup_return_place: Permitir otros lugares de entrega/recogida
+    custom_pickup_return_place_price: Precio otro lugar de entrega/recogida
     payment: Habilitar pago online
     general_group: General
     payment_group: Pagos

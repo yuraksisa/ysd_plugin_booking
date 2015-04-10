@@ -25,6 +25,7 @@ booking_settings:
     min_days: Minimum days   
     family: Product type
     custom_pickup_return_place: Custom pickup/return places
+    custom_pickup_return_place_price: Custom pickup/return place price
     payment: Enable online payment
     general_group: General
     payment_group: Payment

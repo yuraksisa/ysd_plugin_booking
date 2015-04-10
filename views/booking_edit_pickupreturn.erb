@@ -68,7 +68,7 @@
                           </select>     
                         </div>
                         <div id="other_pickup_place" class="top-margin" style="display:none;">
-                           <input type="text" name="pickup_place_other" id="pickup_place_other" maxlength="80" size="28"  placeholder="<%=t.new_booking.pickup_place%>"/>
+                           <textarea name="pickup_place_other" id="pickup_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.pickup_place%>"><%=booking.pickup_place%></textarea>
                         </div>
                         <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>                                        
                       </span>
@@ -107,8 +107,8 @@
                           <select name="return_place" id="return_place" class="fieldcontrol">
                           </select>     
                         </div>
-                        <div id="other_return_place" class="top-margin" style="display:none;">
-                           <input type="text" name="return_place_other" id="return_place_other" maxlength="80" size="28" placeholder="<%=t.new_booking.return_place%>"/>  
+                        <div id="other_return_place" class="top-margin top-space" style="display:none;">
+                          <textarea name="return_place_other" id="return_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.return_place%>"><%=booking.return_place%></textarea>  
                         </div>
                         <input type="hidden" name="return_place_value" id="return_place_value"/>                                        
                       </span>
@@ -213,12 +213,44 @@
                               <td class="table-cell"></td>
                               <td class="table-cell right_text"><%= "%.2f" % booking.extras_cost %></td>                              
                           </tr>
+                          <%% if (booking.time_from_cost > 0 ) { %>
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.time_from_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.time_from_cost.toFixed(2) %> </td>
+                          </tr>
+                          <%% } %>
+                          <%% if (booking.time_to_cost > 0 ) { %>          
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.time_to_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.time_to_cost.toFixed(2) %> </td>
+                          </tr>
+                          <%% } %>
+                          <%% if (booking.pickup_place_cost > 0 ) { %>          
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.pickup_place_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.pickup_place_cost.toFixed(2) %> </td>
+                          </tr>      
+                          <%% } %>
+                          <%% if (booking.return_place_cost > 0 ) { %>                 
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.return_place_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.return_place_cost.toFixed(2) %> </td>
+                          </tr>                 
+                          <%% } %>                                                 
                           <tr class="table-row">
                               <td class="table-cell uppercase_text more_contrast_text"><%= t.booking_management.form.total_cost %></td>
                               <td class="table-cell"></td>
                               <td class="table-cell"></td>
                               <td class="table-cell right_text"><%= "%.2f" % booking.total_cost %></td>                              
-                          </tr>                          
+                          </tr>   
                         </tbody>
                      </table>        
               </div>
@@ -283,6 +315,38 @@
                               <td class="table-cell"></td>
                               <td class="table-cell right_text"><%%= new Number(booking.extras_cost).toFixed(2) %></td>                            
                           </tr>
+                          <%% if (booking.time_from_cost > 0 ) { %>
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.time_from_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.time_from_cost.toFixed(2) %> </td>
+                          </tr>
+                          <%% } %>
+                          <%% if (booking.time_to_cost > 0 ) { %>          
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.time_to_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.time_to_cost.toFixed(2) %> </td>
+                          </tr>
+                          <%% } %>
+                          <%% if (booking.pickup_place_cost > 0 ) { %>          
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.pickup_place_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.pickup_place_cost.toFixed(2) %> </td>
+                          </tr>      
+                          <%% } %>
+                          <%% if (booking.return_place_cost > 0 ) { %>                 
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.return_place_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.return_place_cost.toFixed(2) %> </td>
+                          </tr>                 
+                          <%% } %>                               
                           <tr class="table-row">
                               <td class="table-cell uppercase_text more_contrast_text"><%= t.booking_management.form.total_cost %></td>
                               <td class="table-cell"></td>
