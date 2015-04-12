@@ -245,7 +245,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
           planningModel.bookingItemsDescription);  // row description  
 
       $('.spread_input').bind('click', function(event) { /* Select the bookings */
-         var exp = /(\[\w+])/g;
+         var exp = /(\[[\w|-|_]+])/g;
          var values = $(this).attr('name').match(exp);
          if (values.length == 3) {
            var resource = values[1].substring(1,values[1].length-1);
