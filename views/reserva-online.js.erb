@@ -206,6 +206,8 @@
                 this.item_cost += this.booking_lines[family].item_cost;
               }
             }
+            this.time_from_cost = bookingDataSystem.calculate_pickup_time_price(this.date_from, this.time_from);
+            this.time_to_cost = bookingDataSystem.calculate_return_time_price(this.date_to, this.time_to);
             this.total_cost = this.time_from_cost + this.time_to_cost +
                               this.pickup_place_cost + this.return_place_cost +
                               this.item_cost + this.extras_cost;

@@ -24,6 +24,9 @@ booking_settings:
     allow_total_payment: Permetre pagar el total de la reserva
     min_days: Numero mínim de dies
     family: Tipus de producte en lloger
+    no_pickup_return_timetable: No aplica
+    pickup_return_timetable: Horari d\'entrega i recogida
+    pickup_return_timetable_out_price: Preu d\'entrega i recollida fora d\'hores    
     item_hold_time: Caducitat (en hores)
     payment_cadence: Cadència de pagament
 booking_rates:
@@ -48,6 +51,8 @@ booking_console:
   availability: Disponibilitat
   summary: Resum  
   places: Entrega i recollida
+  calendars: Calendaris
+  timetables: Horaris  
 booking_summary:
   title: Resum reserves 
 booking_forecast:

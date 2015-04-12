@@ -13,8 +13,8 @@
   bookingEditModel = {
 
         exceeded_hours: 2,
-        
         all_prices: null,
+
 
         booking : {
 
@@ -28,11 +28,14 @@
           date_to_price_calculation: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to_price_calculation.strftime('%d/%m/%y')%>"),
           item_cost: <%=booking.item_cost%>,
           extras_cost: <%=booking.extras_cost%>,
+          time_from_cost: <%= booking.time_from_cost%>, 
+          time_to_cost: <%= booking.time_to_cost%>,          
           pickup_place_cost: <%=booking.pickup_place_cost%>,
           return_place_cost: <%=booking.return_place_cost%>,
           total_cost: <%=booking.total_cost%>,
           total_paid: <%=booking.total_paid%>,
           total_pending: <%=booking.total_pending%>,
+          booking_amount: <%=booking.booking_amount%>,
           booking_lines: [
             <% booking.booking_lines.each do |item| %>
               {'id':<%=item.id%>, 'item_id':'<%=item.item_id%>', 'item_description':'<%=item.item_description%>',
@@ -119,8 +122,11 @@
        	  	 this.booking.booking_extras[i].extra_cost = this.booking.booking_extras[i].extra_unit_cost * this.booking.booking_extras[i].quantity;       	  	 
        	     this.booking.extras_cost += this.booking.booking_extras[i].extra_cost;
        	  }
-       	  this.booking.total_cost = this.booking.item_cost + this.booking.extras_cost;
-          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
+
+          this.booking.time_from_cost = bookingDataSystem.calculate_pickup_time_price(this.booking.date_from, this.booking.time_from);
+          this.booking.time_to_cost = bookingDataSystem.calculate_return_time_price(this.booking.date_to, this.booking.time_to);
+
+       	  this.updateTotal();
 
        	  bookingEditView.showNewPrices();
           $('.price').autoNumeric('init',{aSep:''});
@@ -136,11 +142,8 @@
 
           this.booking.item_cost = this.booking.item_cost - oldValue + this.booking.booking_lines[index].item_cost;
 
-          this.booking.total_cost = this.booking.item_cost +
-                                    this.booking.pickup_place_cost + 
-                                    this.booking.return_place_cost +
-                                    this.booking.extras_cost;
-          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
+          this.updateTotal();
+
           bookingEditView.showNewPrices();
        },
 
@@ -151,11 +154,8 @@
 
           this.booking.extras_cost = this.booking.extras_cost - oldValue + this.booking.booking_extras[index].extra_cost;
 
-          this.booking.total_cost = this.booking.item_cost +
-                                    this.booking.pickup_place_cost + 
-                                    this.booking.return_place_cost +
-                                    this.booking.extras_cost;
-          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
+          this.updateTotal();
+
           bookingEditView.showNewPrices();       	
        },
 
@@ -168,11 +168,7 @@
             this.booking.pickup_place_cost = bookingDataSystem.custom_pickup_return_place_price;
           }
 
-          this.booking.total_cost = this.booking.item_cost +
-                                    this.booking.pickup_place_cost +
-                                    this.booking.return_place_cost +
-                                    this.booking.extras_cost;
-          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
+          this.updateTotal();          
 
           this.booking.pickup_place = pickupPlace;
           bookingEditView.showNewPrices(); 
@@ -190,19 +186,28 @@
             this.booking.return_place_cost = bookingDataSystem.custom_pickup_return_place_price;
           }
 
-          this.booking.total_cost = this.booking.item_cost +
-                                    this.booking.pickup_place_cost +
-                                    this.booking.return_place_cost +
-                                    this.booking.extras_cost;
-          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
+          this.updateTotal();
 
           this.booking.return_place = returnPlace;
           bookingEditView.showNewPrices(); 
           $('#situation_change').fadeIn();
           $('#update_button').show();
        
-       }
+       },
 
+       updateTotal : function() {
+
+          this.booking.total_cost = this.booking.item_cost +
+                                    this.booking.time_from_cost + 
+                                    this.booking.time_to_cost +          
+                                    this.booking.pickup_place_cost +
+                                    this.booking.return_place_cost +
+                                    this.booking.extras_cost;
+          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
+          this.booking.booking_amount = new Number(this.booking.total_cost * 
+              <%=booking_deposit%> / 100).toFixed(0);
+
+       }
 
 
   }

@@ -22,7 +22,6 @@ module Sinatra
             product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
             locals.store(:product_family, product_family)
           end
-          p "EOE: #{locals.inspect}"
           load_page(:console_booking, :locals => locals)
         end
 
@@ -44,7 +43,11 @@ module Sinatra
         # Booking configuration (general)
         #
         app.get '/admin/booking/config/general', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          pickup_return_timetables = {"" => t.booking_settings.form.no_pickup_return_timetable}.merge(Hash[ *::Yito::Model::Calendar::Timetable.all.collect { |tt| [tt.id.to_s, tt.name] }.flatten])
+
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ],
+                    :pickup_return_timetables => pickup_return_timetables,
                     :reservation_starts_with => {
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
                        :categories => t.booking_settings.form.reservation_starts_with.categories,
@@ -187,6 +190,8 @@ module Sinatra
                 catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
               locals.store(:booking_allow_custom_pickup_return_place,
                 SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+              locals.store(:booking_deposit,
+                SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i) 
               locals.store(:booking, booking)
 
               booking_js = catalog_template(catalog)

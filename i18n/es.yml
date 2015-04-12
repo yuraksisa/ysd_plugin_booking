@@ -55,6 +55,9 @@ booking_settings:
     family: Tipo de producto en alquiler
     custom_pickup_return_place: Permitir otros lugares de entrega/recogida
     custom_pickup_return_place_price: Precio otro lugar de entrega/recogida
+    no_pickup_return_timetable: No aplica
+    pickup_return_timetable: Horario entrega/recogida
+    pickup_return_timetable_out_price: Precio entrega/recogida fuera de horas
     payment: Habilitar pago online
     general_group: General
     payment_group: Pagos
@@ -99,6 +102,8 @@ booking_console:
   summary: Resumen
   places: Entrega y recogida
   create_rates: Preparar tarifas
+  calendars: Calendarios
+  timetables: Horarios
 booking_summary:
   title: Resumen reservas
 booking_forecast:
@@ -191,8 +196,8 @@ new_booking:
   concept: Concepto
   day: Día
   days: Días
-  time_from_cost: Entrega fuera de horas
-  time_to_cost: Recogida fuera de horas
+  time_from_cost: Suplemento entrega fuera de horas
+  time_to_cost: Suplemento recogida fuera de horas
   pickup_place_cost: Suplemento lugar de entrega
   return_place_cost: Suplemento lugar de recogida
   total: Total

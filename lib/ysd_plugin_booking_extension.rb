@@ -93,6 +93,16 @@ module Huasi
          :description => 'Custom pickup and return places cost'})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.pickup_return_timetable'},
+        {:value => '',
+         :description => 'Pickup and return places timetable'})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.pickup_return_timetable_out_price'},
+        {:value => '0',
+         :description => 'Price if the pickup/return is not on pickup/return timetable'})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.page_title'},
         {:value => 'Bookings',
          :description => 'Booking page title',
