@@ -135,6 +135,7 @@ booking_payment_status:
   none: No cobrado
   deposit: Depósito
   total: Total  
+  refunded: Devuelto
 booking_items:
   car: coche
   bike: bicicleta

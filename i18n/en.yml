@@ -89,6 +89,7 @@ booking_payment_status:
   none: None
   deposit: Deposit
   total: Total
+  refunded: Refunded
 booking_items:
   car: car
   bike: bike

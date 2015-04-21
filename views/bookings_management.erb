@@ -46,6 +46,7 @@
       <td class="table-cell centered_text">
          <%% if (entity.payment_status == 'deposit') { %><span class="element-status doing-status smaller_text">d</span> <%% } %>
          <%% if (entity.payment_status == 'total') { %><span class="element-status done-status smaller_text">t</span> <%%}%>
+         <%% if (entity.payment_status == 'refunded') { %><span class="element-status error-status smaller_text">c</span> <%%}%>            
       </td>       
       <td class="table-cell centered_text"><%%= entity.booking_lines[0].item_id %> </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_from,'dd.MM.yyyy') %> </td>
@@ -124,12 +125,19 @@
                    <%% } %>
                    <%% if (entity.status == 'confirmed') {  %>
                    <button class="form-button blue-button element-action-button" id="pickup_booking_button" 
-                      title="<%=t.booking_management.form.pickup_button.label%>" style="width:95%"
+                      title="<%=t.booking_management.form.pickup_button.label%>" style="width:47%"
                       data-action-method="POST"
                       data-action-url="/api/booking/pickup/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.pickup_button.message%>">
                     <%=t.booking_management.form.pickup_button.label%>
                    </button>
+                   <button class="form-button red-button element-action-button" id="cancel_booking_button" 
+                      title="<%=t.booking_management.form.cancel_button.label%>" style="width:47%"
+                      data-action-method="POST"
+                      data-action-url="/api/booking/cancel/<%%=entity.id%>"
+                      data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
+                      <%=t.booking_management.form.cancel_button.label%>
+                    </button>                     
                    <%%  } %>
                    <%% if (entity.status == 'in_progress') { %>
                    <button class="form-button black-button element-action-button" id="return_booking_button" 

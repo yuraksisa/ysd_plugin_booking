@@ -19,14 +19,16 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
     this.paymentStatusDescription = {
        'none' : '<%= t.booking_payment_status.none%>',
        'deposit' : '<%= t.booking_payment_status.deposit%>',
-       'total' : '<%= t.booking_payment_status.total%>'
+       'total' : '<%= t.booking_payment_status.total%>',
+       'refunded': '<%= t.booking_payment_status.refunded%>'
     }
 
     this.chargeStatusDescription = {
        'pending': '<%= t.charge_status.pending %>',
        'processing': '<%= t.charge_status.processing %>',
        'done': '<%= t.charge_status.done %>',
-       'denied': '<%= t.charge_status.denied %>'
+       'denied': '<%= t.charge_status.denied %>',
+       'refunded': '<%= t.charge_status.refunded%>'
     };
 
     this.entityKey = function(entity) {
@@ -224,6 +226,9 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         case 'total':
           className = 'done-status';
           break;
+        case 'refunded':
+          className = 'error-status';
+          break;          
       }
       return className; 
     }
@@ -243,6 +248,9 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         case 'denied':
           className = 'error-status';
           break;
+        case 'refunded':
+          className = 'error-status';
+          break;          
       }
       return className;
     }    
