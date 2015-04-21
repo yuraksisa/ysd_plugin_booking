@@ -470,6 +470,8 @@ catalog_management:
       label: Selector
     product_family:
       label: Configuración
+    extras:
+      label: Extras      
     code_required: Código obligatorio      
 booking_category_management:
   table:
