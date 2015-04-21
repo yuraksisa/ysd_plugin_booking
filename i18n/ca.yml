@@ -77,7 +77,8 @@ booking_status:
 booking_payment_status:
   none: No cobrat
   deposit: Depòsit
-  total: Total       
+  total: Total     
+  refunded: Devolució  
 booking_management:
   title: Gestió de reserves
   description: <p>Consultar les reseves.</p>
