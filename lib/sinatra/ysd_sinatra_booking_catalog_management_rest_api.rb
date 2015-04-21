@@ -68,8 +68,13 @@ module Sinatra
         app.post "/api/booking-catalog" do
         
           data_request = body_as_json(::Yito::Model::Booking::BookingCatalog)
-          data = ::Yito::Model::Booking::BookingCatalog.create(data_request)
-         
+          begin
+            data = ::Yito::Model::Booking::BookingCatalog.new(data_request)
+            data.save
+          rescue DataMapper::SaveFailureError => error
+            p "Error saving booking catalog. #{data.inspect}"
+            raise error
+          end           
           status 200
           content_type :json
           data.to_json          

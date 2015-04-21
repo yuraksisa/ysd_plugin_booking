@@ -179,6 +179,8 @@ catalog_management:
       label: Selector
     product_family:
       label: Configuració
+    extras:
+      label: Extres      
     code_required: Codi obligatori
 booking_category_management:
   table:

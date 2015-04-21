@@ -70,9 +70,20 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       var productFamilyDataSource = new RemoteDataSource('/api/booking-product-families',{'id':'code','description':'code'});
       var productFamilyValue = (this.entity && this.entity.product_family_code)?this.entity.product_family_code:null;
       var productFamilySelector = new SelectSelector('product_family[code]', productFamilyDataSource, productFamilyValue); 
+
+      var extrasDataSource = new RemoteDataSource('/api/booking-extras', {'id':'code', 'description': 'name'});
+      var extrasValue = (this.entity && this.entity.booking_extras)? this.entity.booking_extras.map(function(item){return item.code;}):[];
+      var extrasSelector = new ListSelector('booking_extras',
+        'booking_extras[]', extrasDataSource, extrasValue);
     },
       
     adaptFormData : function(data) {
+            
+      var adaptedExtras = [];
+      for (idx in data['booking_extras']) {
+        adaptedExtras.push({'code': data['booking_extras'][idx]});
+      }
+      data['booking_extras'] = adaptedExtras;
             
       if (data.product_family.code == '') {
         data.product_family = null;

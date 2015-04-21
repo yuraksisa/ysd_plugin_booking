@@ -389,6 +389,8 @@ catalog_management:
       label: Selector
     product_family:
       label: Configuration
+    extras:
+      label: Extras      
     code_required: Code is required    
 booking_category_management:
   table:
