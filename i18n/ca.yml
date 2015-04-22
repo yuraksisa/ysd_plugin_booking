@@ -51,6 +51,7 @@ booking_console:
   availability: Disponibilitat
   summary: Resum  
   places: Entrega i recollida
+  adjust_prices: Ajustar preus    
   calendars: Calendaris
   timetables: Horaris  
 booking_summary:

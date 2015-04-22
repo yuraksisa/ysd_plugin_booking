@@ -56,6 +56,7 @@ booking_console:
   availability: Availability
   summary: Summary
   places: Pickup/return
+  adjust_prices: Adjust prices    
   calendars: Calendars
   timetables: Timetables  
 booking_summary:
