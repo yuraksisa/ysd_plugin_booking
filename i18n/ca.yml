@@ -47,6 +47,7 @@ booking_console:
   availability: Disponibilitat
   summary: Resum  
   places: Entrega i recollida
+  adjust_prices: Ajustar preus  
 booking_summary:
   title: Resum reserves 
 booking_forecast:

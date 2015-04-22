@@ -96,6 +96,7 @@ booking_console:
   summary: Resumen
   places: Entrega y recogida
   create_rates: Preparar tarifas
+  adjust_prices: Ajustar precios
 booking_summary:
   title: Resumen reservas
 booking_forecast:
