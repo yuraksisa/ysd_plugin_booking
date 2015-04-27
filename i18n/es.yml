@@ -363,6 +363,14 @@ booking_management:
     date_to: Fecha fin
     notifications: Notificaciones
     category: Categoría
+  footer:
+    title: Notificaciones
+    c1_notification: Cliente (reserva recibida)
+    c2_notification: Cliente (reserva confirmada)
+    c3_notification: Cliente (reserva recibida con pago online)
+    c4_notification: Cliente (notificación cobro habilitado)
+    m1_notification: Gestor (reserva recibida)
+    m2_notification: Gestor (reserva recibida con pago online)
   form:
     reservation_tab: Datos de la reserva
     flight_tab: Datos del vuelo
@@ -433,6 +441,16 @@ booking_management:
     booking_amount: Importe depósito
     deposit_state: Info. depósito 
     comments: Comentarios    
+    notifications:
+      title: Notificaciones enviadas al cliente
+      sent: Enviado 
+      not_sent: No enviado
+      send_again: Enviar
+      resend_confirmation: ¿Desea reenviar la notificación?
+      c1_notification: Reserva recibida
+      c2_notification: Reserva confirmada
+      c3_notification: Reserva recibida con pago online
+      c4_notification: Cobro habilitado
     anotations: Notas
     customer_title: Cliente
     customer_name: Nombre
@@ -488,7 +506,10 @@ booking_management:
       user: Usuario
       height: Altura
       weight: Peso
-      resource: Recurso    
+      resource: Recurso
+    created_by_manager: Creada en el backend
+    yes_created_by_manager: Si 
+    no_created_by_manager: No, creada desde la web
     user_agent_browser: Navegador
     user_agent_version: Versión
     user_agent_os: Sistema Operativo

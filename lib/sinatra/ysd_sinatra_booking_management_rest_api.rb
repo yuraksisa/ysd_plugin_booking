@@ -689,8 +689,6 @@ module Sinatra
           data = JSON.parse(URI.unescape(request.body.read))
           data.symbolize_keys! 
 
-          p "DATA: #{data}"
-
           if booking_line_resource = BookingDataSystem::BookingLineResource.get(data.delete(:id).to_i)
             booking_line_resource.attributes = data
             booking_line_resource.save
@@ -701,8 +699,78 @@ module Sinatra
 
         end         
 
+        # ------------ Send the notification emails ----------------------
+
         #
-        # Booking creation (customer)
+        # Request received
+        #
+        app.post '/api/booking/send-customer-req-notification/:id' , :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:id].to_i) and 
+             booking.status != :cancelled
+            booking.notify_request_to_customer
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Request received (with online payment)
+        #
+        app.post '/api/booking/send-customer-req-notification-pay/:id' , :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:id].to_i) and 
+             booking.status != :cancelled and 
+             booking.pay_now
+            booking.notify_request_to_customer_pay_now
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Request confirmed
+        #
+        app.post '/api/booking/send-customer-conf-notification/:id' , :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:id].to_i) and
+             booking.status != :pending_confirmation and 
+             booking.status != :cancelled
+            booking.notify_customer
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end        
+
+        #
+        # Payment enabled
+        #
+        app.post '/api/booking/send-customer-pay-enabled/:id' , :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:id].to_i) and
+             booking.status != :cancelled
+            booking.notify_customer_payment_enabled
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end  
+
+        # ----------------------------------------------------------------
+
+        #
+        # Booking creation (front-end)
         #
         app.post '/api/booking/?' do
 
@@ -747,7 +815,7 @@ module Sinatra
         end
 
         #
-        # Booking creation (manager)
+        # Booking creation (back-end)
         #
         app.post '/api/booking-from-manager/?', :allowed_usergroups => ['booking_manager', 'staff'] do
 
