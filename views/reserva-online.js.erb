@@ -1694,7 +1694,12 @@
           }
           else {
             if (!$('#button_ir_a_pagar_reserva').is(":visible")) {
-              if (bookingModel.categoriesPaymentEnabled.indexOf(bookingModel.booking.item_id) > -1) {
+
+              var notAllowed = bookingModel.booking.booking_lines_as_array().filter(function(obj){
+                return bookingModel.categoriesPaymentEnabled.indexOf(obj.item_id) == -1;
+              });
+
+              if (notAllowed.length == 0) {
                 $('#button_ir_a_pagar_reserva').show();
               }
             }
