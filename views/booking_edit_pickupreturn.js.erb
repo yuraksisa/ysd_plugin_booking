@@ -22,8 +22,8 @@
           time_from: '<%=booking.time_from%>',
           date_to: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to.strftime('%d/%m/%y')%>"),
           time_to: '<%=booking.time_to%>',
-          pickup_place: '<%=booking.pickup_place.gsub("\n","<br/>")%>',
-          return_place: '<%=booking.return_place.gsub("\n","<br/>")%>',
+          pickup_place: '<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : ""%>',
+          return_place: '<%=booking.return_place ? booking.return_place.gsub("\n","<br/>") : ""%>',
           days: <%=booking.days%>,
           date_to_price_calculation: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to_price_calculation.strftime('%d/%m/%y')%>"),
           item_cost: <%=booking.item_cost%>,
@@ -334,7 +334,7 @@
           function() {
              bookingEditController.blur_pickup_place_input($(this).val());
           });
-      $('#pickup_place_value').val('<%=booking.pickup_place.gsub("\n","<br/>")%>');  
+      $('#pickup_place_value').val('<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>")%> : ""');  
            
       $('#return_place').bind('change',
           function() {
@@ -344,7 +344,7 @@
           function() {
             bookingEditController.blur_return_place_input($(this).val());
           });
-      $('#return_place_value').val('<%=booking.return_place.gsub("\n","<br/>")%>');  
+      $('#return_place_value').val('<%=booking.return_place ? booking.return_place.gsub("\n","<br/>")%> : ""');  
 
 
       // Add the new options
