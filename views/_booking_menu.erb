@@ -40,6 +40,14 @@
   <div class="top-space bottom-space">
      <p class="more_contrast_text"><a href="/admin/booking/bookings"><%=t.booking_console.reservations%></a></p>
   </div>
+  <% if booking_activities %>
+  <div class="top-space bottom-space">
+     <p class="more_contrast_text"><a href="/admin/order/orders"><%=t.booking_console.activities%></a></p>
+  </div>
+  <% end %>
+  <div class="top-space bottom-space"> 
+      <p class="more_contrast_text"><a href="/admin/charges"><%=t.booking_console.receipts%></a></p>   
+  </div>    
   <div class="top-space bottom-space"> 
       <p class="more_contrast_text"><a href="/admin/booking/planning"><%=t.booking_console.planning%></a></p>
   </div> 

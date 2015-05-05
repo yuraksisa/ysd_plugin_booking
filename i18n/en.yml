@@ -59,6 +59,8 @@ booking_console:
   adjust_prices: Adjust prices    
   calendars: Calendars
   timetables: Timetables  
+  receipts: Receipts 
+  activities: Orders  
 booking_summary:
   title: Booking summary  
 booking_forecast:

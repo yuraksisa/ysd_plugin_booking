@@ -54,6 +54,8 @@ booking_console:
   adjust_prices: Ajustar preus    
   calendars: Calendaris
   timetables: Horaris  
+  receipts: Cobraments
+  activities: Comandes  
 booking_summary:
   title: Resum reserves 
 booking_forecast:

@@ -88,9 +88,9 @@ booking_console:
   title: Reservas
   configuration: Configuración
   catalogs: Catálogos
-  categories: Productos
+  categories: Productos alquiler
   extras: Extras
-  items: Recursos
+  items: Recursos alquiler
   rates: Tarifas
   reservations: Reservas
   planning: Planning de recursos   
@@ -105,6 +105,8 @@ booking_console:
   adjust_prices: Ajustar precios    
   calendars: Calendarios
   timetables: Horarios
+  receipts: Cobros  
+  activities: Pedidos actividades
 booking_summary:
   title: Resumen reservas
 booking_forecast:

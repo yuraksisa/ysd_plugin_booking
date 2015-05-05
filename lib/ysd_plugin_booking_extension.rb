@@ -103,6 +103,11 @@ module Huasi
          :description => 'Price if the pickup/return is not on pickup/return timetable'})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.activities'},
+        {:value => 'false',
+         :description => 'Allow activities integration'})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.page_title'},
         {:value => 'Bookings',
          :description => 'Booking page title',
@@ -286,7 +291,10 @@ module Huasi
         when 'booking_selector_inline'         
           app.partial(:booking_selector_inline, :locals => locals)
         when 'booking_admin_menu'
-          app.partial(:booking_menu)          
+          menu_locals = {}
+          menu_locals.store(:booking_activities, 
+            SystemConfiguration::Variable.get_value('booking.activities','false').to_bool)        
+          app.partial(:booking_menu, :locals => menu_locals)              
       end
       
     end
