@@ -61,6 +61,7 @@ booking_console:
   timetables: Timetables  
   receipts: Receipts 
   activities: Orders  
+  information_requests: Information requests  
 booking_summary:
   title: Booking summary  
 booking_forecast:

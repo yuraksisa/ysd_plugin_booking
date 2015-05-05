@@ -107,6 +107,7 @@ booking_console:
   timetables: Horarios
   receipts: Cobros  
   activities: Pedidos actividades
+  information_requests: Solicitudes información
 booking_summary:
   title: Resumen reservas
 booking_forecast:
