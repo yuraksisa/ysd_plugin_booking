@@ -15,26 +15,34 @@
          <th class="table-header-title" scope="col" style="width:5%"><%= t.not_assigned_bookings.table.id %></th>
          <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.not_assigned_bookings.table.date_from %></th>
          <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.not_assigned_bookings.table.date_to %></th>         
-         <th class="table-header-title centered_text" scope="col" style="width:40%"><%= t.not_assigned_bookings.table.customer %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.not_assigned_bookings.table.phone %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:35%"><%= t.not_assigned_bookings.table.customer %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.not_assigned_bookings.table.phone %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.not_assigned_bookings.table.color %></th>
        </tr>
      </thead>
      <tbody id="elements_tbody" class="table-tbody">             
      </tbody>
   </table>
 </div>
-  <script type="text/tmpl" id="script_booking_line">
+
+<script type="text/tmpl" id="script_booking_line">
     <tr>
       <td class="table-cell left_text" style="border-bottom:none"><a href="/admin/booking/bookings/<%%= entity.id %>"><%%= entity.id %></a></td>
       <td class="table-cell centered_text" style="border-bottom:none"><%%= formatter.formatDate(entity.date_from,'dd.MM.yyyy') %> </td>
       <td class="table-cell centered_text" style="border-bottom:none"><%%= formatter.formatDate(entity.date_to,'dd.MM.yyyy') %> </td>
       <td class="table-cell centered_text" style="border-bottom:none"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
       <td class="table-cell centered_text" style="border-bottom:none"><%%= entity.customer_phone %> <%%=entity.customer_mobile_phone%></td>
+      <td class="table-cell centered_text" style="border-bottom:none">
+         <form name="color">
+            <input type="hidden" name="id" value="<%%=entity.id%>"/>
+            <input type="color" class="planning_color" name="planning_color" value="<%%=entity.planning_color%>"/>
+         </form>
+      </td>
     </tr>
     <tr>      
       <td  class="table-cell centered_text" colspan="2">
       </td>
-      <td class="table-cell centered_text" colspan="3">
+      <td class="table-cell centered_text" colspan="4">
           <table class="table" style="border:1px solid #EEE">
             <thead class="table-header">
               <tr>
@@ -57,4 +65,4 @@
           </table>
       </td>      
     </tr>
-  </script>  
+</script>  

@@ -62,7 +62,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                dataType : 'json',
                success: function(data, textStatus, jqXHR) {
                  if (data.length > 1) {
-                   $("#linked_bookings").html(tmpl('linked_bookings_script', {data: data}));
+                   $("#linked_bookings").html(tmpl('linked_bookings_script', {data: data, 'self':bookingManager.view}));
                    if ($('#link_booking').is(':visible')) {                 
                      $('#link_booking').hide();
                    }

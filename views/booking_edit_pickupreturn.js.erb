@@ -334,7 +334,7 @@
           function() {
              bookingEditController.blur_pickup_place_input($(this).val());
           });
-      $('#pickup_place_value').val('<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>")%> : ""');  
+      $('#pickup_place_value').val('<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : "" %>');  
            
       $('#return_place').bind('change',
           function() {
@@ -344,7 +344,7 @@
           function() {
             bookingEditController.blur_return_place_input($(this).val());
           });
-      $('#return_place_value').val('<%=booking.return_place ? booking.return_place.gsub("\n","<br/>")%> : ""');  
+      $('#return_place_value').val('<%=booking.return_place ? booking.return_place.gsub("\n","<br/>"): "" %>');  
 
 
       // Add the new options

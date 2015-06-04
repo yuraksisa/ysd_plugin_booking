@@ -6,13 +6,13 @@
   require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
            <% if defined?booking_js %>'booking_js'<% else %>'/js/booking.js'<%end%>, 
            'YSDListSelector', 'YSDMemoryDataSource','YSDRemoteDataSource',
-           'YSDSelectSelector',  
+           'YSDSelectSelector',  'YSDGui',
            'json2', 'jquery.validate', 
            'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
            'jquery.ui.datepicker.validation',
            'jquery.tools', 'jquery.formparams', 'datejs'], 
            function($, YSDForms, DateControl, tmpl, bookingDataSystem,  
-           ListSelector, MemoryDataSource, RemoteDataSource, SelectSelector) {  
+           ListSelector, MemoryDataSource, RemoteDataSource, SelectSelector, YSDGui) {  
 
     /* It represents the wizard tabs */
 
@@ -360,6 +360,8 @@
 
        set_pickup_place : function(pickup_place) {
 
+        this.booking.pickup_place = pickup_place;
+
         var pickupPlaceRate = 0;
 
         if (pickup_place == '<%=t.new_booking.other%>') {
@@ -378,6 +380,7 @@
 
        set_return_place : function(return_place) {
 
+        this.booking.return_place = return_place;
         var returnPlaceRate = 0;
 
         if (return_place == '<%=t.new_booking.other%>') {
@@ -661,6 +664,20 @@
         bookingView.calculate_prices();
       },
 
+      shoopingCartPhotoClick: function(item) {
+
+        var html = tmpl('script_detailed_product', {family: bookingDataSystem.families[item]});
+        $('#popup').html(html);
+        $('.product_detail_close').unbind('click');
+        $('.product_detail_close').bind('click', function() {
+          YSDGui.hideElement(document.getElementById('popup'));
+        });
+        YSDGui.showElement(document.getElementById('popup'), true, function() {
+            $('#popup').html('');
+        });
+
+      },
+
       /* calculate the prices */
         
       calculate_prices : function (date_from, time_from, date_to, time_to, pickup_place, return_place) {
@@ -681,8 +698,6 @@
           _gaq.push(['_trackEvent', 'Reservations', 'Choose item', item]);
         }
 
-        bookingModel.booking.pickup_place = $('#pickup_place_value').val();
-        bookingModel.booking.return_place = $('#return_place_value').val();
         bookingModel.choose_item(item);
          
       },
@@ -1074,6 +1089,11 @@
          }  
          
          $('#items_families').html(familiesHtml); 
+
+         $('.shopping_cart_product_detail').bind('click', function(){
+            var family = $(this).attr('rel');
+            bookingController.shoopingCartPhotoClick(family);
+         });
 
          $('.quantity').bind('change', function() {
             var family = $(this).attr('rel');

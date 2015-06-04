@@ -80,6 +80,16 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
 
      },
 
+     updateBooking: function(id, uBooking) {
+
+       var booking = this.bookingsHash[id];
+       if (booking) {
+          booking.planning_color = uBooking.planning_color;
+          planningView.update('booking_updated', {booking: booking});
+       }
+
+     },
+
      loadBookingItems: function() { /* Load the booking items */
 
        $.ajax({
@@ -216,6 +226,11 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
            }           
            this.loadBooking(data.booking, data.booking_line_resource_index);
            break;
+
+        case 'booking_updated':
+          this.unloadBooking(data.booking);
+          this.loadBooking(data.booking);
+          break;
       }
 
     },
@@ -380,6 +395,11 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
                                   data.data.resource, 
                                   data.data.reassigned, 
                                   data.data.booking);
+  });
+
+  confirmedBooking.model.addListener('booking_updated', function(data) {
+    planningModel.updateBooking(data.data.id,
+                                data.data.booking);
   });
 
   planningView.init();

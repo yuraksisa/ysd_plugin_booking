@@ -1,4 +1,5 @@
-define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jquery'], 
+define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 
+       'jquery', 'jquery.formparams'], 
   function(tmpl, ysdFormatter, EventTarget, $) {
 
   confirmedBookingsModel = {
@@ -127,6 +128,32 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
                }
           });
 
+     },
+
+     updatePlanningColor: function(formParams) {
+
+       var self = this;
+       var booking_id = formParams.id;
+       var strData = JSON.stringify(formParams);
+
+       $.ajax({
+               type: 'PUT',
+               url : '/api/booking',
+               contentType: 'application/json; charset=utf-8',
+               data: strData,
+               dataType : 'json',
+               success: function(data, textStatus, jqXHR) {
+                 confirmedBookingsModel.hashData[booking_id].
+                   planning_color = formParams['planning_color'];                 
+                 self.events.fireEvent({'type':'booking_updated', data: {
+                     id: booking_id, 
+                     booking: confirmedBookingsModel.hashData[booking_id]}});
+                 alert('Color actualizado');
+               },
+               error: function(jqXHR, textStatus, errorThrow){ /* RESPONSE ERROR */
+                 alert('Error'); 
+               }
+             });
      }
 
 
@@ -195,6 +222,10 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
          $('#filtered_resources_'+id).show();        
          $('#not_filtered_resources_'+id).hide();        
        }
+    },
+
+    planningColorChanged: function(control) {
+      confirmedBookingsModel.updatePlanningColor($(control.form).formParams(false));
     }
 
   };
@@ -227,6 +258,7 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
           var template = tmpl('script_booking_line');
           var result = '';
           $('.show_all_resources').unbind('change');
+          $('.planning_color').unbind('change');
           for (var i=0;i<confirmedBookingsModel.data.length;i++) {
              if (confirmedBookingsModel.filter == 'all' || 
                  (confirmedBookingsModel.filterBookings instanceof Array &&
@@ -248,6 +280,9 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
           $('.show_all_resources').bind('change', function() {
             confirmedBookingsController.showAllResourcesChanged($(this)[0]);
           });          
+          $('.planning_color').bind('change', function() {
+            confirmedBookingsController.planningColorChanged($(this)[0]);
+          });
 
     }
 

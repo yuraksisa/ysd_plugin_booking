@@ -325,6 +325,7 @@ not_assigned_bookings:
     dates: Dates
     customer: Client
     status: Estat  
+    color: Color
   form:  
     assign: Assignar
     reassign: Reassignar

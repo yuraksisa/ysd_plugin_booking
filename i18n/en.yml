@@ -202,13 +202,13 @@ new_booking:
     format: Email format is user@domain.com 
     equal_to: It must be equal to email    
   customer_phone: 
-    label: Phone
-    placeholder: Your landline
-    required: Customer phone required
+    label: Main telephone number 
+    placeholder: Your main phone number
+    required: Customer phone is required
     min_length: Minimum length is 9 digits   
   customer_mobile: 
-    label: Mobile phone
-    placeholder: Your cell phone
+    label: Alternative telephone number
+    placeholder: Your alternative phone number
   contact:
     label: Contact    
     description: Please fill the contact information
@@ -538,6 +538,7 @@ not_assigned_bookings:
     dates: Dates
     customer: Customer
     status: Status
+    color: Color
   form:  
     assign: Assign  
     reassign: Reassign  

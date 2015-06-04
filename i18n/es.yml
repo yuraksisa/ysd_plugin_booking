@@ -250,13 +250,13 @@ new_booking:
     format: El correo electrónico debe estar en formato usuario@dominio.com
     equal_to: Debe ser igual al correo electrónico
   customer_phone: 
-    label: Teléfono
-    placeholder: Su teléfono fijo
+    label: Teléfono principal
+    placeholder: Su teléfono principal
     required: El teléfono del cliente es obligatorio
     min_length: Debe introducir un número de teléfono de 9 dígitos
   customer_mobile: 
-    label: Teléfono móvil
-    placeholder: Su teléfono móvil
+    label: Teléfono alternativo
+    placeholder: Su teléfono alternativo
   contact:
     label: Datos del contacto
     description: Si desea <strong>agilizar</strong> la reserva complete los datos del <em>contacto</em>. <em>Pulse el botón + para desplegarlos</em>.
@@ -510,6 +510,8 @@ booking_management:
       height: Altura
       weight: Peso
       resource: Recurso
+    planning_color: 
+      title: Color en el planning
     created_by_manager: Creada en el backend
     yes_created_by_manager: Si 
     no_created_by_manager: No, creada desde la web
@@ -685,7 +687,8 @@ not_assigned_bookings:
     customer: Cliente
     phone: Teléfono    
     status: Estado   
-    resource: Recurso 
+    resource: Recurso
+    color: Color 
   form:  
     assign: Asignar
     reassign: Reasignar

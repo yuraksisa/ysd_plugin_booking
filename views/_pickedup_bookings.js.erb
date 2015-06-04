@@ -1,24 +1,39 @@
-require(['jquery', 'ysdtemplate',  'datejs'], function($, tmpl) {
+require(['jquery', 'ysdtemplate', 'datejs', 
+         'jquery.ui', 'jquery.ui.datepicker-es'], function($, tmpl) {
 
 
   bookingPickedupModel = {
 
-     result : null,
+     pickupResult : null,
+     returnResult : null,
 
-     loadData: function(date) {
+     loadData: function(dateFrom, dateTo) {
 
-       var strDate = date.toString("yyyy-MM-dd");
+       var strDateFrom = dateFrom.toString("yyyy-MM-dd");
+       var strDateTo = dateTo.toString("yyyy-MM-dd");
 
   	   $.ajax({
   	   	       type: 'GET',
-  	   	       url : '/api/booking/pickedup?from='+strDate,
+  	   	       url : '/api/booking/pickedup?from='+strDateFrom+'&to='+strDateTo,
   	   	       contentType: 'application/json; charset=utf-8',
   		         dataType : 'json',
   		         success: function(data, textStatus, jqXHR) {
-                  bookingPickedupModel.result = data;
-                  bookingPickedupView.update('data_available');
+                  bookingPickedupModel.pickupResult = data;
+                  bookingPickedupView.update('pickup_data_available');
                }
           });
+
+       $.ajax({
+               type: 'GET',
+               url : '/api/booking/returned?from='+strDateFrom+'&to='+strDateTo,
+               contentType: 'application/json; charset=utf-8',
+               dataType : 'json',
+               success: function(data, textStatus, jqXHR) {
+                  bookingPickedupModel.returnResult = data;
+                  bookingPickedupView.update('return_data_available');
+               }
+          });
+
 
      }
 
@@ -26,10 +41,22 @@ require(['jquery', 'ysdtemplate',  'datejs'], function($, tmpl) {
 
   bookingPickupedController = {
 
+    dateFromChanged: function() {
+
+      var dateFrom = $('#date_from').datepicker('getDate'); 
+      var dateTo = $('#date_to').datepicker('getDate');
+      dateTo.setDate(dateFrom.getDate() + 7);
+      $('#date_to').datepicker('setDate', dateTo );
+      $('#date_to').datepicker('option', 'minDate', dateFrom.add(7).days());
+
+    },
+
     dateChanged : function() {
 
-      var date = $('#pickup_date').datepicker('getDate');
-      bookingPickedupModel.loadData(date);
+      var dateFrom = $('#date_from').datepicker('getDate');
+      var dateTo = $('#date_to').datepicker('getDate');
+      
+      bookingPickedupModel.loadData(dateFrom, dateTo);
 
     }
 
@@ -42,24 +69,50 @@ require(['jquery', 'ysdtemplate',  'datejs'], function($, tmpl) {
      init : function() {
 
          var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];             
-         $('#pickup_date').datepicker(
-                 {controlType: 'select', showTimezone: false, useLocalTimezone: true, numberOfMonths:1, 
+         $.datepicker.setDefaults($.datepicker.regional["<%=session[:locale] || 'es'%>"]);
+
+         $('#date_from').datepicker(
+                 {controlType: 'select', 
+                  showTimezone: false, 
+                  useLocalTimezone: true, 
+                  numberOfMonths:1, 
+                  minDate: new Date(),
+                  maxDate: new Date().add(365).days(),
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function(dateText) {
+                    bookingPickupedController.dateFromChanged();
+                    bookingPickupedController.dateChanged();
+                  }},
+                  locale
+                  );
+         $('#date_from').datepicker('setDate', '+0');
+
+         $('#date_to').datepicker(
+                 {controlType: 'select',
+                  showTimezone: false, 
+                  useLocalTimezone: true,
+                  numberOfMonths:1, 
+                  minDate: new Date().add(7).days(),
+                  maxDate: new Date().add(365).days(),
                   dateFormat: 'dd/mm/yy',
                   onSelect: function(dateText) {
                     bookingPickupedController.dateChanged();
                   }},
                   locale
-                  );
-         $('#pickup_date').datepicker('setDate', new Date());
+                  );         
+         $('#date_to').datepicker('setDate', '+7');
 
      },
 
      update: function(status) {
 
         switch(status) {
-        	case 'data_available':
-        	  $("#pickedup_booking_data").html(tmpl('pickedup_bookings_table', {data: bookingPickedupModel.result}));
+        	case 'pickup_data_available':
+        	  $("#pickedup_booking_data").html(tmpl('pickedup_bookings_table', {data: bookingPickedupModel.pickupResult}));
         	  break;
+          case 'return_data_available':
+            $("#returned_booking_data").html(tmpl('returned_bookings_table', {data: bookingPickedupModel.returnResult}));
+            break;            
         }
 
        
@@ -68,7 +121,8 @@ require(['jquery', 'ysdtemplate',  'datejs'], function($, tmpl) {
   };
 
   bookingPickedupView.init();
-  var date = $('#pickup_date').datepicker('getDate');
-  bookingPickedupModel.loadData(date);
+  var dateFrom = $('#date_from').datepicker('getDate');
+  var dateTo = $('#date_to').datepicker('getDate');
+  bookingPickedupModel.loadData(dateFrom, dateTo);
 
 });

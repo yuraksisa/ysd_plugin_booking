@@ -579,8 +579,26 @@
                           <%% } %>
                         </tbody>
                       </table>
-
         </div>
+     </div>
+
+     <div class="container_12">
+       <div class="grid_6">
+         <div class="all-space" style="border:1px solid #EEE">
+            <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline"><%= t.booking_management.form.planning_color.title %></div>
+            <form name="planning" class="overflow">
+              <input type="hidden" name="id" value="<%%=entity.id%>"/> 
+              <div class="formrow">
+                <input type="color" name="planning_color" value="<%%=entity.planning_color%>"/>
+              </div>
+              <div class="navigation-bar bottom-margin">
+                <div class="navigation-bar-crud-buttons right-float right-margin">
+                  <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                </div>
+              </div> 
+            </form>
+          </div>
+       </div>
      </div>
 
      <div class="container_12">
@@ -996,15 +1014,21 @@
                      <table class="table">
                         <thead class="table-header">
                           <tr>
-                            <th class="table-cell" scope="col" style="width:40%"><%=t.booking_management.form.id%></th>
-                            <th class="table-cell" scope="col" style="width:60%"><%=t.booking_management.form.customer_title%></th>
+                            <th class="table-cell" scope="col" style="width:25%"><%=t.booking_management.form.id%></th>
+                            <th class="table-cell" scope="col" style="width:15%"><%=t.booking_management.form.date_from%>
+                            <th class="table-cell" scope="col" style="width:15%"><%=t.booking_management.form.date_to%>
+                            <th class="table-cell" scope="col" style="width:30%"><%=t.booking_management.form.customer_title%></th>
+                            <th class="table-cell" scope="col"></th>
                           </tr>
                         </thead>
                         <tbody class="table-tbody">
                           <%% for (var idx=0; idx < data.length ; idx++) { %>
                             <tr class="table-row <%% if (data[idx].main_booking_id==null){%>more_contrast_text<%%}%>">
-                               <td class="table-cell centered_text"><%%=data[idx].id%></td>
+                               <td class="table-cell centered_text"><a href="/admin/booking/bookings/<%%=data[idx].id%>" target="_blank"><%%=data[idx].id%></a></td>
+                               <td class="table-cell centered_text"><%%= self.formatDate(data[idx].date_from,'dd.MM.yyyy') %> </td>
+                               <td class="table-cell centered_text"><%%= self.formatDate(data[idx].date_to,'dd.MM.yyyy') %> </td>
                                <td class="table-cell centered_text"><%%=data[idx].customer_name%> <%%=data[idx].customer_surname%></td>
+                               <td class="table-cell"><%%=data[idx].detail%></td>
                             </tr>
                           <%% } %>
                         </tbody>

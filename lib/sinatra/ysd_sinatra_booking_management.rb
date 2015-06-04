@@ -225,7 +225,7 @@ module Sinatra
           aspects_render = UI::EntityManagementAspectRender.new(context, aspects) 
           
           locals = aspects_render.render(BookingDataSystem::Booking)
-          locals.store(:bookings_page_size, 12)
+          locals.store(:bookings_page_size, 20)
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
 

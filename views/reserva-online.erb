@@ -162,6 +162,9 @@
     <div id="content-footer">
       
     </div>  
+
+    <div id="popup" style="background: white">
+    </div>
       
   </div>
 
@@ -187,10 +190,10 @@
               <div class="<%% if (currentRow == totalRows-1 && lastRowItems == 2 && currentCol == 0){%>prefix_2<%%} else if (currentRow == totalRows-1 && lastRowItems == 1 && currentCol == 0) {%>prefix_4<%%}%> grid_<%%=12/totalCols%>">
                 <div id="family_<%%=category.family%>" class="family top-margin" style="padding:5px">
                   <div>
-                    <img src="<%%=category.photo%>" style="display: block; margin: 0 auto" />
+                    <img src="<%%=category.photo%>" class="shopping_cart_product_detail" rel="<%%=category.family%>" style="display: block; margin: 0 auto" />
                   </div>
                   <div class="top-margin">
-                    <span class="centered_text <%%if (totalCols>3){%>smaller_text<%%}%>" style="display: block; margin: 0 auto" ><%%=category.description%></span>
+                    <span class="shopping_cart_product_detail centered_text <%%if (totalCols>3){%>smaller_text<%%}%>" style="display: block; margin: 0 auto" rel="<%%=category.family%>"><%%=category.description%></span>
                   </div>
                   <div class="top-margin">
                     <form class="select-category" rel="<%%=category.family%>">
@@ -370,3 +373,22 @@
   
   </script>
   
+  <script type="text/tpml" id="script_detailed_product">
+
+    <div id="product_detail">
+      <div class="grid_12">
+         <div class="all-space">
+           <img src="<%%=family.photo%>" style="display:block; margin:0 auto"/>
+         </div>
+         <div class="all-space">
+           <button class="product_detail_close form-button" style="display:block; margin:0 auto">Cerrar</button>
+         </div>
+      </div>
+      <div class="grid_12">
+         <div class="all-space">
+           <%%=family.fullDescription%>
+         </div>
+      </div>
+    </div>
+
+  </script>

@@ -370,7 +370,7 @@ module Sinatra
           app.post path, :allowed_usergroups => ['booking_manager', 'staff'] do
         	
             page = [params[:page].to_i, 1].max  
-            page_size = 12
+            page_size = 20
             offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]} 
 
             if request.media_type == "application/x-www-form-urlencoded"
@@ -448,7 +448,9 @@ module Sinatra
                          :date_to => booking.date_to,
                          :time_to => booking.time_to,
                          :main_booking_id => booking.main_booking_id,
-                         :status => booking.status}
+                         :status => booking.status,
+                         :detail => booking.booking_lines.inject("") { |result, item| result + "#{item.quantity}-#{item.item_id} " }.strip
+                         }
                      end
                    else
                      []
