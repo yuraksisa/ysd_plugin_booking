@@ -419,6 +419,12 @@ booking_category_management:
       label: Calendar
     price_definition:
       label: Prices    
+    stock_control:
+      label: Stock control 
+    stock:
+      label: Stock 
+    sort_order:
+      label: Order
 booking_extra_management:
   title: Extras management
   description: Extras management

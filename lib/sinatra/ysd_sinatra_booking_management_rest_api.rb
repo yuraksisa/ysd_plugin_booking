@@ -22,6 +22,32 @@ module Sinatra
 
       end
 
+      def booking_stock
+
+         ::Yito::Model::Booking::BookingCategory.all(:fields => [:code, :stock_control, :stock]).map do |item| 
+           {item_id: item.code, stock_control: item.stock_control, stock: item.stock}
+         end
+
+      end
+
+      def booking_occupation(params)
+
+        if params['from'].nil? or params['to'].nil?
+           []
+        else
+           begin
+             from = DateTime.strptime(params[:from], '%Y-%m-%d')
+             to = DateTime.strptime(params[:to], '%Y-%m-%d')
+             BookingDataSystem::Booking.occupation(from, to).map do |item|  
+                {item_id: item.item_id, stock: item.stock, busy: item.busy}
+             end
+           rescue ArgumentError => ex
+             []
+           end
+        end  
+
+      end
+
       def booking_payment_enabled(params)
 
         if params['from'].nil? or params['to'].nil?
@@ -134,8 +160,31 @@ module Sinatra
         #
         app.get '/api/booking/check' do
          
-          result = {:availability => booking_availability(params),
-                    :payment => booking_payment_enabled(params)}
+          occupation_hash=booking_occupation(params).inject({}) do |result,item| 
+             result.store(item[:item_id], item.select {|key,value| key != :item_id}) 
+             result 
+          end
+
+          stock_hash=booking_stock.inject({}) do |result,item| 
+             result.store(item[:item_id], item.select { |key,value| key != :item_id})
+             result
+          end
+          
+          stock_hash.each do |key, value|
+             if occupation_hash.has_key?(key) 
+               value.store(:busy, occupation_hash[key][:busy])
+             else
+               value.store(:busy, 0)
+             end
+          end
+
+          availability = booking_availability(params).select do |item| 
+                           true if stock_hash.has_key?(item) and stock_hash[item][:stock_control] and stock_hash[item][:busy] < stock_hash[item][:stock]
+                         end
+
+          result = {:availability => availability,
+                    :payment => booking_payment_enabled(params),
+                    :stock => stock_hash}
           result.to_json          
 
         end

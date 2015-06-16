@@ -208,7 +208,13 @@ booking_category_management:
     calendar:
       label: Calendari
     price_definition:
-      label: Preus       
+      label: Preus   
+    stock_control:
+      label: Control stock 
+    stock:
+      label: Stock 
+    sort_order:
+      label: Ordre          
 booking_extra_management:
   title: Gestió d\'extras
   description: Gestió d\'extras

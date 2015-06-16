@@ -71,6 +71,15 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           {'id':'id','description':'name'});
       var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
       var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
+
+      $('#stock_control').bind('change', function() {
+         if ($(this).attr('checked')) {
+           $('#stock_container').show();
+         }
+         else {
+           $('#stock_container').hide();
+         }
+      });
     },
 
     adaptFormData : function(data) {

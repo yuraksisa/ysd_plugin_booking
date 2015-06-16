@@ -568,6 +568,12 @@ booking_category_management:
       label: Calendario
     price_definition:
       label: Precio
+    stock_control:
+      label: Control de stock 
+    stock:
+      label: Stock 
+    sort_order:
+      label: Orden
 booking_extra_management:
   title: Extras
   description: Gestión de extras
