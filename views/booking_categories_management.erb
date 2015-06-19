@@ -104,7 +104,11 @@
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.sort_order.label%></label>
                 <input type="text" name="sort_order" id="sort_order" <%% if (entity){%>value="<%%=entity.sort_order%>" <%%}%>/>
-              </div>                 
+              </div>  
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.deposit.label%></label>
+                <input type="text" name="deposit" id="deposit" <%% if (entity){%>value="<%%=new Number(entity.deposit).toFixed(2)%>" <%%}%>/>
+              </div>                               
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.catalog.label %></label>
                 <select class="fieldcontrol" name="booking_catalog[code]" id="booking_catalog[code]"/>

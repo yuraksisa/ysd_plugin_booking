@@ -214,7 +214,9 @@ booking_category_management:
     stock:
       label: Stock 
     sort_order:
-      label: Ordre          
+      label: Ordre
+    deposit:
+      label: Dipòsit               
 booking_extra_management:
   title: Gestió d\'extras
   description: Gestió d\'extras

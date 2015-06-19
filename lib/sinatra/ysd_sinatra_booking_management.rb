@@ -233,6 +233,25 @@ module Sinatra
 
         end
 
+        #
+        # Contract
+        #
+        app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager','staff'] do
+
+           if booking = BookingDataSystem::Booking.get(params[:id])
+             contract = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+             if contract
+               template = ERB.new contract.text     
+               message = template.result(binding)
+             else
+               status 404
+             end              
+           else
+             status 404
+           end
+
+        end 
+
       end
 
   	end #BookingManagement

@@ -205,6 +205,8 @@ new_booking:
   time_to_cost: Suplemento recogida fuera de horas
   pickup_place_cost: Suplemento lugar de entrega
   return_place_cost: Suplemento lugar de recogida
+  product_deposit_cost: Fianza
+  product_deposit_cost_legend: La fianza se devuelve al retornar el producto
   total: Total
   form_errors:
     title: Formulario no válido
@@ -502,6 +504,7 @@ booking_management:
       days: Días
       quantity: Cantidad
       unit_cost: Coste unitario
+      deposit: Fianza
       cost: Coste total
     booking_resources:
       title: Recursos
@@ -574,6 +577,8 @@ booking_category_management:
       label: Stock 
     sort_order:
       label: Orden
+    deposit:
+      label: Depósito
 booking_extra_management:
   title: Extras
   description: Gestión de extras

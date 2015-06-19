@@ -361,6 +361,15 @@
             <td class="quantity_column"><%%= booking.return_place_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) %>€ </td>
           </tr>                 
           <%% } %>
+          <%% if (booking.product_deposit_cost > 0 ) { %>                 
+          <tr>
+            <td class="first_column"><%=t.new_booking.product_deposit_cost%></td>
+            <td class="quantity_column"></td>
+            <td class="quantity_column"><%%= booking.product_deposit_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) %>€</td>
+            <td class="quantity_column">1</td>
+            <td class="quantity_column"><%%= booking.product_deposit_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) %>€ </td>
+          </tr>                 
+          <%% } %>          
           <tr>
             <td class="total_column first_column"><%=t.new_booking.total.upcase%></td>
             <td class="quantity_column"></td>
@@ -370,6 +379,9 @@
           </tr>
         </tbody>      
       </table>
+      <%% if (booking.product_deposit_cost > 0) { %>
+        <p class="centered_text top-margin-1line"><em>*<%=t.new_booking.product_deposit_cost_legend%></em></p>
+      <%% } %> 
   
   </script>
   

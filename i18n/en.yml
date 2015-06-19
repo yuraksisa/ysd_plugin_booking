@@ -156,7 +156,9 @@ new_booking:
   time_from_cost: Pick up outside working hours supplement
   time_to_cost: Return outside working hours supplement
   pickup_place_cost: Pick up place supplement
-  return_place_cost: Return place supplement  
+  return_place_cost: Return place supplement
+  product_deposit_cost: Deposit  
+  product_deposit_cost_legend: The product deposit will be returned when you return the product  
   total: Total
   form_errors:
     title: Error
@@ -425,6 +427,8 @@ booking_category_management:
       label: Stock 
     sort_order:
       label: Order
+    deposit:
+      label: Deposit      
 booking_extra_management:
   title: Extras management
   description: Extras management

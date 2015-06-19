@@ -110,6 +110,7 @@
           time_to_cost: 0, /* time to cost */
           pickup_place_cost: 0, /* pickup place cost */
           return_place_cost: 0, /* return place cost */
+          product_deposit_cost:0, /* product deposit cost */
           total_cost : 0, /* the total cost (item + extras) */
           booking_extras : {}, /* The booking extras */
           booking_lines: {}, /* the booking detail */
@@ -120,6 +121,7 @@
 
             this.booking_lines[item_id] = new this.BookingLine(item_id, quantity);
             this.addItemCost(this.booking_lines[item_id].item_cost);
+            this.addProductDepositCost(this.booking_lines[item_id].product_deposit_cost);
             bookingView.update_information('booking_lines');
 
           },
@@ -127,8 +129,10 @@
           remove_booking_line: function(item_id) { /** Remove an item **/
 
             var oldCost = this.booking_lines[item_id].item_cost;
+            var oldProductDepositCost = this.booking_lines[item_id].product_deposit_cost;
             delete this.booking_lines[item_id];
-            this.addItemCost (-oldCost);
+            this.addItemCost(-oldCost);
+            this.addItemCost(-oldProductDepositCost); 
             bookingView.update_information('booking_lines');
 
           },
@@ -201,17 +205,19 @@
 
             this.item_cost = 0;
             this.total_cost = 0;
+            this.product_deposit_cost = 0;
             for (family in bookingModel.all_prices) {
               if (this.booking_lines[family]) {
                 this.booking_lines[family].set_item_unit_cost(bookingModel.all_prices[family]);
                 this.item_cost += this.booking_lines[family].item_cost;
+                this.product_deposit_cost += this.booking_lines[family].product_deposit_cost;
               }
             }
             this.time_from_cost = bookingDataSystem.calculate_pickup_time_price(this.date_from, this.time_from);
             this.time_to_cost = bookingDataSystem.calculate_return_time_price(this.date_to, this.time_to);
             this.total_cost = this.time_from_cost + this.time_to_cost +
                               this.pickup_place_cost + this.return_place_cost +
-                              this.item_cost + this.extras_cost;
+                              this.item_cost + this.extras_cost + this.product_deposit_cost;
             bookingView.update_information('booking_cost');
 
           },
@@ -219,12 +225,17 @@
 
           addItemCost: function(value) { /** Add item cost */
             this.item_cost += value;
-            this.addCost( value );
+            this.addCost(value);
+          },
+
+          addProductDepositCost: function(value) { /** Add item deposit cost */
+            this.product_deposit_cost += value;
+            this.addCost(value);
           },
 
           addExtraCost : function (value) { /* Add extra cost */
             this.extras_cost += value;
-            this.addCost( value );
+            this.addCost(value);
           },
    
           addCost : function (value) { /* Add cost */
@@ -241,17 +252,26 @@
              this.quantity = quantity;
              this.item_unit_cost =  bookingModel.all_prices[item_id];
              this.item_cost = this.quantity * this.item_unit_cost;
+             this.product_deposit_unit_cost = bookingDataSystem.families[item_id].deposit;
+             this.product_deposit_cost = this.product_deposit_unit_cost * this.quantity;
              this.resources = [];
 
              this.set_quantity = function(new_quantity) {
                this.quantity = new_quantity;
                var old_item_cost = this.item_cost;
+               var old_product_deposit_cost = this.product_deposit_cost;
                this.item_cost = new_quantity * this.item_unit_cost;
+               this.product_deposit_cost = new_quantity * this.product_deposit_unit_cost;
              }
 
              this.set_item_unit_cost = function(value) {
                 this.item_unit_cost = value;
                 this.item_cost = this.quantity * this.item_unit_cost;
+             }
+
+             this.set_item_product_deposit_unit_cost = function(value) {
+              this.product_deposit_unit_cost = value;
+              this.product_deposit_cost = this.quantity * this.product_deposit_unit_cost;
              }
 
           },
@@ -577,6 +597,8 @@
                  item_unit_cost: this.booking.booking_lines[index].item_unit_cost,
                  item_cost: this.booking.booking_lines[index].item_cost,
                  quantity: this.booking.booking_lines[index].quantity,
+                 product_deposit_unit_cost: this.booking.booking_lines[index].product_deposit_unit_cost,
+                 product_deposit_cost: this.booking.booking_lines[index].product_deposit_cost,
                  booking_line_resources: this.booking.booking_lines[index].resources
               }
               for (var idx=0;idx<this.booking.booking_lines[index].quantity;idx++) {
@@ -1710,12 +1732,14 @@
        load_stock: function() {
 
           for (family in bookingModel.stock) {
+             var value = $('select.quantity[rel="'+family+'"]').val();
              $('select.quantity[rel="'+family+'"]').find('option').remove();
              var limit = Math.min(10, bookingModel.stock[family].stock-bookingModel.stock[family].busy);
              for (var idx=0;idx<=limit;idx++) {
                $('select.quantity[rel="'+family+'"]').append(
                  '<option value="'+ idx+'">' + idx+ '</option>');
              }
+             $('select.quantity[rel="'+family+'"]').val(value);
           }
 
        },

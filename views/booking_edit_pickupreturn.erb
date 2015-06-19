@@ -244,7 +244,15 @@
                             <td class="table-cell"></td>
                             <td class="table-cell right_text"><%%= booking.return_place_cost.toFixed(2) %> </td>
                           </tr>                 
-                          <%% } %>                                                 
+                          <%% } %>            
+                          <%% if (booking.product_deposit_cost > 0 ) { %>                 
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.product_deposit_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.product_deposit_cost.toFixed(2)%></td>
+                          </tr>                 
+                          <%% } %>                                                           
                           <tr class="table-row">
                               <td class="table-cell uppercase_text more_contrast_text"><%= t.booking_management.form.total_cost %></td>
                               <td class="table-cell"></td>
@@ -346,7 +354,15 @@
                             <td class="table-cell"></td>
                             <td class="table-cell right_text"><%%= booking.return_place_cost.toFixed(2) %> </td>
                           </tr>                 
-                          <%% } %>                               
+                          <%% } %>              
+                          <%% if (booking.product_deposit_cost > 0 ) { %>                 
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.product_deposit_cost%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= booking.product_deposit_cost.toFixed(2)%></td>
+                          </tr>                 
+                          <%% } %>                                               
                           <tr class="table-row">
                               <td class="table-cell uppercase_text more_contrast_text"><%= t.booking_management.form.total_cost %></td>
                               <td class="table-cell"></td>

@@ -32,6 +32,7 @@
           time_to_cost: <%= booking.time_to_cost%>,          
           pickup_place_cost: <%=booking.pickup_place_cost%>,
           return_place_cost: <%=booking.return_place_cost%>,
+          product_deposit_cost: <%=booking.product_deposit_cost%>,           
           total_cost: <%=booking.total_cost%>,
           total_paid: <%=booking.total_paid%>,
           total_pending: <%=booking.total_pending%>,
@@ -40,6 +41,8 @@
             <% booking.booking_lines.each do |item| %>
               {'id':<%=item.id%>, 'item_id':'<%=item.item_id%>', 'item_description':'<%=item.item_description%>',
                'item_unit_cost':new Number(<%=item.item_unit_cost%>), 'item_cost':new Number(<%=item.item_cost%>),
+               'product_deposit_unit_cost': new Number(<%=item.product_deposit_unit_cost%>),
+               'product_deposit_cost': new Number(<%=item.product_deposit_cost%>),
                'quantity':new Number(<%=item.quantity%>)
               },      
             <% end %>                    
@@ -202,6 +205,7 @@
                                     this.booking.time_to_cost +          
                                     this.booking.pickup_place_cost +
                                     this.booking.return_place_cost +
+                                    this.booking.product_deposit_cost +
                                     this.booking.extras_cost;
           this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
           this.booking.booking_amount = new Number(this.booking.total_cost * 
@@ -428,7 +432,7 @@
       $('.extra-cost').bind('blur', function(event) {
            bookingEditController.extraCostBlur($(event.currentTarget).attr('rel'), $(event.currentTarget).val());
       }); 
-    	$('.item_cost').bind('blur', function(event) {
+    	$('.item-cost').bind('blur', function(event) {
     		bookingEditController.itemCostBlur($(event.currentTarget).attr('rel'), $(event.currentTarget).val());
     	});
     }

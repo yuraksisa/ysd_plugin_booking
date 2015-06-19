@@ -89,6 +89,16 @@
                 <%= "%.2f" % booking.return_place_cost %> €
                </span>
              </div> 
-             <% end %>                               
+             <% end %>
+             <% if booking.product_deposit_cost > 0  %>
+             <div class="item_properties_attribute bottom-margin">
+               <span class="item_properties_attribute_name left_text">
+                 <%=t.new_booking.product_deposit_cost%>
+               </span>
+               <span class="item_properties_attribute_value right_text">
+                <%= "%.2f" % booking.product_deposit_cost %> €
+               </span>
+             </div> 
+             <% end %>                                              
            </div>
          </div>
