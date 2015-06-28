@@ -1,9 +1,8 @@
-<div>
+<div id="booking_list">
   <form name="filter" class="guiblock">
          <h3 class="left-float" style="position: relative; top: 5px">Reservas</h3>
     <div class="formrow right-float">
       <select id="filter" class="fieldcontrol">
-        <option value="pending">Mostrar pendientes de asignar</option>
         <option value="all">Mostrar todos</option>
       </select>
     </div>
@@ -14,109 +13,56 @@
      <thead class="table-header">
        <tr>
          <th class="table-header-title" scope="col" style="width:5%"><%= t.not_assigned_bookings.table.id %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.not_assigned_bookings.table.category %></th> 
-         <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.not_assigned_bookings.table.date_from %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.not_assigned_bookings.table.date_to %></th>         
-         <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.not_assigned_bookings.table.customer %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.not_assigned_bookings.table.phone %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:50%"><%= t.not_assigned_bookings.table.resource %></th>          
+         <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.not_assigned_bookings.table.date_from %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.not_assigned_bookings.table.date_to %></th>         
+         <th class="table-header-title centered_text" scope="col" style="width:35%"><%= t.not_assigned_bookings.table.customer %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.not_assigned_bookings.table.phone %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.not_assigned_bookings.table.color %></th>
        </tr>
      </thead>
      <tbody id="elements_tbody" class="table-tbody">             
      </tbody>
   </table>
 </div>
-  <script type="text/tmpl" id="script_booking_line">
-    <tr class="table-row">
-      <td class="table-cell left_text"><a href="/admin/booking/bookings/<%%= entity.id %>"><%%= entity.id %></a></td>
-      <td class="table-cell centered_text"><%%= entity.item_id %></td>
-      <td class="table-cell centered_text"><%%= formatter.formatDate(entity.date_from,'dd.MM.yyyy') %> </td>
-      <td class="table-cell centered_text"><%%= formatter.formatDate(entity.date_to,'dd.MM.yyyy') %> </td>
-      <td class="table-cell centered_text"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
-      <td class="table-cell centered_text"><%%= entity.customer_phone %> <%%=entity.customer_mobile_phone%></td>      
-      <td class="table-cell centered_text">
-        <%% if (entity.booking_item_reference) { %>
 
-          <%% if (resources) { %>
-          <form id="filtered_resources_<%%=entity.id%>">
-            <div class="formrow">
-              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-              <select name="booking_item_reference" class="fieldcontrol" rel="<%%=entity.id%>">
-                 <%% for (var idx=0;idx<resources.length;idx++) { %>
-                    <option value="<%%=resources[idx]%>" <%% if (resources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=resources[idx]%></option>
-                 <%% } %>    
-                 <%% if (resources.indexOf(entity.booking_item_reference) == -1) { %>
-                    <option value="<%%=entity.booking_item_reference%>" selected="selected"><%%=entity.booking_item_reference%></option>
-                 <%% } %>       
-              </select>
-              <button type="button" class="reassign_button form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
-            </div>
-          </form>
-          <%% } %>
-
-          <%% if (allResources) { %>
-          <form id="not_filtered_resources_<%%=entity.id%>" <%% if (resources) { %>style="display:none"<%%}%>>
-            <div class="formrow">
-              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-              <select name="booking_item_reference" class="fieldcontrol" rel="<%%=entity.id%>">
-                 <%% for (var idx=0;idx<allResources.length;idx++) { %>
-                    <option value="<%%=allResources[idx]%>" <%% if (allResources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=allResources[idx]%></option>
-                 <%% } %> 
-                 <%% if (allResources.indexOf(entity.booking_item_reference) == -1) { %>
-                    <option value="<%%=entity.booking_item_reference%>" selected="selected"><%%=entity.booking_item_reference%></option>
-                 <%% } %>                                              
-              </select>
-              <button type="button" class="reassign_button form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
-            </div>
-          </form>
-          <%% } %>
-
-          <%% if (resources && allResources && resources.length >0 && allResources.length>0) { %>
-          <div class="formrow">
-            <input type="checkbox" class="show_all_resources" rel="<%%=entity.id%>"><%=t.not_assigned_bookings.form.all_resources%></input>
-          </div>    
-          <%% } %>
-        
-        <%% } else { %>
-        
-          <%% if (resources) { %> 
-          <form id="filtered_resources_<%%=entity.id%>">
-            <div class="formrow">
-               <input type="hidden" name="id" value="<%%=entity.id%>"/>
-               <select name="booking_item_reference" class="fieldcontrol" rel="<%%=entity.id%>">
-                 <option value="null">- No asignado -</option>
-                 <%% for (var idx=0;idx<resources.length;idx++) { %>
-                   <option value="<%%=resources[idx]%>" <%% if (resources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=resources[idx]%></option>
-                 <%% } %> 
-               </select>
-               <button type="button" class="assign_button form-button green-button" rel="<%%=entity.id%>"><%=t.not_assigned_bookings.form.assign%></button>
-            </div>
-          </form>
-          <%% } %>
-  
-          <%% if (allResources) { %> 
-          <form id="not_filtered_resources_<%%=entity.id%>" <%% if (resources) { %>style="display:none"<%%}%>>
-            <div class="formrow">
-               <input type="hidden" name="id" value="<%%=entity.id%>"/>
-               <select name="booking_item_reference" class="fieldcontrol" rel="<%%=entity.id%>">
-                 <option value="null">- No asignado -</option>
-                 <%% for (var idx=0;idx<allResources.length;idx++) { %>
-                   <option value="<%%=allResources[idx]%>" <%% if (allResources[idx]==entity.booking_item_reference){%>selected="selected" <%%}%> ><%%=allResources[idx]%></option>
-                 <%% } %>                 
-               </select>
-               <button type="button" class="assign_button form-button green-button" rel="<%%=entity.id%>"><%=t.not_assigned_bookings.form.assign%></button>
-            </div>
-          </form>
-          <%% } %>
-
-          <%% if (resources && allResources && resources.length >0 && allResources.length>0) { %>
-          <div class="formrow">
-            <input type="checkbox" class="show_all_resources" rel="<%%=entity.id%>"><%=t.not_assigned_bookings.form.all_resources%></input>
-          </div>             
-          <%% } %>
-
-
-        <%% } %>
+<script type="text/tmpl" id="script_booking_line">
+    <tr>
+      <td class="table-cell left_text" style="border-bottom:none"><a href="/admin/booking/bookings/<%%= entity.id %>"><%%= entity.id %></a></td>
+      <td class="table-cell centered_text" style="border-bottom:none"><%%= formatter.formatDate(entity.date_from,'dd.MM.yyyy') %> </td>
+      <td class="table-cell centered_text" style="border-bottom:none"><%%= formatter.formatDate(entity.date_to,'dd.MM.yyyy') %> </td>
+      <td class="table-cell centered_text" style="border-bottom:none"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
+      <td class="table-cell centered_text" style="border-bottom:none"><%%= entity.customer_phone %> <%%=entity.customer_mobile_phone%></td>
+      <td class="table-cell centered_text" style="border-bottom:none">
+         <form name="color">
+            <input type="hidden" name="id" value="<%%=entity.id%>"/>
+            <input type="color" class="planning_color" name="planning_color" value="<%%=entity.planning_color%>"/>
+         </form>
+      </td>
+    </tr>
+    <tr>      
+      <td  class="table-cell centered_text" colspan="2">
+      </td>
+      <td class="table-cell centered_text" colspan="4">
+          <table class="table" style="border:1px solid #EEE">
+            <thead class="table-header">
+              <tr>
+                <th class="table-cell left_text" scope="col" style="width:50%"><%=t.booking_management.form.booking_resources.item%></th>
+                <th class="table-cell centered_text" scope="col" style="width:50%"><%=t.booking_management.form.booking_resources.resource%></th>                                  
+              </tr>
+            </thead>
+            <tbody class="table-tbody">
+              <%% var item = null; 
+                  for (var resourceIdx=0; resourceIdx < entity.booking_line_resources.length; resourceIdx++) { 
+                    item = entity.booking_line_resources[resourceIdx];%>
+                <tr class="table-row">
+                   <td class="table-cell left_text"><%%=item.item_id%> - <%%= item.item_description %></td>
+                   <td class="table-cell centered_text">
+                     <%= partial :not_assigned_bookings_resource %>
+                   </td>
+                </tr>
+              <%% } %>
+            </tbody>
+          </table>
       </td>      
     </tr>
-  </script>  
+</script>  

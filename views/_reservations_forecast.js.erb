@@ -9,30 +9,53 @@ require(['jquery','charts','ysdtemplate'], function($, Chart, tmpl) {
                    datasets : [
                      { 
                  	   fillColor : "rgba(220, 220, 220, 0.5)",
-			           strokeColor : "rgba(220, 220, 220, 1)",
-			           pointColor : "rgba(220, 220, 220,1)",
-			           pointStrokeColor : "#fff",
-			           data : []
-			         },
+			               strokeColor : "rgba(220, 220, 220, 1)",
+			               pointColor : "rgba(220, 220, 220,1)",
+			               pointStrokeColor : "#fff",
+			               data : []
+			               },
                      {
-			           fillColor : "rgba(151,187,205,0.5)",
-			           strokeColor : "rgba(151,187,205,1)",
-			           pointColor : "rgba(151,187,205,1)",
-			           pointStrokeColor : "#fff",
-			           data : []
+			               fillColor : "rgba(151,187,205,0.5)",
+			               strokeColor : "rgba(151,187,205,1)",
+			               pointColor : "rgba(151,187,205,1)",
+			               pointStrokeColor : "#fff",
+			               data : []
 		             }			         
                    ] 
                },
 
-     loadData: function() {
+     maxValue: function() {
+        var max= 10;
+        for (var property in this.result) {
+          var confirmed = new Number(this.result[property].confirmed);
+          var requests = new Number(this.result[property].requests);
+          if (confirmed > max) {
+            max = confirmed;
+          }
+          if (requests > max) {
+            max = requests;
+          }
+        }
+        return max;
+     },
+
+     loadData: function(year) {
+
+       var url = '/api/booking/statistics';
+       if (year) {
+         url += '?year='+year;
+       }
 
   	   $.ajax({
   	   	       type: 'GET',
-  	   	       url : '/api/booking/statistics',
+  	   	       url : url,
   	   	       contentType: 'application/json; charset=utf-8',
   		       dataType : 'json',
   		       success: function(data, textStatus, jqXHR) {
                   reservationsForecastModel.result = data;
+                  reservationsForecastModel.graphData.labels = [];
+                  reservationsForecastModel.graphData.datasets[0].data = [];   
+                  reservationsForecastModel.graphData.datasets[1].data = [];               
                   for (item in data) {
                     reservationsForecastModel.graphData.labels.push(item);
                     reservationsForecastModel.graphData.datasets[0].data.push(data[item].requests);
@@ -64,7 +87,11 @@ require(['jquery','charts','ysdtemplate'], function($, Chart, tmpl) {
 
         switch(status) {
         	case 'data_available':
-        	  this.chart = new Chart(this.ctx).Bar(reservationsForecastModel.graphData);
+            if (this.chart) {
+              $('#booking_graphic').replaceWith('<canvas id="booking_graphic" width="640" height="500"></canvas>');
+        	    this.ctx = document.getElementById("booking_graphic").getContext("2d");
+            }
+            this.chart = new Chart(this.ctx).Bar(reservationsForecastModel.graphData, {scaleOverride: true, scaleStartValue: 0, scaleStepWidth: reservationsForecastModel.maxValue() / 20, scaleSteps: 20, scaleIntegersOnly: true});
         	  $("#booking_data").html(tmpl('booking_data_table', {data: reservationsForecastModel.result}));
         	  break;
         }
@@ -75,6 +102,6 @@ require(['jquery','charts','ysdtemplate'], function($, Chart, tmpl) {
   };
 
   reservationsForecastView.init();
-  reservationsForecastModel.loadData();
+  reservationsForecastModel.loadData(<%=current_year%>);
 
 });

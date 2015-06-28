@@ -74,7 +74,7 @@ module Sinatra
           rescue DataMapper::SaveFailureError => error
             p "Error saving booking catalog. #{data.inspect}"
             raise error
-          end  
+          end           
           status 200
           content_type :json
           data.to_json          

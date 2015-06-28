@@ -2,8 +2,7 @@
   <h2 class="entity-title"><%=t.booking_console.title%></h2>
 </div>
 <div class="admin_content_wrapper">
-<%= partial(:pickedup_bookings) %>
-<%= partial(:returned_bookings) %>
+<%= partial(:pickedup_bookings, :locals => {:product_family => product_family}) %>
 <div class="container_12">
   <div class="grid_3">
     <div class="box box-shadow guiblock background-color-1" style="padding: 3em">

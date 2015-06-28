@@ -16,7 +16,13 @@ module Sinatra
         # Booking console
         #
         app.get '/admin/booking/console', :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:console_booking)
+          
+          locals = {}
+          if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
+            product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
+            locals.store(:product_family, product_family)
+          end
+          load_page(:console_booking, :locals => locals)
         end
 
         #
@@ -37,10 +43,15 @@ module Sinatra
         # Booking configuration (general)
         #
         app.get '/admin/booking/config/general', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          pickup_return_timetables = {"" => t.booking_settings.form.no_pickup_return_timetable}.merge(Hash[ *::Yito::Model::Calendar::Timetable.all.collect { |tt| [tt.id.to_s, tt.name] }.flatten])
+
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ],
+                    :pickup_return_timetables => pickup_return_timetables,
                     :reservation_starts_with => {
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
-                       :categories => t.booking_settings.form.reservation_starts_with.categories} }
+                       :categories => t.booking_settings.form.reservation_starts_with.categories,
+                       :shopcart => t.booking_settings.form.reservation_starts_with.shoppingcart} }
           load_page(:config_booking, {:locals => locals})
         end
 
@@ -54,7 +65,8 @@ module Sinatra
           b_m_r_c = ContentManagerSystem::Template.first({:name => 'booking_customer_req_notification'})
           b_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
           b_m_c_c = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
-          
+          b_m_c_c_pay_enabled = ContentManagerSystem::Template.first({:name => 'booking_customer_notification_payment_enabled'})
+
           locals = {:conditions => conditions,
                     :contract => contract,
                     :summary_message => summary_message,
@@ -62,7 +74,8 @@ module Sinatra
                     :b_m_n_pay_now => b_m_n_pay_now, 
                     :b_m_r_c => b_m_r_c,
                     :b_m_r_c_pay_now => b_m_r_c_pay_now, 
-                    :b_m_c_c => b_m_c_c}
+                    :b_m_c_c => b_m_c_c,
+                    :b_m_c_c_pay_enabled => b_m_c_c_pay_enabled}
 
           load_page(:console_booking_configuration_templates, :locals => locals)
         end
@@ -101,7 +114,10 @@ module Sinatra
         # Bookings summary
         #
         app.get '/admin/booking/summary', :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:bookings_statistics)
+          first = BookingDataSystem::Booking.first(order: :creation_date.desc, limit: 1)
+          first_year = first ? first.creation_date.year : Date.today.year
+          current_year = Date.today.year
+          load_page(:bookings_statistics, :locals => {first_year: first_year, current_year: current_year})
         end
 
         #
@@ -169,7 +185,7 @@ module Sinatra
         app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager'] do
 
           if booking = BookingDataSystem::Booking.get(params[:booking_id])
-            if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.item_id)
+            if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.booking_lines.first.item_id)
 
               catalog = booking_category.booking_catalog
               locals = {}
@@ -177,6 +193,8 @@ module Sinatra
                 catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
               locals.store(:booking_allow_custom_pickup_return_place,
                 SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+              locals.store(:booking_deposit,
+                SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i) 
               locals.store(:booking, booking)
 
               booking_js = catalog_template(catalog)
@@ -207,13 +225,32 @@ module Sinatra
           aspects_render = UI::EntityManagementAspectRender.new(context, aspects) 
           
           locals = aspects_render.render(BookingDataSystem::Booking)
-          locals.store(:bookings_page_size, 12)
+          locals.store(:bookings_page_size, 20)
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
 
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
         end
+
+        #
+        # Contract
+        #
+        app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager','staff'] do
+
+           if booking = BookingDataSystem::Booking.get(params[:id])
+             contract = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+             if contract
+               template = ERB.new contract.text     
+               message = template.result(binding)
+             else
+               status 404
+             end              
+           else
+             status 404
+           end
+
+        end 
 
       end
 

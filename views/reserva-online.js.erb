@@ -4,58 +4,58 @@
   <% end %>
 
   require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
-  	       <% if defined?booking_js %>'booking_js'<% else %>'/js/booking.js'<%end%>, 
+           <% if defined?booking_js %>'booking_js'<% else %>'/js/booking.js'<%end%>, 
            'YSDListSelector', 'YSDMemoryDataSource','YSDRemoteDataSource',
-           'YSDSelectSelector',  
+           'YSDSelectSelector',  'YSDGui',
            'json2', 'jquery.validate', 
-  	       'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
-  	       'jquery.ui.datepicker.validation',
-  	       'jquery.tools', 'jquery.formparams', 'datejs'], 
-  	       function($, YSDForms, DateControl, tmpl, bookingDataSystem,  
-  	       ListSelector, MemoryDataSource, RemoteDataSource, SelectSelector) {  
+           'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
+           'jquery.ui.datepicker.validation',
+           'jquery.tools', 'jquery.formparams', 'datejs'], 
+           function($, YSDForms, DateControl, tmpl, bookingDataSystem,  
+           ListSelector, MemoryDataSource, RemoteDataSource, SelectSelector, YSDGui) {  
 
     /* It represents the wizard tabs */
 
     var WizardTab = function (element_id, visible) {
-       	
+        
       this.element_id = element_id;
       this.state = null;
-                	         	  
+                              
       this.setState = function(new_state) { /* set the state (not-enabled, active, not-active) */ 
-       	  
+          
         this.state = new_state;
-      	    
+            
         switch (this.state) {
-       	    
-  	      case 'not-enabled':
-   	        $('#' + this.element_id).removeClass('active not-active').addClass('not-enabled');
-   	        break;
-       	        
-   	      case 'active':
-   	        $('#' + this.element_id).removeClass('not-active not-enabled').addClass('active');
-   	        break;
-       	        
-   	      case 'not-active':
-   	        $('#' + this.element_id).removeClass('active not-enabled').addClass('not-active');
-   	        break;
-       	       
-        }         	    
+            
+          case 'not-enabled':
+            $('#' + this.element_id).removeClass('active not-active').addClass('not-enabled');
+            break;
+                
+          case 'active':
+            $('#' + this.element_id).removeClass('not-active not-enabled').addClass('active');
+            break;
+                
+          case 'not-active':
+            $('#' + this.element_id).removeClass('active not-enabled').addClass('not-active');
+            break;
+               
+        }               
       
       };
-       	  
+          
       this.setVisible = function(visible) { /* setVisible */
-        this.visible = visible;	
-       	    
-       	if (this.visible) {
-       	  $('#' + element_id).show();
-       	}
-       	else {
-       	  $('#' + element_id).hide();
-       	}
-       	    
-       	return this;
+        this.visible = visible; 
+            
+        if (this.visible) {
+          $('#' + element_id).show();
+        }
+        else {
+          $('#' + element_id).hide();
+        }
+            
+        return this;
       }
-       	
+        
       this.setVisible(visible);
 
     };
@@ -86,6 +86,7 @@
          'process_error' ],
        process_state : 'item_selection',
        categoriesAvailable: [],
+       stock: {},
        categoriesPaymentEnabled: [],
        confirmBookingResponse : null, /* It holds the confirm booking response */
        pendingTimeToStartBooking: 0,       
@@ -105,132 +106,200 @@
           optional: null, /* the booking optional */
           item_cost : 0, /* the item cost */
           extras_cost : 0, /* the extras cost */
+          time_from_cost: 0, /* time from cost */
+          time_to_cost: 0, /* time to cost */
+          pickup_place_cost: 0, /* pickup place cost */
+          return_place_cost: 0, /* return place cost */
+          product_deposit_cost:0, /* product deposit cost */
           total_cost : 0, /* the total cost (item + extras) */
           booking_extras : {}, /* The booking extras */
+          booking_lines: {}, /* the booking detail */
           booking_amount: 0, /* The amount to pay to confirm the booking */
           pay_now: false, /* The user will pay  */
-
-          set_item : function (item_id) { /* Set the booking item */
-          	
-          	old_cost = this.item_cost;
-            this.item_id = item_id;
-            this.item_description = bookingDataSystem.families[item_id].description;
-            if (this.optional != null) {
-              this.item_cost = bookingModel.all_prices[item_id][this.optional];
-            }
-            else {
-       	      this.item_cost = bookingModel.all_prices[item_id];
-       	    }
-       	    this.addCost( this.item_cost - old_cost);
-
-       	    for (extra in this.booking_extras) { /* Calc the extra prices - can change with the item family - */
-       	      this.booking_extras[extra].reCalcCost();	
-       	    }
-          	
-          },
           
-          /* Set the optional */
-          set_optional : function(optional) {
-          	var extras = bookingDataSystem.extras;
-         	this.optional = optional;
-            if (optional != null) {
-              for (extraId in this.booking_extras){ 
-                if (!extras[extraId].optionalAccepted(optional)) {
-                  this.remove_extra(extraId);
+          add_booking_line : function(item_id, quantity) { /** Adds a new item **/
+
+            this.booking_lines[item_id] = new this.BookingLine(item_id, quantity);
+            this.addItemCost(this.booking_lines[item_id].item_cost);
+            this.addProductDepositCost(this.booking_lines[item_id].product_deposit_cost);
+            bookingView.update_information('booking_lines');
+
+          },
+
+          remove_booking_line: function(item_id) { /** Remove an item **/
+
+            var oldCost = this.booking_lines[item_id].item_cost;
+            var oldProductDepositCost = this.booking_lines[item_id].product_deposit_cost;
+            delete this.booking_lines[item_id];
+            this.addItemCost(-oldCost);
+            this.addItemCost(-oldProductDepositCost); 
+            bookingView.update_information('booking_lines');
+
+          },
+
+          change_booking_line_quantity: function(item_id, new_quantity) { /** Change item quantity **/
+
+            if (this.booking_lines[item_id] == null && new_quantity > 0) {
+               this.add_booking_line(item_id, new_quantity);
+            }
+            else 
+              if (this.booking_lines[item_id] != null) {            
+                if (new_quantity == 0) {
+                  this.remove_booking_line(item_id);
+                }
+                else {
+                  this.booking_lines[item_id].set_quantity(new_quantity);
+                  bookingView.update_information('booking_lines');
                 }
               }
-              bookingView.update_information('optional');
+
+          },
+                     
+          booking_lines_as_array : function() { /** Get the booking lines as array **/
+
+            var result = [];
+            for (line in this.booking_lines) {
+              result.push(this.booking_lines[line]);
             }
+            return result;
+
+          },
+
+          add_extra : function (extra_id, quantity) { /* Adds an extra to the booking */
+                        
+            this.booking_extras[extra_id] = new this.BookingExtra(extra_id, quantity);
+            this.addExtraCost (this.booking_extras[extra_id].extra_cost);       
+            bookingView.update_information('booking_extras');
+                          
+          },
+     
+          remove_extra : function (extra_id) { /* Remove an extra from the booking */
+            
+            var oldCost = this.booking_extras[extra_id].extra_cost;
+            delete this.booking_extras [extra_id]; 
+            this.addExtraCost (-oldCost);  
+            bookingView.update_information('booking_extras');
+            
+          },
+          
+          change_extra_quantity : function (extra_id, new_quantity) { /* Updates an extra quantity */
+                        
+              if ( this.booking_extras[extra_id] == null && new_quantity > 0)
+              {
+                 this.add_extra(extra_id, new_quantity);
+              }
+              else 
+                if (this.booking_extras[extra_id] != null) {            
+                  if (new_quantity == 0) {
+                   this.remove_extra(extra_id);
+                  }
+                  else {
+                  this.booking_extras[extra_id].set_quantity(new_quantity);
+                    bookingView.update_information('booking_extras');
+                  }
+              }
+                          
+          },
+
+          recalcPrice: function() {
+
+            this.item_cost = 0;
+            this.total_cost = 0;
+            this.product_deposit_cost = 0;
+            for (family in bookingModel.all_prices) {
+              if (this.booking_lines[family]) {
+                this.booking_lines[family].set_item_unit_cost(bookingModel.all_prices[family]);
+                this.item_cost += this.booking_lines[family].item_cost;
+                this.product_deposit_cost += this.booking_lines[family].product_deposit_cost;
+              }
+            }
+            this.time_from_cost = bookingDataSystem.calculate_pickup_time_price(this.date_from, this.time_from);
+            this.time_to_cost = bookingDataSystem.calculate_return_time_price(this.date_to, this.time_to);
+            this.total_cost = this.time_from_cost + this.time_to_cost +
+                              this.pickup_place_cost + this.return_place_cost +
+                              this.item_cost + this.extras_cost + this.product_deposit_cost;
+            bookingView.update_information('booking_cost');
+
+          },
+
+
+          addItemCost: function(value) { /** Add item cost */
+            this.item_cost += value;
+            this.addCost(value);
+          },
+
+          addProductDepositCost: function(value) { /** Add item deposit cost */
+            this.product_deposit_cost += value;
+            this.addCost(value);
           },
 
           addExtraCost : function (value) { /* Add extra cost */
             this.extras_cost += value;
-            this.addCost( value );
+            this.addCost(value);
           },
-  
+   
           addCost : function (value) { /* Add cost */
              this.total_cost += value;
              this.total_cost = new Number(this.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0)).valueOf();
-   	         this.booking_amount = new Number(this.total_cost * 
-             	<%=booking_deposit%> / 100).toFixed(0);
-          },          
-                               
+             this.booking_amount = new Number(this.total_cost * 
+              <%=booking_deposit%> / 100).toFixed(0);
+          },    
+
+          BookingLine : function(item_id, quantity) {
+
+             this.item_id = item_id;
+             this.item_description = bookingDataSystem.families[item_id].description;
+             this.quantity = quantity;
+             this.item_unit_cost =  bookingModel.all_prices[item_id];
+             this.item_cost = this.quantity * this.item_unit_cost;
+             this.product_deposit_unit_cost = bookingDataSystem.families[item_id].deposit;
+             this.product_deposit_cost = this.product_deposit_unit_cost * this.quantity;
+             this.resources = [];
+
+             this.set_quantity = function(new_quantity) {
+               this.quantity = new_quantity;
+               var old_item_cost = this.item_cost;
+               var old_product_deposit_cost = this.product_deposit_cost;
+               this.item_cost = new_quantity * this.item_unit_cost;
+               this.product_deposit_cost = new_quantity * this.product_deposit_unit_cost;
+             }
+
+             this.set_item_unit_cost = function(value) {
+                this.item_unit_cost = value;
+                this.item_cost = this.quantity * this.item_unit_cost;
+             }
+
+             this.set_item_product_deposit_unit_cost = function(value) {
+              this.product_deposit_unit_cost = value;
+              this.product_deposit_cost = this.quantity * this.product_deposit_unit_cost;
+             }
+
+          },
+
           BookingExtra : function (extra_id, quantity) {
-   	 
-   	         this.extra_id = extra_id;
-   	         this.quantity = quantity;
-   	         this.extra_description = bookingDataSystem.extras[extra_id].the_name;
-   	         this.extra_unit_cost = bookingDataSystem.calculate_extra_price(bookingModel.booking.date_from, 
-   	         	bookingModel.booking.date_to_price_calculation, this.extra_id, bookingModel.booking.item_id);
-   	         this.extra_cost = this.quantity * this.extra_unit_cost;
-   	         this.data = bookingDataSystem.extras[extra_id];
+     
+             this.extra_id = extra_id;
+             this.quantity = quantity;
+             this.extra_description = bookingDataSystem.extras[extra_id].the_name;
+             this.extra_unit_cost = bookingDataSystem.calculate_extra_price(bookingModel.booking.date_from, 
+              bookingModel.booking.date_to_price_calculation, this.extra_id, bookingModel.booking.item_id);
+             this.extra_cost = this.quantity * this.extra_unit_cost;
+             this.data = bookingDataSystem.extras[extra_id];
  
              this.set_quantity = function (new_quantity) {
-     	
-     	        this.quantity = new_quantity;
-     	        var old_extra_cost = this.extra_cost;
-     	        this.extra_cost = new_quantity * this.extra_unit_cost;         
-                bookingModel.booking.addExtraCost (this.extra_cost - old_extra_cost);  
+      
+               this.quantity = new_quantity;
+               var old_extra_cost = this.extra_cost;
+               this.extra_cost = new_quantity * this.extra_unit_cost;         
+               bookingModel.booking.addExtraCost (this.extra_cost - old_extra_cost);  
 
              }
  
-             this.reCalcCost = function() { /* Computes the extra price */
-
-                var old_extra_cost = this.extra_cost;
-                this.extra_unit_cost = bookingDataSystem.calculate_extra_price(bookingModel.booking.date_from, 
-                	bookingModel.booking.date_to_price_calculation, this.extra_id, bookingModel.booking.item_id);
-                this.extra_cost = this.quantity * this.extra_unit_cost;
-                if (this.extra_cost != old_extra_cost) {
-                  bookingModel.booking.addExtraCost(this.extra_cost - old_extra_cost);
-                }
-             }
-
-          },
-            
-                                                       
-          add_extra : function (extra_id, quantity) { /* Adds an extra to the booking */
-          	          	
-          	  this.booking_extras [extra_id] = new this.BookingExtra(extra_id, quantity);
-          	  this.addExtraCost (this.booking_extras[extra_id].extra_cost);      	
-          	  bookingView.update_information('booking_extras');
-          	            	
-          },
-     
-          remove_extra : function (extra_id) { /* Remove an extra from the booking */
-          	
-        	  var oldCost = this.booking_extras[extra_id].extra_cost;
-   	          delete this.booking_extras [extra_id]; 
-   	          this.addExtraCost (-oldCost);  
-          	  bookingView.update_information('booking_extras');
-          	
-          },
-          
-          change_extra_quantity : function (extra_id, new_quantity) { /* Updates an extra quantity */
-          	          	
-          	  if ( this.booking_extras[extra_id] == null && new_quantity > 0)
-          	  {
-          	  	 this.add_extra(extra_id, new_quantity);
-          	  }
-          	  else 
-          	  	if (this.booking_extras[extra_id] != null) {          	
-          	  	  if (new_quantity == 0) {
-          	       this.remove_extra(extra_id);
-          	  	  }
-          	  	  else {
-          	  	 	this.booking_extras[extra_id].set_quantity(new_quantity);
-           	        bookingView.update_information('booking_extras');
-          	  	  }
-          	  }
-          	            	
           }
        
        },
-      
-       
-       /* ----------- The methods ----------------- */
-       
-       getUrlVars : function()
-       {
+             
+       getUrlVars : function() {
           var vars = [], hash;
           var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
           for(var i = 0; i < hashes.length; i++)
@@ -243,13 +312,13 @@
        },
 
        change_state : function( action ) {
-       	
-       	  switch (action) {
-       	  	 
-       	  	 case 'start' :
-       	  	   this.process_state = 'item_selection';
-       	  	   break;
-       	
+        
+          switch (action) {
+             
+             case 'start' :
+               this.process_state = 'item_selection';
+               break;
+        
              case 'check_availability':
                this.process_state = 'checking_availability';
                break;
@@ -262,58 +331,93 @@
                 this.process_state = "extras_selection";
                 break;
 
-       	     case 'select_extras' :
-               this.process_state = 'completing_booking';       	     
-       	       break;
-       	   	       	   	
-       	   	 case 'go_to_complete_booking':
-       	   	   this.process_state = 'continue_booking';
-       	   	   break;
-       	   	 
-       	   	 case 'send_booking':
-       	   	   this.process_state = 'sending_booking';
-       	   	   break;
-       	   	   
-       	   	 case 'booking_response_ok':
-       	   	   this.process_state = 'process_completed';
-       	   	   break;
-       	   	   
-       	   	 case 'booking_response_error':
-       	   	   this.process_state = 'process_error';
-       	   	   break;
-       	  }
-       	       	
-       	  bookingView.state_changed(this.process_state);
-       	
+             case 'select_extras' :
+               this.process_state = 'completing_booking';              
+               break;
+                        
+             case 'go_to_complete_booking':
+               this.process_state = 'continue_booking';
+               break;
+             
+             case 'send_booking':
+               this.process_state = 'sending_booking';
+               break;
+               
+             case 'booking_response_ok':
+               this.process_state = 'process_completed';
+               break;
+               
+             case 'booking_response_error':
+               this.process_state = 'process_error';
+               break;
+          }
+                
+          bookingView.state_changed(this.process_state);
+        
        },
        
        /* Choose item */
        
-       select_item : function(item) { // Select the item
+       preselect_item : function(item) { // Select the item (in product selection mode)
 
+         this.booking.add_booking_line(item, 1);
          bookingView.calculate_prices();
 
        }, 
 
-       choose_item : function(item, optional) { // Choose the item for reservation
-         	
-         this.booking.set_optional(optional);
-         this.booking.set_item(item); 
-       	 
-       	 this.change_state('select_item');
-       	
+       choose_item : function(item) { // Choose the item for reservation (in date selection mode)
+          
+         this.booking.add_booking_line(item, 1); 
+         this.change_state('select_item');
+        
        },
-       
-       /* Change the item */
-       
-       change_item : function(item, optional) {
+              
+       set_booking_line_item_quantity : function(item, new_quantity) { // Change the item quantity
 
-       	 this.booking.set_optional(optional);
-       	 this.booking.set_item(item); // Sets the item
-       
+         this.booking.change_booking_line_quantity(item, new_quantity); // Sets the item
          bookingView.update_information('booking_item');
-       	
+        
        },
+
+       set_pickup_place : function(pickup_place) {
+
+        this.booking.pickup_place = pickup_place;
+
+        var pickupPlaceRate = 0;
+
+        if (pickup_place == '<%=t.new_booking.other%>') {
+          pickupPlaceRate = bookingDataSystem.custom_pickup_return_place_price;
+        }
+        else {
+          pickupPlaceRate = bookingDataSystem.pickup_placesRates[pickup_place];
+        }
+       
+        this.booking.addCost(-this.booking.pickup_place_cost);
+        this.booking.pickup_place_cost = pickupPlaceRate;
+        this.booking.addCost(this.booking.pickup_place_cost); 
+        bookingView.update_information('booking_cost');
+
+       },
+
+       set_return_place : function(return_place) {
+
+        this.booking.return_place = return_place;
+        var returnPlaceRate = 0;
+
+        if (return_place == '<%=t.new_booking.other%>') {
+          returnPlaceRate = bookingDataSystem.custom_pickup_return_place_price;
+        }
+        else {
+          returnPlaceRate = bookingDataSystem.pickup_placesRates[return_place];
+        }
+
+        this.booking.addCost(-this.booking.return_place_cost);
+        this.booking.return_place_cost = returnPlaceRate;
+        this.booking.addCost(this.booking.return_place_cost); 
+        bookingView.update_information('booking_cost');
+
+       },
+
 
        /* Check availability */
        
@@ -334,6 +438,7 @@
                                        
                    success : function(data, textStatus, jqXHR) { /* RESPONSE OK */
                      bookingModel.categoriesAvailable = data.availability || [];
+                     bookingModel.stock = data.stock || {};
                      bookingModel.categoriesPaymentEnabled = data.payment || [];
                      bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
                      <% if booking_reservation_starts_with == :dates %>
@@ -364,53 +469,54 @@
        /* The business logic of calculating prices */
        
        calculate_price : function(date_from, time_from, date_to, time_to, pickup_place, return_place) {
-       	
+        
          this.booking.date_from = date_from; 
          this.booking.time_from = time_from;
          
          this.booking.date_to = date_to; 
          this.booking.time_to = time_to;
 
-       	 this.booking.pickup_place = pickup_place;
-       	 this.booking.return_place = return_place;
-       	        	 
-       	 var _date_from = new Date( date_from.toString("MM/dd/yyyy ") + time_from);
-       	 var _date_to = new Date( date_to.toString("MM/dd/yyyy ") + time_to);
-       	        	 
-       	 var dias_diferencia = Math.round((date_to - date_from) / (1000*60*60*24));
-       	 var horas_diferencia = Math.round((_date_to - _date_from) / (1000*60*60));
-       	 
+         this.booking.pickup_place = pickup_place;
+         this.booking.return_place = return_place;
+                   
+         var _date_from = new Date( date_from.toString("MM/dd/yyyy ") + time_from);
+         var _date_to = new Date( date_to.toString("MM/dd/yyyy ") + time_to);
+                   
+         var dias_diferencia = Math.round((date_to - date_from) / (1000*60*60*24));
+         var horas_diferencia = Math.round((_date_to - _date_from) / (1000*60*60));
+         
          this.pendingTimeToStartBooking = (date_from - new Date()) / (1000*60*60);
 
-       	 this.booking.days = Math.max(Math.floor(dias_diferencia),0);
-       	 this.booking.date_to_price_calculation = new Date(this.booking.date_to.getTime());
-       	 
-       	 if (this.exceeded_hours > 0 && (horas_diferencia/24 > dias_diferencia + this.exceeded_hours/24) ) {
-       	   this.booking.date_to_price_calculation.add( {days:1});
-       	   this.booking.days++;
-       	 }
+         this.booking.days = Math.max(Math.floor(dias_diferencia),0);
+         this.booking.date_to_price_calculation = new Date(this.booking.date_to.getTime());
+         
+         if (this.exceeded_hours > 0 && (horas_diferencia/24 > dias_diferencia + this.exceeded_hours/24) ) {
+           this.booking.date_to_price_calculation.add( {days:1});
+           this.booking.days++;
+         }
 
-       	 this.all_prices = bookingDataSystem.calculate_items_price(this.booking.date_from, 
-       	                                                           this.booking.date_to_price_calculation);
-       	       	       	
-       },    	
+         this.all_prices = bookingDataSystem.calculate_items_price(this.booking.date_from, 
+                                                                   this.booking.date_to_price_calculation);
+         this.booking.recalcPrice();     
+
+       },     
               
        add_extra : function (extra, quantity) { /* Add an extra */
-       	
-       	this.booking.add_extra (extra, quantity);
-       	
+        
+        this.booking.add_extra (extra, quantity);
+        
        },
        
        remove_extra: function (extra) { /* Remove an extra */
-       	
-       	this.booking.remove_extra (extra);
-       	
+        
+        this.booking.remove_extra (extra);
+        
        },
        
        change_extra_quantity : function (extra, quantity) { /* Change extra quantity */
-       	
-       	this.booking.change_extra_quantity (extra, quantity);
-       	
+        
+        this.booking.change_extra_quantity (extra, quantity);
+        
        },
                     
        go_to_fill_data : function() { /* Go to fill data tab */
@@ -420,35 +526,35 @@
        },
 
        confirm_booking : function (data, payNow) { /* Confirms the booking */
-       	 this.confirmBookingResponse = null;
+         this.confirmBookingResponse = null;
          this.booking.pay_now = payNow;
          var bookingRequest = this.prepare_request_object(data);
          var json_request = this.stringifyRequest(bookingRequest);
-         this.change_state('send_booking');      	     
-       	 $.ajax( 
-       	         {
-       	           type : 'POST',
-       	           url :  '<%=confirm_booking_url%>', //bookingDataSystem.configuration.booking_url ||
-       	           data : json_request,
+         this.change_state('send_booking');            
+         $.ajax( 
+                 {
+                   type : 'POST',
+                   url :  '<%=confirm_booking_url%>', //bookingDataSystem.configuration.booking_url ||
+                   data : json_request,
                    dataType: 'html',  /* Response expected from the server */
                    contentType: 'application/json; charset=utf-8', /* Data type sent to the server */
-       	                  	           
-       	           success : function(data, textStatus, jqXHR) { /* RESPONSE OK */
-       	           	 if (jqXHR.getResponseHeader('Content-Type').match(/application\/json/)) {
-       	           	   bookingModel.confirmBookingResponse = JSON.parse(data);	
-       	           	 }
-       	           	 else {
-       	           	   bookingModel.confirmBookingResponse = data;	
-       	           	 }
-       	             bookingModel.change_state('booking_response_ok'); /* textStatus y data */
-       	           },	
-       	           
-       	           error: function(jqXHR, textStatus, errorThrow){ /* RESPONSE ERROR */
-       	           	 bookingModel.change_state('booking_response_error'); /* textStatus y errorThrow */
-       	           }
-       	           
-       	         });       
-       	
+                                       
+                   success : function(data, textStatus, jqXHR) { /* RESPONSE OK */
+                     if (jqXHR.getResponseHeader('Content-Type').match(/application\/json/)) {
+                       bookingModel.confirmBookingResponse = JSON.parse(data);  
+                     }
+                     else {
+                       bookingModel.confirmBookingResponse = data;  
+                     }
+                     bookingModel.change_state('booking_response_ok'); /* textStatus y data */
+                   }, 
+                   
+                   error: function(jqXHR, textStatus, errorThrow){ /* RESPONSE ERROR */
+                     bookingModel.change_state('booking_response_error'); /* textStatus y errorThrow */
+                   }
+                   
+                 });       
+        
        },
 
        prepare_request_object : function (data) { /* Prepares the request object */
@@ -481,10 +587,30 @@
                
            }
            
+           // Copies the booking lines model data to the request
+           request.booking.booking_lines = [];
+           var line_index = 0;
+           for (var index in this.booking.booking_lines) {
+              request.booking.booking_lines[line_index] = {
+                 item_id : index,
+                 item_description : this.booking.booking_lines[index].item_description,
+                 item_unit_cost: this.booking.booking_lines[index].item_unit_cost,
+                 item_cost: this.booking.booking_lines[index].item_cost,
+                 quantity: this.booking.booking_lines[index].quantity,
+                 product_deposit_unit_cost: this.booking.booking_lines[index].product_deposit_unit_cost,
+                 product_deposit_cost: this.booking.booking_lines[index].product_deposit_cost,
+                 booking_line_resources: this.booking.booking_lines[index].resources
+              }
+              for (var idx=0;idx<this.booking.booking_lines[index].quantity;idx++) {
+                 if (!request.booking.booking_lines[line_index].booking_line_resources[idx]) {
+                   request.booking.booking_lines[line_index].booking_line_resources[idx] = {};
+                 }
+              }
+              line_index++;
+           }
+
            // Copies the booking extras model data to the request
-           
            request.booking.booking_extras = [];
-            
            var extra_index = 0;
            for (var index in this.booking.booking_extras) {
              request.booking.booking_extras[extra_index++] = { 
@@ -535,46 +661,72 @@
     var bookingController = {
     
       change_from_date : function(date_from) {
-        	
+          
       },
-    	
-      select_family: function(item) {
+      
+      select_family: function(item) { /* product selection click select family */
 
         if (typeof _gaq != 'undefined') {
           _gaq.push(['_trackEvent', 'Reservations', 'Choose item family', item]);
         }
 
-        bookingModel.select_item(item);
+        bookingModel.preselect_item(item);
+
+      },
+
+      change_item_quantity: function(item, quantity) {
+
+        if (bookingModel.all_prices.length == 0) {
+          bookingModel.calculate_price($('#datefrom').datepicker("getDate"), 
+                                        $('#timefrom option:selected').val() || $('#timefrom').val(),
+                                        $('#dateto').datepicker("getDate"), 
+                                        $('#timeto option:selected').val() || $('#timeto').val(),
+                                        $('#pickup_place_value').val(),
+                                        $('#return_place_value').val()); 
+        }
+        bookingModel.set_booking_line_item_quantity(item, quantity);
+        bookingView.calculate_prices();
+      },
+
+      shoopingCartPhotoClick: function(item) {
+
+        var html = tmpl('script_detailed_product', {family: bookingDataSystem.families[item]});
+        $('#popup').html(html);
+        $('.product_detail_close').unbind('click');
+        $('.product_detail_close').bind('click', function() {
+          YSDGui.hideElement(document.getElementById('popup'));
+        });
+        YSDGui.showElement(document.getElementById('popup'), true, function() {
+            $('#popup').html('');
+        });
 
       },
 
       /* calculate the prices */
-      	
+        
       calculate_prices : function (date_from, time_from, date_to, time_to, pickup_place, return_place) {
         
         if (typeof _gaq != 'undefined') {
           _gaq.push(['_trackEvent', 'Reservations', 'Show prices', date_from.toString("dd-MM-yyyy") + ' ' + date_to.toString("dd-MM-yyyy")]);
         }
-      	
+        
         bookingModel.check_availability(date_from, time_from, date_to, time_to, pickup_place, return_place);
 
-      },	
+      },  
     
       /* start booking */
       
-      start_booking : function (item, optional) {
-      	
+      start_booking : function (item) {
+        
         if (typeof _gaq != 'undefined') {
           _gaq.push(['_trackEvent', 'Reservations', 'Choose item', item]);
         }
 
-        bookingModel.booking.pickup_place = $('#pickup_place_value').val();
-        bookingModel.booking.return_place = $('#return_place_value').val();
-      	bookingModel.choose_item(item, optional);
+        bookingModel.choose_item(item);
          
       },
       
-     go_to_fill_data_click : function() { /* Go to fill data button click */
+      go_to_fill_data_click : function() { /* Go to fill data button click */
 
         if (typeof _gaq != 'undefined') {
           _gaq.push(['_trackEvent', 'Reservations', 'Filling reservation']);
@@ -601,37 +753,33 @@
         }        
         bookingModel.confirm_booking(data, false);
       },
-
-
-      change_item : function (item, optional) {
-      	
-      	bookingModel.change_item(item, optional);
-      	
-      },
       
       check_extra : function(extra, quantity) { /* check an extra */
-      	bookingModel.add_extra(extra, quantity==='0'?1:new Number(quantity));
+        bookingModel.add_extra(extra, quantity==='0'?1:new Number(quantity));
       },
       
       uncheck_extra : function(extra) {  /* uncheck an extra */
-      	bookingModel.remove_extra(extra);
+        bookingModel.remove_extra(extra);
       },
 
       change_extra_quantity: function(extra, quantity) { /* change the extra quantity */
-         bookingModel.change_extra_quantity(extra, new Number(quantity));	
+         bookingModel.change_extra_quantity(extra, new Number(quantity)); 
       },
       
       change_pickup_place_select : function(pickup_place) { /* change pickup place */
         
+
+        bookingModel.set_pickup_place(pickup_place);
+
         if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
-          $('#other_pickup_place').show();	
+          $('#other_pickup_place').show();  
           $('#pickup_place_value').val('');
           $('#pickup_place_other').focus();
         } 
         else
         {
           $('#other_pickup_place').hide();
-          $('#pickup_place_other').val('');	
+          $('#pickup_place_other').val(''); 
           $('#pickup_place_value').val(pickup_place);
         }
         
@@ -641,48 +789,52 @@
       
         if ($('#pickup_place_other').val() != $('#pickup_place_value').val()) {
           $('#pickup_place_value').val(pickup_place);
+          bookingModel.booking.pickup_place = pickup_place;
         }
-               	
+                
       },
      
       change_return_place_select : function(return_place) { /* change return place */
-      	
-      	if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
+        
+        bookingModel.set_return_place(return_place);
+
+        if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
           $('#other_return_place').show();
-          $('#return_place_value').val(''); 	
+          $('#return_place_value').val('');   
           $('#return_place_other').focus();
         } 
         else
         {
           $('#other_return_place').hide();
-          $('#return_place_other').val('');	
+          $('#return_place_other').val(''); 
           $('#return_place_value').val(return_place);
         }      
       
       },
       
       blur_return_place_input : function(return_place) {
-      	
-        if ($('#return_place_other').val() != $('return_place_value').val()) {
-          $('return_place_value').val(return_place);
+        
+        if ($('#return_place_other').val() != $('#return_place_value').val()) {
+          $('#return_place_value').val(return_place);
+          bookingModel.booking.return_place = return_place;
         }
-      	
+        
       },
         
       /* Copy customer name to driver name */
 
       copy_customer_to_driver : function() {
-      	
+        
         if ($('#booking\\[driver_name\\]').val() == '')
         {
-          $('#booking\\[driver_name\\]').val($('#booking\\[customer_name\\]').val());	
+          $('#booking\\[driver_name\\]').val($('#booking\\[customer_name\\]').val()); 
         }
       
         if ($('#booking\\[driver_surname\\]').val() == '')
         {
-          $('#booking\\[driver_surname\\]').val($('#booking\\[customer_surname\\]').val());	
+          $('#booking\\[driver_surname\\]').val($('#booking\\[customer_surname\\]').val()); 
         }
-            	
+              
       }
       
     };
@@ -694,13 +846,13 @@
     var bookingView = {
 
        buttonPressed: null,
-    	    	
+            
        configureBookingGui : function() { /* Configure the Gui elements using the booking configuration */
-           	       	 
+                     
          var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
 
          $('#datefrom').datepicker({numberOfMonths:2, minDate:bookingDataSystem.configuration.min_date, 
-         	maxDate: new Date(bookingDataSystem.configuration.max_date).add(-1).days(), dateFormat: 'dd/mm/yy'}, locale);
+          maxDate: new Date(bookingDataSystem.configuration.max_date).add(-1).days(), dateFormat: 'dd/mm/yy'}, locale);
          $('#datefrom').datepicker('setDate', '+0'); 
 
          $('#dateto').datepicker({numberOfMonths:2, minDate:new Date(bookingDataSystem.configuration.min_date).
@@ -732,7 +884,7 @@
              $('#button_ir_a_pagar_reserva').hide();
              $('#button_confirmar_reserva').show();
            <% end %>
-       	 <% end %>
+         <% end %>
 
          $('#button_confirmar_reserva_manager').bind('click', function(event) {
             bookingView.buttonPressed = 'request';
@@ -746,17 +898,17 @@
             bookingView.buttonPressed = 'pay';
          });         
 
-       },	    	
+       },       
        
-       init : function () { /* Inits the View */	
-       	       	       	       	       	       	
-       	 // Configure the date controls
-       	 // http://jquery-ui.googlecode.com/svn/trunk/ui/i18n/ (locales for datepicker)
-       	 // http://keith-wood.name/uiDatepickerValidation.html (validation for datepicker)
-       	 $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
-       	        	   	 
-       	 this.configureBookingGui();
-  	          
+       init : function () { /* Inits the View */  
+                                                
+         // Configure the date controls
+         // http://jquery-ui.googlecode.com/svn/trunk/ui/i18n/ (locales for datepicker)
+         // http://keith-wood.name/uiDatepickerValidation.html (validation for datepicker)
+         $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+                       
+         this.configureBookingGui();
+              
          // Configure driver date of birth and driver license date 
          if (document.getElementById('booking[driver_date_of_birth_day]')) {                                           
            var dataControlDateOfBirth = new DateControl(document.getElementById('booking[driver_date_of_birth_day]'), 
@@ -772,7 +924,7 @@
          }
          
          $('#datefrom').bind('change', function() {
-           var dateFrom = $('#datefrom').datepicker('getDate');	
+           var dateFrom = $('#datefrom').datepicker('getDate'); 
            var dateTo = $('#dateto').datepicker('getDate');
            dateTo.setDate(dateFrom.getDate() + <%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>);
            $('#dateto').datepicker('setDate', dateTo );
@@ -783,7 +935,7 @@
            function(){
              $('#driver_data').toggle('slow', function() {
                if ($('#driver_data:visible').length>0) {
-                 $('#show_driver').attr('data-icon', "\uE06E");	
+                 $('#show_driver').attr('data-icon', "\uE06E"); 
                }
                else {
                  $('#show_driver').attr('data-icon', "\uE06D");
@@ -796,7 +948,7 @@
            function(){
              $('#flight_data').toggle('slow', function() {
                if ($('#flight_data:visible').length>0) {
-                 $('#show_flight').attr('data-icon', "\uE06E");	
+                 $('#show_flight').attr('data-icon', "\uE06E"); 
                }
                else {
                  $('#show_flight').attr('data-icon', "\uE06D");
@@ -813,46 +965,40 @@
          
          // configure place holders
          $('input[placeholder]:visible,textarea[placeholder]:visible').placeholder();
-         
-         // Configure item behaviour
-         $('#booking\\[item_id\\]').bind('change',
+                      
+         // Configure the pickup_place and return_place behaviour
+         $('#pickup_place').bind('change',
            function() {
-           	 bookingController.change_item($(this).val(), $(this).find(":selected").attr('data-optional'));
+             bookingController.change_pickup_place_select($('#pickup_place option:selected').val());
            });
-          	 
-       	 // Configure the pickup_place and return_place behaviour
-       	 $('#pickup_place').bind('change',
-       	   function() {
-       	   	 bookingController.change_pickup_place_select($('#pickup_place option:selected').text());
-       	   });
-       	 $('#pickup_place_other').bind('blur',
-       	   function() {
-       	   	 bookingController.blur_pickup_place_input($(this).val());
-       	   });
-       	 $('#pickup_place_value').val($('#pickup_place option:selected').text());  
-       	   
-       	 $('#return_place').bind('change',
-       	   function() {
-       	   	 bookingController.change_return_place_select($('#return_place option:selected').text());
-       	   });
-       	 $('#return_place_other').bind('blur',
-       	   function() {
-       	   	 bookingController.blur_return_place_input($(this).val());
-       	   });
-       	 $('#return_place_value').val($('#return_place option:selected').text());  
-       	      	       	
-       	 // Configure the dialog(s)
+         $('#pickup_place_other').bind('blur',
+           function() {
+             bookingController.blur_pickup_place_input($(this).val());
+           });
+         $('#pickup_place_value').val($('#pickup_place option:selected').val());  
+           
+         $('#return_place').bind('change',
+           function() {
+             bookingController.change_return_place_select($('#return_place option:selected').val());
+           });
+         $('#return_place_other').bind('blur',
+           function() {
+             bookingController.blur_return_place_input($(this).val());
+           });
+         $('#return_place_value').val($('#return_place option:selected').val());  
+                        
+         // Configure the dialog(s)
          $('#checking-availability').dialog({autoOpen: false, height: 260, modal: true,
               closeOnEscape: false,
                open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
                close: function(event, ui) { $(".ui-dialog-titlebar-close").show(); }
              });
-       	 $('#sending-booking').dialog({autoOpen: false, height: 260, modal: true,
-       	      closeOnEscape: false,
-       	       open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
-       	       close: function(event, ui) { $(".ui-dialog-titlebar-close").show(); }
+         $('#sending-booking').dialog({autoOpen: false, height: 260, modal: true,
+              closeOnEscape: false,
+               open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+               close: function(event, ui) { $(".ui-dialog-titlebar-close").show(); }
              });
-       	 	         
+                   
          // Configure name and surname events
          $('#booking\\[customer_name\\],#booking\\[customer_surname\\]').bind('blur',
              function(){
@@ -864,16 +1010,20 @@
          this.init_families_selection();
          <% end %>
 
-       	 // Configure validations	
-       	 this.configure_validations();
-       	
-       	 // Configure state
-       	 this.state_changed(bookingModel.process_state);
+         <% if booking_reservation_starts_with == :shopcart %>
+         this.init_shopping_cart();
+         <% end %>
+
+         // Configure validations 
+         this.configure_validations();
+        
+         // Configure state
+         this.state_changed(bookingModel.process_state);
     
          // Initialize the form
-         this.init_form();   	
-       	
-       },	
+         this.init_form();    
+        
+       }, 
        
        init_families_selection: function() {
 
@@ -907,8 +1057,8 @@
             bookingController.select_family(family);
          });        
 
-         $('#families_to_extras').bind('click', function() {
-           bookingController.start_booking($(this).attr('rel'));
+         $('#families_to_extras').bind('click', function() { /** Continue to extras **/
+           bookingModel.change_state('select_item');
          });
 
          $('#datefrom').bind('change', function() {
@@ -927,31 +1077,98 @@
             bookingView.calculate_prices();
          });
 
+       },
+
+       init_shopping_cart: function() {
+
+         var familiesHtml = '';
+         var families = bookingDataSystem.families;
+         
+         var total = 0;
+         for (family in families) {
+           total++;
+         }
+         var current = 0;
+         
+         var numberOfColumns = 3;
+
+         if (total > 20) {
+           numberOfColumns = 6;
+         }
+         else
+          if (total > 10) {
+            numberOfColumns = 4;
+          }
+
+         for (family in families) {
+           familiesHtml += tmpl('script_shopping_cart', {category: families[family],
+              total: total, 
+              totalCols : numberOfColumns,
+              totalRows : Math.ceil(total / numberOfColumns),
+              currentRow: Math.floor(current / numberOfColumns),
+              lastRowItems : total % numberOfColumns,
+              currentCol: current % numberOfColumns
+              });
+            current++;
+         }  
+         
+         $('#items_families').html(familiesHtml); 
+
+         $('.shopping_cart_product_detail').bind('click', function(){
+            var family = $(this).attr('rel');
+            bookingController.shoopingCartPhotoClick(family);
+         });
+
+         $('.quantity').bind('change', function() {
+            var family = $(this).attr('rel');
+            var quantity = parseInt($(this).val()) || 0;
+            bookingController.change_item_quantity(family, quantity);
+         });
+       
+         $('#families_to_extras').bind('click', function() { /** Continue to extras **/
+           bookingModel.change_state('select_item');
+         });
+
+         $('#datefrom').bind('change', function() {
+            bookingView.calculate_prices();
+         });
+
+         $('#timefrom').bind('change', function() {
+            bookingView.calculate_prices();
+         });
+
+         $('#dateto').bind('change', function() {
+            bookingView.calculate_prices();
+         });
+         
+         $('#timeto').bind('change', function() {
+            bookingView.calculate_prices();
+         });
 
        },
 
        init_form : function () {
-       	
-       	  var url_vars = bookingModel.getUrlVars();
-       	  
-       	  var datefrom = decodeURIComponent(url_vars['datefrom']);    	  
-       	  var timefrom = decodeURIComponent(url_vars['timefrom']);
-       	  var dateto = decodeURIComponent(url_vars['dateto']);
-       	  var timeto = decodeURIComponent(url_vars['timeto']);
-       	  var number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
-       	  var number_of_children = decodeURIComponent(url_vars['number_of_children']);
-       	  var source = decodeURIComponent(url_vars['source']);
+        
+          var url_vars = bookingModel.getUrlVars();
+          
+          var datefrom = decodeURIComponent(url_vars['datefrom']);        
+          var timefrom = decodeURIComponent(url_vars['timefrom']);
+          var dateto = decodeURIComponent(url_vars['dateto']);
+          var timeto = decodeURIComponent(url_vars['timeto']);
+          var number_of_adults = decodeURIComponent(url_vars['number_of_adults']);
+          var number_of_children = decodeURIComponent(url_vars['number_of_children']);
+          var source = decodeURIComponent(url_vars['source']);
           var pickup_place = decodeURIComponent(url_vars['pickup_place']);
           var pickup_place_other = decodeURIComponent(url_vars['pickup_place_other']);
           var return_place = decodeURIComponent(url_vars['return_place']);
           var return_place_other = decodeURIComponent(url_vars['return_place_other']);
-       	  
+          
           if (source != 'undefined') {
-          	$('#booking\\[source\\]').val(source);
+            $('#booking\\[source\\]').val(source);
           }
 
-       	  if (datefrom != 'undefined' && dateto != 'undefined' && 
-       	  	  $.datepicker.parseDate("dd/mm/yy", dateto) > $.datepicker.parseDate("dd/mm/yy", datefrom)) {       	  
+          if (datefrom != 'undefined' && dateto != 'undefined' && 
+              $.datepicker.parseDate("dd/mm/yy", dateto) > $.datepicker.parseDate("dd/mm/yy", datefrom)) {          
             $('#datefrom').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", datefrom)); 
             $('#timefrom').val(timefrom);
             $('#dateto').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", dateto)); 
@@ -963,7 +1180,7 @@
               $('#other_pickup_place').show();
             }
             else {
-              $('#pickup_place_value').val($('#pickup_place option:selected').text()); 
+              $('#pickup_place_value').val($('#pickup_place option:selected').val()); 
             }
             $('#return_place').val(return_place.replace(/\+/g, ' '));
             $('#return_place_other').val(return_place_other.replace(/\+/g, ' '));
@@ -972,17 +1189,17 @@
               $('other_return_place').show();
             }
             else {
-              $('#return_place_value').val($('#return_place option:selected').text()); 
+              $('#return_place_value').val($('#return_place option:selected').val()); 
             }
-            this.configureDates();   	   
+            this.configureDates();       
             this.calculate_prices();
-       	  }
+          }
 
        },        
            
        configureDates : function() {
 
-           var dateFrom = $('#datefrom').datepicker('getDate');	
+           var dateFrom = $('#datefrom').datepicker('getDate'); 
            var dateTo = $('#dateto').datepicker('getDate');
            var nDays = (dateTo - dateFrom) / (3600000*24);
 
@@ -990,7 +1207,7 @@
            dateToMin.add(Math.max(<%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>, nDays)).days();
            
            if (dateTo < dateToMin) {
-           	dateTo = dateToMin;
+            dateTo = dateToMin;
            }
 
            $('#dateto').datepicker('setDate', dateTo );
@@ -1000,74 +1217,74 @@
 
        calculate_prices : function() {
 
-       	    bookingController.calculate_prices($('#datefrom').datepicker("getDate"), 
+            bookingController.calculate_prices($('#datefrom').datepicker("getDate"), 
                                                $('#timefrom option:selected').val() || $('#timefrom').val(),
                                                $('#dateto').datepicker("getDate"), 
                                                $('#timeto option:selected').val() || $('#timeto').val(),
                                                $('#pickup_place_value').val(),
                                                $('#return_place_value').val()); 
-       	
+        
        },     
               
        configure_validations : function () {
-       	
-       	
-       	 // Search item form validation
-       	 
-       	 $('#form-search-item').validate(
-       	  {
-       	  	
+        
+        
+         // Search item form validation
+         
+         $('#form-search-item').validate(
+          {
+            
             submitHandler: function(form) {
                bookingView.calculate_prices();
                return false;
             },
-                 	        	   
-       	    rules : {
-       	   
-       	       'datefrom': {
-       	         required: true	
-       	       },
-       	     
-       	       'dateto': {
-       	         required: true,
-       	         dpCompareDate : { 'notLessThan' : '#datefrom'} // dateto can not be less than datefrom
-       	       }
-       	   	
-       	    },
-       	    
-       	    messages : {
-       	    	
-       	       'datefrom': {
-       	       	 required : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date_mandatory):(t.new_booking.pickup_date_mandatory)%>'
-       	       },	
-       	    	
-       	       'dateto' : {
-       	       	 required : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date_mandatory):(t.new_booking.return_date_mandatory)%>',
-       	       	 dpCompareDate : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date_greater_arrival_date):(t.new_booking.return_date_greater_pickup_date)%>'
-       	       }	
-       	    },
-       	    
-       	    errorPlacement : function(error, element) {
-       	    	
-       	    	if (element.attr('name') === 'datefrom') {
-       	    	  error.insertAfter('#timefrom');
-       	    	}
-       	    	
-       	    	if (element.attr('name') === 'dateto') {
-       	    	  error.insertAfter('#timeto');	
-       	    	}
-       	    	
-       	    }
-       	    
-       	    
-       	  }
-       	 );
-       	
+                               
+            rules : {
+           
+               'datefrom': {
+                 required: true 
+               },
+             
+               'dateto': {
+                 required: true,
+                 dpCompareDate : { 'notLessThan' : '#datefrom'} // dateto can not be less than datefrom
+               }
+            
+            },
+            
+            messages : {
+              
+               'datefrom': {
+                 required : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date_mandatory):(t.new_booking.pickup_date_mandatory)%>'
+               }, 
+              
+               'dateto' : {
+                 required : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date_mandatory):(t.new_booking.return_date_mandatory)%>',
+                 dpCompareDate : '<%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date_greater_arrival_date):(t.new_booking.return_date_greater_pickup_date)%>'
+               }  
+            },
+            
+            errorPlacement : function(error, element) {
+              
+              if (element.attr('name') === 'datefrom') {
+                error.insertAfter('#timefrom');
+              }
+              
+              if (element.attr('name') === 'dateto') {
+                error.insertAfter('#timeto'); 
+              }
+              
+            }
+            
+            
+          }
+         );
+        
         $.validator.addMethod('number_of_adults',
           function(value, element) {
 
            if (bookingDataSystem.families[$('#booking\\[item_id\\]').val()] &&
-          	   bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfAdults) {
+               bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfAdults) {
              return bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfAdults >= 
                parseInt($('#booking\\[number_of_adults\\]').val());
            }
@@ -1080,7 +1297,7 @@
           function(value, element) {
 
            if (bookingDataSystem.families[$('#booking\\[item_id\\]').val()] &&
-          	   bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfChildren) {
+               bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfChildren) {
              return bookingDataSystem.families[$('#booking\\[item_id\\]').val()].maxNumberOfChildren >= 
                parseInt($('#booking\\[number_of_children\\]').val());
            }
@@ -1089,18 +1306,18 @@
 
           });
 
-       	// Booking Form Validation
+        // Booking Form Validation
         $('#form-reservation').validate(
          {
           
            submitHandler: function(form) {
-           	 $('#reservation_error').html('');
+             $('#reservation_error').html('');
              if (bookingView.buttonPressed == 'pay') {
                bookingController.pay_now_button_click($(form).formParams(false));
              } 
              else {
-           	   bookingController.confirm_booking($(form).formParams(false)); // Numbers and booleans are not converted (hold as strings)
-           	 }
+               bookingController.confirm_booking($(form).formParams(false)); // Numbers and booleans are not converted (hold as strings)
+             }
              return false;
            },
            
@@ -1109,126 +1326,164 @@
            },
            
            rules : {
-           	
-           	'booking[number_of_adults]' : 'number_of_adults',
+            
+            'booking[number_of_adults]' : 'number_of_adults',
             'booking[number_of_children]' : 'number_of_children',
-           	'booking[customer_name]': 'required',
-           	'booking[customer_surname]' : 'required',
-           	'booking[customer_email]' : {
-           	  required: true,
-           	  email: true	
-           	},
-           	'booking[customer_email_confirmation]': {
-           	  required: true,
-           	  email: true,
-           	  equalTo : '#booking\\[customer_email\\]'	/* scape slash with brackets \\[email\\] */
-           	},
-           	'booking[customer_phone]': {
-           	  required: true,
-           	  minlength: 9	
-           	},
-           	'booking[driver_date_of_birth]': {
-           	  required: "#fs_driver:visible"	
-           	},
+            'booking[customer_name]': 'required',
+            'booking[customer_surname]' : 'required',
+            'booking[customer_email]' : {
+              required: true,
+              email: true 
+            },
+            'booking[customer_email_confirmation]': {
+              required: true,
+              email: true,
+              equalTo : '#booking\\[customer_email\\]'  /* scape slash with brackets \\[email\\] */
+            },
+            'booking[customer_phone]': {
+              required: true,
+              minlength: 9  
+            },
+            'booking[driver_date_of_birth]': {
+              required: "#fs_driver:visible"  
+            },
             <% if booking_item_family.height_mandatory %>
             'booking[customer_height]' : 'required',
             <% end%>
             <% if booking_item_family.weight_mandatory %>
             'booking[customer_weight]' : 'required',
             <% end%>            
-           	'conditions_read' :  {
+            'conditions_read' :  {
               required: '#conditions_read:visible'
             }
            },
            
            messages : {
-           	
-           	'booking[number_of_adults]' : '<%=t.new_booking.guests_limit(t.booking_items[booking_item_type.to_sym])%>',
-            'booking[number_of_children]' : '<%=t.new_booking.guests_limit(t.booking_items[booking_item_type.to_sym])%>',           	
+            
+            'booking[number_of_adults]' : '<%=t.new_booking.guests_limit(t.booking_items[booking_item_type.to_sym])%>',
+            'booking[number_of_children]' : '<%=t.new_booking.guests_limit(t.booking_items[booking_item_type.to_sym])%>',             
             'booking[customer_name]': '<%=t.new_booking.customer_name.required%>',
-           	'booking[customer_surname]' : '<%=t.new_booking.customer_surname.required%>',
-           	
-           	'booking[customer_email]' : {
-           	   required: '<%=t.new_booking.customer_email.required%>',
-           	   email: '<%=t.new_booking.customer_email.format%>'
-           	},
-           	
-           	'booking[customer_email_confirmation]': {
-           	  'required': '<%=t.new_booking.customer_email_confirmation.required%>',	
-           	  email: '<%=t.new_booking.customer_email_confirmation.format%>',
-           	  'equalTo': '<%=t.new_booking.customer_email_confirmation.equal_to%>'
-           	},
-           	
-           	'booking[customer_phone]': {
-           	  'required': '<%=t.new_booking.customer_phone.required%>',
-           	  'minlength': '<%=t.new_booking.customer_phone.min_length%>'	
-           	}, 
-           	'booking[driver_date_of_birth]': {
-           	  'required': '<%=t.new_driving_booking.driver_date_of_birth.required%>'	
-           	},       	
-           	'booking[pickup_place]': {
-           	  'required': '<%=t.new_booking.pickup_place.required%>'	
-           	},
-           	'booking[return_place]': {
-           	  'required': '<%=t.new_booking.return.required%>'	
-           	},
+            'booking[customer_surname]' : '<%=t.new_booking.customer_surname.required%>',
+            
+            'booking[customer_email]' : {
+               required: '<%=t.new_booking.customer_email.required%>',
+               email: '<%=t.new_booking.customer_email.format%>'
+            },
+            
+            'booking[customer_email_confirmation]': {
+              'required': '<%=t.new_booking.customer_email_confirmation.required%>',  
+              email: '<%=t.new_booking.customer_email_confirmation.format%>',
+              'equalTo': '<%=t.new_booking.customer_email_confirmation.equal_to%>'
+            },
+            
+            'booking[customer_phone]': {
+              'required': '<%=t.new_booking.customer_phone.required%>',
+              'minlength': '<%=t.new_booking.customer_phone.min_length%>' 
+            }, 
+            'booking[driver_date_of_birth]': {
+              'required': '<%=t.new_driving_booking.driver_date_of_birth.required%>'  
+            },        
+            'booking[pickup_place]': {
+              'required': '<%=t.new_booking.pickup_place.required%>'  
+            },
+            'booking[return_place]': {
+              'required': '<%=t.new_booking.return.required%>'  
+            },
             <% if booking_item_family.height_mandatory %>
             'booking[customer_height]' : '<%=t.new_booking.height.required%>',
             <% end%>
             <% if booking_item_family.weight_mandatory %>
             'booking[customer_weight]' : '<%=t.new_booking.weight.required%>',
             <% end%>               
-           	'conditions_read': '<%=t.new_booking.conditions.required%>'
-           	
+            'conditions_read': '<%=t.new_booking.conditions.required%>'
+            
            },
         
            errorPlacement: function (error, element) {
-           	  
-           	  if (element.attr('name') == 'conditions_read' || 
-           	  	  element.attr('name') == 'booking[number_of_adults]' ||
-           	  	  element.attr('name') == 'booking[number_of_children]' )
-           	  {
-           	    error.insertAfter(element.parent()); 
-           	  }
-           	  else
-           	  {
-           	    error.insertAfter(element);
-           	  }
-           	  
+              
+              if (element.attr('name') == 'conditions_read' || 
+                  element.attr('name') == 'booking[number_of_adults]' ||
+                  element.attr('name') == 'booking[number_of_children]' )
+              {
+                error.insertAfter(element.parent()); 
+              }
+              else
+              {
+                error.insertAfter(element);
+              }
+              
            },
            
            errorClass : 'form-reservation-error'            
                    
          }
         );
-       	
+        
 
        },
          
        show_family_form: function() { /* Show the family form (when selecting by category) */
          
-         bookingModel.booking.set_item($('#families_to_extras').attr('rel'));
-         var family = bookingModel.booking.item_id;
-         var price = bookingModel.all_prices[family] + '€';
+         var family = $('#families_to_extras').attr('rel');
+         var price = bookingModel.booking.total_cost + '€';
          $('#price').html(price);
          $('#number_of_days').html(bookingModel.booking.days + (bookingModel.booking.days == 1 ? ' <%=t.new_booking.day%>' : ' <%=t.new_booking.days%>'));
-         $('#family-selection').show();
+ 
+         <% if booking_reservation_starts_with == :categories %>
+           <% if (admin_mode) %>
+              var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available_manager%></span>';
+           <% else %>
+              var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available%></span>';
+           <% end %>
 
-         <% if (admin_mode) %>
-         var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available_manager%></span>';
-         <% else %>
-         var notAvailable = '<span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_available%></span>';
+           var available = true;
+           for (family in bookingModel.booking.booking_lines) {
+             if (bookingModel.categoriesAvailable.indexOf(family) == -1) {
+               available = false;
+               break;
+             }
+           }
+           if (!available) {
+             $('#availability').html(notAvailable); 
+             <% unless (admin_mode) %>
+               $('#families_to_extras').hide();
+             <% end %>
+           }
+           else {
+             $('#availability').html('');
+             $('#families_to_extras').show();
+           }
+         <% elsif booking_reservation_starts_with == :shopcart %>
+           for (family in bookingDataSystem.families) {
+             if (bookingModel.categoriesAvailable.indexOf(family) == -1) {
+               if (bookingModel.booking.booking_lines[family]) {
+                 bookingController.change_item_quantity(family, 0);
+               }
+               $('.category_not_available[rel="' + family + '"]').show();
+               <% if admin_mode %>
+               $('.select-category[rel="' + family + '"]').show();
+               <% else %>
+               $('.select-category[rel="' + family + '"]').hide();
+               <% end %>                 
+             }
+             else {
+               $('.select-category[rel="' + family + '"]').show();
+               $('.category_not_available[rel="' + family + '"]').hide();            
+             }
+           }           
          <% end %>
 
-         if (bookingModel.categoriesAvailable.indexOf(family) == - 1) {
-            $('#availability').html(notAvailable); 
-            <% unless (admin_mode) %>
-              $('#families_to_extras').hide();
-            <% end %>
+         var booking_lines = bookingModel.booking.booking_lines_as_array();
+
+         if (booking_lines.length >= 1) {
+             $('#itemized_price').html( 
+              tmpl('script_detailed_price', {booking: bookingModel.booking, 
+                            bookingDataSystem: bookingDataSystem}) );
+             $('#family-selection').show();
          }
          else {
-            $('#availability').html('');
-            $('#families_to_extras').show();
+            $('#itemized_price').html('');
+            $('#family-selection').hide();
          }
 
        },
@@ -1254,42 +1509,21 @@
          // Puts the prices      
          for (var family in prices) 
          {
-      	
-      	   var content =
-      	      '<div class="container_12">'+	     	
-      	        '<div itemscope itemtype="http://schema.org/Product" class="bottom-space bottom-separator car '+family+'">' +
-      	          '<div class="car_photo_container grid_4">' +
-      	            '<img itemprop="image" style="padding:20px" src="' + bookingDataSystem.families[family].photo + '"/>' + //src="/img/clase-'+family+'-big.png"/>' +
-      	          '</div>' +
-      	          '<div class="car_description_container grid_5 top-margin">' +
+        
+           var content =
+              '<div class="container_12">'+       
+                '<div itemscope itemtype="http://schema.org/Product" class="bottom-space bottom-separator car '+family+'">' +
+                  '<div class="car_photo_container grid_4">' +
+                    '<img itemprop="image" style="padding:20px" src="' + bookingDataSystem.families[family].photo + '"/>' + //src="/img/clase-'+family+'-big.png"/>' +
+                  '</div>' +
+                  '<div class="car_description_container grid_5 top-margin">' +
                     '<div class="left-margin">' +
-      	              '<div class="car_detail_description"><span class="car_family_description" itemprop="name">'+bookingDataSystem.families[family].description+'</span></div>' +
-      	              '<div class="car_detail_cars"><span class="car_family_cars" itemprop="description">'+bookingDataSystem.families[family].fullDescription+'</span></div>'+
-      	            '</div>' +
+                      '<div class="car_detail_description"><span class="car_family_description" itemprop="name">'+bookingDataSystem.families[family].description+'</span></div>' +
+                      '<div class="car_detail_cars"><span class="car_family_cars" itemprop="description">'+bookingDataSystem.families[family].fullDescription+'</span></div>'+
+                    '</div>' +
                   '</div>';
-     	     if (bookingDataSystem.optionals) {
-      	     content += '<div class="grid_6">';
-             for (var option in bookingDataSystem.optionals) {
-              var buttonSelect = '<input type="button" class="form-button blue-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" data-optional="'+ option + '" />';
-              <% if admin_mode %>
-                var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable + '<br/><br/>' + buttonSelect;
-              <% else %>
-                var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable ;
-             	<% end%>
-              content += 
-             	  '<div class="car_price_optional" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
-             	    '<div class="car_price_optional_text" itemprop="name">' + bookingDataSystem.optionals[option].name + '</div>' +
-                    '<div class="car_price_total"><span itemprop="price">' + prices[family][option].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +
-                    '<div class="car_price_booking top-margin">' +
-                    available +
-                    '</div>' +     	          
-      	          '</div>';
-             }
-             content += '</div>' + 
-                '</div>';
-      	   }
-      	   else {      
-    	     var buttonSelect = '<input type="button" class="form-button blue-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" />';
+     
+           var buttonSelect = '<input type="button" class="form-button blue-button book-button" id="button_start_booking_'+family+'" value="<%=t.new_booking.booking%>" rel="'+family+'" />';
            <% if admin_mode %>
              var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable + '<br/><br/>' + buttonSelect;
            <% else %>
@@ -1301,66 +1535,64 @@
                 '<div class="car_price_total"><span itemprop="price">'+prices[family].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +
                 '<div class="car_price_booking top-margin">' + 
                   available + 
-                '</div>' +     	          
-      	      '</div>'+
-      	      '</div>';
-           }
-      	      	     	
+                '</div>' +                
+              '</div>'+
+              '</div>';
+                      
            container.append( content ); 
-                     	
+                      
          }
-       	 
-       	 $('.book-button').bind('click', function() { bookingController.start_booking($(this).attr('rel'), $(this).attr('data-optional')); }); // configure the events
-       	 
+         
+         $('.book-button').bind('click', function() {
+            bookingController.start_booking($(this).attr('rel'));
+         }); // configure the events
+         
        },
        
-       /* ---- Load the items in the combo ---- */
-       
-       load_items : function() {
-       
-          var comboItems = document.getElementById('booking[item_id]');
-          
-          // Remove the options
-          if (comboItems.options.length > 0)
-          {
-          	while (comboItems.hasChildNodes())
-          	{
-          	  comboItems.removeChild(comboItems.firstChild);	
-          	}
-          }
-          
-          // Add the new options
-          
-          for (var item_class in bookingModel.all_prices)
-          {
-            if (bookingDataSystem.optionals) {
-              for (var optional in bookingDataSystem.optionals) {
-                var optionItem = document.createElement('option');
-                optionItem.setAttribute('value', item_class);
-                optionItem.setAttribute('data-item', item_class);
-                optionItem.setAttribute('data-optional', optional);	
-                optionItem.text = optionItem.innerText = bookingDataSystem.families[item_class].description + ' (' + bookingDataSystem.optionals[optional].abbr + ')' + ' ... ' + 
-                  bookingModel.all_prices[item_class][optional] + ' €';
-                if (bookingModel.booking.item_id == item_class && bookingModel.booking.optional == optional)
-                {
-                  optionItem.selected = true;	
-                }
-                comboItems.appendChild(optionItem);
-              }
-            }
-            else {        
-              var optionItem = document.createElement('option');
-              optionItem.setAttribute('value', item_class);	
-              optionItem.text = optionItem.innerText = bookingDataSystem.families[item_class].description + ' : ' + bookingModel.all_prices[item_class] + ' €';
-              if (bookingModel.booking.item_id == item_class)
-              {
-                optionItem.selected = true;	
-              }
-              comboItems.appendChild(optionItem);
-            }
-          }
+       /* ------ Load resources attributes ---------- */
+
+       load_resources_attributes: function() {
+  
+         <% if booking_item_family.weight or booking_item_family.height %>
+         var resourcesHtml = tmpl('script_resources_attributes', {booking: bookingModel.booking});
+         $('#resources_attributes').html(resourcesHtml);
+         $('.resource_user_name').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_name = $(this).val();
+         });
+         $('.resource_user_surname').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_surname = $(this).val();
+         });
+         $('.weight').bind('change', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].customer_weight = $(this).val();
+         });
+         $('.height').bind('change', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].customer_height = $(this).val();
+         });         
+         <% end %>
+
+
        },
-       
+
        /* ------ Load the extras -------------------- */
        
        load_extras : function() {
@@ -1369,39 +1601,40 @@
          var extras = bookingDataSystem.extras;
          
          for (extra in extras) {
-       	   extrasHtml += tmpl('script_extras', {extra: extras[extra], optional: bookingModel.booking.optional});
-         }	
+           extrasHtml += tmpl('script_extras', {extra: extras[extra], optional: bookingModel.booking.optional});
+         }  
          
          $('#tblextras tbody').html(extrasHtml);
-       	 $('.extra').bind('click', 
-       	   function() { 
-       	   	  var control = '#' + $(this).attr('rel').replace(/\[/g,'\\[').replace(/\]/g,'\\]');
-       		  if ($(this).is(':checked')) 
-       		  {    		  	
-       		  	var value = parseInt($(control).val()) || 1;
-       		  	bookingController.check_extra($(this).val(), value);
-       		    if ($(control)){
-       		      $(control).val(value.toString());	
-       		    }
-       		  }
-       		  else
-       		  {
-       		  	bookingController.uncheck_extra($(this).val());
-       		  	if ($(control)) {
-       		  	  $(control).val('0');
-       		  	}
-       		  } 
-       		}
-       		);
-       	 $('.extraquantity').bind('change',
-       	   function() {
-       	   	 bookingController.change_extra_quantity($(this).attr('rel'), $(this).val());
-       	   }
-       	 );       
-       	
+         $('.extra').bind('click', 
+           function() { 
+              var control = '#' + $(this).attr('rel').replace(/\[/g,'\\[').replace(/\]/g,'\\]');
+            if ($(this).is(':checked')) 
+            {           
+              var value = parseInt($(control).val()) || 1;
+              bookingController.check_extra($(this).val(), value);
+              if ($(control)){
+                $(control).val(value.toString()); 
+              }
+            }
+            else
+            {
+              bookingController.uncheck_extra($(this).val());
+              if ($(control)) {
+                $(control).val('0');
+              }
+            } 
+          }
+          );
+         $('.extraquantity').bind('change',
+           function() {
+             bookingController.change_extra_quantity($(this).attr('rel'), $(this).val());
+           }
+         );       
+        
        },
        
        /* ------ Load pickup places ------ */
+
        load_pickup_places : function() {
 
           var comboItems = document.getElementById('pickup_place');
@@ -1413,18 +1646,22 @@
           // Remove the options
           if (comboItems.options.length > 0)
           {
-          	while (comboItems.hasChildNodes())
-          	{
-          	  comboItems.removeChild(comboItems.firstChild);	
-          	}
+            while (comboItems.hasChildNodes())
+            {
+              comboItems.removeChild(comboItems.firstChild);  
+            }
           }
           
           // Add the new options
           for (var pickup_place_id in bookingModel.pickup_places)
           {
               var optionItem = document.createElement('option');
-              optionItem.setAttribute('value', pickup_place_id);	
-              optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
+              optionItem.setAttribute('value', pickup_place_id);  
+              var text = bookingDataSystem.pickup_places[pickup_place_id];
+              if (bookingDataSystem.pickup_placesRates[pickup_place_id]>0) {
+                 text += " (" + bookingDataSystem.pickup_placesRates[pickup_place_id] + "€)";
+              }
+              optionItem.text = optionItem.innerText = text;
               comboItems.appendChild(optionItem);
           }
 
@@ -1432,11 +1669,14 @@
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
               optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              if (bookingDataSystem.custom_pickup_return_place_price > 0) {
+                optionItem.text += " (" + bookingDataSystem.custom_pickup_return_place_price + "€)";
+              }              
               comboItems.appendChild(optionItem);    
           <% end %>
 
           // stores the pick up place in the form
-          $('#pickup_place_value').val($('#pickup_place option:selected').text());
+          $('#pickup_place_value').val($('#pickup_place option:selected').val());
 
        },
 
@@ -1453,10 +1693,10 @@
           // Remove the options
           if (comboItems.options.length > 0)
           {
-          	while (comboItems.hasChildNodes())
-          	{
-          	  comboItems.removeChild(comboItems.firstChild);	
-          	}
+            while (comboItems.hasChildNodes())
+            {
+              comboItems.removeChild(comboItems.firstChild);  
+            }
           }
           
           // Add the new options
@@ -1464,8 +1704,12 @@
           for (var return_place_id in bookingModel.return_places)
           {
               var optionItem = document.createElement('option');
-              optionItem.setAttribute('value', return_place_id);	
-              optionItem.text = optionItem.innerText = bookingDataSystem.return_places[return_place_id];
+              optionItem.setAttribute('value', return_place_id); 
+              var text = bookingDataSystem.return_places[return_place_id];
+              if (bookingDataSystem.return_placesRates[return_place_id]>0) {
+                 text += " (" + bookingDataSystem.return_placesRates[return_place_id] + "€)";
+              } 
+              optionItem.text = optionItem.innerText = text;
               comboItems.appendChild(optionItem);
           }
 
@@ -1473,11 +1717,30 @@
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
               optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              if (bookingDataSystem.custom_pickup_return_place_price > 0) {
+                optionItem.text += " (" + bookingDataSystem.custom_pickup_return_place_price + "€)";
+              }
               comboItems.appendChild(optionItem);    
           <% end %>          
 
           // stores the pick up place in the form
-          $('#return_place_value').val($('#return_place option:selected').text());
+          $('#return_place_value').val($('#return_place option:selected').val());
+
+       },
+
+       /* ------ Load stock ------------ */
+       load_stock: function() {
+
+          for (family in bookingModel.stock) {
+             var value = $('select.quantity[rel="'+family+'"]').val();
+             $('select.quantity[rel="'+family+'"]').find('option').remove();
+             var limit = Math.min(10, bookingModel.stock[family].stock-bookingModel.stock[family].busy);
+             for (var idx=0;idx<=limit;idx++) {
+               $('select.quantity[rel="'+family+'"]').append(
+                 '<option value="'+ idx+'">' + idx+ '</option>');
+             }
+             $('select.quantity[rel="'+family+'"]').val(value);
+          }
 
        },
 
@@ -1491,7 +1754,12 @@
           }
           else {
             if (!$('#button_ir_a_pagar_reserva').is(":visible")) {
-              if (bookingModel.categoriesPaymentEnabled.indexOf(bookingModel.booking.item_id) > -1) {
+
+              var notAllowed = bookingModel.booking.booking_lines_as_array().filter(function(obj){
+                return bookingModel.categoriesPaymentEnabled.indexOf(obj.item_id) == -1;
+              });
+
+              if (notAllowed.length == 0) {
                 $('#button_ir_a_pagar_reserva').show();
               }
             }
@@ -1502,205 +1770,208 @@
        /* ------ Reflect the state change ----------- */
        
        state_changed : function(new_state) {
-       	
-       	 switch (new_state) {
-       	 	
-       	   case 'item_selection' : /* First state (begin process) */
-       	     this.load_pickup_places();
-       	     this.load_return_places();
-       	     break;
-       	        
+        
+         switch (new_state) {
+          
+           case 'item_selection' : /* First state (begin process) */
+             this.load_pickup_places();
+             this.load_return_places();
+             break;
+                
            case 'checking_availability': /* Second state (checking availability) */
              $('#checking-availability').dialog('open');
              break;
   
            case 'availability_checked':
+             this.load_stock();
              $('#checking-availability').dialog('close');
              break;
 
            case 'extras_selection' : /* Second state (user choose an item and starts bookin) */
-       	     this.update_information('booking_data');      	               	   
-       	     this.load_items();
-       	     this.load_extras();
+             this.update_information('booking_data');    
+             this.load_resources_attributes();                      
+             this.load_extras();
              break;
 
-       	   case 'completing_booking' : /* Third state (user choose an item and starts booking) */
+           case 'completing_booking' : /* Third state (user choose an item and starts booking) */
            case 'continue_booking' : /* Alternative state (user comes back to complete booking) */
              break;
-                 	 	
-       	   case 'sending_booking' : /* Sending the booking using Ajax (user clicks confirm button) */
-       	     $('#sending-booking').dialog('open');
-       	     break;
-       	    
-       	   case 'process_completed' : /* The booking has been saved in the system */
-       	     $('#sending-booking').dialog('close');   
+                    
+           case 'sending_booking' : /* Sending the booking using Ajax (user clicks confirm button) */
+             $('#sending-booking').dialog('open');
+             break;
+            
+           case 'process_completed' : /* The booking has been saved in the system */
+             $('#sending-booking').dialog('close');   
              if (typeof(bookingModel.confirmBookingResponse) == 'string') {
-               document.write(bookingModel.confirmBookingResponse);	
+               document.write(bookingModel.confirmBookingResponse); 
                return;
              }
-       	     break;
-       	    
-       	    case 'process_error' : /* The booking has not been saved in the system */
-       	      $('#sending-booking').dialog('close');
-              $('<div title="<%=t.new_booking.booking_creation_error.title%>"> <%=t.new_booking.booking_creation_error.description%> </div>').dialog( { height: 260, modal: true,     	 
-       	        buttons: {
-       	            Ok: function() {
-				     $(this).dialog("close");
-				  }
-				},
-				close : function(event, ui) {
-				   	$( this ).dialog( "close" );				
-				}
-           	  });       	           	  
-       	      break;
-       	 }
-       	 
-   	     this.wizard.state_changed(new_state);
-       	
+             break;
+            
+            case 'process_error' : /* The booking has not been saved in the system */
+              $('#sending-booking').dialog('close');
+              $('<div title="<%=t.new_booking.booking_creation_error.title%>"> <%=t.new_booking.booking_creation_error.description%> </div>').dialog( { height: 260, modal: true,        
+                buttons: {
+                    Ok: function() {
+             $(this).dialog("close");
+          }
+        },
+        close : function(event, ui) {
+            $( this ).dialog( "close" );        
+        }
+              });                       
+              break;
+         }
+         
+         this.wizard.state_changed(new_state);
+        
        },
 
-       /* --------- UPDATE DATA ---------------- */	 
+       /* --------- UPDATE DATA ---------------- */  
        update_information : function(information) {
-       	
-       	 switch (information) {
-       	 	
-       	   case 'booking_data' :
-       	     var date_time_from = new Date(bookingModel.booking.date_from).toString( "dddd, d MMMM yyyy");
-       	     if (bookingDataSystem.configuration.show_time) {
-       	       date_time_from += ' ' +bookingModel.booking.time_from;	
-       	     }
-       	     var date_time_to = new Date(bookingModel.booking.date_to).toString( "dddd, d MMMM yyyy");
-       	     if (bookingDataSystem.configuration.show_time) {
-       	       date_time_to +=  ' ' +bookingModel.booking.time_to;
-       	     }
-       	     $('#date_from_extended').val( date_time_from );  
-       	     $('#date_to_extended').val( date_time_to );
+        
+         switch (information) {
+          
+           case 'booking_data' :
+             var date_time_from = new Date(bookingModel.booking.date_from).toString( "dddd, d MMMM yyyy");
+             if (bookingDataSystem.configuration.show_time) {
+               date_time_from += ' ' +bookingModel.booking.time_from; 
+             }
+             var date_time_to = new Date(bookingModel.booking.date_to).toString( "dddd, d MMMM yyyy");
+             if (bookingDataSystem.configuration.show_time) {
+               date_time_to +=  ' ' +bookingModel.booking.time_to;
+             }
+             $('#date_from_extended').val( date_time_from );  
+             $('#date_to_extended').val( date_time_to );
              $('#pickup_place_extended').val( bookingModel.booking.pickup_place );
              $('#return_place_extended').val( bookingModel.booking.return_place );
 
-       	   case 'booking_item' :
-       	     //var path='/img/clase-'+bookingModel.booking.item_id+'-big.png';
-             var path=bookingDataSystem.families[bookingModel.booking.item_id].photo;
-       	     $('#item_image').attr('src',path);
-
-       	   case 'booking_cost' :
-       	     $('#total_cost').val( bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
-       	     $('#detailed_summary').html( 
-       	      tmpl('script_detailed_price', {booking: bookingModel.booking, 
-                            bookingDataSystem: bookingDataSystem}) );
-       	     break;
-       	   
-           case 'optional':
-             var extras = bookingDataSystem.extras;
-             for (extra in extras) { //Hide the not accepted extras
-             	if (!extras[extra].optionalAccepted(bookingModel.booking.optional)) {
-             	  $('#booking_extra_'+extra).hide();	
-             	}
-             	else {
-             	  $('#booking_extra_'+extra).show();	
-             	}
+           case 'booking_item' :
+             var booking_lines = bookingModel.booking.booking_lines_as_array();
+             if (booking_lines == 1) {
+               var family = booking_lines.length > 0 ? booking_lines[0].item_id : null;
+               if (family != null) {
+                 var path=bookingDataSystem.families[family].photo;
+                 $('#item_image').attr('src',path);
+                 $('#item_description').html(bookingDataSystem.families[family].description);
+               }
+               else {
+                 $('#item_image').removeAttr('src');
+                 $('#item_description').html('');
+               }
              }
-             break;
 
-       	   case 'booking_extras' :
-       	         	            	  
+           case 'booking_cost' :
+             $('#price').html(bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
+             $('#itemized_price').html( 
+              tmpl('script_detailed_price', {booking: bookingModel.booking, 
+                            bookingDataSystem: bookingDataSystem}) );
+             $('#total_cost').val( bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
+             $('#detailed_summary').html( 
+              tmpl('script_detailed_price', {booking: bookingModel.booking, 
+                            bookingDataSystem: bookingDataSystem}) );
+             break;
+           
+           case 'booking_extras' :
+                                  
                // Uncheck the removed extras
                $('.extra').each( function(index, element) {
-               	if ($(this).is(':checked') && bookingModel.booking.booking_extras[$(this).attr('value')] == null) {
-               	  $(this).attr('checked', false);
-               	}
+                if ($(this).is(':checked') && bookingModel.booking.booking_extras[$(this).attr('value')] == null) {
+                  $(this).attr('checked', false);
+                }
                });  
                
                // Update the extras
-         	   var extras = bookingModel.booking.booking_extras;
-       	       for (var extra_id in extras) {
-       	  	     
-       	  	     // Extras checkbox
-       	  	     var checkbox = $('#extras\\['+extra_id+'\\[extra_id\\]\\]');
-       	  	    
-       	  	     if (!checkbox.is(':checked')) {
-       	  	     	checkbox.attr('checked', true);
-       	  	     }
-       	  	 
-       	  	     // Extras quantity
-       	  	     var option = $('#extras\\['+extra_id+'\\[quantity\\]\\]');
-       	  	     
-       	  	     if (option.val() != extras[extra_id].quantity)
-       	  	     {
-       	  	       option.val(extras[extra_id].quantity);	
-       	  	     }       	  	     
-       	  	     
-        	   }
-        	           	     
-        	   /* Update the cost */
-       	       this.update_information('booking_cost');
-       	       break;
-       	 	
-       	 }
-       	
-       },	 
-       	    	   	    
-       	    	   	    
+             var extras = bookingModel.booking.booking_extras;
+               for (var extra_id in extras) {
+                 
+                 // Extras checkbox
+                 var checkbox = $('#extras\\['+extra_id+'\\[extra_id\\]\\]');
+                
+                 if (!checkbox.is(':checked')) {
+                  checkbox.attr('checked', true);
+                 }
+             
+                 // Extras quantity
+                 var option = $('#extras\\['+extra_id+'\\[quantity\\]\\]');
+                 
+                 if (option.val() != extras[extra_id].quantity)
+                 {
+                   option.val(extras[extra_id].quantity); 
+                 }                 
+                 
+             }
+                           
+             /* Update the cost */
+               this.update_information('booking_cost');
+               break;
+          
+         }
+        
+       },  
+                      
+                      
        wizard : {
-       	
-       	 tabs : { 
-       	 	       'tab-choose-item' : new WizardTab ('tab-choose-item', true),
-       	 	       'tab-choose-extras' : new WizardTab ('tab-choose-extras', true),
-       	 	       'tab-complete-reservation' : new WizardTab('tab-complete-reservation', true)
-       	        },
-       	       
-       	 state_changed : function (new_state) {
-       	 
-       	   switch (new_state) {
-       	   	
-       	   	  case 'item_selection' : /* Item selection tab */
-       	   	    $('#other-tabs').hide();
-       	        $('#form-reservation').hide();
-       	        $('#item-selection').show();
-       	        $('#extras-selection').hide();
-       	   	    this.tabs['tab-choose-item'].setState('active'); 
-       	   	    this.tabs['tab-choose-extras'].setState('not-enabled'); 
-       	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
-       	   	    break;
-       	   	  
+        
+         tabs : { 
+                 'tab-choose-item' : new WizardTab ('tab-choose-item', true),
+                 'tab-choose-extras' : new WizardTab ('tab-choose-extras', true),
+                 'tab-complete-reservation' : new WizardTab('tab-complete-reservation', true)
+                },
+               
+         state_changed : function (new_state) {
+         
+           switch (new_state) {
+            
+              case 'item_selection' : /* Item selection tab */
+                $('#other-tabs').hide();
+                $('#form-reservation').hide();
+                $('#item-selection').show();
+                $('#extras-selection').hide();
+                this.tabs['tab-choose-item'].setState('active'); 
+                this.tabs['tab-choose-extras'].setState('not-enabled'); 
+                this.tabs['tab-complete-reservation'].setState('not-enabled');
+                break;
+              
               case 'extras_selection': /* Extras selection tab */
                 $('#other-tabs').show();
                 $('#form-reservation').hide();
                 $('#item-selection').hide();
                 $('#extras-selection').show();
-       	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
-       	   	    this.tabs['tab-choose-extras'].setState('active'); 
-       	   	    this.tabs['tab-complete-reservation'].setState('not-enabled');
+                this.tabs['tab-choose-item'].setState('not-enabled'); 
+                this.tabs['tab-choose-extras'].setState('active'); 
+                this.tabs['tab-complete-reservation'].setState('not-enabled');
                 break;
 
-       	   	  case 'completing_booking' : /* Complete booking data tab */
-       	   	  case 'continue_booking' :
+              case 'completing_booking' : /* Complete booking data tab */
+              case 'continue_booking' :
               case 'process_completed': 
-       	   	    $('#other-tabs').show();
-       	        $('#item-selection').hide();
-       	        $('#extras-selection').hide();       	        
+                $('#other-tabs').show();
+                $('#item-selection').hide();
+                $('#extras-selection').hide();                
                 $('#form-reservation').show();
-       	   	    this.tabs['tab-choose-item'].setState('not-enabled'); 
-       	   	    this.tabs['tab-choose-extras'].setState('not-enabled');       	   	    
-       	   	    this.tabs['tab-complete-reservation'].setState('active');
+                this.tabs['tab-choose-item'].setState('not-enabled'); 
+                this.tabs['tab-choose-extras'].setState('not-enabled');                 
+                this.tabs['tab-complete-reservation'].setState('active');
                 bookingView.check_payment();
-       	   	    break;
-       	   	  
-       	   }
-       	 	
-       	 },
-       	 
-       	 show : function() {
-       	 	$('#wizard-navigation').show();
-       	 },
-       	 
-       	 hide: function() {
-       	 	$('#wizard-navigation').hide();
-       	 }
-       	
+                break;
+              
+           }
+          
+         },
+         
+         show : function() {
+          $('#wizard-navigation').show();
+         },
+         
+         hide: function() {
+          $('#wizard-navigation').hide();
+         }
+        
        }
-              	    	   	    
-       	    	   	          	
+                              
+                              
     }
   
     bookingView.init();

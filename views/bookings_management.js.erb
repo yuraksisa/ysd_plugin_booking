@@ -1,6 +1,9 @@
-require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelector', 'YSDForms', 'ysdtemplate', 
-         'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation', ],
-    function($, EntityManagement, RemoteDataSource, SelectSelector, YSDForms, tmpl) {
+require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelector', 
+         'YSDForms', 'ysdtemplate', 'YSDGui',
+         'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation',
+         'jquery.formparams', 'jquery.ui.timepicker','autonumeric' ],
+    function($, EntityManagement, RemoteDataSource, SelectSelector, YSDForms, tmpl,
+         YSDGui) {
 
  
   function BookingHook() {
@@ -59,7 +62,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                dataType : 'json',
                success: function(data, textStatus, jqXHR) {
                  if (data.length > 1) {
-                   $("#linked_bookings").html(tmpl('linked_bookings_script', {data: data}));
+                   $("#linked_bookings").html(tmpl('linked_bookings_script', {data: data, 'self':bookingManager.view}));
                    if ($('#link_booking').is(':visible')) {                 
                      $('#link_booking').hide();
                    }
@@ -92,6 +95,52 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
            });
        });
 
+      var self = this;
+      $('.resource_user_name').bind('blur', function() {
+        self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_surname').bind('blur', function() {
+        self.updateLineResource($(this)[0]);
+      });
+      $('.customer_height').bind('change', function() {
+        self.updateLineResource($(this)[0]);
+      });
+      $('.customer_weight').bind('change', function() {
+        self.updateLineResource($(this)[0]);
+      });
+      $('#new_charge').bind('click', function(){
+        $('#new_charge_button').unbind('click');
+        $('#date').datetimepicker(
+            {controlType: 'select', showTimezone: false, useLocalTimezone: true, 
+             numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+            '<%= session[:locale] %>');
+        $('#date').datetimepicker('setDate', new Date());
+        $('#amount').autoNumeric('init',{aSep:''});
+        $('#new_charge_button').bind('click', function(){
+           var formdata = $('form[name="charge"]').formParams(true);
+           var json_request = JSON.stringify(formdata);
+           $.ajax({
+               type: 'POST',
+               data : json_request,
+               url : '/api/booking/charge',
+               success: function(data, textStatus, jqXHR) {
+                 bookingManager.model.synchronizeCurrentEntity(data);
+                 bookingManager.model.change_state('entity_updated_successfully');
+                 alert('<%=t.booking_management.charge_form.done%>');
+                 $('form[name="charge"]').hide();
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error updating resource');
+               }
+           });
+        });       
+        if ($('form[name="charge"]').is(':visible')) {
+          $('form[name="charge"]').hide();
+        }
+        else {
+          $('form[name="charge"]').show();          
+        }
+      });
 
     }
 
@@ -115,6 +164,31 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
           $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab
         }
       });
+
+    }
+
+    this.updateLineResource = function(control) {
+
+       var form = $(control.form)
+       var formdata = form.formParams(true);
+       var lineIdx = form.attr('data-lineindex');
+       var resourceIdx = form.attr('data-resourceindex');
+       var booking = this.manager.model.currentEntity();
+       var json_request = JSON.stringify(formdata);
+
+       $.ajax({
+               type: 'PUT',
+               data : json_request,
+               url : '/api/booking-line-resource',
+               success: function(data, textStatus, jqXHR) {
+                 for (attribute in formdata) {
+                   booking.booking_lines[lineIdx].booking_line_resources[resourceIdx][attribute] = formdata[attribute];
+                 }
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error updating resource');
+               }
+           });
 
     }
 
@@ -154,7 +228,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
           break;
         case 'refunded':
           className = 'error-status';
-          break;
+          break;          
       }
       return className; 
     }

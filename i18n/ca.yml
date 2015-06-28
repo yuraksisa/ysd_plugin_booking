@@ -18,11 +18,15 @@ booking_settings:
     reservation_starts_with:
       title: La reserva comença escollint
       dates: Les dates
-      categories: Els productes    
+      categories: Els productes
+      shoppingcart: Carrito de la compra    
     deposit: \% Dipòsit
     allow_total_payment: Permetre pagar el total de la reserva
     min_days: Numero mínim de dies
     family: Tipus de producte en lloger
+    no_pickup_return_timetable: No aplica
+    pickup_return_timetable: Horari d\'entrega i recogida
+    pickup_return_timetable_out_price: Preu d\'entrega i recollida fora d\'hores    
     item_hold_time: Caducitat (en hores)
     payment_cadence: Cadència de pagament
 booking_rates:
@@ -47,7 +51,12 @@ booking_console:
   availability: Disponibilitat
   summary: Resum  
   places: Entrega i recollida
-  adjust_prices: Ajustar preus  
+  adjust_prices: Ajustar preus    
+  calendars: Calendaris
+  timetables: Horaris  
+  receipts: Cobraments
+  activities: Comandes  
+  information_requests: Solicituts informació  
 booking_summary:
   title: Resum reserves 
 booking_forecast:
@@ -62,7 +71,7 @@ booking_return:
   title: Recollides/Sortides  
 booking_list:
   id: Id
-  item: Item
+  item: Recurs
   date_from: Data entrega
   date_to: Data devolució
   place: Lloc
@@ -78,8 +87,8 @@ booking_status:
 booking_payment_status:
   none: No cobrat
   deposit: Depòsit
-  total: Total     
-  refunded: Devolució  
+  total: Total    
+  cancelled: Cancel.lat   
 booking_management:
   title: Gestió de reserves
   description: <p>Consultar les reseves.</p>
@@ -175,7 +184,7 @@ catalog_management:
     product_family:
       label: Configuració
     extras:
-      label: Extres
+      label: Extres      
     code_required: Codi obligatori
 booking_category_management:
   table:
@@ -199,7 +208,15 @@ booking_category_management:
     calendar:
       label: Calendari
     price_definition:
-      label: Preus       
+      label: Preus   
+    stock_control:
+      label: Control stock 
+    stock:
+      label: Stock 
+    sort_order:
+      label: Ordre
+    deposit:
+      label: Dipòsit               
 booking_extra_management:
   title: Gestió d\'extras
   description: Gestió d\'extras
@@ -316,6 +333,7 @@ not_assigned_bookings:
     dates: Dates
     customer: Client
     status: Estat  
+    color: Color
   form:  
     assign: Assignar
     reassign: Reassignar

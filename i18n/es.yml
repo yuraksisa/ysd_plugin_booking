@@ -37,6 +37,7 @@ booking_configuration_templates:
   email_customer_request_received: Cuando se recibe una solicitud
   email_customer_payment_request_received: Cuando se recibe una solicitud con pago online
   email_customer_reservation_confirmed: Cuando se confirma la reserva
+  email_customer_payment_enabled: Cuando se habilita el pago de la reserva
   email_manager_request_received: Cuando se recibe una nueva solucitud
   email_manager_payment_request_received: Cuando se recibe una nueva solicitud con pago online
 booking_settings:
@@ -47,11 +48,16 @@ booking_settings:
       title: La reserva empieza seleccionando
       dates: Las fechas
       categories: Los productos
+      shoppingcart: Carrito de la compra
     deposit: \% Depósito
     allow_total_payment: Permitir pagar el total de la reserva
     min_days: Numero mínimo de días    
     family: Tipo de producto en alquiler
     custom_pickup_return_place: Permitir otros lugares de entrega/recogida
+    custom_pickup_return_place_price: Precio otro lugar de entrega/recogida
+    no_pickup_return_timetable: No aplica
+    pickup_return_timetable: Horario entrega/recogida
+    pickup_return_timetable_out_price: Precio entrega/recogida fuera de horas
     payment: Habilitar pago online
     general_group: General
     payment_group: Pagos
@@ -82,9 +88,9 @@ booking_console:
   title: Reservas
   configuration: Configuración
   catalogs: Catálogos
-  categories: Productos
+  categories: Productos alquiler
   extras: Extras
-  items: Recursos
+  items: Recursos alquiler
   rates: Tarifas
   reservations: Reservas
   planning: Planning de recursos   
@@ -96,7 +102,12 @@ booking_console:
   summary: Resumen
   places: Entrega y recogida
   create_rates: Preparar tarifas
-  adjust_prices: Ajustar precios
+  adjust_prices: Ajustar precios    
+  calendars: Calendarios
+  timetables: Horarios
+  receipts: Cobros  
+  activities: Pedidos actividades
+  information_requests: Solicitudes información
 booking_summary:
   title: Resumen reservas
 booking_forecast:
@@ -111,7 +122,7 @@ booking_return:
   title: Recogidas/Salidas
 booking_list:
   id: Localizador
-  item: Item
+  item: Recurso
   date_from: Fecha entrega
   date_to: Fecha devolución
   place: Lugar
@@ -136,6 +147,7 @@ booking_items:
   kayak: kayak
   apartment: apartamento
   room: habitación 
+  product: producto
 new_booking:
   title: Reserva
   search: Ver precios
@@ -166,7 +178,7 @@ new_booking:
   extras: Extras
   extra: Extra
   quantity: Cantidad
-  price: Precio
+  price: Precio unidad
   customer: Cliente
   conditions_confirm: He leído y acepto <a href="%1" target="_blank">las condiciones del alquiler</a>
   continue: Continuar
@@ -180,6 +192,8 @@ new_booking:
   pay: Pagar
   not_available: Confirme reserva telefónicamente
   not_available_manager: No hay disponibilidad
+  not_stock: No disponible
+  not_stock_manager: No disponible
   booking: Seleccionar
   payment_methods: Formas de pago
   checking_availability: Comprobando disponibilidad
@@ -187,6 +201,12 @@ new_booking:
   concept: Concepto
   day: Día
   days: Días
+  time_from_cost: Suplemento entrega fuera de horas
+  time_to_cost: Suplemento recogida fuera de horas
+  pickup_place_cost: Suplemento lugar de entrega
+  return_place_cost: Suplemento lugar de recogida
+  product_deposit_cost: Fianza
+  product_deposit_cost_legend: La fianza se devuelve al retornar el producto
   total: Total
   form_errors:
     title: Formulario no válido
@@ -232,13 +252,13 @@ new_booking:
     format: El correo electrónico debe estar en formato usuario@dominio.com
     equal_to: Debe ser igual al correo electrónico
   customer_phone: 
-    label: Teléfono
-    placeholder: Su teléfono fijo
+    label: Teléfono principal
+    placeholder: Su teléfono principal
     required: El teléfono del cliente es obligatorio
     min_length: Debe introducir un número de teléfono de 9 dígitos
   customer_mobile: 
-    label: Teléfono móvil
-    placeholder: Su teléfono móvil
+    label: Teléfono alternativo
+    placeholder: Su teléfono alternativo
   contact:
     label: Datos del contacto
     description: Si desea <strong>agilizar</strong> la reserva complete los datos del <em>contacto</em>. <em>Pulse el botón + para desplegarlos</em>.
@@ -348,6 +368,14 @@ booking_management:
     date_to: Fecha fin
     notifications: Notificaciones
     category: Categoría
+  footer:
+    title: Notificaciones
+    c1_notification: Cliente (reserva recibida)
+    c2_notification: Cliente (reserva confirmada)
+    c3_notification: Cliente (reserva recibida con pago online)
+    c4_notification: Cliente (notificación cobro habilitado)
+    m1_notification: Gestor (reserva recibida)
+    m2_notification: Gestor (reserva recibida con pago online)
   form:
     reservation_tab: Datos de la reserva
     flight_tab: Datos del vuelo
@@ -375,6 +403,7 @@ booking_management:
       label: Permitir pago
       message: ¿Desea habilitar el pago de esta reserva?
     change_dates: Cambiar fechas
+    payment_not_allowed: El pago online no está permitido
     force_allow_payment: Pago habilitado por el gestor
     expired: Excedido tiempo pago depósito
     id: Localizador reserva
@@ -403,19 +432,30 @@ booking_management:
     extra_cost_1unit: Coste u.
     charges_title: Cobros
     charge_date: Fecha
+    charge_payment_method: Forma pago
     charge_amount: Cantidad
     charge_status: Estado      
     days: Días
     cost: Precio
-    item_cost: Precio item (global)
+    item_cost: Total productos
     item_unit_cost: Precio item (x día)    
-    extras_cost: Precio extras (global)
+    extras_cost: Total extras
     total_cost: Precio total 
     total_paid: Pagado
     total_pending: Pendiente   
     booking_amount: Importe depósito
     deposit_state: Info. depósito 
     comments: Comentarios    
+    notifications:
+      title: Notificaciones enviadas al cliente
+      sent: Enviado 
+      not_sent: No enviado
+      send_again: Enviar
+      resend_confirmation: ¿Desea reenviar la notificación?
+      c1_notification: Reserva recibida
+      c2_notification: Reserva confirmada
+      c3_notification: Reserva recibida con pago online
+      c4_notification: Cobro habilitado
     anotations: Notas
     customer_title: Cliente
     customer_name: Nombre
@@ -456,6 +496,40 @@ booking_management:
     main_booking: Grupo de reservas
     main_booking_search: Buscar reserva principal
     related_bookings: Reservas relacionadas
+    charges: Pagos recibidos
+    no_charges: No se ha recibido ningún pago
+    booking_line:
+      title: Productos contratados
+      item: Producto
+      days: Días
+      quantity: Cantidad
+      unit_cost: Coste unitario
+      deposit: Fianza
+      cost: Coste total
+    booking_resources:
+      title: Recursos
+      item: Producto
+      user: Usuario
+      height: Altura
+      weight: Peso
+      resource: Recurso
+    planning_color: 
+      title: Color en el planning
+    created_by_manager: Creada en el backend
+    yes_created_by_manager: Si 
+    no_created_by_manager: No, creada desde la web
+    user_agent_browser: Navegador
+    user_agent_version: Versión
+    user_agent_os: Sistema Operativo
+    new_charge: Registrar pago
+  charge_form:
+    title: Cobro
+    date: Fecha 
+    payment_method: Forma de pago
+    amount: Importe
+    bank_transfer: Transferencia bancaria
+    cash: Efectivo
+    done: Cobro registrado
 catalog_management:
   table:
     code: Código
@@ -497,6 +571,14 @@ booking_category_management:
       label: Calendario
     price_definition:
       label: Precio
+    stock_control:
+      label: Control de stock 
+    stock:
+      label: Stock 
+    sort_order:
+      label: Orden
+    deposit:
+      label: Depósito
 booking_extra_management:
   title: Extras
   description: Gestión de extras
@@ -616,7 +698,8 @@ not_assigned_bookings:
     customer: Cliente
     phone: Teléfono    
     status: Estado   
-    resource: Recurso 
+    resource: Recurso
+    color: Color 
   form:  
     assign: Asignar
     reassign: Reasignar

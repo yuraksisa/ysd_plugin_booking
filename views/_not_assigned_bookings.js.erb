@@ -1,11 +1,16 @@
-define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jquery'], 
+define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 
+       'jquery', 'jquery.formparams'], 
   function(tmpl, ysdFormatter, EventTarget, $) {
 
   confirmedBookingsModel = {
 
      data: [],
      hashData: {},
-     filter: 'pending',
+     filter: 'all',
+     filterMonth: null,
+     filterDay: null,
+     filterResource: null,
+     filterBookings: [],
      resources: {},
      allResources: [],
      events: new EventTarget(),
@@ -65,7 +70,25 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
 
      },
 
-     assignBooking: function(id, reference_code, isReassigned) {
+     filterDayResourceBookings: function(booking_item_reference, day, month, filtered_bookings) {
+        
+        var select = $("#filter");
+        var option = $("#filter option[value='day-resource']");
+
+        if ($("#filter option[value='day-resource']").length == 1) {
+          $("#filter option[value='day-resource']").remove();
+        }
+        $(select).append("<option value=\"day-resource\" selected=\"selected\">" +
+              month + "/" + day + " " + booking_item_reference + "</option>");
+
+        this.filterResource = booking_item_reference;
+        this.filterDay = day;
+        this.filterMonth = month;
+        this.filterBookings = filtered_bookings;
+        this.changeFilter('day-resource');
+     },
+
+     assignBooking: function(booking_id, booking_resource_index, id, reference_code, isReassigned) {
 
        var url = '/api/booking/assign/'+id+'/'+reference_code;
        var self = this;
@@ -89,10 +112,15 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
                    var option =  select + " option[value='null']"; 
                    $(option).remove();
                  }
-                 confirmedBookingsModel.hashData[id].booking_item_reference = reference_code;
-                 self.events.fireEvent({'type':'booking_assigned', data: {id: id, 
-                     resource: reference_code, reassigned: isReassigned, 
-                     booking: confirmedBookingsModel.hashData[id]}});
+                 confirmedBookingsModel.hashData[booking_id].
+                   booking_line_resources[booking_resource_index].
+                   booking_item_reference = reference_code;                 
+                 self.events.fireEvent({'type':'booking_assigned', data: {
+                     id: id, 
+                     booking_resource_index: booking_resource_index,
+                     resource: reference_code, 
+                     reassigned: isReassigned, 
+                     booking: confirmedBookingsModel.hashData[booking_id]}});
                  alert('Recurso asignado')
                },
                error: function(data, textStatus, jqXHR) {
@@ -100,6 +128,32 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
                }
           });
 
+     },
+
+     updatePlanningColor: function(formParams) {
+
+       var self = this;
+       var booking_id = formParams.id;
+       var strData = JSON.stringify(formParams);
+
+       $.ajax({
+               type: 'PUT',
+               url : '/api/booking',
+               contentType: 'application/json; charset=utf-8',
+               data: strData,
+               dataType : 'json',
+               success: function(data, textStatus, jqXHR) {
+                 confirmedBookingsModel.hashData[booking_id].
+                   planning_color = formParams['planning_color'];                 
+                 self.events.fireEvent({'type':'booking_updated', data: {
+                     id: booking_id, 
+                     booking: confirmedBookingsModel.hashData[booking_id]}});
+                 alert('Color actualizado');
+               },
+               error: function(jqXHR, textStatus, errorThrow){ /* RESPONSE ERROR */
+                 alert('Error'); 
+               }
+             });
      }
 
 
@@ -112,54 +166,66 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
          alert('Seleccione el recurso a asignar');
          return;
        }
-       var booking_id = $(control.form['id']).val();
+       var id = $(control.form['id']).val();
+       var booking_id = $(control.form['booking_id']).val();
+       var booking_resource_index = parseInt($(control.form['booking_resource_idx']).val());
        var reference_code = $(control.form['booking_item_reference']).val();
-       confirmedBookingsModel.assignBooking(booking_id, reference_code, false);
+       confirmedBookingsModel.assignBooking(booking_id, booking_resource_index, id, reference_code, false);
     },
 
     reAssignButtonClick: function(control) {
-       var booking_id = $(control.form['id']).val();
+       var id = $(control.form['id']).val();
+       var booking_id = $(control.form['booking_id']).val();
+       var booking_resource_index = parseInt($(control.form['booking_resource_idx']).val());
        var reference_code = $(control.form['booking_item_reference']).val();
-       confirmedBookingsModel.assignBooking(booking_id, reference_code, true);
+       confirmedBookingsModel.assignBooking(booking_id, booking_resource_index, id, reference_code, true);
     },
 
     showAllResourcesChanged: function(control) {
 
-       var booking_id = $(control).attr('rel');
+       var id = $(control).attr('rel');
+       var booking_id = $(control).attr('data-bookingid');
+       var booking_resource_index = parseInt($(control).attr('data-bookingresourceidx'));
+
        // Adjust the selector to show the assigned resource
        var booking = confirmedBookingsModel.hashData[booking_id];
-       if (booking) {
-          if (booking.booking_item_reference != null) {          
-            var select = "#filtered_resources_" + booking_id + " " +
-                       "select[name=\"booking_item_reference\"][rel='" + booking.id + "']";
-            var selector =  select + " option[value='" + booking.booking_item_reference + "']"; 
+       if (booking.booking_line_resources[booking_resource_index]) {
+          var booking_line_resource = booking.booking_line_resources[booking_resource_index];
+          if (booking_line_resource.booking_item_reference != null) {          
+            var select = "#filtered_resources_" + booking_line_resource.id + " " +
+                       "select[name=\"booking_item_reference\"][rel='" + booking_line_resource.id + "']";
+            var selector =  select + " option[value='" + booking_line_resource.booking_item_reference + "']"; 
             if ($(selector).length == 0) {
               $(select).append("<option value=\"" +
-                booking.booking_item_reference + "\" selected=\"selected\">" + 
-                booking.booking_item_reference + "</option>");
+                booking_line_resource.booking_item_reference + "\" selected=\"selected\">" + 
+                booking_line_resource.booking_item_reference + "</option>");
             }
           
-            select = "#not_filtered_resources_" + booking_id + " " +
-                   "select[name=\"booking_item_reference\"][rel='" + booking.id + "']";
-            selector =  select + " option[value='" + booking.booking_item_reference + "']"; 
+            select = "#not_filtered_resources_" + booking_line_resource.id + " " +
+                   "select[name=\"booking_item_reference\"][rel='" + booking_line_resource.id + "']";
+            selector =  select + " option[value='" + booking_line_resource.booking_item_reference + "']"; 
             if ($(selector).length == 0) {
               $(select).append("<option value=\"" +
-                booking.booking_item_reference + "\" selected=\"selected\">" + 
-                booking.booking_item_reference + "</option>");
+                booking_line_resource.booking_item_reference + "\" selected=\"selected\">" + 
+                booking_line_resource.booking_item_reference + "</option>");
             }
             else {
-              $(select).val(booking.booking_item_reference);
+              $(select).val(booking_line_resource.booking_item_reference);
             }
           }
        }
        if ($(control).attr('checked')) {
-         $('#filtered_resources_'+booking_id).hide();        
-         $('#not_filtered_resources_'+booking_id).show();
+         $('#filtered_resources_'+id).hide();        
+         $('#not_filtered_resources_'+id).show();
        }
        else {
-         $('#filtered_resources_'+booking_id).show();        
-         $('#not_filtered_resources_'+booking_id).hide();        
+         $('#filtered_resources_'+id).show();        
+         $('#not_filtered_resources_'+id).hide();        
        }
+    },
+
+    planningColorChanged: function(control) {
+      confirmedBookingsModel.updatePlanningColor($(control.form).formParams(false));
     }
 
   };
@@ -180,6 +246,10 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
           break;
         case 'filter_changed':
           this.loadBookings();
+          alert('Reservas filtradas');
+          $('html, body').animate({
+             scrollTop: $("#booking_list").offset().top
+            }, 2000);
           break;
       }
     },
@@ -188,10 +258,13 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
           var template = tmpl('script_booking_line');
           var result = '';
           $('.show_all_resources').unbind('change');
+          $('.planning_color').unbind('change');
           for (var i=0;i<confirmedBookingsModel.data.length;i++) {
-             if (confirmedBookingsModel.filter == 'all' || confirmedBookingsModel.data[i].booking_item_reference == null) {
+             if (confirmedBookingsModel.filter == 'all' || 
+                 (confirmedBookingsModel.filterBookings instanceof Array &&
+                 confirmedBookingsModel.filterBookings.indexOf(confirmedBookingsModel.data[i].id)>-1)) {
                result += template({entity: confirmedBookingsModel.data[i], 
-                  resources: confirmedBookingsModel.resources[confirmedBookingsModel.data[i].item_id],
+                  resources: confirmedBookingsModel.resources,
                   allResources: confirmedBookingsModel.allResources,
                   formatter: ysdFormatter});
              }
@@ -207,6 +280,10 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 'jq
           $('.show_all_resources').bind('change', function() {
             confirmedBookingsController.showAllResourcesChanged($(this)[0]);
           });          
+          $('.planning_color').bind('change', function() {
+            confirmedBookingsController.planningColorChanged($(this)[0]);
+          });
+
     }
 
   };

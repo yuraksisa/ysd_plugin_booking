@@ -18,12 +18,17 @@ booking_settings:
     reservation_starts_with:
       title: The reservations starts selecting
       dates: Dates
-      categories: Products    
+      categories: Products
+      shoppingcart: Shopping cart    
     deposit: \% Diposit
     allow_total_payment: Allow to pay the total of the reservation    
     min_days: Minimum days   
     family: Product type
     custom_pickup_return_place: Custom pickup/return places
+    custom_pickup_return_place_price: Custom pickup/return place price
+    no_pickup_return_timetable: It does not apply
+    pickup_return_timetable: Pickup/return timetable
+    pickup_return_timetable_out_price: Pickup/return out of time price    
     payment: Enable online payment
     general_group: General
     payment_group: Payment
@@ -51,7 +56,12 @@ booking_console:
   availability: Availability
   summary: Summary
   places: Pickup/return
-  adjust_prices: Adjust prices  
+  adjust_prices: Adjust prices    
+  calendars: Calendars
+  timetables: Timetables  
+  receipts: Receipts 
+  activities: Orders  
+  information_requests: Information requests  
 booking_summary:
   title: Booking summary  
 booking_forecast:
@@ -66,7 +76,7 @@ booking_return:
   title: Return/Departures 
 booking_list:
   id: Id
-  item: Item
+  item: Resource
   date_from: Pickup date
   date_to: Return date
   place: Place
@@ -91,6 +101,7 @@ booking_items:
   kayak: kayak  
   apartment: apartment
   room: room
+  product: product
 new_booking:
   title: Booking
   search: Search
@@ -121,7 +132,7 @@ new_booking:
   extras: Extras
   extra: Extra
   quantity: Quantity
-  price: Price
+  price: Unit price
   customer: Customer
   conditions_confirm: I have read and accept <a href="%1" target="_blank">their conditions of this service</a>
   continue: Continue
@@ -142,6 +153,12 @@ new_booking:
   concept: Concept
   day: Day
   days: Days
+  time_from_cost: Pick up outside working hours supplement
+  time_to_cost: Return outside working hours supplement
+  pickup_place_cost: Pick up place supplement
+  return_place_cost: Return place supplement
+  product_deposit_cost: Deposit  
+  product_deposit_cost_legend: The product deposit will be returned when you return the product  
   total: Total
   form_errors:
     title: Error
@@ -187,13 +204,13 @@ new_booking:
     format: Email format is user@domain.com 
     equal_to: It must be equal to email    
   customer_phone: 
-    label: Phone
-    placeholder: Your landline
-    required: Customer phone required
+    label: Main telephone number 
+    placeholder: Your main phone number
+    required: Customer phone is required
     min_length: Minimum length is 9 digits   
   customer_mobile: 
-    label: Mobile phone
-    placeholder: Your cell phone
+    label: Alternative telephone number
+    placeholder: Your alternative phone number
   contact:
     label: Contact    
     description: Please fill the contact information
@@ -404,6 +421,14 @@ booking_category_management:
       label: Calendar
     price_definition:
       label: Prices    
+    stock_control:
+      label: Stock control 
+    stock:
+      label: Stock 
+    sort_order:
+      label: Order
+    deposit:
+      label: Deposit      
 booking_extra_management:
   title: Extras management
   description: Extras management
@@ -523,6 +548,7 @@ not_assigned_bookings:
     dates: Dates
     customer: Customer
     status: Status
+    color: Color
   form:  
     assign: Assign  
     reassign: Reassign  

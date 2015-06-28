@@ -22,6 +22,32 @@ module Sinatra
 
       end
 
+      def booking_stock
+
+         ::Yito::Model::Booking::BookingCategory.all(:fields => [:code, :stock_control, :stock]).map do |item| 
+           {item_id: item.code, stock_control: item.stock_control, stock: item.stock}
+         end
+
+      end
+
+      def booking_occupation(params)
+
+        if params['from'].nil? or params['to'].nil?
+           []
+        else
+           begin
+             from = DateTime.strptime(params[:from], '%Y-%m-%d')
+             to = DateTime.strptime(params[:to], '%Y-%m-%d')
+             BookingDataSystem::Booking.occupation(from, to).map do |item|  
+                {item_id: item.item_id, stock: item.stock, busy: item.busy}
+             end
+           rescue ArgumentError => ex
+             []
+           end
+        end  
+
+      end
+
       def booking_payment_enabled(params)
 
         if params['from'].nil? or params['to'].nil?
@@ -60,7 +86,7 @@ module Sinatra
 
           condition = Conditions::JoinComparison.new('$and',
            [Conditions::Comparison.new(:status, '$eq', :confirmed),
-            Conditions::Comparison.new(:booking_item, '$ne', nil),
+            #Conditions::Comparison.new(:booking_item, '$ne', nil),
             Conditions::JoinComparison.new('$or', 
               [Conditions::JoinComparison.new('$and', 
                  [Conditions::Comparison.new(:date_from,'$lte', from),
@@ -134,8 +160,31 @@ module Sinatra
         #
         app.get '/api/booking/check' do
          
-          result = {:availability => booking_availability(params),
-                    :payment => booking_payment_enabled(params)}
+          occupation_hash=booking_occupation(params).inject({}) do |result,item| 
+             result.store(item[:item_id], item.select {|key,value| key != :item_id}) 
+             result 
+          end
+
+          stock_hash=booking_stock.inject({}) do |result,item| 
+             result.store(item[:item_id], item.select { |key,value| key != :item_id})
+             result
+          end
+          
+          stock_hash.each do |key, value|
+             if occupation_hash.has_key?(key) 
+               value.store(:busy, occupation_hash[key][:busy])
+             else
+               value.store(:busy, 0)
+             end
+          end
+
+          availability = booking_availability(params).select do |item| 
+                           true if stock_hash.has_key?(item) and stock_hash[item][:stock_control] and stock_hash[item][:busy] < stock_hash[item][:stock]
+                         end
+
+          result = {:availability => availability,
+                    :payment => booking_payment_enabled(params),
+                    :stock => stock_hash}
           result.to_json          
 
         end
@@ -165,10 +214,17 @@ module Sinatra
         #
         app.get '/api/booking/statistics', :allowed_usergroups => ['booking_manager', 'staff']  do
 
-          received = BookingDataSystem::Booking.reservations_received
-          confirmed = BookingDataSystem::Booking.reservations_confirmed
+          year = params[:year] || Date.today.year
+
+          received = BookingDataSystem::Booking.reservations_received(year)
+          confirmed = BookingDataSystem::Booking.reservations_confirmed(year)
           
           result = {}
+
+          (1..12).each do |element| 
+            period = "#{year}-#{element.to_s.rjust(2, '0')}"
+            result.store(period, {requests: 0, confirmed: 0})
+          end          
 
           received.each do |item|
             result.store(item.period, :requests => item.occurrences, :confirmed => 0)
@@ -187,9 +243,16 @@ module Sinatra
         #
         app.get '/api/booking/incoming-money', :allowed_usergroups => ['booking_manager', 'staff']  do
 
-          data = BookingDataSystem::Booking.incoming_money_summary
+          year = params[:year] || Date.today.year
+
+          data = BookingDataSystem::Booking.incoming_money_summary(year)
 
           result = {}
+
+          (1..12).each do |element| 
+            period = "#{year}-#{element.to_s.rjust(2, '0')}"
+            result.store(period, {total: 0})
+          end  
 
           data.each do |item|
             result.store(item.period, :total => sprintf("%.2f", item.total))
@@ -208,31 +271,32 @@ module Sinatra
           to = Time.at(params['end'].to_i)
 
           condition = Conditions::JoinComparison.new('$and',
-           [Conditions::Comparison.new(:status, '$ne', :cancelled),
+           [Conditions::Comparison.new('booking_line.booking.status', '$ne', :cancelled),
             Conditions::Comparison.new(:booking_item_reference, '$eq', params[:booking_item_reference]),
             Conditions::JoinComparison.new('$or', 
               [Conditions::JoinComparison.new('$and', 
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', from)
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$lte', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$gte', from)
                   ]),
                Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', to),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$lte', to),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$gte', to)
                   ]),
                Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$eq', from),
-                  Conditions::Comparison.new(:date_to,'$eq', to)
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$eq', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$eq', to)
                   ]),
                Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from, '$gte', from),
-                  Conditions::Comparison.new(:date_to, '$lte', to)])               
+                 [Conditions::Comparison.new('booking_line.booking.date_from', '$gte', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to', '$lte', to)])               
               ]
             ),
             ]
           )
 
-          bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-             :order => [:item_id.asc]).map do |booking|
+          bookings = condition.build_datamapper(BookingDataSystem::BookingLineResource).all(
+             ).map do |booking_line_resource|
+            booking = booking_line_resource.booking_line.booking
             {:id => booking.id,
              :title => "#ID: #{booking.id} \n #{booking.date_from.strftime('%Y-%m-%d')} #{booking.time_from} \n #{booking.date_to.strftime('%Y-%m-%d')} #{booking.time_to} \n #{booking.customer_name.upcase} #{booking.customer_surname.upcase} #{(booking.customer_phone.nil? or booking.customer_phone.empty?)? booking.customer_mobile_phone : booking.customer_phone}",
              :start => booking.date_from,
@@ -255,11 +319,11 @@ module Sinatra
           condition = booking_planning_conditions(params)
 
           bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-             :fields => [:id, :date_from, :date_to, :booking_item_reference, :item_id],
-             :order => [:item_id.asc, :booking_item_reference.asc, :date_from.asc]
+             :order => [:date_from.asc]
             ) 
 
-          bookings.to_json(:only => [:id, :date_from, :date_to, :booking_item_reference, :item_id])
+          bookings.to_json(:only => [:id, :date_from, :date_to, :planning_color],
+                           :relationships => {:booking_line_resources => {}})
 
         end
 
@@ -276,13 +340,12 @@ module Sinatra
           condition = booking_confirmed_conditions(params)
 
           bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-             :fields => [:id, :date_from, :date_to, :item_id, :customer_name, :customer_surname,
-              :customer_phone, :customer_mobile_phone, :status, :booking_item_reference],
-             :order => [:item_id.asc, :date_from.asc]
+             :order => [:date_from.asc]
             )
 
-          bookings.to_json(:only => [:id, :date_from, :date_to, :item_id, :customer_name, :customer_surname,
-              :customer_phone, :customer_mobile_phone, :status, :booking_item_reference])
+          bookings.to_json(:only => [:id, :date_from, :date_to, :customer_name, :customer_surname,
+              :customer_phone, :customer_mobile_phone, :status, :planning_color], 
+                           :relationships => {:booking_line_resources => {}})
 
         end
 
@@ -356,7 +419,7 @@ module Sinatra
           app.post path, :allowed_usergroups => ['booking_manager', 'staff'] do
         	
             page = [params[:page].to_i, 1].max  
-            page_size = 12
+            page_size = 20
             offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]} 
 
             if request.media_type == "application/x-www-form-urlencoded"
@@ -429,13 +492,14 @@ module Sinatra
                         {:id => booking.id,
                          :customer_name => booking.customer_name,
                          :customer_surname => booking.customer_surname,
-                         :item_id => booking.item_id,
                          :date_from => booking.date_from,
                          :time_from => booking.time_from,
                          :date_to => booking.date_to,
                          :time_to => booking.time_to,
                          :main_booking_id => booking.main_booking_id,
-                         :status => booking.status}
+                         :status => booking.status,
+                         :detail => booking.booking_lines.inject("") { |result, item| result + "#{item.quantity}-#{item.item_id} " }.strip
+                         }
                      end
                    else
                      []
@@ -453,6 +517,41 @@ module Sinatra
           if booking = BookingDataSystem::Booking.get(params[:booking_id])
             booking.main_booking = nil
             booking.save
+            content_type :json
+            status 200
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Register a booking charge
+        #
+        app.post '/api/booking/charge', :allowed_usergroups => ['bookings_manager','staff'] do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys! 
+
+          if booking = BookingDataSystem::Booking.get(data[:id])
+            
+            booking.transaction do  
+              charge = Payments::Charge.new
+              charge.date = data[:date]
+              charge.amount = data[:amount]
+              charge.payment_method_id = data[:payment_method_id]
+              charge.status = :pending
+              charge.currency = SystemConfiguration::Variable.get_value('payments.default_currency', 'EUR')
+              charge.save
+              booking_charge = BookingDataSystem::BookingCharge.new
+              booking_charge.booking = booking
+              booking_charge.charge = charge
+              booking_charge.save
+              charge.update(:status => :done)
+              booking.reload
+            end
             content_type :json
             status 200
             booking.to_json
@@ -485,7 +584,9 @@ module Sinatra
 
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
             content_type :json
-            booking.confirm!.to_json
+            result = booking.confirm!
+            booking.notify_customer if booking.total_paid > 0
+            result.to_json
           else
             status 404
           end
@@ -501,6 +602,7 @@ module Sinatra
           if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
             booking.force_allow_payment = true
             booking.save
+            booking.notify_customer_payment_enabled
             content_type :json
             booking.to_json
           else
@@ -510,21 +612,23 @@ module Sinatra
         end
 
         #
-        # Assign a booking item to a booking
+        # Assign a booking item to a booking line resource
         #
-        app.post '/api/booking/assign/:booking_id/:booking_item_reference',
+        app.post '/api/booking/assign/:id/:booking_item_reference',
           :allowed_usergroups => ['booking_manager','staff'] do
 
-          if booking = BookingDataSystem::Booking.get(params[:booking_id].to_i)
+          if booking_line_resource = BookingDataSystem::BookingLineResource.get(params[:id].to_i)
             if booking_item = ::Yito::Model::Booking::BookingItem.get(params[:booking_item_reference])
-              booking.booking_item = booking_item
-              booking.save
+              booking_line_resource.booking_item = booking_item
+              booking_line_resource.save
               content_type :json
-              booking.to_json
+              booking_line_resource.to_json
             else
+              p "Booking Line Resource not found"
               status 404
             end  
           else
+            p "Booking item not found"
             status 404
           end 
 
@@ -581,12 +685,19 @@ module Sinatra
         app.put '/api/booking/:id/price', :allowed_usergroups => ['booking_manager','staff'] do
 
           booking_request = body_as_json(BookingDataSystem::Booking)
+          lines_request = booking_request.delete(:booking_lines)
           extras_request = booking_request.delete(:booking_extras)
  
           booking = BookingDataSystem::Booking.get(params[:id])
           booking.transaction do |transaction|
             booking.attributes = booking_request
             booking.save
+            lines_request.each do |line_booking| 
+              booking_line = BookingDataSystem::BookingLine.get(line_booking[:id])
+              booking_line.item_cost = line_booking[:item_cost]
+              booking_line.item_unit_cost = line_booking[:item_unit_cost]
+              booking_line.save
+            end
             extras_request.each do |extra_booking|
               booking_extra = BookingDataSystem::BookingExtra.get(extra_booking[:id])
               booking_extra.extra_cost = extra_booking[:extra_cost]
@@ -635,8 +746,96 @@ module Sinatra
 
         end
 
+        # Update booking resource
         #
-        # Booking creation (customer)
+        app.put '/api/booking-line-resource', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys! 
+
+          if booking_line_resource = BookingDataSystem::BookingLineResource.get(data.delete(:id).to_i)
+            booking_line_resource.attributes = data
+            booking_line_resource.save
+            body booking_line_resource.to_json
+          else
+            status 404
+          end
+
+        end         
+
+        # ------------ Send the notification emails ----------------------
+
+        #
+        # Request received
+        #
+        app.post '/api/booking/send-customer-req-notification/:id' , :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:id].to_i) and 
+             booking.status != :cancelled
+            booking.notify_request_to_customer
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Request received (with online payment)
+        #
+        app.post '/api/booking/send-customer-req-notification-pay/:id' , :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:id].to_i) and 
+             booking.status != :cancelled and 
+             booking.pay_now
+            booking.notify_request_to_customer_pay_now
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Request confirmed
+        #
+        app.post '/api/booking/send-customer-conf-notification/:id' , :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:id].to_i) and
+             booking.status != :pending_confirmation and 
+             booking.status != :cancelled
+            booking.notify_customer
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end        
+
+        #
+        # Payment enabled
+        #
+        app.post '/api/booking/send-customer-pay-enabled/:id' , :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:id].to_i) and
+             booking.status != :cancelled
+            booking.notify_customer_payment_enabled
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end  
+
+        # ----------------------------------------------------------------
+
+        #
+        # Booking creation (front-end)
         #
         app.post '/api/booking/?' do
 
@@ -681,7 +880,7 @@ module Sinatra
         end
 
         #
-        # Booking creation (manager)
+        # Booking creation (back-end)
         #
         app.post '/api/booking-from-manager/?', :allowed_usergroups => ['booking_manager', 'staff'] do
 

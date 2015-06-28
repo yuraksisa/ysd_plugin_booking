@@ -1,0 +1,66 @@
+                      <p id="item_description"></p>
+	                  <div>
+	                    <label class="fieldtitle" style="display:inline-block; width:25%">
+	          	         <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival):(t.new_booking.pickup)%>
+	                    </label>
+                        <input type="text" name="date_from_extended" id="date_from_extended" class="readonly-field" readonly="readonly" style="width:15em"/>
+	                  </div>
+
+                      <% if booking_item_family.pickup_return_place %>
+		              <div>
+	                     <div class="collection_place">
+	                       <label for="pickup_place_extended" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.place%></label>
+	                       <textarea name="pickup_place_extended" id="pickup_place_extended" class="readonly-field" readonly="readonly" rows="3"></textarea>
+	                     </div>
+	                  </div>
+	                  <% end %>	    
+
+	                  <div>
+	                    <label class="fieldtitle" style="display:inline-block; width:25%">
+	          	          <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure):(t.new_booking.return)%>
+	                    </label>
+                        <input type="text" name="date_to_extended" id="date_to_extended" class="readonly-field" readonly="readonly" style="width:15em"/>
+	                  </div>
+
+                      <% if booking_item_family.pickup_return_place %>
+		              <div >
+	                    <div class="return_place">
+	                      <label for="return_place_extended" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.place%></label>
+	      	              <textarea name="return_place_extended" id="return_place_extended" class="readonly-field" readonly="readonly" rows="3"></textarea>
+                        </div>
+                      </div>
+	                  <% end %>	    
+ 
+                      <% if (booking_item_family.guests) %>
+                      <div >
+		                <div>
+		                  <label id="label_adult_guests" for="booking[number_of_adults]" class="fieldtitle" style="display:inline-block; width:25%"><%=t.new_booking.guests.adults%></label>	
+		                  <select name="booking[number_of_adults]" id="booking[number_of_adults]" style="margin-right:5%"> 
+			                <option value="1" selected="selected">1</option>
+				            <option value="2">2</option>
+				            <option value="3">3</option>
+				            <option value="4">4</option>
+				            <option value="5">5</option>
+				            <option value="6">6</option>
+				            <option value="7">7</option>
+				            <option value="8">8</option>
+				            <option value="9">9</option>
+				            <option value="10">10</option>
+                          </select>
+		                  <label id="label_adult_guests" for="booking[number_of_children]" class="fieldtitle" style="display:inline-block"><%=t.new_booking.guests.children%></label>	
+		                  <select name="booking[number_of_children]" id="booking[number_of_children]"> 
+			                <option value="0" selected="selected">0</option>
+				            <option value="1">1</option>
+				            <option value="2">2</option>
+				            <option value="3">3</option>
+				            <option value="4">4</option>
+				            <option value="5">5</option>
+				            <option value="6">6</option>
+				            <option value="7">7</option>
+				            <option value="8">8</option>
+				            <option value="9">9</option>
+				            <option value="10">10</option>
+                          </select>
+                        </div>    
+                      </div>                   
+                      <% end %>		                

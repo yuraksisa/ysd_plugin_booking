@@ -94,6 +94,22 @@
                 <select class="fieldcontrol" name="type" id="type"/>
               </div>
               <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.stock_control.label%></label>
+                <input type="checkbox" name="stock_control" value="true" id="stock_control" <%% if (entity && entity.stock_control) { %>checked="checked"<%%}%>/>
+              </div>                         
+              <div id="stock_container" class="formrow" <%% if (entity == null || (entity && entity.stock_control == false)){%>style="display:none"<%%}%>}>
+                <label class="fieldtitle"><%= t.booking_category_management.form.stock.label%></label>
+                <input type="text" name="stock" id="stock" <%% if (entity){%>value="<%%=entity.stock%>" <%%}%>/>
+              </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.sort_order.label%></label>
+                <input type="text" name="sort_order" id="sort_order" <%% if (entity){%>value="<%%=entity.sort_order%>" <%%}%>/>
+              </div>  
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.deposit.label%></label>
+                <input type="text" name="deposit" id="deposit" <%% if (entity){%>value="<%%=new Number(entity.deposit).toFixed(2)%>" <%%}%>/>
+              </div>                               
+              <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.catalog.label %></label>
                 <select class="fieldcontrol" name="booking_catalog[code]" id="booking_catalog[code]"/>
               </div>   

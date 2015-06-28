@@ -144,7 +144,7 @@ module Sinatra
               status, header, body = call! env.merge("PATH_INFO" => "/charge", 
                 "REQUEST_METHOD" => 'GET')
             else
-              redirect "/p/mybooking/#{booking.free_access_id}"
+              redirect "/p/order/#{booking.free_access_id}"
             end            
           else
             status 404
