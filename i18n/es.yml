@@ -400,11 +400,11 @@ booking_management:
       label: Asignar
       message: ¿Desea asignar el coche?
     allow_payment_button:
-      label: Permitir pago
-      message: ¿Desea habilitar el pago de esta reserva?
+      label: Forzar pago
+      message: ¿Desea forzar el pago online de esta reserva?
     change_dates: Cambiar fechas
-    payment_not_allowed: El pago online no está permitido
-    force_allow_payment: Pago habilitado por el gestor
+    payment_not_allowed: El pago online no está forzado (manda la configuración)
+    force_allow_payment: Pago online forzado por el gestor
     expired: Excedido tiempo pago depósito
     id: Localizador reserva
     creation_date: Fecha reserva
