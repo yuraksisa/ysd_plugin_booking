@@ -24,7 +24,7 @@ module Sinatra
 
       def booking_stock
 
-         ::Yito::Model::Booking::BookingCategory.all(:fields => [:code, :stock_control, :stock]).map do |item| 
+         ::Yito::Model::Booking::BookingCategory.all(:conditions => {:active => true}, :fields => [:code, :stock_control, :stock]).map do |item| 
            {item_id: item.code, stock_control: item.stock_control, stock: item.stock}
          end
 
@@ -178,8 +178,10 @@ module Sinatra
              end
           end
 
-          availability = booking_availability(params).select do |item| 
-                           true if stock_hash.has_key?(item) and stock_hash[item][:stock_control] and stock_hash[item][:busy] < stock_hash[item][:stock]
+          availables = booking_availability(params)
+
+          availability = availables.select do |item| 
+                           true if stock_hash.has_key?(item) and ((stock_hash[item][:stock_control] and stock_hash[item][:busy] < stock_hash[item][:stock]) or (!stock_hash[item][:stock_control]))
                          end
 
           result = {:availability => availability,

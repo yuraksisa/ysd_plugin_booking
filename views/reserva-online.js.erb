@@ -1849,7 +1849,7 @@
 
            case 'booking_item' :
              var booking_lines = bookingModel.booking.booking_lines_as_array();
-             if (booking_lines == 1) {
+             if (booking_lines.length == 1) {
                var family = booking_lines.length > 0 ? booking_lines[0].item_id : null;
                if (family != null) {
                  var path=bookingDataSystem.families[family].photo;
