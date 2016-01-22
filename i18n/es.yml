@@ -59,8 +59,24 @@ booking_settings:
     pickup_return_timetable: Horario entrega/recogida
     pickup_return_timetable_out_price: Precio entrega/recogida fuera de horas
     payment: Habilitar pago online
+    morning_turns: Mañana
+    afternoon_turns: Tarde 
+    night_turns: Noche
+    duration_of_service: Duración del servicio
+    duration_of_service_extra: Duración del servicio (extra)
+    duration_of_service_extra_turns: Turnos de servicio con duración extra
+    min_children: Número mínimo de niños
+    max_children: Número máximo de niños
+    max_children_extra: Número máximo de niños (extra)
+    min_adults: Número mínimo de adultos
+    max_adults: Número máximo de adultos
+    max_adults_extra: Número máximo de adultos (extra)        
     general_group: General
+    pickup_return_group: Entrega y recogida    
     payment_group: Pagos
+    turns_group: Turnos
+    people_group: Gente   
+    rent_group: Alquiler 
     item_hold_time: Caducidad (en horas) de la reserva
     payment_cadence: Cadencia de pago    
 booking_rates:
@@ -148,6 +164,11 @@ booking_items:
   apartment: apartamento
   room: habitación 
   product: producto
+new_booking_restaurant:
+  choose_item: Fecha, hora y número de personas 
+  complete_booking: Completar la reserva
+  date_mandatory: Fecha obligatoria
+  people_mandatory: Personas obligatorio
 new_booking:
   title: Reserva
   search: Ver precios
@@ -575,10 +596,14 @@ booking_category_management:
       label: Control de stock 
     stock:
       label: Stock 
+    capacity:
+      label: Capacidad
     sort_order:
       label: Orden
     deposit:
       label: Depósito
+    active:
+      label: Activo       
 booking_extra_management:
   title: Extras
   description: Gestión de extras
@@ -615,6 +640,8 @@ booking_item_management:
       label: Calendario
     price_definition:
       label: Precio
+    active:
+      label: Activo       
 booking_places_definition_management:
   title: Entrega y recogida
   table:

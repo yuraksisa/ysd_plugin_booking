@@ -125,6 +125,81 @@ module Huasi
          :description => 'Booking page keywords',
          :module => :booking})
 
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.morning_turns'},
+        {:value => '',
+         :description => 'Booking morning turns',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.afternoon_turns'},
+        {:value => '',
+         :description => 'Booking morning turns',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.night_turns'},
+        {:value => '',
+         :description => 'Booking morning turns',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.duration_of_service'},
+        {:value => '',
+         :description => 'Booking duration of service',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.duration_of_service_extra'},
+        {:value => '',
+         :description => 'Booking duration of service (extra)',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.duration_of_service_extra_turns'},
+        {:value => '',
+         :description => 'Booking duration of service (extra) turns',
+         :module => :booking}
+        )
+
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.min_adults'},
+        {:value => '',
+         :description => 'Booking min adults',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.max_adults'},
+        {:value => '',
+         :description => 'Booking max adults',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.max_adults_extra'},
+        {:value => '',
+         :description => 'Booking max adults (extra)',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.min_children'},
+        {:value => '',
+         :description => 'Booking min children',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.max_children'},
+        {:value => '',
+         :description => 'Booking max children',
+         :module => :booking}
+        )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.max_children_extra'},
+        {:value => '',
+         :description => 'Booking max children (extra)',
+         :module => :booking}
+        )
+
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
         {:driver => false,
          :guests => true,

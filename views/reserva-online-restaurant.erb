@@ -1,0 +1,100 @@
+<div id="content-reserva">
+  
+    <div id="content-header" class="bottom-margin">
+        <div>
+          <div id="wizard-navigation">
+            <ul id="wizard-options">
+              <li>
+              	 <a id="tab-choose-item" href="#" class="tab img_txt">
+              	   <span>1</span>
+              	   <%= t.new_booking_restaurant.choose_item %>
+                 </a>
+              </li>
+              <li>
+              	  <a id="tab-complete-reservation" href="#" class="tab img_txt">
+              	  	<span>2</span>
+              	  	<%=t.new_booking_restaurant.complete_booking%>
+              	  </a>
+              </li>
+            </ul>
+          </div>
+        </div>      
+    </div>
+    
+    <div id="content-body" class="element-form-detail bottom-margin">
+      
+      <!-- Tab 1 Date, hour and number of person -->
+
+      <div id="item-selection" class="bottom-margin">
+        <form id="form-search-item" name="form-search-item" class="guiblock">
+          <div class="container_12">
+            <div class="grid_4">
+              <div class="formrow">
+                <div id="datefrom"></div>
+              </div>
+            </div>
+            <div class="grid_4">
+              <div class="formrow" style="padding-right: 30px">                              
+                <label class="fieldtitle" style="text-align:center">COMIDA</label>
+                <div>
+                <% afternoon_turns.each do |item| %>
+                  <div class="grid_3">
+                  <input type="radio" name="timefrom" value="<%=item%>"><%=item%></input>
+                  </div>
+                <% end %>
+                </div>
+                <label class="fieldtitle top-margin" style="text-align:center">CENA</label>
+                <div>
+                <% night_turns.each do |item| %>
+                  <div class="grid_3">
+                    <input type="radio" name="timefrom" value="<%=item%>"><%=item%></input>
+                  </div>
+                <% end %>
+                </div> 
+              </div>
+            </div>
+            <div class="grid_4">
+              <div class="formrow">
+                <div>                
+                <label class="fieldtitle" style="text-align:center">PERSONAS</label>
+                <% (1..max_people_extra.to_i).each do |item| %>
+                  <div class="grid_2">
+                  <input type="radio" name="number_of_adults" value="<%= item %>"><%=item%></input>
+                  </div>
+                <% end %>
+                </div>                            
+              </div>
+            </div>
+          </div>
+        </form>        
+      </div>
+
+      <!-- Tab 2 Client details -->
+      <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
+
+      </form>      
+
+      <!-- overlayed element -->
+      <div class="apple_overlay" id="overlay">
+         <!-- the external content is loaded inside this tag -->
+         <div class="contentWrap"></div>
+      </div>    
+
+      <div id="checking-availability" title="<%=t.new_booking.checking_availability%>" style="display:none">
+         <img src="/img/ajax-loader_grande.gif"/>
+      </div>
+
+      <div id="sending-booking" title="<%=t.new_booking.sending_booking_request%>" style="display:none">
+          <img src="/img/ajax-loader_grande.gif"/>
+      </div>
+        
+    </div>
+
+    <div id="content-footer">
+      
+    </div>  
+
+    <div id="popup" style="background: white">
+    </div>
+      
+  </div>

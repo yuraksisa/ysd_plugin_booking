@@ -14,13 +14,16 @@
   <table id="elements_table" class="table">
      <thead class="table-header">
        <tr>
-         <th class="table-header-title" scope="col" style="width:30%">
+         <th class="table-header-title" scope="col" style="width:20%">
            <%= t.booking_category_management.form.code.label %>
          </th>
-         <th class="table-header-title" scope="col" style="width:30%">
+         <th class="table-header-title" scope="col" style="width:40%">
            <%= t.booking_category_management.form.name.label %>
          </th>
-         <th class="table-header-title" scope="col" style="width:40%">
+         <th class="table-header-title" scope="col" style="width:10%">
+           <%= t.booking_category_management.form.active.label %>
+         </th>         
+         <th class="table-header-title" scope="col" style="width:30%">
          </th>
        </tr>
      </thead>
@@ -39,6 +42,9 @@
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
         <%%= entity.name %>
       </td>
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+        <%%= entity.active %>
+      </td>      
       <td class="table-cell">
            <%% if (entity.calendar_id && entity.calendar_id != null) { %>
                 <div class="form-button green-white-button"><a href="/admin/calendar/events/<%%=entity.calendar_id%>">
@@ -103,12 +109,16 @@
               </div>
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.sort_order.label%></label>
-                <input type="text" name="sort_order" id="sort_order" <%% if (entity){%>value="<%%=entity.sort_order%>" <%%}%>/>
+                <input type="text" name="sort_order" id="sort_order" <%% if (entity){%>value="<%%=entity.sort_order%>" <%%} else { %>value="0"<%%}%>/>
               </div>  
               <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.capacity.label%></label>
+                <input type="text" name="capacity" id="capacity" <%% if (entity){%>value="<%%=entity.capacity%>" <%%} else { %>value="0"<%%}%>/>
+              </div>                
+              <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.deposit.label%></label>
-                <input type="text" name="deposit" id="deposit" <%% if (entity){%>value="<%%=new Number(entity.deposit).toFixed(2)%>" <%%}%>/>
-              </div>                               
+                <input type="text" name="deposit" id="deposit" <%% if (entity){%>value="<%%=new Number(entity.deposit).toFixed(2)%>" <%%} else { %>value="0"<%%}%>/>
+              </div>                                             
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.catalog.label %></label>
                 <select class="fieldcontrol" name="booking_catalog[code]" id="booking_catalog[code]"/>
@@ -134,7 +144,10 @@
                 <%= partial(:price_definition_creation)%>
               </div>
               <%% } %> 
-
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.active.label%></label>
+                <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
+              </div>   
               <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
                                             :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
                                             :edit_element_form_above_ingroup => edit_element_form_above_ingroup,

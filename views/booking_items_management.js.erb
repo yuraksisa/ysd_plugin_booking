@@ -53,6 +53,17 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         data.price_definition = null;
       }
 
+      if ($('#create_category_calendar').prop('checked')) {
+        data.calendar = {'name' : data.reference, 'description': data.name};
+      }
+
+      if ($('#active').prop('checked')) {
+        data.active = true;
+      }
+      else {
+        data.active = false;
+      }
+
       return data;  
       
     }

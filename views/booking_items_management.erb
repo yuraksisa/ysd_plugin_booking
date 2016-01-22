@@ -20,9 +20,12 @@
          <th class="table-header-title centered_text" scope="col" style="width:15%">
             <%= t.booking_item_management.form.reference.label %>
          </th>
-         <th class="table-header-title" scope="col" style="width:45%">
+         <th class="table-header-title" scope="col" style="width:35%">
             <%= t.booking_item_management.form.name.label %>
          </th>
+         <th class="table-header-title centered_text" scope="col" style="width:10%">
+            <%= t.booking_item_management.form.active.label %>
+         </th>         
          <th class="table-header-title" scope="col" style="width:30%">
          </th>         
        </tr>
@@ -45,6 +48,9 @@
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
          <%%= entity.name %>
       </td>
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+         <%%= entity.active %>
+      </td>  
       <td class="table-cell">
            <div class="form-button green-white-button">
                 <a href="/admin/booking/scheduler/<%%=entity.reference%>">
@@ -98,7 +104,15 @@
                 <label class="fieldtitle"><%= t.booking_item_management.form.calendar.label %></label>
                 <select name="calendar[id]" id="calendar[id]"/>
               </div>     
-            
+              <%% if (!entity) { %>
+              <div class="formrow">
+                <input type="checkbox" id="create_category_calendar">Crear calendario</input>
+              </div>
+              <%% } %>        
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_item_management.form.active.label%></label>
+                <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
+              </div>                   
             </div>
           </div>
 

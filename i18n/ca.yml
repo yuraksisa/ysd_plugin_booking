@@ -29,6 +29,24 @@ booking_settings:
     pickup_return_timetable_out_price: Preu d\'entrega i recollida fora d\'hores    
     item_hold_time: Caducitat (en hores)
     payment_cadence: Cadència de pagament
+    morning_turns: Mati
+    afternoon_turns: Tarda 
+    night_turns: Nit
+    duration_of_service: Duració del servei
+    duration_of_service_extra: Duració del servei (extra)
+    duration_of_service_extra_turns: Torns de servei amb duració extra
+    min_children: Nombre minim de nens
+    max_children: Nombre màxim de nens
+    max_children_extra: Nombre màxim de nens (extra)
+    min_children: Nombre minim d\'adults
+    max_children: Nombre màxim de d\'adults (extra) 
+    max_children_extra: Nombre màxim de d\'adults (extra)  
+    general_group: General
+    pickup_return_group: Entrega y recollida
+    payment_group: Pagament    
+    turns_group: Torns
+    people_group: Gent
+    rent_group: Lloger    
 booking_rates:
   title: Gestió temporades i preus
   seasons: Temporades
@@ -215,8 +233,12 @@ booking_category_management:
       label: Stock 
     sort_order:
       label: Ordre
+    capacity:
+      label: Capacitat
     deposit:
-      label: Dipòsit               
+      label: Dipòsit     
+    active:
+      label: Actiu          
 booking_extra_management:
   title: Gestió d\'extras
   description: Gestió d\'extras
@@ -252,7 +274,9 @@ booking_item_management:
     calendar:
       label: Calendari
     price_definition:
-      label: Preus         
+      label: Preus
+    active:
+      label: Actiu                
 booking_places_definition_management:
   title: Entrega i recollida
   table:

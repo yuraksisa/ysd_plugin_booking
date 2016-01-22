@@ -69,9 +69,15 @@ module Sinatra
         app.post "/api/booking-category" do
         
           booking_category_request = body_as_json(::Yito::Model::Booking::BookingCategory)
-          booking_category = ::Yito::Model::Booking::BookingCategory.new(booking_category_request)
-          booking_category.save
-       
+          
+          begin
+            booking_category = ::Yito::Model::Booking::BookingCategory.new(booking_category_request)
+            booking_category.save
+          rescue DataMapper::SaveFailureError => error
+            p "Error saving booking category. #{booking_category.inspect} #{booking_category.errors.inspect}"
+            raise error
+          end  
+
           # Return          
           status 200
           content_type :json

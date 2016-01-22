@@ -104,9 +104,28 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         data.booking_catalog = null;
       }
 
-      if ($('#create_category_price').prop('checked')) {
+      if (data.price_definition && data.price_definition.id == '') {
+        data.price_definition = null;
+      }
+
+      if ($('#create_category_calendar').prop('checked')) {
         data.calendar = {'name' : data.code, 'description': data.name};
       }
+
+      if ($('#stock_control').prop('checked')) {
+        data.stock_control = true;
+      }
+      else {
+        data.stock_control = false;
+      }
+
+      if ($('#active').prop('checked')) {
+        data.active = true;
+      }
+      else {
+        data.active = false;
+      }
+
 
       return data;  
       

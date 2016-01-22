@@ -29,7 +29,7 @@ require(['jquery','YSDMemoryDataSource','YSDSelectSelector'],
 
       // Configure weights
       var years = [];
-      for (var idx=<%=first_year-1%>;idx<=<%=current_year%>;idx++) {
+      for (var idx=<%=first_year%>;idx<=<%=current_year%>;idx++) {
         years.push(idx);
       }
       var yearsDataSource = new MemoryDataSource(years);

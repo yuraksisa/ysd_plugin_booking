@@ -30,8 +30,24 @@ booking_settings:
     pickup_return_timetable: Pickup/return timetable
     pickup_return_timetable_out_price: Pickup/return out of time price    
     payment: Enable online payment
+    morning_turns: Morning
+    afternoon_turns: Afternoon 
+    night_turns: Night
+    duration_of_service: Duration of service
+    duration_of_service_extra: Duration of service (extra)
+    duration_of_service_extra_turns: Duration of service (extra turns)    
+    min_children: Min children
+    max_children: Max children 
+    max_children_extra: Max children (extra)
+    min_children: Min adults
+    max_children: Max adults
+    max_children_extra: Max adults (extra)    
     general_group: General
+    pickup_return_group: Pick up and return
     payment_group: Payment
+    turns_group: Turns
+    people_group: People
+    rent_group: Renting
     item_hold_time: Expiration time (in hours)
     payment_cadence: Payment cadence    
 booking_rates:
@@ -427,8 +443,12 @@ booking_category_management:
       label: Stock 
     sort_order:
       label: Order
+    capacity:
+      label: Capacity
     deposit:
       label: Deposit      
+    active:
+      label: Active      
 booking_extra_management:
   title: Extras management
   description: Extras management
@@ -465,6 +485,8 @@ booking_item_management:
       label: Calendar
     price_definition:
       label: Prices
+    active:
+      label: Active       
 booking_places_definition_management:
   title: Pickup and return
   table:

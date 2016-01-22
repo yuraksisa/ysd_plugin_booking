@@ -25,7 +25,7 @@ module Sinatra
     #   - From the default template
     #   - The first catalog
     # 
-    def catalog_template(catalog)
+    def catalog_template(catalog=nil)
     
         booking_js = if catalog
                        ContentManagerSystem::Template.find_by_name(catalog.rates_template_code)
