@@ -1,0 +1,40 @@
+<style type="text/css">
+
+  .booking_menu a:link, .booking_menu a:visited {
+    color: white;
+  }
+
+  .booking_menu a:hover {
+    color: yellow;	
+  }
+
+  .booking_menu {
+
+  }
+
+</style>
+<div class="booking_menu admin_menu smaller_text all-space" style="height:700px">
+  <div>
+      <p class="more_contrast_text" style="color:#fff"><%=t.booking_console.configuration%></p>
+      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/booking/config/general"><%=t.booking_console_configuration.general_configuration%></a></p>
+      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/booking/config/templates"><%=t.booking_console_configuration.templates%></a></p>              
+  </div>
+  <div class="top-space bottom-space">
+      <p class="more_contrast_text"><a href="/admin/booking/booking-categories"><%=t.booking_console_restaurant.table_types%></a></p>	
+  </div>	
+  <div class="top-space bottom-space">
+     <p class="more_contrast_text"><a href="/admin/booking/booking-items"><%=t.booking_console_restaurant.tables%></a></p>
+  </div>
+  <div class="top-space bottom-space">
+     <p class="more_contrast_text"><a href="/admin/simple/booking/bookings"><%=t.booking_console.reservations%></a></p>
+  </div> 
+  <div class="top-space bottom-space"> 
+      <p class="more_contrast_text"><a href="/admin/simple/booking/hourly-occupation"><%=t.booking_console_restaurant.planning%></a></p>
+  </div> 
+  <div class="top-space bottom-space"> 
+      <p class="more_contrast_text"><a href="/admin/restaurant/booking/new"><%=t.booking_console.new_booking%></a></p>
+  </div> 
+  <div class="top-space bottom-space"> 
+      <p class="more_contrast_text"><a href="/admin/booking/summary"><%=t.booking_console.summary%></a></p> 	
+  </div>  
+</div>

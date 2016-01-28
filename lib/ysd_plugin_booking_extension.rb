@@ -17,6 +17,12 @@ module Huasi
     def install(context={})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.mode'},
+        {:value => 'rent',
+         :description => 'Booking mode: rent, restaurant',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.notification_email'},
         {:value => '',
          :description => 'Bookings notification email',
@@ -162,7 +168,6 @@ module Huasi
          :module => :booking}
         )
 
-
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.min_adults'},
         {:value => '',
@@ -199,6 +204,21 @@ module Huasi
          :description => 'Booking max children (extra)',
          :module => :booking}
         )
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.people_resources'},
+        {:value => '',
+         :description => 'Booking people resources',
+         :module => :booking})
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.scheduler_start_time'},
+        {:value => '',
+         :description => 'Booking scheduler start time',
+         :module => :booking})
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.scheduler_finish_time'},
+        {:value => '',
+         :description => 'Booking scheduler finish time',
+         :module => :booking})
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
         {:driver => false,
@@ -366,10 +386,15 @@ module Huasi
         when 'booking_selector_inline'         
           app.partial(:booking_selector_inline, :locals => locals)
         when 'booking_admin_menu'
-          menu_locals = {}
-          menu_locals.store(:booking_activities, 
-            SystemConfiguration::Variable.get_value('booking.activities','false').to_bool)        
-          app.partial(:booking_menu, :locals => menu_locals)              
+          booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
+          if booking_mode == 'rent'
+            menu_locals = {}
+            menu_locals.store(:booking_activities, 
+              SystemConfiguration::Variable.get_value('booking.activities','false').to_bool)        
+            app.partial(:booking_menu, :locals => menu_locals)
+          elsif booking_mode == 'restaurant'
+            app.partial(:booking_menu_restaurant)
+          end              
       end
       
     end

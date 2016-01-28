@@ -122,50 +122,7 @@
                  </span>
                </div>
             </div> 
-            <div class="element_template top-margin">
-                    <%% if (entity.status == 'pending_confirmation') { %>
-                    <button class="form-button green-button element-action-button" id="confirm_booking_button" 
-                      title="<%=t.booking_management.form.confirm_button.label%>" style="width:47%"
-                      data-action-method="POST"
-                      data-action-url="/api/booking/confirm/<%%=entity.id%>"
-                      data-confirm-message="<%=t.booking_management.form.confirm_button.message%>">
-                      <%=t.booking_management.form.confirm_button.label%>
-                    </button>
-                    <button class="form-button red-button element-action-button" id="cancel_booking_button" 
-                      title="<%=t.booking_management.form.cancel_button.label%>" style="width:47%"
-                      data-action-method="POST"
-                      data-action-url="/api/booking/cancel/<%%=entity.id%>"
-                      data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
-                      <%=t.booking_management.form.cancel_button.label%>
-                    </button>                            
-                   <%% } %>
-                   <%% if (entity.status == 'confirmed') {  %>                    
-                   <button class="form-button blue-button element-action-button" id="pickup_booking_button" 
-                      title="<%=t.booking_management.form.pickup_button.label%>" style="width:47%"
-                      data-action-method="POST"
-                      data-action-url="/api/booking/pickup/<%%=entity.id%>"
-                      data-confirm-message="<%=t.booking_management.form.pickup_button.message%>">
-                    <%=t.booking_management.form.pickup_button.label%>
-                   </button>
-                   <button class="form-button red-button element-action-button" id="cancel_booking_button" 
-                      title="<%=t.booking_management.form.cancel_button.label%>" style="width:47%"
-                      data-action-method="POST"
-                      data-action-url="/api/booking/cancel/<%%=entity.id%>"
-                      data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
-                      <%=t.booking_management.form.cancel_button.label%>
-                    </button>                     
-                   <%%  } %>
-                   <%% if (entity.status == 'in_progress') { %>
-                   <button class="form-button black-button element-action-button" id="return_booking_button" 
-                      title="<%=t.booking_management.form.return_button.label%>"  style="width:95%"
-                      data-action-method="POST"
-                      data-action-url="/api/booking/return/<%%=entity.id%>"
-                      data-confirm-message="<%=t.booking_management.form.return_button.message%>">
-                      <%=t.booking_management.form.return_button.label%>
-                   </button>
-                   <%% }%>
-
-            </div>
+            <%= partial :booking_management_workflow %>
         </div>
       
         <div class="grid_6">
@@ -239,69 +196,12 @@
 
      <div class="container_12">
         <div class="grid_6">
-          <form name="customer" class="all-space" style="border:1px solid #EEE">
-            <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.customer_title %></div> 
-            <input type="hidden" name="id" value="<%%=entity.id%>"/>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_name %></span>
-                <span class="entity-fieldvalue">
-                    <input type="text" maxlength="40" size="12" name="customer_name" id="customer_name"
-                      value="<%%=entity.customer_name%>"/>
-                    <input type="text" maxlength="40" size="13" name="customer_surname" id="customer_surname"
-                      value="<%%=entity.customer_surname%>"/>
-                </span>
-              </div>
-            </div>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_phone %></span>
-                <span class="entity-fieldvalue">
-                    <input type="text" maxlength="15" size="12" name="customer_phone" id="customer_phone"
-                      value="<%%=entity.customer_phone%>"/>
-                    <input type="text" maxlength="15" size="13" name="customer_mobile_phone" id="customer_mobile_phone"
-                      value="<%%=entity.customer_mobile_phone%>"/>
-                </span>
-              </div>
-            </div>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_email %></span>
-                <span class="entity-fieldvalue">
-                    <input type="text" maxlength="40" size="26" name="customer_email" id="customer_email"
-                      value="<%%=entity.customer_email%>" style="width:100%"/>
-                </span>
-              </div>
-            </div>
-            <div class="element_template" style="display:none">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_language %></span>
-                <span class="entity-fieldvalue"><%%= entity.customer_language %></span>
-              </div>
-            </div>
-            <div class="navigation-bar bottom-margin">
-              <div class="navigation-bar-crud-buttons right-float right-margin">
-                <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-              </div>
-            </div>             
-          </form>    
+          <%= partial :booking_management_customer %>
         </div>
         <div class="grid_6">
            <div class="left-margin bottom-margin" style="border:1px solid #EEE">
-             <form name="anotations" class="all-space">
-               <input type="hidden" name="id" value="<%%=entity.id%>"/>             
-               <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline"><%= t.booking_management.form.anotations %></div>
-               <div class="formrow top-space bottom-margin">
-                 <textarea name="notes" rows="6" class="fieldcontrol"><%%= entity.notes %></textarea>
-               </div>
-               <div class="navigation-bar bottom-margin">
-                 <div class="navigation-bar-crud-buttons right-float">
-                   <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                 </div>
-               </div>             
-             </form>               
+              <%= partial :booking_management_notes %> 
            </div>     
-
         </div>
 
      </div>
@@ -976,42 +876,8 @@
          <% end %>
          <div id="other_tab"  class="top-margin-1line">
          
-            <div class="element_template">
-              <div class="entity-field">
-               <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.free_access_id %></span>
-               <span class="entity-fieldvalue"><a href="/p/mybooking/<%%=entity.free_access_id%>" target="_blank">/p/mybooking/<%%=entity.free_access_id%></a></span>
-              </div>
-            </div>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.source %></span>
-                <span class="entity-fieldvalue"><%%= entity.source %></span>
-              </div>
-            </div> 
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.created_by_manager %></span>
-                <span class="entity-fieldvalue"><%%= entity.created_by_manager ? '<%= t.booking_management.form.yes_created_by_manager %>' : '<%= t.booking_management.form.no_created_by_manager %>' %></span>
-              </div>
-            </div>             
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.user_agent_browser %></span>
-                <span class="entity-fieldvalue"><%%= entity.user_agent_browser %></span>
-              </div>
-            </div> 
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.user_agent_version %></span>
-                <span class="entity-fieldvalue"><%%= entity.user_agent_version %></span>
-              </div>
-            </div>    
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.user_agent_os %></span>
-                <span class="entity-fieldvalue"><%%= entity.user_agent_platform %></span>
-              </div>
-            </div>                                             
+            <%= partial :booking_management_other_tab %>
+
             <div class="top-margin">
               <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
                                             :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,

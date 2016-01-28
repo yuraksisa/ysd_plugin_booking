@@ -1,0 +1,172 @@
+<%= include('entity-management') %>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_title">
+  <h2 class="entity-title"><%=t.simple_booking_management.form.title%></h2> 
+</script>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_description">
+</script>
+
+<!-- Renders the elements container -->
+<script type="text/tmpl" id="elements_container_template">
+  <table id="elements_table" class="table">
+     <thead class="table-header">
+       <tr>
+         <th class="table-header-title" scope="col" style="width:10%">
+            <%= t.booking_management.table.id %>
+         </th>
+         <th class="table-header-title centered_text" scope="col" style="width:15%">
+            <%= t.simple_booking_management.table.date_from %>
+         </th>
+         <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.booking_management.table.customer %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:8%">
+            <%= t.simple_booking_management.table.number_of_adults %>
+         </th>  
+         <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.simple_booking_management.table.customer_phone %></th>                  
+         <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.booking_management.table.status %></th>  
+         <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.simple_booking_management.table.comments %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:12%">
+            <%= t.booking_management.table.creation_date %>
+         </th>                          
+       </tr>
+     </thead>
+     <tbody id="elements_tbody" class="table-tbody">                  
+     </tbody>
+  </table>
+</script>
+
+<!-- Renders one element in the elements list view -->
+        
+<script type="text/tmpl" id="elements_list_template">
+    <tr class="table-row element-navigation-detail" rel="<%%= index %>" id="element_row_<%%=index%>">
+      <td class="table-cell"><%%= entity.id %></td>
+      <td class="table-cell centered_text"><%%= self.formatDate(entity.date_from, 'dd.MM.yyyy') %>&nbsp;<%%= entity.time_from %></td>
+      <td class="table-cell centered_text"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
+      <td class="table-cell centered_text"><%%= entity.number_of_adults %> </td>
+      <td class="table-cell centered_text"><%%= entity.customer_phone %></td>
+      <td class="table-cell centered_text">
+        <span class="smaller_text <%%=self.model.entityHooks[0].statusClass(entity)%> element-status">
+          <%%= self.model.entityHooks[0].statusDescription[entity.status] %>
+        </span>
+      </td>
+      <td class="table-cell centered_text"><%%= entity.comments %> </td>
+      <td class="table-cell centered_text"><%%= self.formatDate(entity.creation_date) %></td>                              
+    </tr>
+</script>
+
+<!-- Renders one element in the element view (full detailed) -->
+
+<script type="text/tmpl" id="element_template">
+   
+</script>
+
+<!-- Renders the form to edit an element -->
+
+<script type="text/tmpl" id="element_template_form">
+              
+      <div class="element-detail guiblock overflow">
+        <div class="grid_6">
+          <div class="element_template">
+            <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.simple_booking_management.form.id %></span>
+                <span class="entity-fieldvalue"><%%= entity.id %></span>
+            </div>
+          </div>  
+          <div class="element_template">
+            <div class="entity-field">
+               <span class="entity-fieldlabel less_contrast_text"><%= t.simple_booking_management.form.date_from %></span>
+               <span class="entity-fieldvalue">
+                   <%%= self.formatDate(entity.date_from, 'dd.MM.yyyy') %> <% if booking_item_family.time_to_from%> <%%= entity.time_from?' , '+entity.time_from:'' %> <% end %>
+               </span>
+            </div>
+          </div>
+          <div class="element_template">
+            <div class="entity-field">
+               <span class="entity-fieldlabel less_contrast_text"><%= t.simple_booking_management.form.number_of_adults %></span>
+               <span class="entity-fieldvalue">
+                   <%%= entity.number_of_adults %> 
+               </span>
+            </div>
+          </div>          
+        </div>
+        <div class="grid_6">
+          <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.creation_date %></span>
+                <span class="entity-fieldvalue">
+                  <%%= self.formatDate(entity.creation_date,'dd.MM.yyyy')%> 
+                  <span><%%= self.formatDate(entity.creation_date,'HH:mm')%></span>
+                </span>
+              </div>
+           </div>        
+           <div class="element_template">
+            <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.status %></span>
+                <span class="entity-fieldvalue">
+                  <span class="<%%=self.model.entityHooks[0].statusClass(entity)%> element-status">
+                    <%%= self.model.entityHooks[0].statusDescription[entity.status] %>
+                  </span>
+                </span>
+            </div>
+          </div>
+          <%= partial :booking_management_workflow %>
+        </div>  
+      </div>
+
+      <div class="container_12">
+        <div class="grid_6">
+           <%= partial :booking_management_customer %>          
+        </div>
+        <div class="grid_6">
+           <div class="left-margin bottom-margin" style="border:1px solid #EEE">
+              <%= partial :booking_management_notes %> 
+           </div>     
+        </div>        
+      </div>
+
+      <div class="container_12">
+        <div class="grid_6">
+          <div class="bottom-margin overflow" style="border:1px solid #EEE">
+            <div class="left-margin more_contrast_text top-margin bottom-margin" style="text-decoration:underline;"><%= t.booking_management.form.comments %>
+            </div>
+            <div class="element_template bottom-margin">
+              <span class="all-space"><%%= entity.comments %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="top-margin-1line">
+        <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
+          <li class="no-border no-background top-space" style="border:none; backgrond:none">
+              <a name="other_tab" href="#other_tab"><%=t.booking_management.form.other_tab%></a>
+          </li>
+          <li class="no-border no-background top-space" style="border:none; backgrond:none">
+              <a name="audit" href="#audit"><%=t.booking_management.form.audit%></a>
+          </li>                      
+        </ul>
+
+        <div id="content">
+          <div id="other_tab"  class="top-margin-1line">         
+            <%= partial :booking_management_other_tab %>
+          </div>
+          <div id="audit">
+            <div class="top-margin">          
+              <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
+                                            :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
+                                            :edit_element_form_ingroup => edit_element_form_ingroup,
+                                            :new_element_form => new_element_form,
+                                            :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
+                                            :new_element_form_ingroup => new_element_form_ingroup}) %>
+            </div>
+          </div>          
+        </div>
+      </div>
+
+</script>
+
+<%= element_form_extension if defined?element_form_extension %>
+<%= element_extension if defined?element_extension %>
+<%= element_action_extension if defined?element_action_extension %>

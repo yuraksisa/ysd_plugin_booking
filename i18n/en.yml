@@ -15,6 +15,12 @@ booking_settings:
   form:
     title: Booking configuration
     notification_email: Notification email address
+    scheduler_start_time: Scheduler start time
+    scheduler_finish_time: Scheduler end time
+    booking_mode:
+      title: Mode
+      rent: Rent
+      restaurant: Restaurant    
     reservation_starts_with:
       title: The reservations starts selecting
       dates: Dates
@@ -41,7 +47,8 @@ booking_settings:
     max_children_extra: Max children (extra)
     min_children: Min adults
     max_children: Max adults
-    max_children_extra: Max adults (extra)    
+    max_children_extra: Max adults (extra)   
+    people_resources: People resources
     general_group: General
     pickup_return_group: Pick up and return
     payment_group: Payment
@@ -78,6 +85,10 @@ booking_console:
   receipts: Receipts 
   activities: Orders  
   information_requests: Information requests  
+booking_console_restaurant:
+  table_types: Table types
+  tables: Tables   
+  planning: Planning   
 booking_summary:
   title: Booking summary  
 booking_forecast:
@@ -575,3 +586,5 @@ not_assigned_bookings:
     assign: Assign  
     reassign: Reassign  
     all_resources: Show all resources
+hourly_occupation:
+  title: Hourly occupation    

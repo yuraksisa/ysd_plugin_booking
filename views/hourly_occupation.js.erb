@@ -1,0 +1,170 @@
+require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery'], 
+        function(Spreadsheet, EventTarget, $) {
+
+  occupationModel = {
+
+  	 data: {},
+  	 day: new Date().getDate(),
+     month:new Date().getMonth()+1,
+     year:new Date().getFullYear(),
+     lastMonthDay: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate(),
+   
+     prevDay: function() {
+       if (this.day == 1) {
+       	 if (this.month == 1) {
+       	   this.day = 31;
+       	   this.month = 12;
+       	   this.year--;	
+       	 }
+       	 else {
+           this.day = new Date(this.year, this.month -1, 0).getDay();
+           this.lastMonthDay = this.day;
+           this.month--;         
+       	 }
+       }
+       else {
+         this.day--;
+       }
+       occupationView.update('day_navigation');
+     },
+
+     nextDay: function() {
+       if (this.day == this.lastMonthDay) {
+         if (this.month == 12) {
+         	this.day = 1;
+         	this.month = 1;
+         	this.year++;
+         }
+         else {
+         	this.day = 1;
+         	this.month++;
+         }
+       }
+       else {
+       	 this.day++;
+       }
+
+       occupationView.update('day_navigation');
+     },
+
+     loadData : function() {
+       $.ajax({
+          type: 'GET',
+          url: '/api/simple/booking/hourly-occupation?date=' + this.year + '-' + this.month + '-' + this.day,
+          contentType: 'application/json; charset=utf-8',
+          dataType: 'json',
+          success: function(data, textStatus, jqXHR) {
+           occupationModel.data = data;
+           occupationView.update('data_available');
+          }
+       });
+     }
+
+  };
+
+  occupationController = {
+
+    prevDayClick: function() {
+       occupationModel.prevDay();
+    },
+
+    nextDayClick: function() {
+       occupationModel.nextDay();
+    } 
+
+  };
+
+  occupationView = {
+    spreadsheet : null,
+
+    init : function() {
+      $('#day').html(occupationModel.day);
+      $('#month').html(occupationModel.month);
+      $('#year').html(occupationModel.year);
+      $('#prev').bind('click', function() {
+         occupationController.prevDayClick();
+      });
+      $('#next').bind('click', function() {
+         occupationController.nextDayClick();
+      });
+      occupationModel.loadData();
+    },
+
+    buildSpreadsheet: function() { // Builds the spreadsheet with the booking items
+
+/*
+      var rows = Object.keys(occupationModel.data);
+      var rowCount = rows.length;
+      var cols = Object.keys(occupationModel.data[Object.keys(occupationModel.data)[0]]);
+      var colCount = cols.length;
+*/
+      var cols = Object.keys(occupationModel.data);
+      var colCount = cols.length;
+      var rows = Object.keys(occupationModel.data[Object.keys(occupationModel.data)[0]]);
+      var rowCount = rows.length;
+      var rowsId = [];
+      for (idx=0;idx<rows.length;idx++) {
+      	rowsId[idx] = rows[idx].replace(':','');
+      }
+
+      $('#occupation_table').html('');
+      spreadsheet = new Spreadsheet(
+      	  "occupation_table",  
+          rowsId,                                    // rows
+          cols,                                    // columns
+          rowCount,                                // number of rows (items.count)
+          "Ocupación",                             // 0-0 title
+          "occupation",                             // input prefix
+          5,                                       // input size
+          "centered_text all-margin",             // class
+          true,                                    // readonly
+          rows);                                   // row description  
+                           
+    },
+
+    loadBookings: function() { // Display the bookings and the spreadsheet
+
+      this.buildSpreadsheet();
+
+      for (category in occupationModel.data) {
+      	 for (hour in occupationModel.data[category]) {
+      	 	var control = $('#\\[occupation\\]\\['+hour.replace(':','')+'\\]\\['+category+'\\]');
+      	 	control.val(occupationModel.data[category][hour]);
+            var occupation = eval(occupationModel.data[category][hour]);
+            if (occupation >= 1) {
+              $(control).css('background-color', 'red');
+            }
+            else if (occupation >= 0.75) {
+              $(control).css('background-color', 'orange');
+            }
+            else if (occupation > 0) {
+              $(control).css('background-color', 'yellow');
+            }
+      	 }
+      }
+
+    },
+
+    update: function(event, data) {
+
+      switch (event) {
+         case 'day_navigation':
+           $('#day').html(occupationModel.day);
+           $('#month').html(occupationModel.month);
+           $('#year').html(occupationModel.year);     
+           occupationModel.loadData();     
+           break;
+
+         case 'data_available':
+           this.buildSpreadsheet();
+           this.loadBookings();
+           break;
+       }
+   }
+
+
+  };
+
+  occupationView.init();
+
+});

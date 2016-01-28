@@ -44,6 +44,12 @@ booking_settings:
   form:
     title: Configuración General
     notification_email: Email de notificación
+    scheduler_start_time: Hora de inicio planificación
+    scheduler_finish_time: Hora de fin planificación    
+    booking_mode:
+      title: Modo
+      rent: Alquiler
+      restaurant: Restaurante       
     reservation_starts_with:
       title: La reserva empieza seleccionando
       dates: Las fechas
@@ -70,7 +76,8 @@ booking_settings:
     max_children_extra: Número máximo de niños (extra)
     min_adults: Número mínimo de adultos
     max_adults: Número máximo de adultos
-    max_adults_extra: Número máximo de adultos (extra)        
+    max_adults_extra: Número máximo de adultos (extra)
+    people_resources: Recursos para los clientes        
     general_group: General
     pickup_return_group: Entrega y recogida    
     payment_group: Pagos
@@ -124,6 +131,10 @@ booking_console:
   receipts: Cobros  
   activities: Pedidos actividades
   information_requests: Solicitudes información
+booking_console_restaurant:
+  table_types: Tipos de mesa 
+  tables: Mesas
+  planning: Planning  
 booking_summary:
   title: Resumen reservas
 booking_forecast:
@@ -168,6 +179,7 @@ new_booking_restaurant:
   choose_item: Fecha, hora y número de personas 
   complete_booking: Completar la reserva
   date_mandatory: Fecha obligatoria
+  time_mandatory: Hora obligatoria
   people_mandatory: Personas obligatorio
 new_booking:
   title: Reserva
@@ -381,7 +393,7 @@ booking_management:
   description: <p>Consultar las reservas.</p>
   table:
     id: Id
-    creation_date: Fecha reserva
+    creation_date: Fecha recepción
     customer: Cliente
     status: Estado
     payment_status: Pago
@@ -428,7 +440,7 @@ booking_management:
     force_allow_payment: Pago online forzado por el gestor
     expired: Excedido tiempo pago depósito
     id: Localizador reserva
-    creation_date: Fecha reserva
+    creation_date: Reserva registrada
     status: Estado
     source: Origen
     status_action:
@@ -543,6 +555,7 @@ booking_management:
     user_agent_version: Versión
     user_agent_os: Sistema Operativo
     new_charge: Registrar pago
+    audit: Auditoría
   charge_form:
     title: Cobro
     date: Fecha 
@@ -551,6 +564,17 @@ booking_management:
     bank_transfer: Transferencia bancaria
     cash: Efectivo
     done: Cobro registrado
+simple_booking_management:
+   table:
+     date_from: Fecha y hora reserva
+     number_of_adults: Personas
+     comments: Comentarios
+     customer_phone: Teléfono
+   form:
+     title: Gestión de reservas
+     id: Número reserva
+     date_from: Fecha y hora reserva
+     number_of_adults: Personas
 catalog_management:
   table:
     code: Código
@@ -673,7 +697,7 @@ booking_places_management:
 booking:
   days: !!pl
     1: 1 día
-    n: \%1 días
+    n: "%1 días"
   title: Reserva %1
   expired: Excedido el tiempo para realizar depósito/pago
   id: Su identificador de reserva es <strong>%1</strong>. <span class="less_contrast_text smaller_text">Use su identificador de reserva en todas las comunicaciones.</span>
@@ -713,6 +737,10 @@ booking:
     in_progress: En progreso
     done: Finalizada
     cancelled: Cancelada
+restaurant_booking:
+  number_of_people: !!pl
+    1: 1 persona
+    n: "%1 personas"
 bookings_planning:
   title: Planning de recursos 
 not_assigned_bookings:
@@ -733,3 +761,5 @@ not_assigned_bookings:
     all_resources: Mostrar todos los recursos       
 bookings_scheduler:
   title: Agenda    
+hourly_occupation:
+  title: Ocupación por horas

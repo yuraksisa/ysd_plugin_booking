@@ -15,6 +15,12 @@ booking_settings:
   form:
     title: Configuració sistema de reserves
     notification_email: Email de notificació
+    scheduler_start_time: Hora d\'inici planificació
+    scheduler_finish_time: Hora de fi planificació    
+    booking_mode:
+      title: Mode
+      rent: Lloger
+      restaurant: Restaurant
     reservation_starts_with:
       title: La reserva comença escollint
       dates: Les dates
@@ -41,6 +47,7 @@ booking_settings:
     min_children: Nombre minim d\'adults
     max_children: Nombre màxim de d\'adults (extra) 
     max_children_extra: Nombre màxim de d\'adults (extra)  
+    people_resources: Recursos pels clients
     general_group: General
     pickup_return_group: Entrega y recollida
     payment_group: Pagament    
@@ -74,7 +81,11 @@ booking_console:
   timetables: Horaris  
   receipts: Cobraments
   activities: Comandes  
-  information_requests: Solicituts informació  
+  information_requests: Solicituts informació
+booking_console_restaurant:
+  table_types: Tipus de taula 
+  tables: Taules  
+  planning: Planning
 booking_summary:
   title: Resum reserves 
 booking_forecast:
@@ -361,4 +372,6 @@ not_assigned_bookings:
   form:  
     assign: Assignar
     reassign: Reassignar
-    all_resources: Mostrar tots els recursos    
+    all_resources: Mostrar tots els recursos
+hourly_occupation:
+  title: Ocupació per hores        

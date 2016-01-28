@@ -314,6 +314,57 @@ module Sinatra
         end
 
         #
+        # Bookings scheduler
+        #
+        app.get '/api/booking/scheduler', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          from = Time.at(params['start'].to_i)
+          to = Time.at(params['end'].to_i)
+
+          condition = Conditions::JoinComparison.new('$and',
+           [Conditions::Comparison.new('booking_line.booking.status', '$ne', :cancelled),
+            Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$lte', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$gte', from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$lte', to),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$gte', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new('booking_line.booking.date_from','$eq', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to','$eq', to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new('booking_line.booking.date_from', '$gte', from),
+                  Conditions::Comparison.new('booking_line.booking.date_to', '$lte', to)])               
+              ]
+            ),
+            ]
+          )
+
+          bookings = condition.build_datamapper(BookingDataSystem::BookingLineResource).all(
+             ).map do |booking_line_resource|
+            booking = booking_line_resource.booking_line.booking
+            start_str = "#{booking.date_from.strftime('%Y-%m-%d')}T#{booking.time_from}:00"
+            end_str = "#{booking.date_to.strftime('%Y-%m-%d')}T#{booking.time_to}:00"
+            {:id => booking.id,
+             :title => "#ID: #{booking.id} \n #{booking.customer_name.upcase} #{booking.customer_surname.upcase} (#{booking.number_of_adults}) \n #{(booking.customer_phone.nil? or booking.customer_phone.empty?)? booking.customer_mobile_phone : booking.customer_phone}",
+             :start => start_str,
+             :end => end_str,
+             :allDay => false,
+             :url => "/admin/simple/booking/bookings/#{booking.id}",
+             :editable => false,
+             :backgroundColor => (booking.status==:confirmed)? 'rgb(41, 158, 69)' : (booking.status==:in_progress)? 'rgb(13, 124, 226)' : (booking.status == :pending_confirmation)? 'rgb(241, 248, 69)' : 'rgb(0,0,0)',
+             :textColor => (booking.status == :pending_confirmation)? 'black' : 'white'}
+          end
+
+          bookings.to_json
+
+        end
+
+        #
         # Bookings (planning)
         #
         app.get '/api/booking/planning', :allowed_usergroups => ['booking_manager', 'staff'] do

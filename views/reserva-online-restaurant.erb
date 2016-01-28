@@ -26,15 +26,16 @@
       <!-- Tab 1 Date, hour and number of person -->
 
       <div id="item-selection" class="bottom-margin">
-        <form id="form-search-item" name="form-search-item" class="guiblock">
-          <div class="container_12">
+        <form id="form-search-item" name="form-search-item">
+          <div class="container_12 guiblock">
             <div class="grid_4">
               <div class="formrow">
                 <div id="datefrom"></div>
+                <div id="error_date"></div>
               </div>
             </div>
             <div class="grid_4">
-              <div class="formrow" style="padding-right: 30px">                              
+              <div class="formrow" style="padding-right: 30px">
                 <label class="fieldtitle" style="text-align:center">COMIDA</label>
                 <div>
                 <% afternoon_turns.each do |item| %>
@@ -51,6 +52,7 @@
                   </div>
                 <% end %>
                 </div> 
+                <div id="error_time"></div>
               </div>
             </div>
             <div class="grid_4">
@@ -62,15 +64,55 @@
                   <input type="radio" name="number_of_adults" value="<%= item %>"><%=item%></input>
                   </div>
                 <% end %>
-                </div>                            
+                </div>
+                <div id="error_number_of_adults"></div>                            
               </div>
             </div>
           </div>
+
+          <div class="top-margin-1line top-space-1line top-border-nosolid">
+            <fieldset>
+              <input type="submit" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
+            </fieldset>
+          </div>
+
         </form>        
       </div>
 
       <!-- Tab 2 Client details -->
-      <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
+      <form id="form-reservation" name="form-reservation" class="top-space bottom-space bottom-margin" method="POST" style="display:none">
+
+        <div class="formrow">
+          <label id="label_customer_email" for="booking[customer_name]" class="fieldtitle"><%=t.new_booking.customer_name.label%> *</label>
+          <input type="text" name="booking[customer_name]" id="booking[customer_name]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_name.placeholder%>"/>
+        </div>
+        <div class="formrow">
+          <label id="label_customer_surname" for="booking[customer_surname]" class="fieldtitle"><%=t.new_booking.customer_surname.label%> *</label>
+          <input type="text" name="booking[customer_surname]" id="booking[customer_surname]" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_surname.placeholder%>"/>            
+        </div>
+        <div class="formrow">
+          <label id="label_customer_email" for="booking[customer_email]" class="fieldtitle"><%=t.new_booking.customer_email.label%> *</label>
+          <input type="text" name="booking[customer_email]" id="booking[customer_email]" class="fieldcontrol" placeholder="<%=t.new_booking.customer_email.placeholder%>" maxlength="40"/>
+        </div>
+        <div class="formrow">
+          <label id="label_customer_phone" for="booking[customer_phone]" class="fieldtitle"><%=t.new_booking.customer_phone.label%> *</label>
+          <input type="text" name="booking[customer_phone]" id="booking[customer_phone]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_booking.customer_phone.placeholder%>"/>      
+        </div>
+
+        <div class="formrow">
+          <label id="label_comments" for="booking[comments]" class="fieldtitle"><%=t.new_booking.comments.label%></label>
+          <textarea id="booking[comments]" name="booking[comments]" class="fieldcontrol" rows="10" placeholder="<%=t.new_booking.comments.placeholder%>"></textarea>
+        </div>        
+        <p class="form-reservation-right-column"> <span id="booking_comments_length"></span> <%=t.available_chars%></p>
+
+        <div style="text-align:center">
+          <div style="display:inline-block">              
+            <button type="submit" id="button_confirmar_reserva" class="form-button botones" >
+              <span><%=t.new_booking.confirm_line1%></span><br/>
+              <span><%=t.new_booking.confirm_line2%></span>
+            </button>
+          </div>
+        </div>
 
       </form>      
 

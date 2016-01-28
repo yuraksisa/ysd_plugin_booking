@@ -2,6 +2,7 @@
   <h2 class="entity-title"><%=t.bookings_scheduler.title%></h2>
 </div>
 <div class="admin_content_wrapper">
+  <% if booking_item %>
   <div class="container_12">
     <div class="guiblock">
       <div class="all-space overflow">  	
@@ -18,24 +19,30 @@
       </div>  
     </div>
   </div>
-
-  <div id="calendar" class="top-margin "></div>
+  <% end %>
+  <div id="calendar" class="top-margin ">
+  </div>
 </div>
 
 <script type="text/javascript">
 
   $(document).ready(function() {
-		$('#calendar').fullCalendar({
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
-			},
-			year: <%=year%>,
-			month: <%=month%>,
-			editable: true,
-			lang: '<%=session[:locale]%>',
-			events: '/api/booking/scheduler/<%=booking_item.reference%>',
+    $('#calendar').fullCalendar({
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
+      year: <%=year%>,
+      month: <%=month%>,
+      editable: true,
+      eventLimit: true,
+      lang: '<%=session[:locale]%>',
+      <%if booking_item.nil?%>
+      events: '/api/booking/scheduler',
+      <%else%>
+      events: '/api/booking/scheduler/<%=booking_item.reference%>',
+      <%end%>
         firstDay: 1,
         monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
         monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
@@ -47,14 +54,14 @@
            week: 'semana',
            day: 'día'
         },      
-			eventClick: function(event) {
+      eventClick: function(event) {
                if (event.url) {
                  window.open(event.url);
                  return false;
                }
             }
-		});
-	});
+    });
+  });
 
 </script>
 

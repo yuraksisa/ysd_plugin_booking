@@ -48,6 +48,11 @@ module Sinatra
 
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ],
                     :pickup_return_timetables => pickup_return_timetables,
+                    :booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
+                    :booking_modes => {
+                      :rent => t.booking_settings.form.booking_mode.rent,
+                      :restaurant => t.booking_settings.form.booking_mode.restaurant
+                    },
                     :reservation_starts_with => {
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
                        :categories => t.booking_settings.form.reservation_starts_with.categories,
@@ -108,6 +113,16 @@ module Sinatra
             status 404
           end
 
+        end
+
+        #
+        # Bookings scheduler
+        #
+        app.get '/admin/booking/scheduler/?*', :allowed_usergroups => ['booking_manager', 'staff'] do
+          today = DateTime.now
+          year = params[:year] || today.year
+          month = params[:month] || (today.month - 1)
+          load_page(:bookings_scheduler, :locals => {:booking_item => nil, :year => year, :month => month})
         end
 
         #

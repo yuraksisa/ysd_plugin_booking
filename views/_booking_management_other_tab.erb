@@ -1,0 +1,36 @@
+            <div class="element_template">
+              <div class="entity-field">
+               <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.free_access_id %></span>
+               <span class="entity-fieldvalue"><a href="/p/mybooking/<%%=entity.free_access_id%>" target="_blank">/p/mybooking/<%%=entity.free_access_id%></a></span>
+              </div>
+            </div>
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.source %></span>
+                <span class="entity-fieldvalue"><%%= entity.source %></span>
+              </div>
+            </div> 
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.created_by_manager %></span>
+                <span class="entity-fieldvalue"><%%= entity.created_by_manager ? '<%= t.booking_management.form.yes_created_by_manager %>' : '<%= t.booking_management.form.no_created_by_manager %>' %></span>
+              </div>
+            </div>             
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.user_agent_browser %></span>
+                <span class="entity-fieldvalue"><%%= entity.user_agent_browser %></span>
+              </div>
+            </div> 
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.user_agent_version %></span>
+                <span class="entity-fieldvalue"><%%= entity.user_agent_version %></span>
+              </div>
+            </div>    
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.user_agent_os %></span>
+                <span class="entity-fieldvalue"><%%= entity.user_agent_platform %></span>
+              </div>
+            </div>  

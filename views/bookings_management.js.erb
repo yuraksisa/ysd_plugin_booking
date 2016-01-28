@@ -146,6 +146,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
     this.configForm = function(entity) {
 
+      $('.delete-entity-button').hide();
       $("#content > div").hide(); // Initially hide all content
       $("#content_tabs li:first").attr("id","current"); // Activate first tab
       $("#content > div:first").fadeIn(); // Show first tab content
