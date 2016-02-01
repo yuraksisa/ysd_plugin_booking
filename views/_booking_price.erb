@@ -2,7 +2,7 @@
            <div>
              <div class="top-space bottom-space bottom-margin bottom-separator">
                <div class="centered_text">
-                  <span class="uppercase_text less_contrast_text"><%=t.booking.total.upcase%></span>
+                  <span class="uppercase_text less_contrast_text"><%=t.booking.total%></span>
                </div>
                <div class="centered_text">
                   <span class="more_contrast_text"><%= "%.2f" % booking.total_cost%> €</span>
@@ -11,7 +11,7 @@
              <% if booking.status == :confirmed %>
              <div class="bottom-space bottom-margin bottom-separator">              
                <div class="centered_text">
-                  <span class="uppercase_text less_contrast_text"><%=t.booking.paid.upcase%></span>
+                  <span class="uppercase_text less_contrast_text"><%=t.booking.paid%></span>
                </div>
                <div class="centered_text">
                   <span class="more_contrast_text"><%= "%.2f" % booking.total_paid%> €</span>
@@ -21,7 +21,7 @@
              <% if booking.total_pending > 0 %>
              <div class="bottom-space bottom-margin bottom-separator">              
                <div class="centered_text">
-                  <span class="uppercase_text less_contrast_text"><%=t.booking.pending.upcase%></span>
+                  <span class="uppercase_text less_contrast_text"><%=t.booking.pending%></span>
                </div>
                <div class="centered_text">
                   <span class="more_contrast_text"><%= "%.2f" % booking.total_pending%> €</span>

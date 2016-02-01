@@ -85,6 +85,8 @@ module Sinatra
             locals.store(:booking_allow_custom_pickup_return_place,
               SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
 
+            locals.store(:booking, nil)
+
             booking_js = catalog_template(catalog)
 
             if booking_js and not booking_js.text.empty?

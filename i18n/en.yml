@@ -318,10 +318,8 @@ new_driving_booking:
   driver_address_zip:
     label: Postal code
     placeholder: postal code 
-  pickup_place:
-    required: Pickup place is required
-  return_place:
-    required: Return place is required        
+  pickup_place_required: Pickup place is required
+  return_place_required: Return place is required        
 booking_management:
   title: Booking management
   description: <p>Manage bookings.</p>

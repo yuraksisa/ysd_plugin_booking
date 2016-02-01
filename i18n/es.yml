@@ -108,19 +108,22 @@ booking_rates_summary:
       n: \%1 días
     edit_prices: Editar precios    
 booking_console:
-  title: Reservas
+  title: Entregas y recogidas
   configuration: Configuración
   products: Productos
   rates: Tarifas
-  bookings: Reservas
+  bookings: Reservas alquiler
+  activities: Reservas actividades
+  crm: CRM
   finances: Finanzas
   statistics: Estadísticas
+  listing: Listados
   utils: Utilidades
   catalogs: Catálogos
   categories: Categorías
   extras: Extras
   items: Productos
-  rates: Precios
+  prices: Precios
   reservations: Reservas
   planning: Planning    
   period: Período
@@ -131,7 +134,7 @@ booking_console:
   summary: Resumen
   places: Entrega y recogida
   create_rates: Preparar tarifas
-  adjust_prices: Modificación precios    
+  adjust_prices: Modificación masiva    
   calendars: Calendarios
   timetables: Horarios
   receipts: Cobros  
@@ -378,10 +381,8 @@ new_driving_booking:
   driver_address_zip:
     label: Código postal
     placeholder: código postal  
-  pickup_place:
-    required: El lugar de entrega es obligatorio
-  return_place:
-    required: El lugar de devolución es obligatorio
+  pickup_place_required: El lugar de entrega es obligatorio
+  return_place_required: El lugar de devolución es obligatorio
 booking_management_edit:
   title: Modificación entrega/recogida
   description: >
@@ -782,3 +783,17 @@ booking_customers:
     email: Email
     address: Dirección
     number_of_reservations: Reservas
+booking_dashboard:
+  title: Panel de control
+  summary: Resumen
+  pending_confirmation_reservations: Reservas pendientes de confirmación
+  confirmed_reservations: Reservas confirmadas
+  new_request: Nuevas solicitudes
+  reservations_by_day: Reservas por día
+  reservations_by_category: Reservas por categoría
+  reservations_by_state: Reservas por estado
+  last_30_days_reservations: Reservas recibidas los últimos 30 días
+  day_work: Entregas/Devoluciones del día
+  delivery: Entregas del día
+  transit: En curso
+  return: Devoluciones del día

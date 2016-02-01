@@ -33,26 +33,39 @@
         <li><a href='/admin/booking/booking-extras'><%=t.booking_console.extras%></a></li>        
       </ul>    
    </li>
-   <li class='<%if ['/admin/calendar/calendars'].index(request.path)%>active<%end%>'><a href='/admin/calendar/calendars'><%=t.booking_console.calendars%></a></li>   
+   <li style="display:none" class='<%if ['/admin/calendar/calendars'].index(request.path)%>active<%end%>'><a href='/admin/calendar/calendars'><%=t.booking_console.calendars%></a></li>   
    <li class='<%if ['/admin/rates/season-defs','/admin/rates/factor-defs','/admin/rates/price-defs','/admin/rates/adjust-prices'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.rates%></a>
       <ul>
         <li><a href='/admin/rates/season-defs'><%=t.rates_console.seasons%></a></li>
         <li><a href='/admin/rates/factor-defs'><%=t.rates_console.factors%></a></li>
-        <li><a href='/admin/rates/price-defs'><%=t.booking_console.rates%></a></li>
+        <li><a href='/admin/rates/price-defs'><%=t.booking_console.prices%></a></li>
         <li><a href='/admin/rates/adjust-prices'><%=t.booking_console.adjust_prices%></a></li>        
       </ul>    
    </li>      
-   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/order/orders','/admin/order/information-requests','/admin/booking/planning'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
+   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
       <ul>
         <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>           
         <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>
-        <% if booking_activities %>
-        <li><a href='/admin/order/orders'><%=t.booking_console.reservations%></a></li>
-        <% end %>
-        <li><a href='/admin/order/information-requests'><%=t.booking_console.information_requests%></a></li>  
         <li><a href='/admin/booking/planning'><%=t.booking_console.planning%></a></li>                                   
       </ul>    
    </li>   
+   <% if booking_activities %>
+   <li class='<%if ['/admin/order/orders'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.activities%></a>
+      <ul>   
+        <li><a href='/admin/order/orders'><%=t.booking_console.reservations%></a></li>
+      </ul>
+   </li>
+   <% end %>
+   <li class='<%if ['/admin/order/information-requests'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.crm%></a>
+      <ul>
+        <li><a href='/admin/order/information-requests'><%=t.booking_console.information_requests%></a></li>  
+      </ul>
+   </li>
+   <li class='<%if ['/admin/booking/console'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.listing%></a>
+      <ul>
+        <li><a href='/admin/booking/console'><%=t.booking_console.title%></a></li>           
+      </ul>    
+   </li>
    <li class='<%if ['/admin/charges'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
       <ul>
         <li><a href='/admin/charges'><%=t.booking_console.receipts%></a></li>           
