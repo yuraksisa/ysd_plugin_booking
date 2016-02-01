@@ -110,13 +110,19 @@ booking_rates_summary:
 booking_console:
   title: Reservas
   configuration: Configuración
-  catalogs: Catálogos
-  categories: Productos alquiler
-  extras: Extras
-  items: Recursos alquiler
+  products: Productos
   rates: Tarifas
+  bookings: Reservas
+  finances: Finanzas
+  statistics: Estadísticas
+  utils: Utilidades
+  catalogs: Catálogos
+  categories: Categorías
+  extras: Extras
+  items: Productos
+  rates: Precios
   reservations: Reservas
-  planning: Planning de recursos   
+  planning: Planning    
   period: Período
   requested: Solicitudes
   confirmed: Confirmadas
@@ -125,7 +131,7 @@ booking_console:
   summary: Resumen
   places: Entrega y recogida
   create_rates: Preparar tarifas
-  adjust_prices: Ajustar precios    
+  adjust_prices: Modificación precios    
   calendars: Calendarios
   timetables: Horarios
   receipts: Cobros  
@@ -599,7 +605,7 @@ booking_category_management:
     prices: Precios  
     scheduler: Agenda
   form:
-    title: Productos
+    title: Categorías
     code:
       label: Código
     name:
@@ -651,7 +657,7 @@ booking_item_management:
     calendar: Gestió del calendario
     prices: Gestión de precios    
   form:
-    title: Recursos
+    title: Productos
     reference: 
       label: Referencia
     category:
@@ -763,3 +769,16 @@ bookings_scheduler:
   title: Agenda    
 hourly_occupation:
   title: Ocupación por horas
+booking_customers:
+  title: Nueva reserva
+  new_reservation: Nueva reserva  
+  form:
+    search: Buscar cliente
+    search_button: Buscar
+    not_found: No se han encontrado reservas para el cliente
+  table:
+    name: Nombre
+    phone: Teléfono
+    email: Email
+    address: Dirección
+    number_of_reservations: Reservas

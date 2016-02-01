@@ -1,0 +1,59 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_customers.title%></h2>
+</div>
+<div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000">
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">  
+      <form name="search" class="top-margin-1line bottom-space-1line" action="/admin/booking/customers" method="POST">
+        <input type="text" id="search" name="search" maxlength="20" placeholder="<%=t.booking_customers.form.search%>"/>
+        <input type="submit" id="create_rates_button" class="form-button search-entity-button" value="<%=t.booking_customers.form.search_button%>"/>
+      </form>
+    </div>
+  </div>
+  <% if @bookings and @bookings.size > 0%>
+  <div class="container_12">
+    <div class="grid_12">
+      <p><a href="/admin/booking/new"><%=t.booking_customers.new_reservation%></a></p>      
+      <table id="elements_table" class="table">
+        <thead class="table-header">
+          <tr>
+             <th class="table-header-title" scope="col" style="width:25%"><%= t.booking_management.table.customer %></th>
+             <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_customers.table.phone %></th>
+             <th class="table-header-title" scope="col" style="width:15%"><%= t.booking_customers.table.email %></th>             
+             <th class="table-header-title" scope="col" style="width:5%"><%= t.booking_customers.table.number_of_reservations %></th>
+             <th class="table-header-title" scope="col" style="width:10%"></th>
+             <th class="table-header-title" scope="col" style="width:35%"></th>
+          </tr>
+        </thead>
+        <tbody id="elements_tbody" class="table-tbody">             
+          <% @bookings.each do |booking| %>
+            <tr class="table-row">
+              <td class="table-cell"><%= booking.customer_surname %>, <%= booking.customer_name %></td>
+              <td class="table-cell"><%= booking.customer_phone %></td>
+              <td class="table-cell"><%= booking.customer_email %></td>
+              <td class="table-cell centered_text"><%= booking.num_of_reservations%></td>
+              <td class="table-cell">
+                <a href="/admin/booking/bookings?search=<%=URI.escape(booking.customer_phone, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))%>" target="_blank">ver reservas</a>
+              </td>
+              <td class="table-cell">  
+                <form name="new_booking_copying_data" action="/admin/booking/new" method="POST">
+                   <input type="hidden" name="customer_surname" value="<%=booking.customer_surname%>"/>
+                   <input type="hidden" name="customer_name" value="<%=booking.customer_name%>"/>
+                   <input type="hidden" name="customer_phone" value="<%=booking.customer_phone%>"/>
+                   <input type="hidden" name="customer_email" value="<%=booking.customer_email%>"/>
+                   <input type="submit" id="new_booking" class="form-button blue-button" value="Nueva reserva copiando datos"/>                  
+                </form>
+              </td>
+            </tr> 
+          <% end %>
+        </tbody>
+      </table>  
+    </div>
+  </div>
+  <% elsif request.request_method == 'POST' %>
+  <p><%=t.booking_customers.form.not_found%></p>
+  <p><a href="/admin/booking/new"><%=t.booking_customers.new_reservation%></a></p>
+  <% end %>
+</div>

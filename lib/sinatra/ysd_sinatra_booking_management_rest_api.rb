@@ -482,13 +482,15 @@ module Sinatra
                               request.body.rewind
                               request.body.read
                             end
-              conditions = Conditions::JoinComparison.new('$or', 
-                              [Conditions::Comparison.new(:id, '$eq', search_text.to_i),
-                               Conditions::Comparison.new(:customer_surname, '$like', "%#{search_text}%"),
-                               Conditions::Comparison.new(:customer_email, '$eq', search_text)])
+
+              #conditions = Conditions::JoinComparison.new('$or', 
+              #                [Conditions::Comparison.new(:id, '$eq', search_text.to_i),
+              #                 Conditions::Comparison.new(:customer_surname, '$like', "%#{search_text}%"),
+              #                 Conditions::Comparison.new(:customer_email, '$eq', search_text)])
             
-              total = conditions.build_datamapper(BookingDataSystem::Booking).all.count 
-              data = conditions.build_datamapper(BookingDataSystem::Booking).all(offset_order_query) 
+              #total = conditions.build_datamapper(BookingDataSystem::Booking).all.count 
+              #data = conditions.build_datamapper(BookingDataSystem::Booking).all(offset_order_query) 
+              total, data = BookingDataSystem::Booking.text_search(search_text,offset_order_query)
             else
               data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
             end

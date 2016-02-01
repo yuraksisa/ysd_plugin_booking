@@ -149,13 +149,19 @@ module Sinatra
         #
         # Create new booking (administation)
         #
-        ['/admin/booking/new/:booking_catalog_code', '/admin/booking/new'].each do |path|
-          app.get path, :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.route :get, :post, ['/admin/booking/new/:booking_catalog_code', '/admin/booking/new'], :allowed_usergroups => ['booking_manager', 'staff'] do
 
             catalog = request_catalog
 
             locals = {}
 
+            booking = if params[:customer_name] and params[:customer_surname] and
+                         params[:customer_phone] and params[:customer_email]
+                        BookingDataSystem::Booking.first_customer_booking(params)
+                      else
+                        nil
+                      end 
+          
             locals.store(:admin_mode, true)
             locals.store(:confirm_booking_url, '/api/booking-from-manager')
 
@@ -183,6 +189,8 @@ module Sinatra
             locals.store(:booking_allow_custom_pickup_return_place,
               SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
 
+            locals.store(:booking, booking)
+
             booking_js = catalog_template(catalog)
 
             if booking_js and not booking_js.text.empty?
@@ -191,7 +199,6 @@ module Sinatra
                  
             load_page('reserva-online'.to_sym, :locals => locals)
           
-          end
         end
 
         #

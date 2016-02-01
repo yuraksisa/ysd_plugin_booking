@@ -40,6 +40,12 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       $('.new-entity-button').hide();
     }
 
+    this.onProcessSearch = function() {
+      <% if params[:search] %>
+      $('input[name=search]').val('<%=params[:search]%>');
+      <% end %>
+    }
+
     this.onEdit = function(entity) {
 
        this.configForm(entity);

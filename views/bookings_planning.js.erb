@@ -148,9 +148,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
             from = booking.date_from.getDate();
             if (booking.date_to.getMonth() != booking.date_from.getMonth()) {
               if (booking.date_from.getMonth()+1 == planningModel.month) {
-                var d = new Date();
-                d.setFullYear(booking.date_to.getYear(), booking.date_to.getMonth() + 1, 0);
-                to = d.getDate();
+                to = new Date(booking.date_from.getFullYear(), booking.date_from.getMonth() +1,0).getDate();
               }
               else {
                 from = 1;

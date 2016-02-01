@@ -13,54 +13,72 @@
   }
 
 </style>
-<div class="booking_menu admin_menu smaller_text all-space">
-  <div>
-      <p class="more_contrast_text"><a href="/admin/booking/config"><%=t.booking_console.configuration%></a></p>
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/booking/config/general"><%=t.booking_console_configuration.general_configuration%></a></p>
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/booking/config/payment"><%=t.booking_console_configuration.payment%></a></p>
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/booking/config/templates"><%=t.booking_console_configuration.templates%></a></p> 
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/booking/booking-extras"><%=t.booking_console.extras%></a></p>  
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/rates/season-defs"><%=t.rates_console.seasons%></a></p>
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/rates/factor-defs"><%=t.rates_console.factors%></a></p>
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/booking/booking-place-defs"><%=t.booking_console.places%></a></p>
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/rates/price-defs"><%=t.booking_console.rates%></a></p>
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/rates/adjust-prices"><%=t.booking_console.adjust_prices%></a></p>  
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/calendar/calendars"><%=t.booking_console.calendars%></a></p>
-      <p class="smaller_text left-margin top-space bottom-space"><a href="/admin/calendar/timetables"><%=t.booking_console.timetables%></a></p>             
-  </div>
-  <div class="top-space bottom-space">
-      <p class="more_contrast_text"><a href="/admin/booking/catalog"><%=t.booking_console.catalogs%></a></p> 
-  </div>  
-  <div class="top-space bottom-space">
-      <p class="more_contrast_text"><a href="/admin/booking/booking-categories"><%=t.booking_console.categories%></a></p>	
-  </div>	
-  <div class="top-space bottom-space">
-     <p class="more_contrast_text"><a href="/admin/booking/booking-items"><%=t.booking_console.items%></a></p>
-  </div>
-  <div class="top-space bottom-space">
-     <p class="more_contrast_text"><a href="/admin/booking/bookings"><%=t.booking_console.reservations%></a></p>
-  </div> 
-  <% if booking_activities %>
-  <div class="top-space bottom-space">
-     <p class="more_contrast_text"><a href="/admin/order/orders"><%=t.booking_console.activities%></a></p>
-  </div>
-  <% end %>
-  <div class="top-space bottom-space">
-     <p class="more_contrast_text"><a href="/admin/order/information-requests"><%=t.booking_console.information_requests%></a></p>
-  </div>  
-  <div class="top-space bottom-space"> 
-      <p class="more_contrast_text"><a href="/admin/charges"><%=t.booking_console.receipts%></a></p>   
-  </div>    
-  <div class="top-space bottom-space"> 
-      <p class="more_contrast_text"><a href="/admin/booking/planning"><%=t.booking_console.planning%></a></p>
-  </div> 
-  <div class="top-space bottom-space"> 
-      <p class="more_contrast_text"><a href="/admin/booking/new"><%=t.booking_console.new_booking%></a></p>
-  </div> 
-  <div class="top-space bottom-space"> 
-      <p class="more_contrast_text"><a href="/admin/booking/summary"><%=t.booking_console.summary%></a></p> 	
-  </div>  
-  <div class="top-space bottom-space">   
-      <p class="more_contrast_text italic_text"><a href="/admin/booking/create-rates"><%=t.booking_console_configuration.create_rates%></a></p>  
-  </div>           
+
+<div id="cssmenu" class="booking_menu admin_menu smaller_text all-space">
+  <ul>
+   <li class='<%if ['/admin/booking/config/general','/admin/booking/config/templates','/admin/booking/booking-place-defs','/admin/calendar/timetables',
+   '/admin/rates/seasons','/admin/booking/booking-places'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.configuration%></a>
+      <ul>
+        <li><a href='/admin/booking/config/general'><%=t.booking_console_configuration.general_configuration%></a></li>
+        <li><a href='/admin/booking/config/templates'><%=t.booking_console_configuration.templates%></a></li>
+        <li><a href='/admin/booking/booking-place-defs'><%=t.booking_console.places%></a></li>
+        <li><a href='/admin/calendar/timetables'><%=t.booking_console.timetables%></a></li>                  
+      </ul>
+   </li>
+   <li class='<%if ['/admin/booking/catalog','/admin/booking/booking-categories','/admin/booking/booking-items','/admin/booking/booking-extras'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.products%></a>
+      <ul>
+        <li><a href='/admin/booking/catalog'><%=t.booking_console.catalogs%></a></li>
+        <li><a href='/admin/booking/booking-categories'><%=t.booking_console.categories%></a></li>
+        <li><a href='/admin/booking/booking-items'><%=t.booking_console.items%></a></li>
+        <li><a href='/admin/booking/booking-extras'><%=t.booking_console.extras%></a></li>        
+      </ul>    
+   </li>
+   <li class='<%if ['/admin/calendar/calendars'].index(request.path)%>active<%end%>'><a href='/admin/calendar/calendars'><%=t.booking_console.calendars%></a></li>   
+   <li class='<%if ['/admin/rates/season-defs','/admin/rates/factor-defs','/admin/rates/price-defs','/admin/rates/adjust-prices'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.rates%></a>
+      <ul>
+        <li><a href='/admin/rates/season-defs'><%=t.rates_console.seasons%></a></li>
+        <li><a href='/admin/rates/factor-defs'><%=t.rates_console.factors%></a></li>
+        <li><a href='/admin/rates/price-defs'><%=t.booking_console.rates%></a></li>
+        <li><a href='/admin/rates/adjust-prices'><%=t.booking_console.adjust_prices%></a></li>        
+      </ul>    
+   </li>      
+   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/order/orders','/admin/order/information-requests','/admin/booking/planning'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
+      <ul>
+        <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>           
+        <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>
+        <% if booking_activities %>
+        <li><a href='/admin/order/orders'><%=t.booking_console.reservations%></a></li>
+        <% end %>
+        <li><a href='/admin/order/information-requests'><%=t.booking_console.information_requests%></a></li>  
+        <li><a href='/admin/booking/planning'><%=t.booking_console.planning%></a></li>                                   
+      </ul>    
+   </li>   
+   <li class='<%if ['/admin/charges'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
+      <ul>
+        <li><a href='/admin/charges'><%=t.booking_console.receipts%></a></li>           
+      </ul>    
+   </li>
+   <li class='<%if ['/admin/booking/summary'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.statistics%></a>
+      <ul>
+        <li><a href='/admin/booking/summary'><%=t.booking_console.summary%></a></li>           
+      </ul>    
+   </li>             
+   <li class='<%if ['/admin/booking/create-rates'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.utils%></a>
+      <ul>
+        <li><a href='/admin/booking/create-rates'><%=t.booking_console_configuration.create_rates%></a></li>           
+      </ul>    
+   </li>             
+  </ul>
 </div>
+
+
+
+<script>
+
+require(["jquery","YSDCssMenu"],function($,YsdCssMenu){
+  $(document).ready(function(){
+    YsdCssMenu.buildMenu();
+  });
+});
+
+</script>

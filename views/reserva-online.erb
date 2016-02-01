@@ -94,7 +94,7 @@
 
 	    <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
 	      <div>	      
-             <%= partial :reserva_online_data_form, :locals => {:booking_item_family => booking_item_family} %>
+             <%= partial :reserva_online_data_form, :locals => {:booking_item_family => booking_item_family, :booking => booking} %>
 	      </div>
 
 	      <div id="reservation-summary" class="content_data_box">

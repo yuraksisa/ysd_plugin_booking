@@ -56,7 +56,8 @@
         },      
       eventClick: function(event) {
                if (event.url) {
-                 window.open(event.url);
+                 window.location.href = event.url;
+                 //window.open(event.url);
                  return false;
                }
             }
