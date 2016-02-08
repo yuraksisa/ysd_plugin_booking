@@ -1,0 +1,246 @@
+<%= partial('price_definition_creation.js'.to_sym, locals: {suffix: '_1'}) %>
+<%= partial('price_definition_creation.js'.to_sym, locals: {suffix: '_2'}) %>
+<%= partial('price_definition_creation.js'.to_sym, locals: {suffix: '_3'}) %>
+require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
+         "YSDRemoteDataSource", "YSDMemoryDataSource", "YSDSelectSelector", 
+         "jquery.ui", "YSDjson2"],
+         function($, EntityManagement, EntityManagementComplementHooks,
+          RemoteDataSource, MemoryDataSource, SelectSelector) {
+    
+  var bookingActivity = {
+     
+       
+    entityKey : function(entity) {
+      return entity.code;
+    },
+
+    onEdit : function(entity) {
+      $('#code').attr('code', true);
+      $('#name').focus();
+      $('#type').prop('disabled', 'true');
+      this.configForm(entity);
+
+      if (entity.price_definition_1_id != null) {
+        $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_1_id, 
+                dataType: 'text'}).done(function(html) {
+          var dom = $('<html />').prop('innerHTML', html);
+          $('#prices_1_container').html(dom.find('body #page_wrapper'));
+          $('head').append(dom.find('script'));
+        });
+      }
+
+      if (entity.price_definition_2_id != null) {
+        $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_2_id, dataType: 'text'}).done(function(html) {
+          var dom = $('<html />').prop('innerHTML', html);
+          $('#prices_2_container').html(dom.find('body #page_wrapper'));
+          $('head').append(dom.find('script'));
+        });
+      }
+
+      if (entity.price_definition_3_id != null) {
+        $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_3_id, dataType: 'text'}).done(function(html) {
+          var dom = $('<html />').prop('innerHTML', html);
+          $('#prices_3_container').html(dom.find('body #page_wrapper'));
+          $('head').append(dom.find('script'));
+        });
+      }
+      
+
+
+    },
+  
+    onNew : function() {
+      $('#code').focus();
+      this.configForm(null);
+      $('#create_category_calendar').bind('change', function() {
+         if ($('#create_category_calendar').prop('checked')) {
+           $('#calendar\\[id\\]').prop('disabled', true);
+         }
+         else {
+           $('#calendar\\[id\\]').prop('disabled', false);
+         }
+       });
+    },          
+
+    onRenderEntities: function() {
+
+      $('.elements-search').show(); 
+      
+    },
+
+    configForm: function(entity) {
+      $('#calendar_container').empty();
+      $("#content > div").hide(); // Initially hide all content
+      $("#content_tabs li:first").attr("id","current"); // Activate first tab
+      $("#content > div:first").fadeIn(); // Show first tab content
+      $('#content_tabs a').click(function(e) {
+        e.preventDefault();
+        if ($(this).attr("name")=='calendar_tab') {
+          if ($('#calendar_container').is(':empty')) {
+            $.ajax({url: '/admin/calendar/events/'+entity.calendar_id, dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('#calendar_container').html(dom.find('body #page_wrapper'));
+              $('head').append(dom.find('script'));
+              $('#calendar').fullCalendar('render');
+            });
+          }
+        }
+        if ($(this).attr("name") == 'preview') {
+          ($('#home_frame')[0]).contentWindow.location.reload();
+        }
+        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+         return;       
+        }
+        else{             
+          $("#content > div").hide(); //Hide all content
+          $("#content_tabs li").attr("id",""); //Reset id's
+          $(this).parent().attr("id","current"); // Activate this
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
+        }
+      });
+
+      $(".content > div").hide(); // Initially hide all content
+      $(".content_tabs li:first").attr("id","current"); // Activate first tab
+      $(".content > div:first").fadeIn(); // Show first tab content
+      $('.content_tabs a').click(function(e) {
+        e.preventDefault();
+        if ($(this).attr("name") == 'preview') {
+          ($('#home_frame')[0]).contentWindow.location.reload();
+        }
+        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+         return;       
+        }
+        else{             
+          $(".content > div").hide(); //Hide all content
+          $(".content_tabs li").attr("id",""); //Reset id's
+          $(this).parent().attr("id","current"); // Activate this
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
+        }
+      });
+
+
+      $('input[name=all_days]').bind('change', function(event){
+        if ($('input[name=all_days]:checked').val() == 'true') {
+          $('#days').hide();
+        }
+        else {
+          $('#days').show();
+        }
+      });
+
+      $('.weekday').bind('change', function(event){
+        bookingActivity.checkTurns();
+      });
+
+      $('input[name=all_days_same_turns]').bind('change', function(event){
+        if ($('input[name=all_days_same_turns]:checked').val() == 'true') {
+          $('.all_days_turns').show();
+          $('#turns_detail').hide();
+        }
+        else {
+          $('.all_days_turns').hide();
+          $('#turns_detail').show();
+          bookingActivity.checkTurns();
+        }
+      });
+
+    },
+
+    checkTurns: function() {
+          if ($('#sundays').is(':checked')) {
+            $('#sundays_turns').show();
+          }
+          else {
+            $('#sundays_turns').hide(); 
+          }
+          if ($('#mondays').is(':checked')) {
+            $('#mondays_turns').show();
+          }
+          else {
+            $('#mondays_turns').hide();
+          }
+          if ($('#tuesdays').is(':checked')) {
+            $('#tuesdays_turns').show();
+          }
+          else {
+            $('#tuesdays_turns').hide();
+          }
+          if ($('#wednesdays').is(':checked')) {
+            $('#wednesdays_turns').show();
+          }
+          else {
+            $('#wednesdays_turns').hide(); 
+          }
+          if ($('#thursdays').is(':checked')) {
+            $('#thursdays_turns').show();
+          }
+          else {
+            $('#thursdays_turns').hide();
+          }
+          if ($('#fridays').is(':checked')) {
+            $('#fridays_turns').show();
+          }
+          else {
+            $('#fridays_turns').hide();
+          }
+          if ($('#saturdays').is(':checked')) {
+            $('#saturdays_turns').show();
+          }
+          else {
+            $('#saturdays_turns').hide();
+          }
+    },
+
+    adaptFormData : function(data) {
+            
+      if (data.calendar && data.calendar.id == '') {
+        data.calendar = null;
+      }
+
+      if (data.create_calendar) {
+        data.calendar = {'name' : data.code, 'description': data.name};
+      }
+
+      ["sundays","mondays","tuesdays","wednesdays","thursdays",
+       "fridays","saturdays"].forEach(function(entry){
+        if ($('#'+entry).prop('checked')) {
+          data[entry] = true;
+        }
+        else {
+          data[entry] = false;
+        }
+       });
+
+      if ($('#active').length > 0) {
+        if ($('#active').prop('checked')) {
+          data.active = true;
+        }
+        else {
+          data.active = false;
+        }
+      }
+
+
+      return data;  
+      
+    }
+
+  };
+
+  var urls = { query_url  : '/api/booking-activities',
+               create_url : '/api/booking-activity',
+               update_url : '/api/booking-activity',
+               delete_url : '/api/booking-activity',
+               get_url    : '/api/booking-activity'
+             };
+  
+  var hooks = [bookingActivity];
+  
+  // Add the complement hooks
+  hooks = hooks.concat(EntityManagementComplementHooks.complements);
+                 
+  var contentsManager = new EntityManagement(urls, 'booking_activity', <%= booking_activity_page_size %>, hooks,
+    {prefix: '/admin/booking',hold_form_after_action:true});  
+
+  
+});

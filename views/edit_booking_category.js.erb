@@ -1,10 +1,21 @@
-require(['jquery','YSDForms'], function($, YSDForms) {
+require(['jquery', 'YSDForms', 'ysdtemplate', 'YSDGui',
+         'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation',
+         'jquery.formparams', 'jquery.ui.timepicker','autonumeric'],
+    function($, YSDForms, tmpl, YSDGui) {
 
-  $(document).ready(function() {
-    
-      YSDForms.improve();
-      YSDForms.limit_text_area_content_size('.variable', 255);
+  // https://mindmup.github.io/bootstrap-wysiwyg/
 
+  editBookingModel = {
+
+  };
+
+  editBookingController = {
+
+  };
+
+  editBookingView = {
+
+    init: function() {
       $("#content > div").hide(); // Initially hide all content
       $("#content_tabs li:first").attr("id","current"); // Activate first tab
       $("#content > div:first").fadeIn(); // Show first tab content
@@ -20,10 +31,13 @@ require(['jquery','YSDForms'], function($, YSDForms) {
           $("#content > div").hide(); //Hide all content
           $("#content_tabs li").attr("id",""); //Reset id's
           $(this).parent().attr("id","current"); // Activate this
-          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab
         }
       });
+      YSDForms.improve();
+    }
 
-  });
+  };
 
+  editBookingView.init();
 });

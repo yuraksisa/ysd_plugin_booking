@@ -10,6 +10,7 @@ Plugins::SinatraAppPlugin.register :booking do
    hooker       Huasi::BookingExtension
    sinatra_helper Sinatra::BookingHelpers
    sinatra_extension Sinatra::YSD::Booking
+   sinatra_extension Sinatra::YSD::BookingActivities
    sinatra_extension Sinatra::YSD::BookingManagement
    sinatra_helper Sinatra::YSD::BookingManagementRESTApiHelper
    sinatra_extension Sinatra::YSD::BookingManagementRESTApi
@@ -27,6 +28,8 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YitoExtension::BookingExtraManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingItemManagement
    sinatra_extension Sinatra::YitoExtension::BookingItemManagementRESTApi
+   sinatra_extension Sinatra::YitoExtension::BookingActivityManagement
+   sinatra_extension Sinatra::YitoExtension::BookingActivityManagementRESTApi   
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlaceDefinitionsManagement
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlaceDefinitionsManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlacesManagement

@@ -10,25 +10,29 @@ module Sinatra
           
           app.post path do
 
-            conditions = {}         
+            page = [params[:page].to_i, 1].max  
+            page_size = 20
+            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:reference.asc]} 
             
-            if request.media_type == "application/x-www-form-urlencoded" # Just the text
-              request.body.rewind
-              search = JSON.parse(URI.unescape(request.body.read))
-              if search.is_a?(Hash)
-                search.each do |property, value| 
-                end
-              end
+            if request.media_type == "application/x-www-form-urlencoded"
+              search_text = if params[:search]
+                              params[:search]
+                            else
+                              request.body.rewind
+                              request.body.read
+                            end
+              conditions = Conditions::JoinComparison.new('$or', 
+                              [Conditions::Comparison.new(:reference, '$like', "%#{search_text}%"),
+                               Conditions::Comparison.new(:name, '$like', "%#{search_text}%")
+                              ])
+            
+              total = conditions.build_datamapper(::Yito::Model::Booking::BookingItem).all.count 
+              data = conditions.build_datamapper(::Yito::Model::Booking::BookingItem).all(offset_order_query) 
+
+            else
+              data,total  = ::Yito::Model::Booking::BookingItem.all_and_count(offset_order_query)
             end
 
-            page = params[:page].to_i || 1
-            limit = 20
-            offset = (page-1) * 20
-            
-            data  = ::Yito::Model::Booking::BookingItem.all(:conditions => conditions, 
-              :limit => limit, :offset => offset, :order => [:category_code, :reference])
-            total = ::Yito::Model::Booking::BookingItem.count(conditions)
-          
             content_type :json
             {:data => data, :summary => {:total => total}}.to_json
           

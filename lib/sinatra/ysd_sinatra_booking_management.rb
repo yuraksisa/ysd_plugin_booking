@@ -19,7 +19,6 @@ module Sinatra
           load_page(:booking_dashboard)
         end
 
-
         #
         # Booking console
         #

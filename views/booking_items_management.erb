@@ -14,18 +14,15 @@
   <table id="elements_table" class="table">
      <thead class="table-header">
        <tr>
-         <th class="table-header-title centered_text" scope="col" style="width:10%">
-            <%= t.booking_item_management.form.category.label %>
-         </th>
          <th class="table-header-title centered_text" scope="col" style="width:15%">
             <%= t.booking_item_management.form.reference.label %>
          </th>
+         <th class="table-header-title centered_text" scope="col" style="width:10%">
+            <%= t.booking_item_management.form.category.label %>
+         </th>
          <th class="table-header-title" scope="col" style="width:35%">
             <%= t.booking_item_management.form.name.label %>
-         </th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%">
-            <%= t.booking_item_management.form.active.label %>
-         </th>         
+         </th>       
          <th class="table-header-title" scope="col" style="width:30%">
          </th>         
        </tr>
@@ -40,30 +37,15 @@
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row" id="element_row_<%%=index%>">
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
-         <%%= entity.category_code %>
-      </td>  
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
          <%%= entity.reference %>
       </td>
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+         <%%= entity.category_code %>
+      </td> 
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
          <%%= entity.name %>
       </td>
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
-         <%%= entity.active %>
-      </td>  
       <td class="table-cell">
-           <div class="form-button green-white-button">
-                <a href="/admin/booking/scheduler/<%%=entity.reference%>">
-                  <%=t.booking_category_management.table.scheduler%>
-                </a>
-           </div> 
-           <%% if (entity.calendar_id && entity.calendar_id != null) { %>
-              <div class="form-button green-white-button">
-                <a href="/admin/calendar/events/<%%=entity.calendar_id%>">
-                  <%=t.booking_category_management.table.calendar%>
-                </a>
-              </div> 
-           <%% } %>
       </td>
     </tr>
 </script>
@@ -77,13 +59,75 @@
 <!-- Renders the form to edit an element -->
 
 <script type="text/tmpl" id="element_template_form">
-              
-     <form name="element" method="POST">
         
+     <%% if (entity) { %>
+       <h3 class="bottom-separator bottom-margin" style="display:inline-block"><%%=entity.reference%> - <%%=entity.name%></h3>
+       <div class="container_12">
+         <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="basic_data_tab" href="#basic_data_tab">Datos básicos</a>
+          </li> 
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="description_tab" href="#description_tab">Descripción</a>
+          </li>                                       
+      </ul>
+     <div id="content">
+
+        <div id="basic_data_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">   
+              <form name="element" method="POST">
+                <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                <div class="formrow">
+                  <label for="category[code]" class="fieldtitle"><%=t.booking_item_management.form.category.label%></label>
+                  <select name="category[code]" id="category[code]" class="fieldcontrol"/>
+                </div>              
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.name.label %></label>
+                  <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
+                </div> 
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.active.label%></label>
+                  <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
+                </div>                   
+                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                  <div class="navigation-bar-crud-buttons">
+                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                  </div>
+                </div>                   
+              </form>                          
+            </div>
+          </div>
+        </div>
+
+        <div id="description_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">  
+              <form name="element" method="POST">
+                <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                <div class="formrow">
+                   <label class="fieldtitle"><%= t.booking_item_management.form.description.label %></label>
+                   <textarea rows="3" cols="50" id="description" name="description" class="fieldcontrol"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+                </div>                  
+                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                  <div class="navigation-bar-crud-buttons">
+                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                  </div>
+                </div>                   
+              </form>                                
+            </div>
+          </div>
+        </div>        
+
+     </div>
+    </div>
+
+    <%% } else { %> 
+     <h3>Nuevo stock</h3>
+     <form name="element" method="POST">
         <div class="form-fields">
-                                   
           <div class="container_12"> 
-            <div class="grid_12">
+            <div class="grid_6">
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_item_management.form.reference.label %></label>
                 <input type="text" maxlength="50" id="reference" name="reference" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.reference %>" <%% } %>/>
@@ -95,58 +139,16 @@
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_item_management.form.name.label %></label>
                 <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
-              </div>              
-              <div class="formrow">
-                 <label class="fieldtitle"><%= t.booking_item_management.form.description.label %></label>
-                 <textarea rows="3" cols="50" id="description" name="description" class="fieldcontrol"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
               </div>
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.calendar.label %></label>
-                <select name="calendar[id]" id="calendar[id]"/>
-              </div>     
-              <%% if (!entity) { %>
-              <div class="formrow">
-                <input type="checkbox" id="create_category_calendar">Crear calendario</input>
+              <div class="bottom-navigation-bar navigation-bar">
+                 <div class="navigation-bar-crud-buttons" style="padding-right:0px">
+                    <input type="submit" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                 </div>
               </div>
-              <%% } %>        
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.active.label%></label>
-                <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
-              </div>                   
             </div>
           </div>
-
-          <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
-                                            :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
-                                            :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
-                                            :new_element_form_above => new_element_form_above,
-                                            :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
-                                            :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
-
-          <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
-                                            :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
-                                            :edit_element_form_ingroup => edit_element_form_ingroup,
-                                            :new_element_form => new_element_form,
-                                            :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
-                                            :new_element_form_ingroup => new_element_form_ingroup}) %>
-                        
         </div>
-                       
-        <div class="bottom-navigation-bar navigation-bar">
-             <div class="navigation-bar-crud-buttons">
-                <%% if (entity) { %>
-                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                <%% } 
-                   else { %>
-                  <input type="submit" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
-                <%% } %>
-             </div>
-        </div>
-     
-     </form>
+      </form>
+    <%% } %>
      
 </script>
-
-<%= element_form_extension if defined?element_form_extension %>
-<%= element_extension if defined?element_extension %>
-<%= element_action_extension if defined?element_action_extension %>

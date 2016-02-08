@@ -1,0 +1,67 @@
+<style>
+.html_editor {
+  min-height: 250px;
+}
+</style>
+<div class="top-navigation-bar">
+<h2 class="entity-title">Categorías</h2>
+</div>
+<div id="page_wrapper" class="all-space">
+    <div class="container_12">
+      <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="basic_data_tab" href="#basic_data_tab">Datos básicos</a>
+          </li> 
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="description_tab" href="#description_tab">Descripción</a>
+          </li>  
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="photos_tab" href="#photos_tab">Fotos</a>
+          </li>
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="stocks_tab" href="#stocks_tab">Stocks</a>
+          </li>          
+          <li class="no-border no-background top-space" style="border:none; backgrond:none">
+              <a name="prices_tab" href="#prices_tab">Precios</a>
+          </li>
+          <li class="no-border no-background top-space" style="border:none; backgrond:none">
+              <a name="calendar_tab" href="#calendar_tab">Calendario</a>
+          </li>                      
+      </ul>
+
+      <div id="content">
+        <div id="basic_data_tab" class="top-margin bottom-margin">
+          <form name="element" method="POST">
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.code.label %></label>
+                <input type="text" maxlength="20" id="code" name="code" class="fieldcontrol" <% if @entity %> value="<%=@entity.code %>" <% end %>/>
+              </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.name.label %></label>
+                <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <% if @entity %> value="<%=@entity.name%>" <% end %>/>
+              </div> 
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.short_description.label %></label>
+                <input type="text" maxlength="80" id="short_description" name="short_description" class="fieldcontrol" <% if @entity %> value="<%=@entity.short_description%>" <% end %>/>
+              </div>               
+          </form>
+        </div>
+        <div id="description_tab" class="top-margin bottom-margin">
+          <form name="element" method="POST">
+             <div class="formrow">
+                 <label class="fieldtitle"><%= t.booking_category_management.form.description.label %></label>     
+                 <textarea rows="5" cols="50" id="description" name="description" class="fieldcontrol texteditor"><% if @entity %><%=@entity.description %><% end %></textarea>                          
+              </div>
+          </form>
+        </div>
+        <div id="photos_tab" class="top-margin bottom-margin">
+        </div>
+        <div id="stocks_tab" class="top-margin bottom-margin">
+        </div>
+        <div id="prices_tab" class="top-margin bottom-margin">
+        </div>
+        <div id="calendar_tab" class="top-margin bottom-margin">
+        </div>
+      </div>
+    </div>
+</div>

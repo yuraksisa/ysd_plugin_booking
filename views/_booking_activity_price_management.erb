@@ -1,0 +1,141 @@
+                    <ul id="prices_tabs" class="content_tabs no-border no-background smaller_text">  
+                      <%% if (entity.price_definition_1_id != null) { %>
+                      <li class="no-border no-background top-space" style="border:none;background:none">
+                        <a name="price_definition_1_tab" href="#price_definition_1_tab">Tarifa <%%=entity.price_1_description%></a>
+                      </li> 
+                      <%% } %>
+                      <%% if (entity.price_definition_2_id != null) { %>
+                      <li class="no-border no-background top-space" style="border:none;background:none">
+                        <a name="price_definition_2_tab" href="#price_definition_2_tab">Tarifa <%%=entity.price_2_description%></a>
+                      </li> 
+                      <%% } %>
+                      <%% if (entity.price_definition_3_id != null) { %>
+                      <li class="no-border no-background top-space" style="border:none;background:none">
+                        <a name="price_definition_3_tab" href="#price_definition_3_tab">Tarifa <%%=entity.price_3_description%></a>
+                      </li> 
+                      <%% } %>
+                      <%% if (entity.price_definition_1_id == null ||
+                              entity.price_definition_2_id == null ||
+                              entity.price_definition_3_id == null) { %>
+                        <li class="no-border no-background top-space" style="border:none;background:none">
+                          <a name="new_price_definition_tab" href="#new_price_definition_tab">Nueva tarifa</a>
+                        </li> 
+                      <%% } %>
+                    </ul>
+
+                    <div id="prices_content" class="content">
+                      <%% if (entity.price_definition_1_id != null) { %>
+                      <div id="price_definition_1_tab" class="top-margin bottom-margin">
+                        <div class="container_12">
+                          <div class="grid_12">
+                            <div id="prices_1_container">
+                            </div>
+                          </div>
+                        </div>                        
+                        <div class="container_12">
+                          <div class="grid_6">
+                            <form name="element" method="POST">    
+                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                              <div class="formrow">
+                                  <label class="fieldtitle">Nombre tarifa</label>
+                                  <input type="text" maxlength="80" id="price_1_description" name="price_1_description" class="fieldcontrol" value="<%%=entity.price_1_description%>"/>
+                              </div>
+                              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                                <div class="navigation-bar-crud-buttons">
+                                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                                </div>
+                              </div>                          
+                            </form>                                                          
+                          </div>
+                        </div>
+                      </div>
+                      <%% } %>
+                      <%% if (entity.price_definition_2_id != null) { %>
+                      <div id="price_definition_2_tab" class="top-margin bottom-margin">
+                        <div class="container_12">
+                          <div class="grid_12">
+                            <div id="prices_2_container">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="container_12">
+                          <div class="grid_6">
+                            <form name="element" method="POST">    
+                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                              <div class="formrow">
+                                  <label class="fieldtitle">Nombre tarifa</label>
+                                  <input type="text" maxlength="80" id="price_2_description" name="price_2_description" class="fieldcontrol" value="<%%=entity.price_2_description%>"/>
+                              </div>
+                              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                                <div class="navigation-bar-crud-buttons">
+                                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                                </div>
+                              </div>                          
+                            </form>                                                          
+                          </div>
+                        </div>                        
+                      </div>
+                      <%% } %>
+                      <%% if (entity.price_definition_3_id != null) { %>
+                      <div id="price_definition_3_tab" class="top-margin bottom-margin">
+                        <div class="container_12">
+                          <div class="grid_6">
+                            <form name="element" method="POST">    
+                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                              <div class="formrow">
+                                  <label class="fieldtitle">Nombre tarifa</label>
+                                  <input type="text" maxlength="80" id="price_1_description" name="price_1_description" class="fieldcontrol" value="<%%=entity.price_1_description%>"/>
+                              </div>
+                              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                                <div class="navigation-bar-crud-buttons">
+                                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                                </div>
+                              </div>                          
+                            </form>                                                          
+                          </div>
+                        </div>                        
+
+                        <div class="container_12">
+                          <div class="grid_12">
+                            <div id="prices_3_container">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <%% } %> 
+                      <%% if (entity.price_definition_1_id == null ||
+                              entity.price_definition_2_id == null ||
+                              entity.price_definition_3_id == null) { %>
+                      <div id="new_price_definition_tab" class="top-margin bottom-margin">
+                        <div class="container_12">
+                          <div class="grid_6">
+                            <%% var suffix = entity.price_definition_1_id == null ? '_1' :
+                                            (entity.price_definition_2_id == null ? '_2' : '_3'); %>
+                            <form name="element" method="POST">    
+                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                              <div id="category_price" class="element-form-detail">
+                                <div class="formrow">
+                                  <label class="fieldtitle">Nombre tarifa</label>
+                                  <input type="text" maxlength="80" id="price_<%%=suffix%>_description" name="price_<%%=suffix%>_description" class="fieldcontrol"/>
+                                </div>
+                                <%% if (suffix == '_1') { %>
+                                  <%= partial(:price_definition_creation, :locals => {suffix: '_1'})%>  
+                                <%% } else if (suffix == '_2') { %>
+                                  <%= partial(:price_definition_creation, :locals => {suffix: '_2'})%>                                   
+                                <%% } else if (suffix == '_3') { %>
+                                  <%= partial(:price_definition_creation, :locals => {suffix: '_3'})%>                                   
+                                <%% } %> 
+                                
+                              </div>
+                            <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                              <div class="navigation-bar-crud-buttons">
+                                <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_rates.label%>"/>
+                              </div>
+                            </div>                       
+                          </form>
+
+                          </div>
+                        </div>
+                      </div>
+                      <%% } %>                                           
+                    </div>

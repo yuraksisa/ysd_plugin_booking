@@ -1,6 +1,7 @@
 <%= partial('price_definition_creation.js'.to_sym) %>
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
-         "YSDRemoteDataSource", "YSDMemoryDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
+         "YSDRemoteDataSource", "YSDMemoryDataSource", "YSDSelectSelector", 
+         "jquery.ui", "YSDjson2"],
          function($, EntityManagement, EntityManagementComplementHooks,
           RemoteDataSource, MemoryDataSource, SelectSelector) {
     
@@ -16,6 +17,13 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $('#name').focus();
       $('#type').prop('disabled', 'true');
       this.configForm(entity);
+
+      $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_id, dataType: 'text'}).done(function(html) {
+        var dom = $('<html />').prop('innerHTML', html);
+        $('#prices_container').html(dom.find('body #page_wrapper'));
+        $('head').append(dom.find('script'));
+      });
+
     },
   
     onNew : function() {
@@ -29,48 +37,44 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
            $('#calendar\\[id\\]').prop('disabled', false);
          }
        });
-      $('#create_category_price').bind('change', function() {
-         if ($('#create_category_price').prop('checked')) {
-           $('#price_definition\\[id\\]').prop('disabled', true);
-           $('#category_price').show();
-         }
-         else {
-           $('#price_definition\\[id\\]').prop('disabled', false);
-           $('#category_price').hide();
-         }
-      });
     },          
 
-    configForm: function(entity) {
+    onRenderEntities: function() {
 
+      $('.elements-search').show(); 
       
-      var types = [
-                   <% types.each do |type| %>
-                   {
-                     'id': '<%=type[:id]%>',
-                     'description': '<%=type[:description]%>'
-                   },
-                   <% end %>
-                  ];
+    },
 
-      var typeDataSource= new MemoryDataSource(types);
-      var typeValue = (entity && entity.type)?entity.type:null; 
-      var typeSelector = new SelectSelector('type', typeDataSource, typeValue);   
-
-      var catalogDataSource= new RemoteDataSource('/api/booking-catalogs',
-          {'id':'code','description':'code'});
-      var catalogValue = (entity && entity.booking_catalog_code)?entity.booking_catalog_code:null; 
-      var catalogSelector = new SelectSelector('booking_catalog[code]', catalogDataSource, catalogValue, true);   
-
-      var calendarDataSource= new RemoteDataSource('/api/calendars',
-          {'id':'id','description':'name'});
-      var calendarValue = (entity && entity.calendar_id)?entity.calendar_id:null; 
-      var calendarSelector = new SelectSelector('calendar[id]', calendarDataSource, calendarValue, true);   
-
-      var priceDefinitionDataSource= new RemoteDataSource('/api/rate-price-defs',
-          {'id':'id','description':'name'});
-      var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
-      var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
+    configForm: function(entity) {
+      $('#calendar_container').empty();
+      $("#content > div").hide(); // Initially hide all content
+      $("#content_tabs li:first").attr("id","current"); // Activate first tab
+      $("#content > div:first").fadeIn(); // Show first tab content
+      $('#content_tabs a').click(function(e) {
+        e.preventDefault();
+        if ($(this).attr("name")=='calendar_tab') {
+          if ($('#calendar_container').is(':empty')) {
+            $.ajax({url: '/admin/calendar/events/'+entity.calendar_id, dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('#calendar_container').html(dom.find('body #page_wrapper'));
+              $('head').append(dom.find('script'));
+              $('#calendar').fullCalendar('render');
+            });
+          }
+        }
+        if ($(this).attr("name") == 'preview') {
+          ($('#home_frame')[0]).contentWindow.location.reload();
+        }
+        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+         return;       
+        }
+        else{             
+          $("#content > div").hide(); //Hide all content
+          $("#content_tabs li").attr("id",""); //Reset id's
+          $(this).parent().attr("id","current"); // Activate this
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
+        }
+      });
 
       $('#stock_control').bind('change', function() {
          if ($(this).attr('checked')) {
@@ -80,6 +84,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
            $('#stock_container').hide();
          }
       });
+
     },
 
     adaptFormData : function(data) {
@@ -104,11 +109,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         data.booking_catalog = null;
       }
 
-      if (data.price_definition && data.price_definition.id == '') {
-        data.price_definition = null;
-      }
-
-      if ($('#create_category_calendar').prop('checked')) {
+      if (data.create_calendar) {
         data.calendar = {'name' : data.code, 'description': data.name};
       }
 
@@ -119,11 +120,13 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         data.stock_control = false;
       }
 
-      if ($('#active').prop('checked')) {
-        data.active = true;
-      }
-      else {
-        data.active = false;
+      if ($('#active').length > 0) {
+        if ($('#active').prop('checked')) {
+          data.active = true;
+        }
+        else {
+          data.active = false;
+        }
       }
 
 
@@ -146,7 +149,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
   hooks = hooks.concat(EntityManagementComplementHooks.complements);
                  
   var contentsManager = new EntityManagement(urls, 'booking_category', <%= booking_category_page_size %>, hooks,
-    {prefix: '/admin/booking'});
+    {prefix: '/admin/booking',hold_form_after_action:true});  
 
   
 });

@@ -24,44 +24,51 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       this.configForm();
     },
         
+    onRenderEntities: function() {
+
+      $('.elements-search').show(); 
+      
+    },
+
+        
     /* ------- Internal function --------- */
     
     configForm : function() {
+
+      $("#content > div").hide(); // Initially hide all content
+      $("#content_tabs li:first").attr("id","current"); // Activate first tab
+      $("#content > div:first").fadeIn(); // Show first tab content
+      $('#content_tabs a').click(function(e) {
+        e.preventDefault();
+        if ($(this).attr("name") == 'preview') {
+          ($('#home_frame')[0]).contentWindow.location.reload();
+        }
+        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+         return;       
+        }
+        else{             
+          $("#content > div").hide(); //Hide all content
+          $("#content_tabs li").attr("id",""); //Reset id's
+          $(this).parent().attr("id","current"); // Activate this
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
+        }
+      });
+
       var categoryDataSource = new RemoteDataSource('/api/booking-categories',{'id':'code','description':'name'});
       var categoryValue = (this.entity && this.entity.category_code)?this.entity.category_code:null;
       var categorySelector = new SelectSelector('category[code]', categoryDataSource, categoryValue); 
-
-      var calendarDataSource= new RemoteDataSource('/api/calendars',
-          {'id':'id','description':'name'});
-      var calendarValue = (this.entity && this.entity.calendar_id)?this.entity.calendar_id:null; 
-      var calendarSelector = new SelectSelector('calendar[id]', calendarDataSource, calendarValue, true);   
-
-      var priceDefinitionDataSource= new RemoteDataSource('/api/rate-price-defs',
-          {'id':'id','description':'name'});
-      var priceDefinitionValue = (this.entity && this.entity.price_definition_id)?this.entity.price_definition_id:null; 
-      var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
 
     },
       
     adaptFormData : function(data) {
             
-      if (data.calendar && data.calendar.id == '') {
-        data.calendar = null;
-      }
-
-      if (data.price_definition && data.price_definition.id == '') {
-        data.price_definition = null;
-      }
-
-      if ($('#create_category_calendar').prop('checked')) {
-        data.calendar = {'name' : data.reference, 'description': data.name};
-      }
-
-      if ($('#active').prop('checked')) {
-        data.active = true;
-      }
-      else {
-        data.active = false;
+      if ($('#active').length > 0) {
+        if ($('#active').prop('checked')) {
+          data.active = true;
+        }
+        else {
+          data.active = false;
+        }
       }
 
       return data;  
@@ -83,7 +90,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
   hooks = hooks.concat(EntityManagementComplementHooks.complements);
                  
   var contentsManager = new EntityManagement(urls, 'booking_item', 20, hooks,
-    {prefix: '/admin/booking'});
+    {prefix: '/admin/booking',hold_form_after_action:true});
 
   
 });

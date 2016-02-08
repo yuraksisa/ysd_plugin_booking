@@ -2,48 +2,128 @@
   <h2 class="entity-title"><%=t.booking_settings.form.title%></h2>
 </div>
 
-<div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
-<form name="variables" action="/api/variables" method="PUT" 
-      data-remote="ajax" data-remote-method="PUT">
+<div class="admin_content_wrapper">
 
-  <div class="grid_6">
-    <div class="all-space">
-  <h3><%=t.booking_settings.form.general_group%></h3>
+    <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+
+    <div class="container_12">
+      <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="general_tab" href="#general_tab"><%=t.booking_settings.form.general_group%></a>
+          </li> 
+          <% if booking_mode == 'rent' %>          
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="renting_tab" href="#renting_tab"><%=t.booking_settings.form.rent_group%></a>
+          </li>
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="pickup_return_tab" href="#pickup_return_tab"><%=t.booking_settings.form.pickup_return_group%></a>
+          </li>          
+          <% end %>
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="payment_tab" href="#payment_tab"><%=t.booking_settings.form.payment_group%></a>
+          </li>                   
+          <% if booking_mode == 'restaurant' %>   
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="turns_tab" href="#turns_tab"><%=t.booking_settings.form.turns_group%></a>
+          </li>
+          <% end %>
+        
+      </ul>
+      <div id="content">
+        <div id="general_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">
+              <form name="variables" action="/api/variables" method="PUT" 
+                    data-remote="ajax" data-remote-method="PUT">
+
   <%= render_variable_select('booking.mode', t.booking_settings.form.booking_mode.title, 
     booking_modes) %>
   <%= render_variable_textarea('booking.notification_email', t.booking_settings.form.notification_email) %>
-  <%= render_variable_input_text('booking.scheduler_start_time', t.booking_settings.form.scheduler_start_time, 5, 5) %>
-  <%= render_variable_input_text('booking.scheduler_finish_time', t.booking_settings.form.scheduler_finish_time, 5, 5) %>  
-  <h3><%=t.booking_settings.form.payment_group%></h3>
-  <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
-  <%= render_variable_checkbox_boolean('booking.allow_total_payment', t.booking_settings.form.allow_total_payment) %>  
-  <%= render_variable_checkbox_boolean('booking.payment', t.booking_settings.form.payment) %>
-  <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2) %>
-  <%= render_variable_input_text('booking.payment_cadence', t.booking_settings.form.payment_cadence, 2, 2) %> 
-</div>
-  </div>
-  <div class="grid_6">
-    <div class="left-margin all-space">
-  <% if booking_mode == 'rent' %>
-  <h3><%=t.booking_settings.form.rent_group%></h3>
+
+                <div class="formrow-botonera top-separator top-space">
+                  <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
+                </div>
+              </form>                                  
+            </div>
+          </div>
+        </div>
+        <% if booking_mode == 'rent' %>  
+        <div id="renting_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">
+              <form name="variables" action="/api/variables" method="PUT" 
+                    data-remote="ajax" data-remote-method="PUT">
+                
   <%= render_variable_select('booking.item_family', t.booking_settings.form.family, families) %>
   <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>  
   <%= render_variable_select('booking.reservation_starts_with', t.booking_settings.form.reservation_starts_with.title, 
     reservation_starts_with) %>
-  <h3><%=t.booking_settings.form.pickup_return_group%></h3>  
+
+                <div class="formrow-botonera top-separator top-space">
+                  <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
+                </div>
+              </form>                                  
+            </div>
+          </div>
+        </div>
+
+        <div id="pickup_return_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">
+              <form name="variables" action="/api/variables" method="PUT" 
+                    data-remote="ajax" data-remote-method="PUT">
+
+  <h3 style="font-size:1.2em">Lugares</h3>
   <%= render_variable_checkbox_boolean('booking.allow_custom_pickup_return_place', t.booking_settings.form.custom_pickup_return_place) %>
   <%= render_variable_input_text('booking.custom_pickup_return_place_price', t.booking_settings.form.custom_pickup_return_place_price, 3, 3) %>
+  <h3 style="font-size:1.2em">Horarios</h3> 
   <%= render_variable_select('booking.pickup_return_timetable', t.booking_settings.form.pickup_return_timetable, pickup_return_timetables) %>  
-  <%= render_variable_input_text('booking.pickup_return_timetable_out_price', t.booking_settings.form.pickup_return_timetable_out_price, 3, 3) %>    
-  <% end %>      
-  <% if booking_mode == 'restaurant' %>
-  <h3><%=t.booking_settings.form.turns_group%></h3>
+  <%= render_variable_input_text('booking.pickup_return_timetable_out_price', t.booking_settings.form.pickup_return_timetable_out_price, 3, 3) %> 
+
+
+                <div class="formrow-botonera top-separator top-space">
+                  <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
+                </div>
+              </form>                                  
+            </div>
+          </div>
+        </div>  
+
+        <% end %>
+        <div id="payment_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">
+              <form name="variables" action="/api/variables" method="PUT" 
+                    data-remote="ajax" data-remote-method="PUT">
+
+  <%= render_variable_checkbox_boolean('booking.payment', t.booking_settings.form.payment) %>
+  <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
+  <%= render_variable_checkbox_boolean('booking.allow_total_payment', t.booking_settings.form.allow_total_payment) %>  
+  <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2) %>
+  <%= render_variable_input_text('booking.payment_cadence', t.booking_settings.form.payment_cadence, 2, 2) %> 
+                    
+                <div class="formrow-botonera top-separator top-space">
+                  <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
+                </div>
+              </form>                                  
+            </div>
+          </div>
+        </div>  
+        <% if booking_mode == 'restaurant' %> 
+        <div id="turns_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">
+              <form name="variables" action="/api/variables" method="PUT" 
+                    data-remote="ajax" data-remote-method="PUT">
+
   <%= render_variable_input_text('booking.morning_turns', t.booking_settings.form.morning_turns, 255, 30) %>
   <%= render_variable_input_text('booking.afternoon_turns', t.booking_settings.form.afternoon_turns, 255, 30) %>
   <%= render_variable_input_text('booking.night_turns', t.booking_settings.form.night_turns, 255, 30) %>
   <%= render_variable_input_text('booking.duration_of_service', t.booking_settings.form.duration_of_service, 10, 10) %>
   <%= render_variable_input_text('booking.duration_of_service_extra', t.booking_settings.form.duration_of_service_extra, 10, 10) %>  
-  <%= render_variable_input_text('booking.duration_of_service_extra_turns', t.booking_settings.form.duration_of_service_extra_turns, 255, 30) %>  
+  <%= render_variable_input_text('booking.duration_of_service_extra_turns', t.booking_settings.form.duration_of_service_extra_turns, 255, 30) %> 
+  <%= render_variable_input_text('booking.scheduler_start_time', t.booking_settings.form.scheduler_start_time, 5, 5) %>
+  <%= render_variable_input_text('booking.scheduler_finish_time', t.booking_settings.form.scheduler_finish_time, 5, 5) %>     
   <h3><%=t.booking_settings.form.people_group%></h3>
   <%= render_variable_input_text('booking.min_children', t.booking_settings.form.min_children, 2, 2) %>
   <%= render_variable_input_text('booking.max_children', t.booking_settings.form.max_children, 2, 2) %>
@@ -52,13 +132,16 @@
   <%= render_variable_input_text('booking.max_adults', t.booking_settings.form.max_adults, 2, 2) %>
   <%= render_variable_input_text('booking.max_adults_extra', t.booking_settings.form.max_adults_extra, 2, 2) %> 
   <%= render_variable_textarea('booking.people_resources', t.booking_settings.form.people_resources) %>
-  <% end %> 
+                    
+                <div class="formrow-botonera top-separator top-space">
+                  <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
+                </div>
+              </form>                                  
+            </div>
+          </div>
+        </div> 
+        <% end %> 
+
+      </div>
+    </div>
 </div>
-  </div>
-  <div class="grid_12">
-  <div class="formrow-botonera top-separator top-space">
-  	<input type="submit" value="<%=t.entitymanagement.update%>" 
-  	       class="button blue-button">
-  </div>
-  </div>
-</form>
