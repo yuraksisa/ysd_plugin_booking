@@ -1,33 +1,33 @@
 <div class="admin_content_wrapper">
   <div class="container_12">
   	<div class="grid_12">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.summary%> 2016</div> 
-  	</div>  	
+    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.summary%> <%=@year%></div> 
+  	</div>  
     <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em">3</div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@received_reservations%></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.new_request%></div>
+    </div>      	
+    <div class="grid_4" style="min-height: 10em">
+    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@pending_confirmation_reservations%></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.pending_confirmation_reservations%></div>
     </div>
     <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em">87</div>
+    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@confirmed_reservations%></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.confirmed_reservations%></div>    	
-    </div>	
-    <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em">4</div>
-    	<div class="centered_text smaller_text"><%=t.booking_dashboard.new_request%></div>    	
     </div>	        	
   </div>
   <div class="container_12">
     <div class="grid_4">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_day%> 2016
+    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_day%> <%=@year%>
     	</div>    	
         <canvas id="reservations_by_day_graphic" width="320" height="240"></canvas>
     </div>
     <div class="grid_4">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_category%> 2016</div>        	
+    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_category%> <%=@year%></div>        	
         <canvas id="reservations_by_category_graphic" width="320" height="240"></canvas>
     </div>	
     <div class="grid_4">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_state%> 2016</div>  
+    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_state%> <%=@year%></div>  
         <canvas id="reservations_by_state_graphic" width="320" height="240"></canvas>
 
     </div>	        	
@@ -44,15 +44,15 @@
     	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.day_work%></div> 
   	</div>
     <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em">5</div>
+    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@pickup_today%></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.delivery%></div>
     </div>
     <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em">12</div>
+    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@transit_today%></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.transit%></div>    	
     </div>	
     <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em">4</div>
+    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@delivery_today%></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.return%></div>    	
     </div>        	
   </div>

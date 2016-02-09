@@ -16,6 +16,17 @@ module Sinatra
         # Booking dashboard
         #
         app.get '/admin/booking/dashboard', :allowed_usergroups => ['booking_manager', 'staff'] do
+          @year = DateTime.now.year
+          @received_reservations = BookingDataSystem::Booking.count_received_reservations(@year)
+          @pending_confirmation_reservations = BookingDataSystem::Booking.count_pending_confirmation_reservations(@year)
+          @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
+          @reservations_by_weekday = BookingDataSystem::Booking.reservations_by_weekday(@year)
+          @reservations_by_category = BookingDataSystem::Booking.reservations_by_category(@year)
+          @reservations_by_status = BookingDataSystem::Booking.reservations_by_status(@year)
+          @last_30_days_reservations = BookingDataSystem::Booking.last_30_days_reservations
+          @pickup_today = BookingDataSystem::Booking.count_pickup_today
+          @transit_today = BookingDataSystem::Booking.count_transit_today
+          @delivery_today = BookingDataSystem::Booking.count_delivery_today
           load_page(:booking_dashboard)
         end
 

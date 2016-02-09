@@ -795,6 +795,7 @@ booking_customers:
 booking_dashboard:
   title: Panel de control
   summary: Resumen
+  received_reservations: Reservas recibidas
   pending_confirmation_reservations: Reservas pendientes de confirmación
   confirmed_reservations: Reservas confirmadas
   new_request: Nuevas solicitudes
