@@ -60,32 +60,72 @@ require(['jquery','charts'], function($, Chart) {
 
     init: function() {
       // Reservations by Day
-      
+      var helpers = Chart.helpers;
+
   	  var reservationsByDayCtx = document.getElementById("reservations_by_day_graphic").getContext("2d");
       var reservationsByDayOptions = { //String - A legend template
-        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>",
+        scaleOverride: true, scaleStartValue: 0, scaleStepWidth: Math.max.apply(null, dashboardModel.reservationsByDayData.datasets[0].data)/10, scaleSteps: 10, scaleIntegersOnly: true
       };
       var reservationsByDayChart = new Chart(reservationsByDayCtx).Bar(dashboardModel.reservationsByDayData,reservationsByDayOptions);
       
 
       // Reservations by category
+      var reservationsByCategoryCanvas = document.getElementById("reservations_by_category_graphic");
   	  var reservationsByCategoryCtx = document.getElementById("reservations_by_category_graphic").getContext("2d");
       var reservationsByCategoryOptions = { //String - A legend template
         legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
       };
       var reservationsByCategoryChart = new Chart(reservationsByCategoryCtx).Doughnut(dashboardModel.reservationsByCategoryData,reservationsByCategoryOptions);
 
+      var reservationsByCategoryHolder = document.createElement('div');
+      reservationsByCategoryHolder.innerHTML = reservationsByCategoryChart.generateLegend();
+      // Include a html legend template after the module doughnut itself
+      helpers.each(reservationsByCategoryHolder.firstChild.childNodes, function(legendNode, index){
+        helpers.addEvent(legendNode, 'mouseover', function(){
+          var activeSegment = reservationsByCategoryChart.segments[index];
+          activeSegment.save();
+          activeSegment.fillColor = activeSegment.highlightColor;
+          reservationsByCategoryChart.showTooltip([activeSegment]);
+          activeSegment.restore();
+        });
+      });
+      helpers.addEvent(reservationsByCategoryHolder.firstChild, 'mouseout', function(){
+        reservationsByCategoryChart.draw();
+      });
+      reservationsByCategoryCanvas.parentNode.appendChild(reservationsByCategoryHolder.firstChild);
+
       // Reservations by state
+      var reservationsByStateCanvas = document.getElementById("reservations_by_state_graphic");      
   	  var reservationsByStateCtx = document.getElementById("reservations_by_state_graphic").getContext("2d");
       var reservationsByStateOptions = { //String - A legend template
         legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
       };
       var reservationsByStateChart = new Chart(reservationsByStateCtx).Doughnut(dashboardModel.reservationsByStateData,reservationsByStateOptions);
 
+      var reservationsByStateHolder = document.createElement('div');
+      reservationsByStateHolder.innerHTML = reservationsByStateChart.generateLegend();
+      // Include a html legend template after the module doughnut itself
+      helpers.each(reservationsByStateHolder.firstChild.childNodes, function(legendNode, index){
+        helpers.addEvent(legendNode, 'mouseover', function(){
+          var activeSegment = reservationsByStateChart.segments[index];
+          activeSegment.save();
+          activeSegment.fillColor = activeSegment.highlightColor;
+          reservationsByStateChart.showTooltip([activeSegment]);
+          activeSegment.restore();
+        });
+      });
+      helpers.addEvent(reservationsByStateHolder.firstChild, 'mouseout', function(){
+        reservationsByStateChart.draw();
+      });
+      reservationsByStateCanvas.parentNode.appendChild(reservationsByStateHolder.firstChild);
+
+
       // Last 30 days reservations 
   	  var last30DaysReservationsCtx = document.getElementById("last_30_days_reservations_graphic").getContext("2d");
       var last30DaysReservationsOptions = { //String - A legend template
-        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>",
+        scaleOverride: true, scaleStartValue: 0, scaleStepWidth: Math.max.apply(null, dashboardModel.last30DaysReservationsData.datasets[0].data)/10, scaleSteps: 10, scaleIntegersOnly: true
       };
       var last30DaysReservationsChart = new Chart(last30DaysReservationsCtx).Line(dashboardModel.last30DaysReservationsData,last30DaysReservationsOptions);
 

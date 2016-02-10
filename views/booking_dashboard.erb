@@ -1,4 +1,38 @@
+<style>
+.doughnut-legend {
+  display: inline-block;
+  position: absolute;
+}
+.doughnut-legend li {
+      list-style-type: none;
+}
+.doughnut-legend li span {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    margin-right: 10px;
+}
+</style>
 <div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_12">
+      <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.day_work%></div> 
+    </div>
+    <div class="grid_4" style="min-height: 10em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@pickup_today%></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.delivery%></div>
+    </div>
+    <div class="grid_4" style="min-height: 10em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@transit_today%></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.transit%></div>      
+    </div>  
+    <div class="grid_4" style="min-height: 10em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@delivery_today%></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.return%></div>     
+    </div>          
+  </div>  
   <div class="container_12">
   	<div class="grid_12">
     	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.summary%> <%=@year%></div> 
@@ -17,43 +51,28 @@
     </div>	        	
   </div>
   <div class="container_12">
-    <div class="grid_4">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_day%> <%=@year%>
-    	</div>    	
-        <canvas id="reservations_by_day_graphic" width="320" height="240"></canvas>
-    </div>
-    <div class="grid_4">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_category%> <%=@year%></div>        	
-        <canvas id="reservations_by_category_graphic" width="320" height="240"></canvas>
+    <div class="grid_6">
+    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_category%> <%=@year%></div>
+        <div>        	
+          <canvas id="reservations_by_category_graphic" width="320" height="240" style="display:inline-block"></canvas>
+        </div>
     </div>	
-    <div class="grid_4">
+    <div class="grid_6">
     	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_state%> <%=@year%></div>  
         <canvas id="reservations_by_state_graphic" width="320" height="240"></canvas>
 
     </div>	        	
   </div>
   <div class="container_12">
-    <div class="grid_12">
+    <div class="grid_4">
+      <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_day%> <%=@year%>
+      </div>      
+        <canvas id="reservations_by_day_graphic" width="320" height="240"></canvas>
+    </div>
+    <div class="grid_8">
     	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.last_30_days_reservations%></div>         	
-        <canvas id="last_30_days_reservations_graphic" width="960" height="240"></canvas>
+        <canvas id="last_30_days_reservations_graphic" width="640" height="240"></canvas>
 
     </div>
   </div>  
-  <div class="container_12">
-  	<div class="grid_12">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.day_work%></div> 
-  	</div>
-    <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@pickup_today%></div>
-    	<div class="centered_text smaller_text"><%=t.booking_dashboard.delivery%></div>
-    </div>
-    <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@transit_today%></div>
-    	<div class="centered_text smaller_text"><%=t.booking_dashboard.transit%></div>    	
-    </div>	
-    <div class="grid_4" style="min-height: 10em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@delivery_today%></div>
-    	<div class="centered_text smaller_text"><%=t.booking_dashboard.return%></div>    	
-    </div>        	
-  </div>
 </div>
