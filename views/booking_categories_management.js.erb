@@ -76,15 +76,6 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       });
 
-      $('#stock_control').bind('change', function() {
-         if ($(this).attr('checked')) {
-           $('#stock_container').show();
-         }
-         else {
-           $('#stock_container').hide();
-         }
-      });
-
     },
 
     adaptFormData : function(data) {

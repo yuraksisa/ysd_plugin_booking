@@ -269,6 +269,7 @@ module Sinatra
           locals.store(:bookings_page_size, 20)
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+          locals.store(:booking_payment_enabled, SystemConfiguration::Variable.get_value('booking.payment', false))
 
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
@@ -292,6 +293,28 @@ module Sinatra
            end
 
         end 
+        
+        #
+        # Get the product occupation for a month
+        #
+        app.get '/admin/booking/monthly-occupation', :allowed_usergroups => ['booking_manager','staff'] do
+
+          today = Date.today
+          
+          @month = params[:month].to_i == 0 ? today.month : params[:month].to_i
+          @year = params[:year].to_i == 0 ? today.year : params[:year].to_i
+          @product = params[:product]
+
+          @period = Date.civil(@year, @month)
+          @next_period = @period >> 1
+          @previous_period = @period << 1
+
+          @days = Date.civil(@year, @month, -1).day
+          @data = BookingDataSystem::Booking.monthly_occupation(@month, @year, @product)
+          
+          load_page :monthly_occupation
+
+        end
 
       end
 

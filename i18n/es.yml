@@ -126,7 +126,8 @@ booking_console:
   items: Stock
   prices: Precios
   reservations: Reservas
-  planning: Planning    
+  planning: Planning 
+  monthly_occupation: Ocupación mensual   
   period: Período
   requested: Solicitudes
   confirmed: Confirmadas
@@ -493,7 +494,7 @@ booking_management:
     deposit_state: Info. depósito 
     comments: Comentarios    
     notifications:
-      title: Notificaciones enviadas al cliente
+      title: Notificaciones
       sent: Enviado 
       not_sent: No enviado
       send_again: Enviar

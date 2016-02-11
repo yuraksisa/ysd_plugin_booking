@@ -27,9 +27,9 @@ module Sinatra
 
         end
 
-        app.get '/admin/simple/booking/hourly-occupation', :allowed_usergroups => ['booking_manager'] do 
+        app.get '/admin/simple/booking/daily-occupation', :allowed_usergroups => ['booking_manager'] do 
 
-          load_page :hourly_occupation
+          load_page :daily_occupation
 
         end
 

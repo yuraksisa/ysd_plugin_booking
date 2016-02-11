@@ -9,16 +9,16 @@ module Sinatra
 
 
         #
-        # Get booking hourly occupation
+        # Get booking daily occupation
         #
-        app.get '/api/simple/booking/hourly-occupation' do
+        app.get '/api/simple/booking/daily-occupation' do
 
            date = DateTime.now
            if params[:date]
              date = DateTime.strptime(params[:date], '%Y-%m-%d')
            end
 
-           data = BookingDataSystem::Booking.hourly_occupation(date)
+           data = BookingDataSystem::Booking.daily_occupation(date)
 
            data.to_json
 

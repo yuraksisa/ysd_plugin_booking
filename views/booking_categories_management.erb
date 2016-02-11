@@ -172,14 +172,14 @@
               <%% if (entity) { %>
               <input type="hidden" name="code" value="<%%=entity.code%>"/>
               <%% } %>              
+              <div id="stock_container" class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.stock.label%></label>
+                <input type="text" class="fieldcontrol" name="stock" id="stock" <%% if (entity){%>value="<%%=entity.stock%>" <%%}%>/>
+              </div>              
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.stock_control.label%></label>
                 <input type="checkbox" name="stock_control" value="true" id="stock_control" <%% if (entity && entity.stock_control) { %>checked="checked"<%%}%>/>
               </div>                         
-              <div id="stock_container" class="formrow" <%% if (entity == null || (entity && entity.stock_control == false)){%>style="display:none"<%%}%>}>
-                <label class="fieldtitle"><%= t.booking_category_management.form.stock.label%></label>
-                <input type="text" class="fieldcontrol" name="stock" id="stock" <%% if (entity){%>value="<%%=entity.stock%>" <%%}%>/>
-              </div>
               <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                 <div class="navigation-bar-crud-buttons">
                   <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>

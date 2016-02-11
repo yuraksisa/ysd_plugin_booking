@@ -658,6 +658,20 @@ module Sinatra
 
         end
 
+        app.post '/api/booking/not-allow-payment/:booking_id', 
+          :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
+            booking.force_allow_payment = false
+            booking.save
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end        
+
         #
         # Assign a booking item to a booking line resource
         #
