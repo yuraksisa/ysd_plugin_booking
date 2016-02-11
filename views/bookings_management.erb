@@ -225,11 +225,19 @@
           </li>          
           <% end %>
           <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="payments_tab" href="#payments_tab"><%= t.booking_management.form.charges %></a>
+              <a name="charges_tab" href="#charges_tab"><%= t.booking_management.form.charges_tab %></a>
           </li> 
+          <%% if (entity.total_pending > 0 ) { %>
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="payment_tab" href="#payment_tab"><%= t.booking_management.form.payment_tab %></a>
+          </li>           
+          <%% } %>
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="resources_tab" href="#resources_tab"><%= t.booking_management.form.booking_resources.title %></a>
           </li>  
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="planning_tab" href="#planning_tab"><%= t.booking_management.form.planning_tab %></a>
+          </li>            
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="notifications_tab" href="#notifications_tab"><%= t.booking_management.form.notifications.title %></a>
           </li>
@@ -255,12 +263,22 @@
          </div>
          <% end %>
 
-         <div id="payments_tab" class="top-margin-1line">
-           <%= partial :booking_management_payments %>  
+         <div id="charges_tab" class="top-margin-1line">
+           <%= partial :booking_management_charges %>  
          </div>
+         
+         <%% if (entity.total_pending > 0 ) { %>
+         <div id="payment_tab" class="top-margin-1line">
+           <%= partial :booking_management_payment, :locals => {:booking_payment_enabled => booking_payment_enabled} %>  
+         </div>
+         <%% } %>
 
          <div id="resources_tab" class="top-margin-1line">
              <%= partial :booking_management_resources, :locals => {:booking_item_family => booking_item_family} %>
+         </div>
+
+         <div id="planning_tab" class="top-margin-1line">
+             <%= partial :booking_management_planning %>
          </div>
 
          <div id="notifications_tab" class="top-margin-1line">

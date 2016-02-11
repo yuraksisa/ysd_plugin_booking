@@ -1,19 +1,20 @@
+         <div class="overflow all-space" style="border:1px solid #EEE">
+           <div class="container_12">
+
              <div class="grid_6"> 
                <div id="linked_bookings">
                </div>          
-             </div>          
-             <div class="grid_6">
-               <div class="all-space">
+               <div>
                  <%% if (entity.main_booking_id && entity.main_booking_id != null) { %>
                  <div>
-                   <button type="button" class="form-button black-button element-action-button top-margin-1line" id="unlink_booking" style="display: block; margin: 1.618em auto" 
+                   <button type="button" class="form-button red-button element-action-button top-margin-1line" id="unlink_booking" style="display: block; margin: 1.618em auto" 
                      data-action-method="POST"
                      data-action-url="/api/booking/unlink/<%%=entity.id%>"
                      data-confirm-message="<%=t.booking_management.form.unlink_booking_button_message%>"><%=t.booking_management.form.booking_single%></button>
                  </div>
                  <%% } else { %>
                  <div>
-                   <button type="button" class="form-button black-button top-margin-1line" id="link_booking" style="display: block; margin: 0 auto"><%=t.booking_management.form.booking_group%></button>
+                   <button type="button" class="form-button black-button" id="link_booking" style="background: none; color:black;text-decoration:underline"><%=t.booking_management.form.booking_group%></button>
                  </div>                  
                  <%% } %>
                  <form name="main_booking" id="main_booking_form" style="display:none">
@@ -39,3 +40,5 @@
                  </form>
                </div>
              </div>
+            </div>
+          </div>

@@ -25,7 +25,7 @@
              <div class="grid_3">
                <div style="height: 2.5em" class="all-space bottom-separator">
                   <%% if (entity.status != 'cancelled') { %>
-                  <button class="form-button green-button element-action-button" id="return_booking_button" style="width:95%"
+                  <button class="form-button blue-button element-action-button" id="return_booking_button" style="width:95%"
                       data-action-method="POST"
                       data-action-url="/api/booking/send-customer-req-notification/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.notifications.resend_confirmation%>">
@@ -35,7 +35,7 @@
                </div>
                <div style="height: 2.5em" class="all-space bottom-separator">
                   <%% if (entity.status != 'cancelled' && entity.pay_now) { %>
-                  <button class="form-button green-button element-action-button" id="return_booking_button" style="width:95%"
+                  <button class="form-button blue-button element-action-button" id="return_booking_button" style="width:95%"
                       data-action-method="POST"
                       data-action-url="/api/booking/send-customer-req-notification-pay/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.notifications.resend_confirmation%>">
@@ -45,7 +45,7 @@
                </div>
                <div style="height: 2.5em" class="all-space bottom-separator">
                   <%% if (entity.status != 'pending_confirmation' && entity.status != 'cancelled') { %>
-                  <button class="form-button green-button element-action-button" id="return_booking_button" style="width:95%"
+                  <button class="form-button blue-button element-action-button" id="return_booking_button" style="width:95%"
                       data-action-method="POST"
                       data-action-url="/api/booking/send-customer-conf-notification/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.notifications.resend_confirmation%>">
@@ -55,7 +55,7 @@
                </div>
                <div style="height: 2.5em" class="all-space">
                   <%% if (entity.status != 'cancelled' && entity.force_allow_payment) { %>
-                  <button class="form-button green-button element-action-button" id="return_booking_button" style="width:95%"
+                  <button class="form-button blue-button element-action-button" id="return_booking_button" style="width:95%"
                       data-action-method="POST"
                       data-action-url="/api/booking/send-customer-pay-enabled/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.notifications.resend_confirmation%>">

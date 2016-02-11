@@ -422,7 +422,9 @@ booking_management:
     flight_tab: Datos del vuelo
     driver_tab: Datos conductor/contacto
     weight_height_tab: Peso/Altura
-    payment_tab: Resumen cobros
+    charges_tab: Detalle cobros
+    payment_tab: Pago
+    planning_tab: Planning
     other_tab: Otros datos
     deposit_received: Depósito
     confirm_button: 
@@ -441,12 +443,15 @@ booking_management:
       label: Asignar
       message: ¿Desea asignar el coche?
     allow_payment_button:
-      label: Forzar pago
-      message: ¿Desea forzar el pago online de esta reserva?
+      label: Permitir pago
+      message: ¿Desea permitir el pago online de esta reserva?
+    not_allow_payment_button:
+      label: No permitir pago
+      message: ¿Desea evitar que pueda realizar el pago online de esta reserva?      
     change_dates: Cambiar fechas
-    payment_not_allowed: El pago online no está forzado (manda la configuración)
-    force_allow_payment: Pago online forzado por el gestor
-    expired: Excedido tiempo pago depósito
+    payment_not_allowed: No se puede realizar el pago online de la reserva
+    force_allow_payment: Pago online permitido
+    expired: Se ha excedido el tiempo para realizar el pago del depósito
     id: Localizador reserva
     creation_date: Reserva registrada
     status: Estado
@@ -562,7 +567,7 @@ booking_management:
     user_agent_browser: Navegador
     user_agent_version: Versión
     user_agent_os: Sistema Operativo
-    new_charge: Registrar pago
+    new_charge: Registrar nuevo cobro
     audit: Auditoría
   charge_form:
     title: Cobro

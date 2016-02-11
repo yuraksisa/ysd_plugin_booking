@@ -8,6 +8,10 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
  
   function BookingHook() {
 
+    this.stockCategory = {};
+    this.stockIds = [];
+    this.stockDetail = [];
+
     this.statusDescription = {
        'pending_confirmation' : '<%= t.booking_status.pending_confirmation%>',
        'confirmed' : '<%= t.booking_status.confirmed%>',
@@ -57,10 +61,17 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
        $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
        
+       // Configure resources combo 
        var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
-       var valueModel = (entity != null && entity.booking_item != null) ? entity.booking_item.reference : null; 
-       var selectorModel = new SelectSelector('booking_item_reference', dataSourceModel, valueModel, true );
-
+    
+       for (var lineIdx=0; lineIdx < entity.booking_lines.length; lineIdx++) { 
+         for (var resourceIdx=0; resourceIdx < entity.booking_lines[lineIdx].booking_line_resources.length; resourceIdx++) { 
+           var valueModel = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].booking_item_reference; 
+           var selectorModel = new SelectSelector('booking_item_reference_'+entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id,
+                                                  dataSourceModel, valueModel, true );
+         }
+       }
+              
        $.ajax({
                type: 'GET',
                url : '/api/bookings/linked/'+entity.id,
@@ -74,15 +85,10 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                    }
                  }
                  else {
-                   $('#linked_bookings').html('<div class="all-space"><%=t.booking_management.form.booking_single_text%></div>');
+                   $('#linked_bookings').html('');
                  }
                }
               });       
-
-       $('#booking_item_reference').bind('change', function() {
-         var url = '/api/booking/assign/' + entity.id + '/' + encodeURIComponent($('#booking_item_reference').val());
-         $('#assign_item_button').attr('data-action-url', url);
-       });
 
        $('#link_booking').bind('click', function() {
            $('#main_booking_form').show();
@@ -112,6 +118,9 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         self.updateLineResource($(this)[0]);
       });
       $('.customer_weight').bind('change', function() {
+        self.updateLineResource($(this)[0]);
+      });
+      $('.booking_item_reference').bind('change', function() {
         self.updateLineResource($(this)[0]);
       });
       $('#new_charge').bind('click', function(){

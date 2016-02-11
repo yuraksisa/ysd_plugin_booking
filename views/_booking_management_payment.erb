@@ -1,0 +1,34 @@
+          <div class="top-margin all-space" style="border:1px solid #EEE">
+            <div class="container_12">
+              <div class="grid_6">  
+                  <div class="left-margin">
+                    <%% if (entity.status != 'cancelled') { %>
+                      <%% if ((<%=!booking_payment_enabled%> || entity.is_expired) && !entity.force_allow_payment) { %>
+                        <div class="guiblock error-status bottom-margin">
+                          <%=t.booking_management.form.payment_not_allowed%>
+                        </div>  
+                        <button class="form-button blue-button element-action-button" id="allow_payment_button" 
+                                title="<%=t.booking_management.form.allow_payment_button.label%>" 
+                                data-action-method="POST"
+                                data-action-url="/api/booking/allow-payment/<%%=entity.id%>"
+                                data-confirm-message="<%=t.booking_management.form.allow_payment_button.message%>">
+                                <%=t.booking_management.form.allow_payment_button.label%>
+                        </button>
+                      <%% } else { %>
+                        <div class="guiblock confirmed-status"><%=t.booking_management.form.force_allow_payment%>
+                        </div>    
+                        <%% if (entity.force_allow_payment) { %>
+                        <button class="form-button red-button element-action-button" id="not_allow_payment_button" 
+                                title="<%=t.booking_management.form.not_allow_payment_button.label%>" 
+                                data-action-method="POST"
+                                data-action-url="/api/booking/not-allow-payment/<%%=entity.id%>"
+                                data-confirm-message="<%=t.booking_management.form.not_allow_payment_button.message%>">
+                                <%=t.booking_management.form.not_allow_payment_button.label%>
+                        </button>
+                        <%% } %>
+                      <%% } %>  
+                    <%% } %>  
+                  </div> 
+              </div>
+            </div>
+          </div>

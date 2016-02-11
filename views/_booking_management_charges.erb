@@ -1,6 +1,7 @@
-             <div class="bottom-margin bottom-space" style="border:1px solid #EEE">        
-                <div class="left-margin">
-                <%% if (entity.charges.length > 0) { %>
+        <div class="container_12">
+          <div class="grid_7">
+             <div class="bottom-margin bottom-space" style="border:1px solid #EEE">      
+                  <%% if (entity.charges.length > 0) { %>
                      <table class="table bottom-margin-line bottom-separator">
                         <thead class="table-header">
                           <tr>
@@ -21,20 +22,20 @@
                           <%% } %>
                         </tbody>
                      </table>        
-                <%% } else { %>
-                  <p><%=t.booking_management.form.no_charges%></p>
-                <%% } %>  
-
-                <div class="top-margin-top-space">
-                   <button id="new_charge" type="button" class="form-button black-button">
+                  <%% } else { %>
+                    <p class="all-space"><%=t.booking_management.form.no_charges%></p>
+                  <%% } %>  
+            </div>
+          </div>
+          <div class="grid_5">
+                <div class="top-margin-top-space left-margin">
+                   <button id="new_charge" type="button" class="form-button green-button" style="background: none; color:black;text-decoration:underline">
                      <%=t.booking_management.form.new_charge%>
                    </button>
 
                   <form name="charge" style="display:none">
                     <div class="grid_6">
-                      <input type="hidden" name="id" value="<%%=entity.id%>"/>             
-                      <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline"><%= t.booking_management.charge_form.title %></div>
-      
+                      <input type="hidden" name="id" value="<%%=entity.id%>"/>                   
                       <div class="formrow">
                         <label for="date" class="fieldtitle"><%=t.booking_management.charge_form.date%></label>
                         <input type="text" name="date" id="date" class="fieldcontrol" size="30" maxlength="16"/>
@@ -61,38 +62,5 @@
                     </div>
                   </form>
                 </div>
-
-                <div class="top-separator top-margin top-space" style="width:90%">
-
-                     <%% if (entity.is_expired) { %>
-                     <div class="element_template">
-                       <div class="entity-field">
-                          <span class="entity-fieldvalue error-status">
-                            <%= t.booking_management.form.expired %>
-                          </span>
-                       </div>              
-                     </div> 
-                     <%% } %>    
-                
-                     <div>
-                         <%% if (entity.status != 'cancelled') { %>
-                           <%% if (!entity.force_allow_payment) { %>
-                            <div class="error-status">
-                              <%=t.booking_management.form.payment_not_allowed%>
-                            </div>  
-                            <button class="top-margin form-button black-button element-action-button" id="allow_payment_button" 
-                                title="<%=t.booking_management.form.allow_payment_button.label%>" 
-                                data-action-method="POST"
-                                data-action-url="/api/booking/allow-payment/<%%=entity.id%>"
-                                data-confirm-message="<%=t.booking_management.form.allow_payment_button.message%>">
-                                <%=t.booking_management.form.allow_payment_button.label%>
-                            </button>
-                           <%% } 
-                               else { %>
-                            <span class="confirmed-status"><%=t.booking_management.form.force_allow_payment%></span>    
-                           <%% } %>  
-                        <%% } %>  
-                     </div> 
-                </div>
-              </div>
             </div>
+          </div>
