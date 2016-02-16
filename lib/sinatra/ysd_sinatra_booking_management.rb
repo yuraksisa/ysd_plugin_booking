@@ -2,6 +2,8 @@ require 'ui/ysd_ui_entity_management_aspect_render' unless defined?UI::EntityMan
 require 'ui/ysd_ui_guiblock_entity_aspect_adapter'
 require 'ysd_plugin_cms' unless defined?GuiBlock::Audit
 require 'ysd_md_booking' unless defined?BookingDataSystem::Booking
+require 'prawn' unless defined?Prawn
+require 'prawn/format' unless defined?Prawn
 
 module Sinatra
   module YSD
@@ -29,19 +31,6 @@ module Sinatra
           @transit_today = BookingDataSystem::Booking.count_transit(today)
           @delivery_today = BookingDataSystem::Booking.count_delivery(today)
           load_page(:booking_dashboard)
-        end
-
-        #
-        # Booking console
-        #
-        app.get '/admin/booking/console', :allowed_usergroups => ['booking_manager', 'staff'] do
-          
-          locals = {}
-          if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
-            product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
-            locals.store(:product_family, product_family)
-          end
-          load_page(:console_booking, :locals => locals)
         end
 
         #
@@ -267,26 +256,9 @@ module Sinatra
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
         end
-
-        #
-        # Contract
-        #
-        app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager','staff'] do
-
-           if booking = BookingDataSystem::Booking.get(params[:id])
-             contract = ContentManagerSystem::Template.first({:name => 'booking_contract'})
-             if contract
-               template = ERB.new contract.text     
-               message = template.result(binding)
-             else
-               status 404
-             end              
-           else
-             status 404
-           end
-
-        end 
         
+        # ------------------ Occupation ---------------------
+
         #
         # Get the product occupation for a month
         #
@@ -308,6 +280,69 @@ module Sinatra
           load_page :monthly_occupation
 
         end
+
+        # ------------------- Contract --------------------
+
+        #
+        # Contract
+        #
+        app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager','staff'] do
+
+           if booking = BookingDataSystem::Booking.get(params[:id])
+             if contract_template = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+               content_type 'application/pdf'
+               eval contract_template.text
+             else
+               status 404
+             end 
+           else
+             status 404
+           end
+
+        end         
+
+        # ------------------- Reports ---------------------
+
+        #
+        # Pickup and return
+        #
+        app.get '/admin/booking/console', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          locals = {}
+          if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
+            product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
+            locals.store(:product_family, product_family)
+          end
+          load_page(:console_booking, :locals => locals)
+        end
+
+        #
+        # Reservations report
+        #
+        app.get '/admin/booking/reports/reservations', :allowed_usergroups => ['booking_manager'] do 
+          year = Date.today.year
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+          @reservations = BookingDataSystem::Booking.all(
+             :conditions => {:date_from.gte => date_from,
+                             :date_to.lte => date_to,
+                             :status.not => :cancelled},
+             :order => [:date_from, :time_from])
+          locals = {}
+          locals.store(:booking_reservation_starts_with,
+              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
+          load_page(:report_reservations, :locals => locals)
+        end  
+
+        #
+        # Customers report
+        #
+        app.get '/admin/booking/reports/customers', :allowed_usergroups => ['booking_manager'] do
+
+          @item_count, @reservations = BookingDataSystem::Booking.customer_search(params[:search],{})
+          load_page(:report_customers)
+
+        end     
 
       end
 

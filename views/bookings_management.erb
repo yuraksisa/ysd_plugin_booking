@@ -17,7 +17,7 @@
        <tr>
          <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_management.table.id %></th>
          <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.booking_management.table.creation_date %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:24%"><%= t.booking_management.table.customer %></th>
+         <th class="table-header-title" scope="col" style="width:24%"><%= t.booking_management.table.customer %></th>
          <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.booking_management.table.status %></th>
          <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.payment_status %></th>  
          <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.category %></th>                
@@ -50,7 +50,7 @@
     <tr class="table-row element-navigation-detail" rel="<%%= index %>" id="element_row_<%%=index%>">
       <td class="table-cell"><%%= entity.id %></td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.creation_date) %></td>
-      <td class="table-cell centered_text"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
+      <td class="table-cell"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
       <td class="table-cell centered_text">
         <span class="smaller_text <%%=self.model.entityHooks[0].statusClass(entity)%> element-status">
           <%%= self.model.entityHooks[0].statusDescription[entity.status] %>
@@ -84,9 +84,9 @@
 
 <script type="text/tmpl" id="element_template_form">
      
-     <div class="element-detail guiblock overflow">
+     <div class="element-detail all-border-solid-light overflow bottom-margin-1line">
 
-        <div class="grid_6">
+        <div class="grid_5">
             <div class="element_template">
               <div class="entity-field">
                 <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.id %></span>
@@ -122,10 +122,9 @@
                  </span>
                </div>
             </div> 
-            <%= partial :booking_management_workflow %>
         </div>
       
-        <div class="grid_6">
+        <div class="grid_5">
            <div class="element_template">
              <div class="entity-field">
                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.date_from %></span>
@@ -182,18 +181,17 @@
                <span class="entity-fieldvalue"><%%= entity.days %></span>
              </div>
            </div>
-           <%% if (entity.status != 'cancelled') { %>
-           <div class="element_template top-margin">
-             <div class="form-button orange-button centered_text" style="width:95%"> 
-               <a href="/admin/booking/edit/pickup-return/<%%=entity.id%>"><%= t.booking_management.form.change_dates %></a>    
-             </div>       
-           </div>
-           <%% } %>
+        </div>
+        <div class="grid_2">
+          <div class="container_12">
+            <div class="grid_12 smaller_text">      
+               <%= partial :booking_management_actions %>
+            </div>
+          </div>
         </div>
 
      </div>  
         
-
      <div class="container_12">
         <div class="grid_6">
           <%= partial :booking_management_customer %>
@@ -305,8 +303,7 @@
          </div>
 
        </div>
-      
-  
+
      </form>
 
      <div id="complements">

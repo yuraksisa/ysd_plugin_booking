@@ -1,0 +1,65 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Listado de reservas</h2>
+</div>
+<div class="admin_content_wrapper">
+  <div>
+    <% last_month = nil %>
+    <% @reservations.each do |reservation| %>  
+      <% if last_month != reservation.date_from.month %>
+      <% unless last_month.nil? %>    
+        </tbody>
+      </table>
+      <% end %>     
+      <h3><%=t.months[reservation.date_from.strftime('%B').downcase]%> <%=reservation.date_from.year%></h3> 
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
+            <th class="table-cell" scope="col" style="width:2.5em">Localizador</th>
+            <th class="table-cell" scope="col" style="width:5em">Cliente</th>
+            <th class="table-cell" scope="col" style="width:2em">Teléfono</th>
+            <th class="table-cell" scope="col" style="width:4.5em">Email</th>
+            <th class="table-cell" scope="col" style="width:4em">Estado</th>
+            <th class="table-cell" scope="col">Productos</th>
+            <th class="table-cell" scope="col">Total</th>
+            <th class="table-cell" scope="col">Pagado</th>
+            <th class="table-cell" scope="col">Pendiente</th>                    
+          </tr>
+        </thead>
+        <tbody>      
+      <% end %>  
+        <tr class="table-row">
+          <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <%=reservation.time_from%></td>
+          <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <%=reservation.time_to%></td>
+          <td class="table-cell"><%=reservation.id%></td>
+          <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
+          <td class="table-cell"><%=reservation.customer_phone%> <%=reservation.customer_mobile_phone%></td>
+          <td class="table-cell"><%=reservation.customer_email%></td>
+          <td class="table-cell centered_text"><%=t.booking_status[reservation.status]%></td>
+          <td class="table-cell">
+            <% reservation.booking_lines.each do |booking_line| %>
+              <div><%= booking_line.item_id %><%if booking_reservation_starts_with == :shopcart%>: <%=booking_line.quantity%><%end%></div>
+            <% end %>
+          </td>
+          <td class="table-cell right_text"><%="%.2f" % reservation.total_cost%></td>
+          <td class="table-cell right_text"><%="%.2f" % reservation.total_paid%></td>
+          <td class="table-cell right_text"><%="%.2f" % reservation.total_pending%></td>
+        </tr>
+    <% last_month = reservation.date_from.month %>
+    <% end %>
+        </tbody>
+      </table>
+  </div>
+</div>

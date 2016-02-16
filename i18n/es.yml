@@ -142,6 +142,8 @@ booking_console:
   timetables: Horarios
   receipts: Cobros  
   information_requests: Solicitudes información
+  report_reservations: Reservas alquiler
+  report_customers: Clientes reservas
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas
@@ -160,13 +162,16 @@ booking_return:
   title: Recogidas/Salidas
 booking_list:
   id: Localizador
-  item: Recurso
+  item: Stock
   date_from: Fecha entrega
   date_to: Fecha devolución
   place: Lugar
   customer: Cliente
   customer_phone: Teléfono
   status: Estado
+  flight: Vuelo
+  customer_email: Email
+  total_pending: Pendiente
 booking_status:
   pending_confirmation: Pendiente
   confirmed: Confirmado
@@ -412,6 +417,8 @@ booking_management_edit:
 booking_management:
   title: Reservas
   description: <p>Consultar las reservas.</p>
+  print_contract: Imprimir contrato
+  print_contract_short: Contrato
   table:
     id: Id
     creation_date: Fecha recepción
@@ -444,13 +451,13 @@ booking_management:
       label: Confirmar
       message: ¿Desea confirmar la reserva?
     pickup_button: 
-      label: Recogida/Entrada
-      message: ¿Desea indicar que se ha realizado la recogida/entrada?
+      label: Registrar entrega/entrada
+      message: ¿Desea indicar que se ha realizado la entrega/entrada?
     return_button: 
-      label: Devolución/Salida
+      label: Registrar devolución/salida
       message: ¿Desea indicar que se ha realizado la devolución/salida?
     cancel_button:   
-      label: Cancelar
+      label: Cancelar reserva
       message: ¿Desea cancelar la solicitud reserva?
     assign_button: 
       label: Asignar
@@ -466,7 +473,7 @@ booking_management:
     force_allow_payment: Pago online permitido
     expired: Se ha excedido el tiempo para realizar el pago del depósito
     id: Localizador reserva
-    creation_date: Reserva registrada
+    creation_date: Reserva recibida
     status: Estado
     source: Origen
     promotion_code: Código de promoción

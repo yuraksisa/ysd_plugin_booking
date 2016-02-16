@@ -1,0 +1,22 @@
+<style>
+  #booking_actions div, #booking_actions button {
+    margin-bottom: 0.5em;
+  }
+  #booking_actions div {
+    width: 13em;
+  }  
+  #booking_actions button {
+    width: 14em;
+  }
+</style>
+         <div id="booking_actions" class="all-space" style="overflow: hidden">
+           <div style="text-align: right">
+             <%= partial :booking_management_workflow %>
+             <div class="form-button"><a href="/admin/booking/contract/<%%=entity.id%>" target="_blank"><%=t.booking_management.print_contract%></a></div>
+             <%% if (entity.status != 'cancelled') { %>
+             <div class="form-button centered_text"> 
+               <a href="/admin/booking/edit/pickup-return/<%%=entity.id%>"><%= t.booking_management.form.change_dates %></a>    
+             </div>
+             <%% } %>  
+           </div>
+         </div>

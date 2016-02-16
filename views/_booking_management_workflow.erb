@@ -1,43 +1,41 @@
-            <div class="element_template top-margin">
                     <%% if (entity.status == 'pending_confirmation') { %>
-                    <button class="form-button green-button element-action-button" id="confirm_booking_button" 
-                      title="<%=t.booking_management.form.confirm_button.label%>" style="width:47%"
+                    <button class="form-button red-button element-action-button" id="cancel_booking_button" 
+                      title="<%=t.booking_management.form.cancel_button.label%>" 
+                      data-action-method="POST"
+                      data-action-url="/api/booking/cancel/<%%=entity.id%>"
+                      data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
+                      <%=t.booking_management.form.cancel_button.label%>
+                    </button>                      
+                    <button class="form-button element-action-button green-button" id="confirm_booking_button" 
+                      title="<%=t.booking_management.form.confirm_button.label%>"
                       data-action-method="POST"
                       data-action-url="/api/booking/confirm/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.confirm_button.message%>">
                       <%=t.booking_management.form.confirm_button.label%>
-                    </button>
-                    <button class="form-button red-button element-action-button" id="cancel_booking_button" 
-                      title="<%=t.booking_management.form.cancel_button.label%>" style="width:47%"
+                    </button>                          
+                   <%% } %>
+                   <%% if (entity.status == 'confirmed') {  %>                    
+                   <button class="form-button red-button element-action-button" id="cancel_booking_button" 
+                      title="<%=t.booking_management.form.cancel_button.label%>" 
                       data-action-method="POST"
                       data-action-url="/api/booking/cancel/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
                       <%=t.booking_management.form.cancel_button.label%>
-                    </button>                            
-                   <%% } %>
-                   <%% if (entity.status == 'confirmed') {  %>                    
-                   <button class="form-button blue-button element-action-button" id="pickup_booking_button" 
-                      title="<%=t.booking_management.form.pickup_button.label%>" style="width:47%"
+                   </button>                     
+                   <button class="form-button element-action-button blue-button" id="pickup_booking_button" 
+                      title="<%=t.booking_management.form.pickup_button.label%>" 
                       data-action-method="POST"
                       data-action-url="/api/booking/pickup/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.pickup_button.message%>">
                     <%=t.booking_management.form.pickup_button.label%>
-                   </button>
-                   <button class="form-button red-button element-action-button" id="cancel_booking_button" 
-                      title="<%=t.booking_management.form.cancel_button.label%>" style="width:47%"
-                      data-action-method="POST"
-                      data-action-url="/api/booking/cancel/<%%=entity.id%>"
-                      data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
-                      <%=t.booking_management.form.cancel_button.label%>
-                    </button>                     
+                   </button>                   
                    <%%  } %>
                    <%% if (entity.status == 'in_progress') { %>
-                   <button class="form-button black-button element-action-button" id="return_booking_button" 
-                      title="<%=t.booking_management.form.return_button.label%>"  style="width:95%"
+                   <button class="form-button element-action-button blue-button" id="return_booking_button" 
+                      title="<%=t.booking_management.form.return_button.label%>"
                       data-action-method="POST"
                       data-action-url="/api/booking/return/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.return_button.message%>">
                       <%=t.booking_management.form.return_button.label%>
                    </button>
                    <%% }%>
-            </div>

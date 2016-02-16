@@ -45,9 +45,9 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
       var dateFrom = $('#date_from').datepicker('getDate'); 
       var dateTo = $('#date_to').datepicker('getDate');
-      dateTo.setDate(dateFrom.getDate() + 7);
+      dateTo.setDate(dateFrom.getDate());
       $('#date_to').datepicker('setDate', dateTo );
-      $('#date_to').datepicker('option', 'minDate', dateFrom.add(7).days());
+      $('#date_to').datepicker('option', 'minDate', dateFrom);
 
     },
 
@@ -92,7 +92,7 @@ require(['jquery', 'ysdtemplate', 'datejs',
                   showTimezone: false, 
                   useLocalTimezone: true,
                   numberOfMonths:1, 
-                  minDate: new Date().add(7).days(),
+                  minDate: new Date(),
                   maxDate: new Date().add(365).days(),
                   dateFormat: 'dd/mm/yy',
                   onSelect: function(dateText) {

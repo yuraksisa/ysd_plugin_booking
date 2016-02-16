@@ -1,0 +1,39 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Listado de clientes</h2>
+</div>
+<div class="admin_content_wrapper">
+  <div>
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell left_text" scope="col" style="width:40%"><%= t.booking_management.table.customer %></th>
+            <th class="table-cell left_text" scope="col" style="width:25%"><%= t.booking_customers.table.phone %></th>
+            <th class="table-cell left_text" scope="col" style="width:25%"><%= t.booking_customers.table.email %></th>
+            <th class="table-cell left_text" scope="col" style="width:10%"><%= t.booking_customers.table.number_of_reservations %></th> 
+          </tr>
+        </thead>
+        <tbody>    
+          <% @reservations.each do |booking| %>  
+          <tr class="table-row">
+            <td class="table-cell"><%= booking.customer_surname %>, <%= booking.customer_name %></td>
+            <td class="table-cell"><%= booking.customer_phone %></td>
+            <td class="table-cell"><%= booking.customer_email %></td>
+            <td class="table-cell"><%= booking.num_of_reservations%></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+  </div>
+</div>
