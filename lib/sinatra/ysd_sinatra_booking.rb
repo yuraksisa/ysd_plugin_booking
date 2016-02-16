@@ -60,32 +60,25 @@ module Sinatra
 
             locals.store(:admin_mode, false)
             locals.store(:confirm_booking_url, '/api/booking')
-
             locals.store(:booking_reservation_starts_with,
               catalog ? catalog.selector.to_sym : SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
-
             locals.store(:booking_item_family, 
               catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
-
             locals.store(:booking_item_type,
               SystemConfiguration::Variable.get_value('booking.item_type'))
-       
             locals.store(:booking_payment,
               SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
-
             locals.store(:booking_deposit,
               SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
-
             locals.store(:booking_min_days,
               SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
-
             locals.store(:booking_payment_cadence,
               SystemConfiguration::Variable.get_value('booking.payment_cadence', '0').to_i)
-
             locals.store(:booking_allow_custom_pickup_return_place,
               SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
-
             locals.store(:booking, nil)
+            locals.store(:promotion_codes_active, ::Yito::Model::Rates::PromotionCode.active?(Date.today))
+            locals.store(:offer_discount, ::Yito::Model::Rates::Discount.active(Date.today).first)
 
             booking_js = catalog_template(catalog)
 
@@ -225,7 +218,7 @@ module Sinatra
           pass unless get_path("#{params[:customer]}-layout}")
           load_page('reserva-online'.to_sym, :layout => "#{params[:customer]}-layout".to_sym)
         end   
-           
+         
         #
         # Serves static content
         #

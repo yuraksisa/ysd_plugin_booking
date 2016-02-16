@@ -10,6 +10,14 @@
                 <span class="entity-fieldvalue"><%%= entity.source %></span>
               </div>
             </div> 
+            <%% if (entity.promotion_code != null) { %> 
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.promotion_code %></span>
+                <span class="entity-fieldvalue"><%%= entity.promotion_code %></span>
+              </div>
+            </div>             
+            <%% } %>
             <div class="element_template">
               <div class="entity-field">
                 <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.created_by_manager %></span>

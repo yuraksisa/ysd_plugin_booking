@@ -24,7 +24,7 @@
   border-radius: 5px 5px; /* iExplorer 9 */
 }
 
-#content-reserva #content-header {	
+#content-reserva #content-header {  
 }
 
 #content-reserva #content-body {
@@ -32,7 +32,7 @@
 }
 
 #content-reserva #content-footer {
- clear:both;	
+ clear:both;  
 }
 
 #content-reserva .logo-img { 
@@ -48,7 +48,7 @@
 }
 
 #content-reserva label.error {
-  color: #690404;	
+  color: #690404; 
   padding-left: 10px;
   float: left;
 }
@@ -71,7 +71,7 @@ color:#999999;
 }
 
 #content-reserva fieldset {
-  border-width: 0px; /* border-color: transparent does not work */	
+  border-width: 0px; /* border-color: transparent does not work */  
 
 }
 
@@ -81,7 +81,7 @@ color:#999999;
 
 #content-reserva .botones 
 {
-  cursor: pointer;	
+  cursor: pointer;  
 }
 
 #content-reserva legend {
@@ -93,7 +93,7 @@ color:#999999;
  /* font-size: 14px;*/
   font-weight: bold;
   width: 100%; /* To show the border in all the space */
-  border-bottom: 1px solid #CCC;	
+  border-bottom: 1px solid #CCC;  
 }
 
 #content-reserva .legend-second-level
@@ -108,7 +108,7 @@ color:#999999;
 
 #content-reserva .fieldset_description
 {
-  padding-left:3px;	
+  padding-left:3px; 
 }
 
 #content-reserva fieldset 
@@ -117,7 +117,7 @@ color:#999999;
 }
 
 #content-reserva label {
- /*font-size: 12px;	*/
+ /*font-size: 12px; */
  padding: 5px 0px 5px 0px;
 }
 
@@ -134,56 +134,56 @@ color:#999999;
 /* ------------------------------------ */
 
    .contentWrap {
-   	 padding-left : 15px;
-   	 padding-right: 15px;
+     padding-left : 15px;
+     padding-right: 15px;
    }
 
 /* use a semi-transparent image for the overlay */
-	#overlay {
+  #overlay {
         border: 1px solid gray;
-		height:450px;
-		  /* Esquinas redondeadas */
+    height:450px;
+      /* Esquinas redondeadas */
         -webkit-border-radius: 5px 5px; /* Safari  */ 
         -moz-border-radius: 5px 5px; /* Firefox */
         border-radius: 5px 5px; /* iExplorer 9 */
-	}
-	
-	/* container for external content. uses vertical scrollbar, if needed */
-	div.contentWrap {
-		height:441px;
-		overflow-y:auto;
-	}
-	
-	/* the overlayed element */
+  }
+  
+  /* container for external content. uses vertical scrollbar, if needed */
+  div.contentWrap {
+    height:441px;
+    overflow-y:auto;
+  }
+  
+  /* the overlayed element */
    .apple_overlay {
-	
-	   /* initially overlay is hidden */
-	   display:none;
-	
-	  /* growing background image */
-	  /*background-image:url(../img/overlay/white.png);*/
-	  background: white;
-	  color: black;
-	
-	  /* 
-		width after the growing animation finishes
-		height is automatically calculated
-	  */
- 	  width:640px;		
-	
-	  /* some padding to layout nested elements nicely  */
-	  padding:15px;
-	  margin: 5px;
+  
+     /* initially overlay is hidden */
+     display:none;
+  
+    /* growing background image */
+    /*background-image:url(../img/overlay/white.png);*/
+    background: white;
+    color: black;
+  
+    /* 
+    width after the growing animation finishes
+    height is automatically calculated
+    */
+    width:640px;    
+  
+    /* some padding to layout nested elements nicely  */
+    padding:15px;
+    margin: 5px;
 
    }
 
   /* default close button positioned on upper right corner */
   .apple_overlay .close {
-	background-image:url(../img/overlay/close.png);
-	position:absolute; right:-25px; top:-25px;
-	cursor:pointer;
-	height:35px;
-	width:35px;
+  background-image:url(../img/overlay/close.png);
+  position:absolute; right:-25px; top:-25px;
+  cursor:pointer;
+  height:35px;
+  width:35px;
   }
 
 /* ----------------------------- */
@@ -208,11 +208,11 @@ color:#999999;
 }
 
 #content-reserva #wizard-options a {
- padding-right: 20px;	
+ padding-right: 20px; 
 }
 
-#content-reserva #wizard-options a span {
- font-size: 1.618em;	
+#content-reserva #wizard-options a span.tab_id {
+ font-size: 1.618em;  
  padding: 0px 10px;  
  text-decoration: none;
  /* Esquinas redondeadas */
@@ -221,40 +221,40 @@ color:#999999;
  border-radius: 5px 5px; /* iExplorer 9 */
 }
 
-#content-reserva .active {	
+#content-reserva .active {  
   color: black;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 }
 
-#content-reserva .active span {
-  background-color: yellow;	
+#content-reserva .active span.tab_id {
+  background-color: yellow; 
 }
 
-#content-reserva .not-active {	
+#content-reserva .not-active {  
   color: black;
   font-weight: 300;
   text-decoration: none;
   cursor: pointer;
 }
 
-#content-reserva .not-active span {	
+#content-reserva .not-active span { 
   background-color: white;
-  color: black;	
+  color: black; 
   //border: 1px solid gray;
 }
 
-#content-reserva .not-enabled {	
-  color: #C2C2C2;
+#content-reserva .not-enabled { 
+  color: #888;
   font-weight: normal;
   text-decoration: none;
   cursor: default;
 }
 
-#content-reserva .not-enabled span {
+#content-reserva .not-enabled span.tab_id {
   background-color: #C2C2C2;
-  color: white;	
+  color: white; 
 }
 
 /* ----------------------------- */
@@ -265,8 +265,27 @@ color:#999999;
   height: 2em;
 }
 
+#date-selection {
+  border-top: 4px solid rgb(70, 136, 207);
+  background: white;
+}
+
 #form-search-item {
   padding: 0px 10px 10px 10px;
+/*
+  border-top: 4px solid rgb(70, 136, 207);
+ -webkit-border-radius: 5px; 
+ -moz-border-radius: 5px; 
+ border-radius: 5px; */   
+}
+
+#result {
+ background: white;
+ border: 1px solid #DDD;
+ -webkit-border-radius: 5px; 
+ -moz-border-radius: 5px; 
+ border-radius: 5px; 
+
 }
 
 #form-search-item div { /* Each components lines is displayed in a div */ 
@@ -274,13 +293,7 @@ color:#999999;
 }
 
 #button_calcular_tarifas {
-  background-image: -webkit-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
-  background-image: linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
-  background-image: -o-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
-  background-image: -moz-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
-  background-image: -webkit-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
-  background-image: -ms-linear-gradient(top, rgb(70, 136, 207) 25%, rgb(121, 169, 214) 71%);
-  background-image: -webkit-gradient( linear, left top, left bottom, color-stop(0.25, rgb(70, 136, 207)), color-stop(0.71, rgb(121, 169, 214)));  
+  background: rgb(70, 136, 207);
   padding: 1.618em;
   color: white;
   text-transform: uppercase;
@@ -298,7 +311,7 @@ color:#999999;
 }
 
 #content-reserva .columna3 {
-  width: 25%;	
+  width: 25%; 
 }
 
 #content-reserva .columna4 {
@@ -306,7 +319,7 @@ color:#999999;
 }
 
 #content-reserva .columna5 {
-  float: left;	
+  float: left;  
 }
 
 
@@ -324,8 +337,8 @@ color:#999999;
   }
 }
 
-#content-reserva div.car{	
-  margin-top: 5px; /* Margin between cars */
+#content-reserva div.car{ 
+  /*margin-top: 5px;*/ /* Margin between cars */
   min-height: 125px;  
   position: relative;
   clear: left;
@@ -333,11 +346,11 @@ color:#999999;
 } 
 
 #content-reserva div.car_detail_description {
- font-weight: bold;	
+ font-weight: bold; 
 }
 
 #content-reserva div.car_detail_cars {
- padding-top: 10px;	
+ padding-top: 10px; 
 }
 
 #content-reserva div.car_price {
@@ -352,17 +365,44 @@ color:#999999;
 
 
 #content-reserva div.car_price_total {
- /*overflow: hidden;*/	
+ /*overflow: hidden;*/  
  text-align: center;
  font-size: 2em;
  font-weight: 600;
 }
 
-#content-reserva div.car_price_booking {
-  text-align: center;		
+#content-reserva div.car_price_total_base {
+ /*overflow: hidden;*/  
+ text-align: center;
+ font-size: 1.2em;
+ font-weight: 600;
+ text-decoration: line-through;
+ color: #BBB;
 }
 
-#content-reserva .car_price span{	
+#content-reserva div.car_price_total_base_offer {
+ font-size: 0.9em;
+ color: red;
+ text-align: center;
+ font-weight: 600;
+}
+
+.detailed_price .car_price_total_base {
+  font-size: 0.8em;
+  color:#BBB;
+  text-decoration:line-through;
+}
+
+.detailed_price .car_price_total_base_offer {
+ font-size: 0.8em;
+ color: red;  
+}
+
+#content-reserva div.car_price_booking {
+  text-align: center;   
+}
+
+#content-reserva .car_price span{ 
   font-size: 36px;
   text-align: right;
   /*float:right;*/
@@ -383,23 +423,42 @@ color:#999999;
   /*float: right;*/
   min-width: 75px;
   min-height: 23px;
+  padding: 10px;
 }
+
+/* ------------------------------------------------ */
+/*  */
+/* ------------------------------------------------ */
+
+#other-tabs-header {
+  background: white;
+  padding: 5px;
+}
+
+#extras-selection {
+  background: white;
+  padding: 5px;
+}
+
 
 /* ------------------------------------------------ */
 /*           Formulario datos reserva               */
 /* ------------------------------------------------ */
 
 #form-reservation {
-	
+  
   display: none; /* In the beginning is not visible */
   overflow: hidden;
   margin-bottom: 10px;
   clear: both;
-  
+background: white;
+    padding: 1em;
+    border: 1px solid #DDD;
+    border-radius: 5px;  
 }
 
 #tblextras {
- padding: 5px;	
+ padding: 5px;  
 }
 
 #tblextras thead {
@@ -412,12 +471,11 @@ color:#999999;
 }
 
 #tblextras label {
- top: 0px;	
+ top: 0px;  
 }
 
 label.form-reservation-error {
-  color: #690404;	
-  display: block;
+  color: #690404; 
 }
 
 .readonly-field, #date_from_extended, #date_to_extended, #pickup_place_extended, #return_place_extended{
@@ -432,7 +490,7 @@ label.form-reservation-error {
 }
 
 #fs_summary_extras {
- height: 10%;	
+ height: 10%; 
 }
 
 #content-reserva .total_cost {
@@ -449,7 +507,7 @@ label.form-reservation-error {
 
 #fs_conditions {
  clear: right; 
- border-top: 1px solid gray;	
+ border-top: 1px solid gray;  
 }
 
 
@@ -480,12 +538,12 @@ label.form-reservation-error {
 }
 
 #content-reserva .bf-title , #content-reserva .bf-footer {
-  margin-left: 20px;	
+  margin-left: 20px;  
 }
 
 #content-reserva .bf-message {
   margin-left: 40px;
-  text-align: left;	
+  text-align: left; 
 }
 
 /* ------------ DETAILED COST ------------------------- */
@@ -493,7 +551,7 @@ label.form-reservation-error {
 #content-reserva .detailed_price {
  
   margin: 0 auto
-	
+  
 }
 
 #content-reserva .detailed_price thead {
@@ -507,7 +565,7 @@ label.form-reservation-error {
   padding-top: 5px;
   padding-bottom: 5px;
   font-weight: 600;
-	
+  
 }
 
 #content-reserva .detailed_price td {
@@ -517,15 +575,15 @@ label.form-reservation-error {
   padding-top: 5px;
   padding-bottom: 5px;
   border-bottom: 1px solid #DDD;
-  	
+    
 }
 
 #content-reserva .quantity_column {
-  text-align: right;	
+  text-align: right;  
 }
 
 #content-reserva .total_column {
-  font-weight: bold;	
+  font-weight: bold;  
 }
 
 #content-reserva .first_column {
@@ -542,17 +600,8 @@ label.form-reservation-error {
   padding: 0.5em;
   color: red;
   border: 1px solid;
-  display: inline-block;
 }
 
 #booking_item_reference {
   height: 2.2em;
-}
-
-.mybooking_text {
-  color: white;
-}
-
-a.mybooking_link:visited, a.mybooking_link:link, a.mybooking_link:hover {
-  color: yellow;
 }

@@ -67,7 +67,12 @@
         
     var bookingModel = {
 
+       all_prices_base : [],
        all_prices : [],    /* Caches all models prices for the period */
+       discount : {
+          value: <%= offer_discount.nil? ? 0 : "%.2f" % offer_discount.value %>,
+          type: '<%= offer_discount.nil? ? 'percentage' : offer_discount.discount_type %>'
+       },
        exceeded_hours : bookingDataSystem.gracePeriod || 2, /* Used when calculating prices. When exceeded it's considered one more day */
        pickup_places : bookingDataSystem.pickup_places,
        allow_custom_pickup_place : bookingDataSystem.allow_custom_pickup_place,
@@ -89,7 +94,9 @@
        stock: {},
        categoriesPaymentEnabled: [],
        confirmBookingResponse : null, /* It holds the confirm booking response */
-       pendingTimeToStartBooking: 0,       
+       pendingTimeToStartBooking: 0,
+       last_hash: null, /* Hold the last location.href.hash value */       
+       
        booking : {
 
           date_from : null, /* the booking date from */
@@ -116,6 +123,7 @@
           booking_lines: {}, /* the booking detail */
           booking_amount: 0, /* The amount to pay to confirm the booking */
           pay_now: false, /* The user will pay  */
+          promotion_code: null, /* The promotion code */
           
           add_booking_line : function(item_id, quantity) { /** Adds a new item **/
 
@@ -123,6 +131,14 @@
             this.addItemCost(this.booking_lines[item_id].item_cost);
             this.addProductDepositCost(this.booking_lines[item_id].product_deposit_cost);
             bookingView.update_information('booking_lines');
+
+          },
+
+          remove_booking_lines: function() {
+
+            for (item in this.booking_lines) {
+               this.remove_booking_line(item);
+            }
 
           },
 
@@ -208,6 +224,7 @@
             this.product_deposit_cost = 0;
             for (family in bookingModel.all_prices) {
               if (this.booking_lines[family]) {
+                this.booking_lines[family].set_item_unit_cost_base(bookingModel.all_prices_base[family]);
                 this.booking_lines[family].set_item_unit_cost(bookingModel.all_prices[family]);
                 this.item_cost += this.booking_lines[family].item_cost;
                 this.product_deposit_cost += this.booking_lines[family].product_deposit_cost;
@@ -243,7 +260,27 @@
              this.total_cost = new Number(this.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0)).valueOf();
              this.booking_amount = new Number(this.total_cost * 
               <%=booking_deposit%> / 100).toFixed(0);
-          },    
+          },   
+
+          apply_promotion_code: function(promotion_code, value, discount_type) {
+             if (this.promotion_code == null) {
+               for (family in bookingModel.all_prices) {                 
+                 if (value > 0) {
+                   if (discount_type == 'percentage') {
+                     bookingModel.all_prices[family] = bookingModel.all_prices[family] * (100 - value) / 100;
+                   }
+                   else {
+                     bookingModel.all_prices[family] = bookingModel.all_prices[family] - value;
+                   }
+                 }
+               }
+               this.promotion_code = promotion_code;
+               this.recalcPrice();
+               $('#promotion_code').prop('readOnly', true);
+               $('#promotion_code_submit').prop('disabled', true);
+               bookingView.promotionCodeApplied();
+             }
+          },
 
           BookingLine : function(item_id, quantity) {
 
@@ -251,6 +288,7 @@
              this.item_description = bookingDataSystem.families[item_id].description;
              this.quantity = quantity;
              this.item_unit_cost =  bookingModel.all_prices[item_id];
+             this.item_unit_cost_base = bookingModel.all_prices_base[item_id];
              this.item_cost = this.quantity * this.item_unit_cost;
              this.product_deposit_unit_cost = bookingDataSystem.families[item_id].deposit;
              this.product_deposit_cost = this.product_deposit_unit_cost * this.quantity;
@@ -262,6 +300,10 @@
                var old_product_deposit_cost = this.product_deposit_cost;
                this.item_cost = new_quantity * this.item_unit_cost;
                this.product_deposit_cost = new_quantity * this.product_deposit_unit_cost;
+             }
+
+             this.set_item_unit_cost_base = function(value) {
+                this.unit_cost_base = value;
              }
 
              this.set_item_unit_cost = function(value) {
@@ -309,6 +351,40 @@
              vars[hash[0]] = hash[1];
           }
           return vars;
+       },
+
+       set_hash: function(newHash) { 
+         
+         if (newHash != '#'+this.get_hash()) {
+           window.location.hash = newHash;
+         }
+         this.last_hash = newHash;
+      
+       },       
+
+       get_hash: function() {
+         var hashValue = window.location.hash.substring(window.location.hash.indexOf('#'));
+         hashValue.replace('#','');
+         return hashValue;        
+       },
+
+       hash_changed: function(newHash) {
+         if (newHash != this.last_hash) {
+           switch (this.get_hash()) {
+              case '':
+              case '#':
+                window.history.go(-(window.history.length - 1));
+                bookingView.wizard.set_tab(1);
+                break;
+              case '#2':
+                bookingView.wizard.set_tab(2);
+                break;
+              case '#3':
+                bookingView.wizard.set_tab(3);
+                break;
+           }
+         }
+         this.last_hash = newHash;
        },
 
        change_state : function( action ) {
@@ -366,7 +442,8 @@
        }, 
 
        choose_item : function(item) { // Choose the item for reservation (in date selection mode)
-          
+         
+         this.booking.remove_booking_lines();
          this.booking.add_booking_line(item, 1); 
          this.change_state('select_item');
         
@@ -495,10 +572,24 @@
            this.booking.days++;
          }
 
-         this.all_prices = bookingDataSystem.calculate_items_price(this.booking.date_from, 
+         this.all_prices_base = bookingDataSystem.calculate_items_price(this.booking.date_from, 
                                                                    this.booking.date_to_price_calculation);
-         this.booking.recalcPrice();     
+         this.all_prices = {};
 
+         for (category in this.all_prices_base) {
+           if (this.discount.value > 0) {
+             if (this.discount.type == 'percentage') {
+               this.all_prices[category] = this.all_prices_base[category] * (100 - this.discount.value) / 100;
+             }
+             else {
+               this.all_prices[category] = this.all_prices_base[category] - this.discount.value;
+             }
+           }
+           else {
+             this.all_prices[category] = this.all_prices_base[category];
+           }
+         }     
+         this.booking.recalcPrice();     
        },     
               
        add_extra : function (extra, quantity) { /* Add an extra */
@@ -594,7 +685,8 @@
               request.booking.booking_lines[line_index] = {
                  item_id : index,
                  item_description : this.booking.booking_lines[index].item_description,
-                 item_unit_cost: this.booking.booking_lines[index].item_unit_cost,
+                 item_unit_cost_base: this.booking.booking_lines[index].item_unit_cost_base,
+                 item_unit_cost: this.booking.booking_lines[index].item_unit_cost,                
                  item_cost: this.booking.booking_lines[index].item_cost,
                  quantity: this.booking.booking_lines[index].quantity,
                  product_deposit_unit_cost: this.booking.booking_lines[index].product_deposit_unit_cost,
@@ -650,6 +742,31 @@
                         return value;
                      });
 
+       },
+
+       check_promotion_code: function(promotion_code) {
+
+         $.ajax({
+                   type : 'POST',
+                   url :  '/api/check-promotion-code?code='+promotion_code, 
+                   contentType: 'application/json; charset=utf-8', /* Data type sent to the server */
+                                       
+                   success : function(data, textStatus, jqXHR) { /* RESPONSE OK */
+                     var value = data.value;
+                     var discount_type = data.discount_type;
+                     bookingModel.apply_promotion_code(promotion_code, value, discount_type);
+                   }, 
+                   
+                   error: function(jqXHR, textStatus, errorThrow) {
+                     bookingView.promotionCodeError();
+                   }
+                }); 
+
+
+       },
+
+       apply_promotion_code: function(promotion_code, value, discount_type) {
+         this.booking.apply_promotion_code(promotion_code, value, discount_type);
        } 
        
     };
@@ -664,6 +781,11 @@
           
       },
       
+      hash_changed: function() {
+        var hash = location.hash;
+        bookingModel.hash_changed(hash);
+      },
+
       select_family: function(item) { /* product selection click select family */
 
         if (typeof _gaq != 'undefined') {
@@ -835,6 +957,10 @@
           $('#booking\\[driver_surname\\]').val($('#booking\\[customer_surname\\]').val()); 
         }
               
+      },
+
+      promotion_code_submit: function(promotion_code) {
+        bookingModel.check_promotion_code(promotion_code);
       }
       
     };
@@ -1021,8 +1147,16 @@
          this.state_changed(bookingModel.process_state);
     
          // Initialize the form
-         this.init_form();    
-        
+         this.init_form();  
+
+         $(window).bind('hashchange', function(e) {
+           bookingController.hash_changed();  
+         });
+         
+         <% if booking_reservation_starts_with == :shopcart %> 
+         this.calculate_prices(); // Calculate the prices for the current day
+         <% end %>
+
        }, 
        
        init_families_selection: function() {
@@ -1042,7 +1176,7 @@
               totalRows : Math.ceil(total / 3),
               currentRow: Math.floor(current / 3),
               lastRowItems : total % 3,
-              currentCol: current % 3
+              currentCol: current % 3             
               });
             current++;
          }  
@@ -1107,7 +1241,9 @@
               totalRows : Math.ceil(total / numberOfColumns),
               currentRow: Math.floor(current / numberOfColumns),
               lastRowItems : total % numberOfColumns,
-              currentCol: current % numberOfColumns
+              currentCol: current % numberOfColumns,
+              all_prices: bookingModel.all_prices,
+              all_prices_base: bookingModel.all_prices_base               
               });
             current++;
          }  
@@ -1144,6 +1280,8 @@
          $('#timeto').bind('change', function() {
             bookingView.calculate_prices();
          });
+
+         
 
        },
 
@@ -1279,7 +1417,7 @@
             
           }
          );
-        
+
         $.validator.addMethod('number_of_adults',
           function(value, element) {
 
@@ -1418,7 +1556,34 @@
                    
          }
         );
-        
+
+        // Promotion code  
+        $('#form_promotion_code').validate({
+          
+           submitHandler: function(form) {
+             $('#promotion_code_response').html('');
+             bookingController.promotion_code_submit(form.promotion_code.value);
+             return false;
+           },
+
+           rules: {
+              'promotion_code': {
+                required: true,
+                minlength: 9  
+               },
+           },
+
+           messages: {
+               'promotion_code' : {
+                 required: '<%=t.new_booking.promotion_code_required%>',
+                 minlength: '<%=t.new_booking.promotion_code_min_length%>'                 
+               }
+           },
+           errorPlacement: function (error, element) {
+              error.appendTo(document.getElementById('promotion_code_response'));
+           }
+
+        });
 
        },
          
@@ -1477,7 +1642,9 @@
 
          if (booking_lines.length >= 1) {
              $('#itemized_price').html( 
-              tmpl('script_detailed_price', {booking: bookingModel.booking, 
+              tmpl('script_detailed_price', {
+                            booking: bookingModel.booking,
+                            all_prices_base: bookingModel.all_prices_base, 
                             bookingDataSystem: bookingDataSystem}) );
              $('#family-selection').show();
          }
@@ -1512,9 +1679,9 @@
         
            var content =
               '<div class="container_12">'+       
-                '<div itemscope itemtype="http://schema.org/Product" class="bottom-space bottom-separator car '+family+'">' +
+                '<div itemscope itemtype="http://schema.org/Product" class="bottom-separator car '+family+'">' +
                   '<div class="car_photo_container grid_4">' +
-                    '<img itemprop="image" style="padding:20px" src="' + bookingDataSystem.families[family].photo + '"/>' + //src="/img/clase-'+family+'-big.png"/>' +
+                    '<img itemprop="image" style="margin:5px;width:90%" src="' + bookingDataSystem.families[family].photo + '"/>' + //src="/img/clase-'+family+'-big.png"/>' +
                   '</div>' +
                   '<div class="car_description_container grid_5 top-margin">' +
                     '<div class="left-margin">' +
@@ -1531,12 +1698,15 @@
            <% end%>
 
            content += 
-              '<div class="car_price_container grid_3" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
+              '<div class="grid_3">' + 
+              '<div class="car_price_container" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
+                (bookingModel.discount.value > 0 ? '<div class="car_price_total_base">' + bookingModel.all_prices_base[family].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€</div><div class="car_price_total_base_offer"><%=t.new_booking.offer%></div>' : '') +
                 '<div class="car_price_total"><span itemprop="price">'+prices[family].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +
                 '<div class="car_price_booking top-margin">' + 
                   available + 
                 '</div>' +                
               '</div>'+
+              '</div>' + 
               '</div>';
                       
            container.append( content ); 
@@ -1740,6 +1910,15 @@
                  '<option value="'+ idx+'">' + idx+ '</option>');
              }
              $('select.quantity[rel="'+family+'"]').val(value);
+             $('div.shopping_cart_product_price[rel="'+family+'"]').html(bookingModel.all_prices[family]+' €');
+             if (bookingModel.all_prices_base[family] != bookingModel.all_prices[family]) {
+               $('div.shopping_cart_product_price_base[rel="'+family+'"]').html(bookingModel.all_prices_base[family]+ ' €');
+               $('div.car_price_total_base_offer[rel="'+family+'"]').html('<%=t.new_booking.offer%>');
+             }
+             else {
+               $('div.shopping_cart_product_price_base[rel="'+family+'"]').html('');
+               $('div.car_price_total_base_offer[rel="'+family+'"]').html('');
+             }
           }
 
        },
@@ -1844,8 +2023,8 @@
              }
              $('#date_from_extended').val( date_time_from );  
              $('#date_to_extended').val( date_time_to );
-             $('#pickup_place_extended').val( bookingModel.booking.pickup_place );
-             $('#return_place_extended').val( bookingModel.booking.return_place );
+             $('#pickup_place_extended').html( bookingModel.booking.pickup_place );
+             $('#return_place_extended').html( bookingModel.booking.return_place );
 
            case 'booking_item' :
              var booking_lines = bookingModel.booking.booking_lines_as_array();
@@ -1865,12 +2044,17 @@
            case 'booking_cost' :
              $('#price').html(bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
              $('#itemized_price').html( 
-              tmpl('script_detailed_price', {booking: bookingModel.booking, 
+              tmpl('script_detailed_price', {
+                            booking: bookingModel.booking,
+                            all_prices_base: bookingModel.all_prices_base, 
                             bookingDataSystem: bookingDataSystem}) );
              $('#total_cost').val( bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
              $('#detailed_summary').html( 
-              tmpl('script_detailed_price', {booking: bookingModel.booking, 
+              tmpl('script_detailed_price', {
+                            booking: bookingModel.booking, 
+                            all_prices_base: bookingModel.all_prices_base, 
                             bookingDataSystem: bookingDataSystem}) );
+             $('#button_calcular_tarifas').val('<%=t.new_booking.update%>')
              break;
            
            case 'booking_extras' :
@@ -1911,53 +2095,82 @@
         
        },  
                       
-                      
+       promotionCodeError: function() {
+         $('#promotion_code_response').html('<%=t.new_booking.invalid_promotion_code%>');
+       },           
+
+       promotionCodeApplied: function() {
+         $('#promotion_code_response').html('<%=t.new_booking.promotion_code_applied%>');
+       },
+
        wizard : {
         
-         tabs : { 
+          current_tab : 0,
+          tabs : { 
                  'tab-choose-item' : new WizardTab ('tab-choose-item', true),
                  'tab-choose-extras' : new WizardTab ('tab-choose-extras', true),
                  'tab-complete-reservation' : new WizardTab('tab-complete-reservation', true)
                 },
                
-         state_changed : function (new_state) {
+          state_changed : function (new_state) {
          
-           switch (new_state) {
+            switch (new_state) {
             
               case 'item_selection' : /* Item selection tab */
-                $('#other-tabs').hide();
-                $('#form-reservation').hide();
-                $('#item-selection').show();
-                $('#extras-selection').hide();
-                this.tabs['tab-choose-item'].setState('active'); 
-                this.tabs['tab-choose-extras'].setState('not-enabled'); 
-                this.tabs['tab-complete-reservation'].setState('not-enabled');
+                this.set_tab(1);
+                bookingModel.set_hash('');
                 break;
               
               case 'extras_selection': /* Extras selection tab */
-                $('#other-tabs').show();
-                $('#form-reservation').hide();
-                $('#item-selection').hide();
-                $('#extras-selection').show();
-                this.tabs['tab-choose-item'].setState('not-enabled'); 
-                this.tabs['tab-choose-extras'].setState('active'); 
-                this.tabs['tab-complete-reservation'].setState('not-enabled');
+                this.set_tab(2);
+                bookingModel.set_hash('#2');
                 break;
 
               case 'completing_booking' : /* Complete booking data tab */
               case 'continue_booking' :
               case 'process_completed': 
-                $('#other-tabs').show();
-                $('#item-selection').hide();
-                $('#extras-selection').hide();                
-                $('#form-reservation').show();
-                this.tabs['tab-choose-item'].setState('not-enabled'); 
-                this.tabs['tab-choose-extras'].setState('not-enabled');                 
-                this.tabs['tab-complete-reservation'].setState('active');
+                this.set_tab(3);
                 bookingView.check_payment();
+                bookingModel.set_hash('#3');
                 break;
-              
-           }
+            }
+
+          },
+
+          set_tab: function(tab) {
+            if (this.current_tab == tab) {
+              return;
+            }
+            switch (tab) {
+               case 1:
+                 $('#other-tabs').hide();
+                 $('#form-reservation').hide();
+                 $('#item-selection').show();
+                 $('#extras-selection').hide();
+                 this.tabs['tab-choose-item'].setState('active'); 
+                 this.tabs['tab-choose-extras'].setState('not-enabled'); 
+                 this.tabs['tab-complete-reservation'].setState('not-enabled');                                
+                 break;
+               case 2:
+                 $('#other-tabs').show();
+                 $('#form-reservation').hide();
+                 $('#item-selection').hide();
+                 $('#extras-selection').show(); 
+                 this.tabs['tab-choose-item'].setState('not-enabled'); 
+                 this.tabs['tab-choose-extras'].setState('active'); 
+                 this.tabs['tab-complete-reservation'].setState('not-enabled');                               
+                 break;
+               case 3:
+                 $('#other-tabs').show();
+                 $('#item-selection').hide();
+                 $('#extras-selection').hide();                
+                 $('#form-reservation').show();
+                 this.tabs['tab-choose-item'].setState('not-enabled'); 
+                 this.tabs['tab-choose-extras'].setState('not-enabled');                 
+                 this.tabs['tab-complete-reservation'].setState('active');                                
+                 break;
+            }
+            this.current_tab = tab;
           
          },
          
@@ -1972,7 +2185,7 @@
        }
                               
                               
-    }
+    };
   
     bookingView.init();
   

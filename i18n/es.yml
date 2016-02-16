@@ -194,7 +194,9 @@ new_booking_restaurant:
   people_mandatory: Personas obligatorio
 new_booking:
   title: Reserva
+  search_title: Buscar %1
   search: Ver precios
+  update: Actualizar
   choose_item: Elegir %1
   choose_extras: Elegir extras
   complete_booking: Completar la reserva
@@ -215,6 +217,8 @@ new_booking:
   return: Devolución
   place: Lugar
   other: Otro
+  date: Fecha
+  budget: Presupuesto
   pickup_place: Lugar de entrega
   pickup_place_required: Debe informar el lugar de entrega
   return_place: Lugar de devolución
@@ -268,6 +272,12 @@ new_booking:
                    <p class="bf-message">Recuerde que dispone de una plazo máximo de 72 horas para realizar el pago y de esta forma confirmar su reserva.</p>
                    <p class="bf-footer">Atentamente, </p>
                    <p class="bf-footer">El equipo de <%= bookingConfiguration.company %></p>
+  promotion_code: Código de promoción
+  check_promotion_code: Enviar
+  promotion_code_required: Código de promoción obligatorio
+  promotion_code_min_length: Tamaño mínimo 9 caracteres
+  invalid_promotion_code: Código de promoción no válido
+  promotion_code_applied: Código de promoción aplicado
   height:
     label: Altura
     placeholder: Su altura
@@ -335,6 +345,8 @@ new_booking:
     required: Debe aceptar las condiciones
   payment_method:
     required: Debe seleccionar la forma de pago
+  offer: Oferta
+  offer_budget: Descuento
 new_driving_booking:
   driver:
     label: Conductor
@@ -457,6 +469,7 @@ booking_management:
     creation_date: Reserva registrada
     status: Estado
     source: Origen
+    promotion_code: Código de promoción
     status_action:
       confirm: Confirmar
       pickup: Recogida/Entrada

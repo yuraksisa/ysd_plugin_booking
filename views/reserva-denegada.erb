@@ -1,6 +1,6 @@
  <div class="container_12">
    <div class="grid_8">
-   	 <div class="highlight_block top-margin">
+   	 <div class="guiblock top-margin">
    	   <h2><%=t.booking.title("#{t[:booking][:state][booking.status.to_sym]}")%></h2>	
    	   <p><%=t.booking.no_deposit%></p>
        <%= partial(:booking_summary, :locals => {:booking => booking}) %>  

@@ -5,21 +5,21 @@
           <div id="wizard-navigation">
             <ul id="wizard-options">
               <li>
-              	 <a id="tab-choose-item" href="#" class="tab img_txt">
-              	   <span>1</span>
-              	   <%= t.new_booking.choose_item(t.booking_items[booking_item_type.to_sym]) %>
+              	 <a id="tab-choose-item" href="#1" class="tab img_txt">
+              	   <span class="tab_id">1</span>
+                   <span class="tab_title"><%= t.new_booking.choose_item(t.booking_items[booking_item_type.to_sym]) %></span>
                  </a>
               </li>
               <li>
-              	 <a id="tab-choose-extras" href="#" class="tab img_txt">
-              	 	<span>2</span>
-              	 	<%=t.new_booking.choose_extras%>
+              	 <a id="tab-choose-extras" href="#2" class="tab img_txt">
+              	 	<span class="tab_id">2</span>
+              	 	<span class="tab_title"><%=t.new_booking.choose_extras%></span>
               	 </a>
               </li>
               <li>
-              	  <a id="tab-complete-reservation" href="#" class="tab img_txt">
-              	  	<span>3</span>
-              	  	<%=t.new_booking.complete_booking%>
+              	  <a id="tab-complete-reservation" href="#3" class="tab img_txt">
+              	  	<span class="tab_id">3</span>
+              	  	<span class="tab_title"><%=t.new_booking.complete_booking%></span>
               	  </a>
               </li>
             </ul>
@@ -27,16 +27,18 @@
         </div>      
     </div>
     
-    <div id="content-body" class="element-form-detail bottom-margin">
+    <div id="content-body" class="bottom-margin">
 
       <!-- ITEM SELECTION TAB -->
 
       <% if booking_reservation_starts_with == :dates %>
-	      <div id="item-selection" class="bottom-margin">
-          <%= partial :reserva_online_dates_selection, :locals => {:booking_item_family => booking_item_family} %>
-		      <div id="result" class="top-separator">
-		      </div>
-	      </div>
+	      <div id="item-selection" class="">
+          <div id="date-selection" class="bottom-margin all-border-solid-light rounded">
+          <%= partial :reserva_online_dates_selection, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type} %>
+          </div>
+          <div id="result">
+          </div>	      
+        </div>
       <% elsif booking_reservation_starts_with == :categories %>
         <div id="item-selection" class="bottom-margin">
           <div id="items_families" class="container_12">
@@ -57,15 +59,19 @@
       <div id="other-tabs" class="bottom-margin" style="display:none">
 
         <!-- The summary header (shown in all the other tabs) -->
-        <div id="other-tabs-header" class="guiblock">
-          <%= partial :reserva_online_summary_header, :locals => {:booking_item_family => booking_item_family, :booking_reservation_starts_with => booking_reservation_starts_with} %>
+        <div id="other-tabs-header" class="bottom-margin all-border-solid-light rounded">
+          <%= partial :reserva_online_summary_header, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type, 
+            :booking_reservation_starts_with => booking_reservation_starts_with,
+            :promotion_codes_active => promotion_codes_active} %>
         </div>
 
         <!-- EXTRAS SELECTION TAB -->
-        <div id="extras-selection" class="bottom-margin" style="display:none">
+        <div id="extras-selection" class="bottom-margin all-border-solid-light rounded" style="display:none">
       	  <form>
       	  	<div class="container_12">
-	          <div class="grid_4">
+            <% if booking_item_family.named_resources or booking_item_family.weight or
+                  booking_item_family.height %>	          
+            <div class="grid_4">
 	            <fieldset id="fs_summary_extras">
 	              <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>	        
 	              <table id="tblextras">
@@ -81,6 +87,17 @@
 	              </div>
 	            </fieldset>
 	          </div>
+            <% else %>
+            <div class="grid_12">
+              <fieldset id="fs_summary_extras">
+                <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>          
+                <table id="tblextras">
+                  <tbody>
+                  </tbody>
+                </table>
+              </fieldset>
+            </div>            
+            <% end %>
 	        </div>
 	        <div class="top-margin-1line top-space-1line top-border-nosolid">
 	          <fieldset>
@@ -196,6 +213,13 @@
                     <span class="shopping_cart_product_detail centered_text <%%if (totalCols>3){%>smaller_text<%%}%>" style="display: block; margin: 0 auto" rel="<%%=category.family%>"><%%=category.description%></span>
                   </div>
                   <div class="top-margin">
+                    <div class="shopping_cart_product_price_base centered_text less_contrast_text" style="font-size:0.8em; text-decoration: line-through" rel="<%%=category.family%>"><%%if (all_prices && all_prices_base && all_prices[category.family] != all_prices_base[category.family]) { %><%%=all_prices_base[category.family]%>€<%% } %></div>
+                    <div class="car_price_total_base_offer" rel="<%%=category.family%>"><%% if(all_prices && all_prices_base && all_prices[category.family] != all_prices_base[category.family]){ %><%=t.new_booking.offer%><%%}%></div>
+                  </div>   
+                  <div class="top-margin">
+                    <div class="shopping_cart_product_price centered_text bigger_text more_contrast_text" style="font-size:2em" rel="<%%=category.family%>"><%%if (all_prices && all_prices[category.family]) { %><%%=all_prices[category.family]%>€<%% } %></div>
+                  </div>   
+                  <div class="top-margin">
                     <form class="select-category" rel="<%%=category.family%>">
                       <select class="quantity form-control" style="display:block; margin: 0 auto" rel="<%%=category.family%>">
                         <option value="0">0</option>
@@ -296,6 +320,7 @@
   </script>
   
   <script type="text/tpml" id="script_detailed_price">
+      <h3 class="guiblock"><%=t.new_booking.budget%></h3>
       <table class="detailed_price">
         <thead>
           <tr>
@@ -311,7 +336,7 @@
           <tr>
             <td class="first_column"><%%= bookingDataSystem.families[item].cars %></td>
             <td class="quantity_column"><%%= booking.days %> </td>
-            <td class="quantity_column"><%%= booking.booking_lines[item].item_unit_cost %>€ </td>
+            <td class="quantity_column"><%%if (all_prices_base[item]!=booking.booking_lines[item].item_unit_cost){%><span class="car_price_total_base"><%%=all_prices_base[item]%>€ </span><span class="car_price_total_base_offer"><%=t.new_booking.offer_budget%> </span><%%}%><%%= booking.booking_lines[item].item_unit_cost %>€ </td>
             <td class="quantity_column"><%%= booking.booking_lines[item].quantity %> </td>
             <td class="quantity_column"><%%= booking.booking_lines[item].item_cost %>€ </td>
           </tr>

@@ -37,7 +37,7 @@
           <td class="table-cell"><%= product %></td>
           <% occupation.each do |day, value| %>
             <% percentage = eval(value) * 100 %>
-            <td class="table-cell centered_text" <% if percentage == 100 %>style="background:red; color: white"<%elsif percentage >= 75%>style="background:orange"<%elsif percentage > 0%>style="background:yellow"<%end%>><%= "%.0f" % percentage %>%</td>
+            <td class="table-cell centered_text" <% if percentage >= 100 %>style="background:red; color: white"<%elsif percentage >= 75 and !percentage.infinite?%>style="background:orange"<%elsif percentage > 0 and !percentage.infinite?%>style="background:yellow"<%end%>><%= (percentage.nan? or percentage.infinite?) ? "-" : "#{("%.0f" % percentage)}%" %></td>
           <% end %>
         </tr>
         <% end %>
