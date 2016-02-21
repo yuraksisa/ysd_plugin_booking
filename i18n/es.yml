@@ -144,6 +144,7 @@ booking_console:
   information_requests: Solicitudes información
   report_reservations: Reservas alquiler
   report_customers: Clientes reservas
+  report_pickup_return: Entregas y recogidas
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas
@@ -157,12 +158,14 @@ booking_incoming:
   period: Período
   total: Total    
 booking_pickup:
-  title: Entregas/Entradas
+  title: Entregas
+  title_checkin: Entradas
 booking_return:
-  title: Recogidas/Salidas
+  title: Recogidas
+  title_checkout: Salidas
 booking_list:
   id: Localizador
-  item: Stock
+  item: Producto
   date_from: Fecha entrega
   date_to: Fecha devolución
   place: Lugar
@@ -440,7 +443,8 @@ booking_management:
   form:
     reservation_tab: Datos de la reserva
     flight_tab: Datos del vuelo
-    driver_tab: Datos conductor/contacto
+    driver_tab: Conductor
+    additional_drivers_tab: Conductores A.
     weight_height_tab: Peso/Altura
     charges_tab: Detalle cobros
     payment_tab: Pago
@@ -535,6 +539,8 @@ booking_management:
     adults: Adultos
     children: Niños (hasta 7 años)    
     driver_title: Conductor/Contacto
+    additional_driver_1_title: Conductor adicional 1
+    additional_driver_2_title: Conductor adicional 2
     driver_name: Nombre
     driver_date_of_birth: Fecha de nacimiento
     driver_document_id: Numero documento
@@ -687,7 +693,9 @@ booking_extra_management:
     max_quantity:
       label: Cantidad máxima
     price_definition:
-      label: Precio               
+      label: Precio  
+    active:
+      label: Activo             
 booking_item_management:
   table:
     calendar: Gestió del calendario
@@ -707,7 +715,13 @@ booking_item_management:
     price_definition:
       label: Precio
     active:
-      label: Activo       
+      label: Activo
+    model:
+      label: Modelo
+    plate:
+      label: Matrícula o referencia 
+    cost: 
+      label: Coste         
 booking_places_definition_management:
   title: Lugares entrega y recogida
   table:

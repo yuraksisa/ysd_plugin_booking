@@ -1,5 +1,8 @@
 <div class="top-navigation-bar">
   <h2 class="entity-title"><%=t.booking_console.title%></h2>
+  <div class="form-button" style="float: right">
+  	 <a id="print_link" href="/admin/booking/reports/pickup-return-pdf" target="_blank">Imprimir</a>
+  </div>
 </div>
 <div class="admin_content_wrapper">
 <%= partial(:pickedup_bookings, :locals => {:product_family => product_family}) %>

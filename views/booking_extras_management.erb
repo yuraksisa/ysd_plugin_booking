@@ -90,7 +90,11 @@
                 <div class="formrow">
                   <label class="fieldtitle"><%= t.booking_extra_management.form.name.label %></label>
                   <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
-                </div>              
+                </div>      
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_extra_management.form.active.label%></label>
+                  <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
+                </div>                         
              
                 <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                   <div class="navigation-bar-crud-buttons">

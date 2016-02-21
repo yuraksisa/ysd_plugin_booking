@@ -4,6 +4,7 @@ require 'ysd_plugin_cms' unless defined?GuiBlock::Audit
 require 'ysd_md_booking' unless defined?BookingDataSystem::Booking
 require 'prawn' unless defined?Prawn
 require 'prawn/format' unless defined?Prawn
+require 'prawn/table' unless defined?Prawn::Table
 
 module Sinatra
   module YSD
@@ -289,6 +290,7 @@ module Sinatra
         app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager','staff'] do
 
            if booking = BookingDataSystem::Booking.get(params[:id])
+             product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
              if contract_template = ContentManagerSystem::Template.first({:name => 'booking_contract'})
                content_type 'application/pdf'
                eval contract_template.text
@@ -306,18 +308,41 @@ module Sinatra
         #
         # Pickup and return
         #
-        app.get '/admin/booking/console', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/reports/pickup-return', :allowed_usergroups => ['booking_manager', 'staff'] do
           
           locals = {}
           if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
             product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
             locals.store(:product_family, product_family)
           end
-          load_page(:console_booking, :locals => locals)
+          load_page(:pickup_return, :locals => locals)
+        end
+
+        app.get '/admin/booking/reports/pickup-return-pdf', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+           from = DateTime.now
+           if params[:from]
+             begin
+               from = DateTime.strptime(params[:from], '%Y-%m-%d')
+             rescue
+             end
+           end
+
+           to = from
+           if params[:to]
+             begin
+               to = DateTime.strptime(params[:to], '%Y-%m-%d')
+             rescue
+             end
+           end
+
+           content_type 'application/pdf'
+           pdf = ::Yito::Model::Booking::Pdf::PickupReturn.new(from, to).build.render
+
         end
 
         #
-        # Reservations report
+        # Reservations report (html)
         #
         app.get '/admin/booking/reports/reservations', :allowed_usergroups => ['booking_manager'] do 
           year = Date.today.year
@@ -333,9 +358,19 @@ module Sinatra
               SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
           load_page(:report_reservations, :locals => locals)
         end  
+        
+        #
+        # Reservations report (pdf)
+        #
+        app.get '/admin/booking/reports/reservations-pdf', :allowed_usergroups => ['booking_manager'] do 
+          year = Date.today.year
+
+          content_type 'application/pdf'
+          pdf = ::Yito::Model::Booking::Pdf::Reservations.new(year).build.render          
+        end  
 
         #
-        # Customers report
+        # Customers report (html)
         #
         app.get '/admin/booking/reports/customers', :allowed_usergroups => ['booking_manager'] do
 
@@ -343,6 +378,16 @@ module Sinatra
           load_page(:report_customers)
 
         end     
+
+        #
+        # Customers report (pdf)
+        #
+        app.get '/admin/booking/reports/customers-pdf', :allowed_usergroups => ['booking_manager'] do
+
+          content_type 'application/pdf'
+          pdf = ::Yito::Model::Booking::Pdf::Customers.new().build.render   
+
+        end 
 
       end
 

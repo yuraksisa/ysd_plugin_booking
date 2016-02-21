@@ -1,6 +1,6 @@
 
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
-         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
+         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "autonumeric", "YSDjson2"],
          function($, EntityManagement, EntityManagementComplementHooks, RemoteDataSource, SelectSelector) {
     
   var bookingItemHook = {
@@ -21,6 +21,11 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     onNew : function() {
       this.entity = null;
       $('#reference').focus();
+      $('#reference').bind('input', function(){
+        $(this).val(function(_, v){
+          return v.replace(/\s+/g, '');
+        });
+      });      
       this.configForm();
     },
         
@@ -33,7 +38,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         
     /* ------- Internal function --------- */
     
-    configForm : function() {
+    configForm : function(entity) {
 
       $("#content > div").hide(); // Initially hide all content
       $("#content_tabs li:first").attr("id","current"); // Activate first tab
@@ -53,6 +58,8 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
         }
       });
+
+     $('#cost').autoNumeric('init',{aSep:''});
 
       var categoryDataSource = new RemoteDataSource('/api/booking-categories',{'id':'code','description':'name'});
       var categoryValue = (this.entity && this.entity.category_code)?this.entity.category_code:null;

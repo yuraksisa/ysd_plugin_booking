@@ -1,5 +1,5 @@
 require(['jquery', 'ysdtemplate', 'datejs', 
-         'jquery.ui', 'jquery.ui.datepicker-es'], function($, tmpl) {
+         'jquery.ui', 'jquery.ui.datepicker-es','datejs'], function($, tmpl) {
 
 
   bookingPickedupModel = {
@@ -11,6 +11,8 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
        var strDateFrom = dateFrom.toString("yyyy-MM-dd");
        var strDateTo = dateTo.toString("yyyy-MM-dd");
+
+       $('#print_link').attr('href', '/admin/booking/reports/pickup-return-pdf?from='+strDateFrom+'&to='+strDateTo);
 
   	   $.ajax({
   	   	       type: 'GET',
@@ -56,7 +58,10 @@ require(['jquery', 'ysdtemplate', 'datejs',
       var dateFrom = $('#date_from').datepicker('getDate');
       var dateTo = $('#date_to').datepicker('getDate');
       
-      bookingPickedupModel.loadData(dateFrom, dateTo);
+      //bookingPickedupModel.loadData(dateFrom, dateTo);
+      var strDateFrom = dateFrom.toString("yyyy-MM-dd");
+      var strDateTo = dateTo.toString("yyyy-MM-dd");      
+      window.location.href='/admin/booking/reports/pickup-return?from='+strDateFrom+'&to='+strDateTo;
 
     }
 
@@ -66,7 +71,24 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
      chart: null,
 
+     getUrlVars : function() {
+          var vars = [], hash;
+          var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+          for(var i = 0; i < hashes.length; i++)
+          {
+             hash = hashes[i].split('=');
+             vars.push(hash[0]);
+             vars[hash[0]] = hash[1];
+          }
+          return vars;
+       },
+
      init : function() {
+         var url_vars = this.getUrlVars();
+         var from = decodeURIComponent(url_vars['from']);        
+         var to = decodeURIComponent(url_vars['to']);
+         var date_from = $.datepicker.parseDate("yy-mm-dd", from);
+         var date_to = $.datepicker.parseDate("yy-mm-dd", to);
 
          var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];             
          $.datepicker.setDefaults($.datepicker.regional["<%=session[:locale] || 'es'%>"]);
@@ -85,7 +107,13 @@ require(['jquery', 'ysdtemplate', 'datejs',
                   }},
                   locale
                   );
-         $('#date_from').datepicker('setDate', '+0');
+         
+         if (date_from != null) {
+           $('#date_from').datepicker('setDate', date_from);
+         }
+         else {
+           $('#date_from').datepicker('setDate', '+0');
+         }
 
          $('#date_to').datepicker(
                  {controlType: 'select',
@@ -100,7 +128,12 @@ require(['jquery', 'ysdtemplate', 'datejs',
                   }},
                   locale
                   );         
-         $('#date_to').datepicker('setDate', '+7');
+         if (date_to != null) {
+           $('#date_to').datepicker('setDate',date_to);
+         }
+         else {
+           $('#date_to').datepicker('setDate', '+0');
+         }
 
      },
 

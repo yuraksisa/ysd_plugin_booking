@@ -54,6 +54,7 @@
            <% if product_family and product_family.pickup_return_place %>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.place%></th>
            <% end %>
+           <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.item%></th>           
            <th class="table-header-title left_text" scope="col" style="width:5em"><%=t.booking_list.customer%></th>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer_phone%></th>
            <th class="table-header-title left_text" scope="col" style="width:5em"><%=t.booking_list.customer_email%></th>
@@ -61,7 +62,6 @@
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.flight%></th>       
            <% end %>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.total_pending%></th>            
-           <th class="table-header-title left_text" scope="col"><%=t.booking_list.item%></th>
            <th class="table-header-title centered_text" scope="col" style="width:4em"></th>
          </tr>
        </thead>
@@ -75,18 +75,18 @@
            <% if product_family and product_family.pickup_return_place %>
            <td class="table-cell left_text right-margin"><%%=data[i].pickup_place%></td>
            <% end %>
+           <td class="table-cell left_text">
+             <%% for (var idx=0;idx<data[i].booking_line_resources.length;idx++) { %>
+               <%%=data[i].booking_line_resources[idx].booking_item_reference%>&nbsp;
+             <%% } %>
+           </td>             
            <td class="table-cell left_text right-margin"><%%=data[i].customer_name%> <%%=data[i].customer_surname%></td>
            <td class="table-cell left_text right-margin"><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%></td>
            <td class="table-cell left_text right-margin"><%%=data[i].customer_email%></td>
            <% if product_family and product_family.flight %>
            <td class="table-cell left_text right-margin"><%%=data[i].flight_number%> <%%=data[i].flight_time%></td>
            <% end %>
-           <td class="table-cell right_text right-margin"><%%=data[i].total_pending ? new Number(data[i].total_pending).toFixed(2) : new Number(0).toFixed()%></td>           
-           <td class="table-cell left_text">
-             <%% for (var idx=0;idx<data[i].booking_line_resources.length;idx++) { %>
-               <%%=data[i].booking_line_resources[idx].booking_item_reference%>&nbsp;
-             <%% } %>
-           </td>     
+           <td class="table-cell right_text right-margin"><%%=data[i].total_pending ? new Number(data[i].total_pending).toFixed(2) : new Number(0).toFixed()%></td>
            <td class="table-cell"><div class="form-button"><a href="/admin/booking/contract/<%%=data[i].id%>" target="_blank"><%=t.booking_management.print_contract%></a></div></td>                
          </tr>
          <%% } %>
@@ -111,10 +111,10 @@
            <% if product_family and product_family.pickup_return_place %>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.place%></th>
            <% end %>
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.item%></th>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer%></th>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer_phone%></th>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer_email%></th> 
-           <th class="table-header-title left_text" scope="col"><%=t.booking_list.item%></th>
          </tr>
        </thead>
        <tbody id="elements_tbody" class="table-tbody">  
@@ -127,14 +127,14 @@
            <% if product_family and product_family.pickup_return_place %>
            <td class="table-cell left_text right-margin"><%%=data[i].return_place%></td>
            <% end %>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_name%> <%%=data[i].customer_surname%></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_email%></td>                    
            <td class="table-cell left_text">
              <%% for (var idx=0;idx<data[i].booking_line_resources.length;idx++) { %>
                <%%=data[i].booking_line_resources[idx].booking_item_reference%>&nbsp;
              <%% } %>
-           </td>  
+           </td>            
+           <td class="table-cell left_text right-margin"><%%=data[i].customer_name%> <%%=data[i].customer_surname%></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].customer_email%></td> 
          </tr>
          <%% } %>
        </tbody>

@@ -36,7 +36,7 @@
         
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row" id="element_row_<%%=index%>">
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
          <%%= entity.reference %>
       </td>
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
@@ -66,10 +66,13 @@
          <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="basic_data_tab" href="#basic_data_tab">Datos básicos</a>
-          </li> 
+          </li>         
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="description_tab" href="#description_tab">Descripción</a>
-          </li>                                       
+          </li> 
+          <li class="no-border no-background top-space" style="border:none;background:none">
+              <a name="characteristics_tab" href="#characteristics_tab">Características</a>
+          </li>                                                  
       </ul>
      <div id="content">
 
@@ -118,6 +121,33 @@
             </div>
           </div>
         </div>        
+
+        <div id="characteristics_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">   
+              <form name="element" method="POST">
+                <input type="hidden" name="reference" value="<%%=entity.reference%>"/>           
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.model.label %></label>
+                  <input type="text" maxlength="80" id="stock_model" name="stock_model" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.stock_model%>" <%% } %>/>
+                </div> 
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.plate.label %></label>
+                  <input type="text" maxlength="80" id="stock_plate" name="stock_plate" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.stock_plate%>" <%% } %>/>
+                </div> 
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.cost.label %></label>
+                  <input type="text" maxlength="80" id="cost" name="cost" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.cost).toFixed(2)%>" <%% } %>/>
+                </div>                   
+                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                  <div class="navigation-bar-crud-buttons">
+                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                  </div>
+                </div>                   
+              </form>                          
+            </div>
+          </div>
+        </div>
 
      </div>
     </div>

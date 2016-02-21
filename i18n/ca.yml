@@ -126,10 +126,10 @@ booking_management:
     creation_date: Data
     customer: Client
     status: Estat
-    date_from: Data d\'inici
+    date_from: Data d'\inici
     date_to: Data de fi
     notifications: Notificacions
-    category: Categoria    
+    category: Categoria
   form:
     confirm_button: 
       label: Confirmar
@@ -251,8 +251,8 @@ booking_category_management:
     active:
       label: Actiu          
 booking_extra_management:
-  title: Gestió d\'extras
-  description: Gestió d\'extras
+  title: Gestió d'extras
+  description: Gestió d'extras
   table:
     code: Codi
     name: Nom

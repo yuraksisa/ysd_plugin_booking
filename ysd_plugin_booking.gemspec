@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name    = "ysd_plugin_booking"
-  s.version = "0.3.47"
+  s.version = "0.3.51"
   s.authors = ["Yurak Sisa Dream"]
   s.date    = "2013-02-28"
   s.email   = ["yurak.sisa.dream@gmail.com"]
@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "ysd_plugin_auth"
 
   s.add_runtime_dependency "prawn"
+  s.add_runtime_dependency "prawn-table"
 
   s.add_development_dependency "dm-sqlite-adapter" # Model testing using sqlite
   s.add_development_dependency "rake"

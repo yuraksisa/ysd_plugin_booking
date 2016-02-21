@@ -210,7 +210,7 @@
                    this.remove_extra(extra_id);
                   }
                   else {
-                  this.booking_extras[extra_id].set_quantity(new_quantity);
+                    this.booking_extras[extra_id].set_quantity(new_quantity);
                     bookingView.update_information('booking_extras');
                   }
               }
@@ -235,6 +235,8 @@
             this.total_cost = this.time_from_cost + this.time_to_cost +
                               this.pickup_place_cost + this.return_place_cost +
                               this.item_cost + this.extras_cost + this.product_deposit_cost;
+            this.booking_amount = new Number(this.total_cost * 
+              <%=booking_deposit%> / 100).toFixed(0).valueOf();
             bookingView.update_information('booking_cost');
 
           },
@@ -259,7 +261,7 @@
              this.total_cost += value;
              this.total_cost = new Number(this.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0)).valueOf();
              this.booking_amount = new Number(this.total_cost * 
-              <%=booking_deposit%> / 100).toFixed(0);
+              <%=booking_deposit%> / 100).toFixed(0).valueOf();
           },   
 
           apply_promotion_code: function(promotion_code, value, discount_type) {
@@ -300,6 +302,8 @@
                var old_product_deposit_cost = this.product_deposit_cost;
                this.item_cost = new_quantity * this.item_unit_cost;
                this.product_deposit_cost = new_quantity * this.product_deposit_unit_cost;
+               bookingModel.booking.addItemCost(this.item_cost - old_item_cost);
+               bookingModel.booking.addProductDepositCost(this.product_deposit_cost - old_product_deposit_cost);
              }
 
              this.set_item_unit_cost_base = function(value) {
@@ -368,7 +372,7 @@
          return hashValue;        
        },
 
-       hash_changed: function(newHash) {
+       hash_changed: function(newHash) {         
          if (newHash != this.last_hash) {
            switch (this.get_hash()) {
               case '':
@@ -377,9 +381,15 @@
                 bookingView.wizard.set_tab(1);
                 break;
               case '#2':
+                if (this.booking.total_cost == 0) {
+                  this.set_hash('');
+                }
                 bookingView.wizard.set_tab(2);
                 break;
               case '#3':
+                if (this.booking.total_cost == 0) {
+                  this.set_hash('');
+                }
                 bookingView.wizard.set_tab(3);
                 break;
            }
@@ -1026,7 +1036,7 @@
 
        },       
        
-       init : function () { /* Inits the View */  
+       init : function () { /* Inits the View */
                                                 
          // Configure the date controls
          // http://jquery-ui.googlecode.com/svn/trunk/ui/i18n/ (locales for datepicker)
@@ -1769,10 +1779,16 @@
        
          var extrasHtml = '';
          var extras = bookingDataSystem.extras;
-         
+
+         var extrasCount = 0;         
          for (extra in extras) {
            extrasHtml += tmpl('script_extras', {extra: extras[extra], optional: bookingModel.booking.optional});
+           extrasCount++;
          }  
+
+         if (extrasCount == 0) {
+          $('#fs_summary_extras').hide();
+         }
          
          $('#tblextras tbody').html(extrasHtml);
          $('.extra').bind('click', 
@@ -2186,7 +2202,7 @@
                               
                               
     };
-  
+    
     bookingView.init();
   
   });

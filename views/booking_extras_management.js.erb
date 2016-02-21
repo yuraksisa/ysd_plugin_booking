@@ -24,6 +24,11 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
   
     onNew : function() {
       $('#code').focus();
+      $('#code').bind('input', function(){
+        $(this).val(function(_, v){
+          return v.replace(/\s+/g, '');
+        });
+      });       
       this.configForm(null);     
     },
 
@@ -57,6 +62,21 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
       var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
 
+    },
+      
+    adaptFormData : function(data) {
+            
+      if ($('#active').length > 0) {
+        if ($('#active').prop('checked')) {
+          data.active = true;
+        }
+        else {
+          data.active = false;
+        }
+      }
+
+      return data;  
+      
     }     
 
   };

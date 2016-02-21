@@ -61,6 +61,15 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
        $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
        
+       $('#additional_driver_1_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_1_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_date_of_birth, 'dd/MM/yyyy')));
+       $('#additional_driver_1_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_1_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_date, 'dd/MM/yyyy')));
+       $('#additional_driver_2_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_2_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_date_of_birth, 'dd/MM/yyyy')));
+       $('#additional_driver_2_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_2_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_date, 'dd/MM/yyyy')));
+
        // Configure resources combo 
        var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
     

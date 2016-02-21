@@ -29,6 +29,11 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     onNew : function() {
       $('#code').focus();
       this.configForm(null);
+      $('#code').bind('input', function(){
+        $(this).val(function(_, v){
+          return v.replace(/\s+/g, '');
+        });
+      });      
       $('#create_category_calendar').bind('change', function() {
          if ($('#create_category_calendar').prop('checked')) {
            $('#calendar\\[id\\]').prop('disabled', true);

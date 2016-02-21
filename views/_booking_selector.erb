@@ -1,7 +1,8 @@
 	  <div id="guiblock" class="bottom-margin-2lines">
 		  <form id="form-search-item" name="form-search-item" action="/p/booking/start">
         <div class="container_12">
-          <div class="prefix_1 grid_4">
+          <div class="grid_6">
+          <div class="right-margin">
 		      <div class="formrow">
 		      	<label for="datefrom" id="labeldatefrom" class="fieldtitle">
               <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
@@ -63,7 +64,8 @@
           </div>                      
           <% end %>    
           </div>
-          <div class="grid_4">         
+          </div>
+          <div class="grid_6">         
 		      <div class="formrow">
 		      	<label for="dateto" id="labeldateto" class="fieldtitle">
               <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
@@ -156,15 +158,11 @@
           </div>
           <% end %>
           </div>
-          <div class="grid_3">
+        </div>
+        <div class="container_12">
+          <div class="grid_12">
             <div class="formrow">
-              <% if booking_item_family.pickup_return_place %>  
-              <div class="top-margin-2lines">
-              <% else %>
-              <div class="top-margin">
-              <% end %> 
-                <input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones"/>
-              </div>
+                <input type="submit" value="<%=t.new_booking.search%>" id="button_calcular_tarifas" class="botones" style="width:100%;padding:0.808em"/>
             </div>    
           </div>
         </div>  

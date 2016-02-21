@@ -82,11 +82,10 @@ module Sinatra
           end
 
           from = DateTime.new(year, month, 1, 0, 0, 0, 0)
-          to = from >> 1
+          to = (from >> 1) - 1
 
           condition = Conditions::JoinComparison.new('$and',
            [Conditions::Comparison.new(:status, '$eq', :confirmed),
-            #Conditions::Comparison.new(:booking_item, '$ne', nil),
             Conditions::JoinComparison.new('$or', 
               [Conditions::JoinComparison.new('$and', 
                  [Conditions::Comparison.new(:date_from,'$lte', from),
@@ -97,8 +96,8 @@ module Sinatra
                   Conditions::Comparison.new(:date_to,'$gte', to)
                   ]),
                Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$eq', from),
-                  Conditions::Comparison.new(:date_to,'$eq', to)
+                 [Conditions::Comparison.new(:date_from,'$lte', from),
+                  Conditions::Comparison.new(:date_to,'$gte', to)
                   ]),
                Conditions::JoinComparison.new('$and',
                  [Conditions::Comparison.new(:date_from, '$gte', from),
@@ -123,7 +122,7 @@ module Sinatra
           end
 
           from = DateTime.new(year, month, 1, 0, 0, 0, 0)
-          to = from >> 1
+          to = (from >> 1) - 1
 
           condition = Conditions::JoinComparison.new('$and',
            [Conditions::Comparison.new(:status, '$eq', :confirmed),
@@ -137,8 +136,8 @@ module Sinatra
                   Conditions::Comparison.new(:date_to,'$gte', to)
                   ]),
                Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$eq', from),
-                  Conditions::Comparison.new(:date_to,'$eq', to)
+                 [Conditions::Comparison.new(:date_from,'$lte', from),
+                  Conditions::Comparison.new(:date_to,'$gte', to)
                   ]),
                Conditions::JoinComparison.new('$and',
                  [Conditions::Comparison.new(:date_from, '$gte', from),
@@ -147,6 +146,7 @@ module Sinatra
             ),
             ]
           )
+
       end
 
     end

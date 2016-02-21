@@ -216,10 +216,13 @@
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
             <a name="driver_tab" href="#driver_tab"><%=t.booking_management.form.driver_tab%></a>
           </li>
+          <li class="no-border no-background top-space" style="border:none; backgrond:none">
+            <a name="additional_drivers_tab" href="#additional_drivers_tab"><%=t.booking_management.form.additional_drivers_tab%></a>
+          </li>          
           <% end %>
           <% if booking_item_family.flight %>
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
-            <a name="flight_tab" href="#driver_tab"><%=t.booking_management.form.flight_tab%></a>
+            <a name="flight_tab" href="#flight_tab"><%=t.booking_management.form.flight_tab%></a>
           </li>          
           <% end %>
           <li class="no-border no-background top-space" style="border:none;background:none">
@@ -252,6 +255,9 @@
          <% if booking_item_family.driver %>
          <div id="driver_tab"  class="top-margin bottom-margin">
             <%= partial :booking_management_driver, :locals => {:booking_item_family => booking_item_family} %>
+         </div>
+         <div id="additional_drivers_tab"  class="top-margin bottom-margin">
+            <%= partial :booking_management_additional_drivers, :locals => {:booking_item_family => booking_item_family} %>
          </div>
          <% end %>
 
