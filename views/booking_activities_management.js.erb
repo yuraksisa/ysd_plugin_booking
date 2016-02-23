@@ -220,6 +220,41 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       }
 
+      if ($('#capacities_on_multiple_prices').length > 0) {
+        if ($('#capacities_on_multiple_prices').prop('checked')) {
+          data.capacities_on_multiple_prices = true;
+        }
+        else {
+          data.capacities_on_multiple_prices = false;
+        }
+      }
+
+      if ($('#price_1_affects_capacity').length > 0) {
+        if ($('#price_1_affects_capacity').prop('checked')) {
+          data.price_1_affects_capacity = true;
+        }
+        else {
+          data.price_1_affects_capacity = false;
+        }
+      }
+
+      if ($('#price_2_affects_capacity').length > 0) {
+        if ($('#price_2_affects_capacity').prop('checked')) {
+          data.price_2_affects_capacity = true;
+        }
+        else {
+          data.price_2_affects_capacity = false;
+        }
+      }
+
+      if ($('#price_3_affects_capacity').length > 0) {
+        if ($('#price_3_affects_capacity').prop('checked')) {
+          data.price_3_affects_capacity = true;
+        }
+        else {
+          data.price_3_affects_capacity = false;
+        }
+      }
 
       return data;  
       

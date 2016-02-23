@@ -850,6 +850,17 @@ booking_dashboard:
 booking_activity_management:
   title: Actividades 
   form:
+    multiple_prices_title: Múltiples tarifas basadas en
+    none: Sólo 1 tarifa
+    duration: Duración
+    ages: Edades
+    accomodation: Lugar
+    capacities_on_multiple_prices: Diferentes capacidades según el tipo de tarifa
+    price_name: Nombre tarifa
+    affects_capacity: Afecta capacidad
+    total_capacity: Capacidad total
+    duration_days: Duración en días
+    duration_hours: Duración en horas
     occurrence: Frecuencia
     occurrence_one_time: Una vez
     occurrence_multiple_dates: Múltiples fechas

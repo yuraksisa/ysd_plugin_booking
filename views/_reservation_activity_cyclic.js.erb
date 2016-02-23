@@ -1,0 +1,210 @@
+require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jquery.ui", 'jquery.validate', 
+           'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
+           'jquery.ui.datepicker.validation',
+           'jquery.tools', 'jquery.formparams', 'datejs'],
+         function($, tmpl, MemoryDataSource, SelectSelector) {
+
+    cyclicModel = {
+       capacity: <%=@activity.capacity%>,
+       all_days_same_turns: <%=@activity.all_days_same_turns%>,
+       morning_turns: '<%=@activity.morning_turns%>',
+       afternoon_turns: '<%=@activity.afternoon_turns%>',
+       night_turns: '<%=@activity.night_turns%>',
+       sunday_morning_turns: '<%=@activity.sunday_morning_turns%>',
+       sunday_afternoon_turns: '<%=@activity.sunday_afternoon_turns%>',
+       sunday_night_turns: '<%=@activity.sunday_night_turns%>',
+       monday_morning_turns: '<%=@activity.monday_morning_turns%>',
+       monday_afternoon_turns: '<%=@activity.monday_afternoon_turns%>',
+       monday_night_turns: '<%=@activity.monday_night_turns%>',
+       tuesday_morning_turns: '<%=@activity.tuesday_morning_turns%>',
+       tuesday_afternoon_turns: '<%=@activity.tuesday_afternoon_turns%>',
+       tuesday_night_turns: '<%=@activity.tuesday_night_turns%>',
+       wednesday_morning_turns: '<%=@activity.wednesday_morning_turns%>',
+       wednesday_afternoon_turns: '<%=@activity.wednesday_afternoon_turns%>',
+       wednesday_night_turns: '<%=@activity.wednesday_night_turns%>',
+       thursday_morning_turns: '<%=@activity.thursday_morning_turns%>',
+       thursday_afternoon_turns: '<%=@activity.thursday_afternoon_turns%>',
+       thursday_night_turns: '<%=@activity.thursday_night_turns%>', 
+       friday_morning_turns: '<%=@activity.friday_morning_turns%>',
+       friday_afternoon_turns: '<%=@activity.friday_afternoon_turns%>',
+       friday_night_turns: '<%=@activity.friday_night_turns%>',
+       saturday_morning_turns: '<%=@activity.saturday_morning_turns%>',
+       saturday_afternoon_turns: '<%=@activity.saturday_afternoon_turns%>',
+       saturday_night_turns: '<%=@activity.saturday_night_turns%>',
+       price_1_defined : <%=!@activity.price_definition_1.nil?%>,
+       price_1_description: '<%=@activity.price_1_description%>',
+       price_2_defined : <%=!@activity.price_definition_2.nil?%>,
+       price_2_description: '<%=@activity.price_2_description%>',
+       price_3_defined: <%=!@activity.price_definition_3.nil?%>,
+       price_3_description: '<%=@activity.price_3_description%>',
+       morningTurns: [],
+       afternoonTurns: [],
+       nightTurns: [],
+       buildTurns: function() {
+
+           var date = $('#datepicker').datepicker("getDate");
+           var _morningTurns = '', _afternoonTurns = '', _nightTurns = '';
+           if (this.all_days_same_turns) {
+             _morningTurns = this.morning_turns;
+             _afternoonTurns = this.afternoon_turns;
+             _nightTurns = this.night_turns;
+           }
+           else {
+             var dayOfWeek = date.getDay();
+             switch (dayOfWeek) {
+                case 0:
+                  _morningTurns = this.sunday_morning_turns;
+                  _afternoonTurns = this.sunday_afternoon_turns;
+                  _nightTurns = this.sunday_night_turns;
+                  break;
+                case 1:
+                  _morningTurns = this.monday_morning_turns;
+                  _afternoonTurns = this.monday_afternoon_turns;
+                  _nightTurns = this.monday_night_turns;                
+                  break;
+                case 2:
+                  _morningTurns = this.tuesday_morning_turns;
+                  _afternoonTurns = this.tuesday_afternoon_turns;
+                  _nightTurns = this.tuesday_night_turns;                
+                  break;
+                case 3:
+                  _morningTurns = this.wednesday_morning_turns;
+                  _afternoonTurns = this.wednesday_afternoon_turns;
+                  _nightTurns = this.wednesday_night_turns;                
+                  break;
+                case 4:
+                  _morningTurns = this.thursday_morning_turns;
+                  _afternoonTurns = this.thursday_afternoon_turns;
+                  _nightTurns = this.thursday_night_turns;                
+                  break;
+                case 5:
+                  _morningTurns = this.friday_morning_turns;
+                  _afternoonTurns = this.friday_afternoon_turns;
+                  _nightTurns = this.friday_night_turns;                
+                  break;
+                case 6:
+                  _morningTurns = this.saturday_morning_turns;
+                  _afternoonTurns = this.saturday_afternoon_turns;
+                  _nightTurns = this.saturday_night_turns;                
+                  break;
+             }             
+           }
+
+          this.morningTurns = _morningTurns.split(',').filter(function(element){return element != '';});
+          this.afternoonTurns = _afternoonTurns.split(',').filter(function(element){return element != '';});
+          this.nightTurns = _nightTurns.split(',').filter(function(element){return element != '';});
+
+          cyclicView.updateTurns();
+          cyclicView.loadCapacity();
+       }                                  
+    };
+
+    cyclicController = {
+        onDateChanged: function() {
+            cyclicModel.buildTurns();
+        }
+    };
+
+    cyclicView = {
+        init: function() {
+            $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+            $("#datepicker").datepicker({
+              minDate: new Date(),
+              beforeShowDay: function(date){
+                // Make sure invalidates not available dates
+                if (date.getDate() == 14) {
+                    return [false];
+                }
+                return [true];
+              }
+            });
+            $('#datepicker').bind('change', function() {
+               cyclicController.onDateChanged();
+            });           
+            this.updateTurns(); 
+            this.loadCapacity();
+        },
+
+        updateTurns: function() {
+
+           /*
+           var html = tmpl('script_turns', 
+             {turns: cyclicModel.morningTurns.concat(cyclicModel.afternoonTurns).concat(cyclicModel.nightTurns)});
+           */
+
+           var html = tmpl('script_turns_blocks',
+             {morningTurns: cyclicModel.morningTurns,
+              afternoonTurns: cyclicModel.afternoonTurns,
+              nightTurns: cyclicModel.nightTurns});
+           
+           if (cyclicModel.morningTurns.length > 0 ||
+               cyclicModel.afternoonTurns.length > 0 || 
+               cyclicModel.nightTurns.length > 0) {
+              $('#botonera').show();
+           }
+           else {
+              $('#botonera').hide();
+           }
+
+           $('#turns').html(html);
+
+        },
+
+        loadCapacity: function() {
+          
+          if (cyclicModel.morningTurns.length > 0 ||
+              cyclicModel.afternoonTurns.length > 0 || 
+              cyclicModel.nightTurns.length > 0) {
+            
+            // Price 1
+            if (cyclicModel.price_1_defined) {
+              var capacities = [];
+              for (idx=1;idx <=cyclicModel.capacity; idx++) {
+                capacities.push({id:idx,description:idx+' x '+cyclicModel.price_1_description});
+              }           
+              var capacitiesDataSource = new MemoryDataSource(capacities);
+              var capacitiesSelectSelector = new SelectSelector('quantity_rate_1', capacitiesDataSource);
+              $('#quantity_rate_1').show();
+            }
+            else {
+              $('#quantity_rate_1').hide();
+            }
+            // Price 2
+            if (cyclicModel.price_2_defined) {
+              var capacities = [];
+              for (idx=1;idx <=cyclicModel.capacity; idx++) {
+                capacities.push({id:idx,description:idx+' x '+cyclicModel.price_2_description});
+              }           
+              var capacitiesDataSource = new MemoryDataSource(capacities);
+              var capacitiesSelectSelector = new SelectSelector('quantity_rate_2', capacitiesDataSource);
+              $('#quantity_rate_2').show();
+            }
+            else {
+              $('#quantity_rate_2').hide();
+            }
+            // Price 3
+            if (cyclicModel.price_3_defined) {
+              var capacities = [];
+              for (idx=1;idx <=cyclicModel.capacity; idx++) {
+                capacities.push({id:idx,description:idx+' x '+cyclicModel.price_3_description});
+              }           
+              var capacitiesDataSource = new MemoryDataSource(capacities);
+              var capacitiesSelectSelector = new SelectSelector('quantity_rate_3', capacitiesDataSource);
+              $('#quantity_rate_3').show();
+            }
+            else {
+              $('#quantity_rate_3').hide();
+            }
+
+            $('#tickets').show();
+          }
+          else {
+            $('#tickets').hide();
+          }
+
+        }
+    };
+
+    cyclicView.init();
+
+});

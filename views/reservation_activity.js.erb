@@ -1,20 +1,3 @@
-require(["jquery","jquery.ui", 'jquery.validate', 
-           'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
-           'jquery.ui.datepicker.validation',
-           'jquery.tools', 'jquery.formparams', 'datejs'],
-         function($) {
-
-    $(function() {
-        $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
-    	$("#datepicker").datepicker({
-    		beforeShowDay: function(date){
-    			// Make sure invalidates not available dates
-    			if (date.getDate() == 14) {
-    				return [false];
-    			}
-    			return [true];
-    		}
-    	});
-    });
-
-});
+      <% if @activity.occurence == :cyclic %>
+         <%= partial 'reservation_activity_cyclic.js'.to_sym %>
+      <% end %>

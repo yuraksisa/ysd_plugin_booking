@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.name    = "ysd_plugin_booking"
-  s.version = "0.3.51"
+  s.version = "0.3.53"
   s.authors = ["Yurak Sisa Dream"]
   s.date    = "2013-02-28"
   s.email   = ["yurak.sisa.dream@gmail.com"]
-  s.files   = Dir['lib/**/*.rb','views/**/*.erb','i18n/**/*.yml','static/**/*.*'] 
+  s.files   = Dir['lib/**/*.rb','views/**/*.erb','i18n/**/*.yml','static/**/*.*','fonts/**/*.*'] 
   s.description = "Booking plugin"
   s.summary = "Booking plugin"
   
