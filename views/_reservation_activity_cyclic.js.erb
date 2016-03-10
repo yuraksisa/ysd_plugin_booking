@@ -3,10 +3,13 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
            'jquery.ui.datepicker.validation',
            'jquery.tools', 'jquery.formparams', 'datejs'],
          function($, tmpl, MemoryDataSource, SelectSelector) {
-
     cyclicModel = {
+       date: null,
+       dateLiteral: null,
+       total: 0,
        capacity: <%=@activity.capacity%>,
        all_days_same_turns: <%=@activity.all_days_same_turns%>,
+       season_prices: <%=@activity.season_prices?%>,
        morning_turns: '<%=@activity.morning_turns%>',
        afternoon_turns: '<%=@activity.afternoon_turns%>',
        night_turns: '<%=@activity.night_turns%>',
@@ -40,9 +43,32 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
        morningTurns: [],
        afternoonTurns: [],
        nightTurns: [],
+       <% rates = @activity.rates(Date.today) %>
+       prices_1 : {
+         <% unless @activity.price_definition_1.nil? %>
+            <% rates[1].each do |quantity, price| %>
+              '<%=quantity%>':<%="%.2f" % price%>, 
+            <% end %>
+         <% end %>
+       },
+       prices_2 : {
+         <% unless @activity.price_definition_2.nil? %>
+            <% rates[2].each do |quantity, price| %>
+              '<%=quantity%>':<%="%.2f" % price%>,  
+            <% end %>
+         <% end %>
+       },
+       prices_3 : {
+         <% unless @activity.price_definition_3.nil? %>
+            <% rates[3].each do |quantity, price| %>
+              '<%=quantity%>':<%="%.2f" % price%>,
+            <% end %>  
+         <% end %>
+       },
        buildTurns: function() {
-
-           var date = $('#datepicker').datepicker("getDate");
+           this.total = 0;
+           this.date = $('#datepicker').datepicker("getDate").toString('yyyy-MM-dd');
+           this.dateLiteral = $('#datepicker').datepicker("getDate").toString('dd MMMM, yyyy');
            var _morningTurns = '', _afternoonTurns = '', _nightTurns = '';
            if (this.all_days_same_turns) {
              _morningTurns = this.morning_turns;
@@ -50,7 +76,7 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
              _nightTurns = this.night_turns;
            }
            else {
-             var dayOfWeek = date.getDay();
+             var dayOfWeek = Date.parse(this.date,'yyyy-MM-dd').getDay();
              switch (dayOfWeek) {
                 case 0:
                   _morningTurns = this.sunday_morning_turns;
@@ -93,15 +119,33 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
           this.morningTurns = _morningTurns.split(',').filter(function(element){return element != '';});
           this.afternoonTurns = _afternoonTurns.split(',').filter(function(element){return element != '';});
           this.nightTurns = _nightTurns.split(',').filter(function(element){return element != '';});
-
+          
+          cyclicView.updatePrice();
+          cyclicView.updateDate();
           cyclicView.updateTurns();
           cyclicView.loadCapacity();
+       },
+       calculatePrice: function() {
+          this.total = 0;
+          if (this.prices_1[$('#quantity_rate_1').val()]) {
+            this.total += this.prices_1[$('#quantity_rate_1').val()];
+          }
+          if (this.prices_2[$('#quantity_rate_2').val()]) {
+            this.total += this.prices_2[$('#quantity_rate_2').val()];
+          }
+          if (this.prices_3[$('#quantity_rate_3').val()]) {
+            this.total += this.prices_1[$('#quantity_rate_3').val()];
+          }          
+          cyclicView.updatePrice();
        }                                  
     };
 
     cyclicController = {
         onDateChanged: function() {
             cyclicModel.buildTurns();
+        },
+        onQuantityChanged: function() {
+            cyclicModel.calculatePrice();
         }
     };
 
@@ -120,9 +164,29 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
             });
             $('#datepicker').bind('change', function() {
                cyclicController.onDateChanged();
-            });           
-            this.updateTurns(); 
+            });  
+            $('.quantity_rate').bind('change', function() {
+               cyclicController.onQuantityChanged();
+            });
+            //this.updateDate();         
+            //this.updateTurns(); 
+            cyclicModel.buildTurns();
             this.loadCapacity();
+        },
+
+        updateDate: function() {
+          $('#date_text').html(cyclicModel.dateLiteral);
+          $('#date').val(cyclicModel.date);
+        },
+
+        updatePrice: function() {
+           $('#total').html(cyclicModel.total.toFixed(2) + '€');
+           if (cyclicModel.total > 0) {
+             $('#total').show();
+           }
+           else {
+             $('#total').hide();
+           }
         },
 
         updateTurns: function() {
@@ -159,8 +223,12 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
             // Price 1
             if (cyclicModel.price_1_defined) {
               var capacities = [];
+              capacities.push({id:0,
+                               description: '0 X ' + cyclicModel.price_1_description});
               for (idx=1;idx <=cyclicModel.capacity; idx++) {
-                capacities.push({id:idx,description:idx+' x '+cyclicModel.price_1_description});
+                capacities.push({id:idx,
+                                 description:this.format(idx,cyclicModel.price_1_description,
+                                                    cyclicModel.prices_1[idx])});
               }           
               var capacitiesDataSource = new MemoryDataSource(capacities);
               var capacitiesSelectSelector = new SelectSelector('quantity_rate_1', capacitiesDataSource);
@@ -172,8 +240,12 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
             // Price 2
             if (cyclicModel.price_2_defined) {
               var capacities = [];
+              capacities.push({id:0,
+                               description: '0 X ' + cyclicModel.price_2_description});              
               for (idx=1;idx <=cyclicModel.capacity; idx++) {
-                capacities.push({id:idx,description:idx+' x '+cyclicModel.price_2_description});
+                capacities.push({id:idx,
+                                 description:this.format(idx,cyclicModel.price_2_description,
+                                                    cyclicModel.prices_2[idx])});
               }           
               var capacitiesDataSource = new MemoryDataSource(capacities);
               var capacitiesSelectSelector = new SelectSelector('quantity_rate_2', capacitiesDataSource);
@@ -185,8 +257,12 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
             // Price 3
             if (cyclicModel.price_3_defined) {
               var capacities = [];
+              capacities.push({id:0,
+                               description: '0 X ' + cyclicModel.price_3_description});              
               for (idx=1;idx <=cyclicModel.capacity; idx++) {
-                capacities.push({id:idx,description:idx+' x '+cyclicModel.price_3_description});
+                capacities.push({id:idx,
+                                 description:this.format(idx,cyclicModel.price_3_description,
+                                                    cyclicModel.prices_3[idx])});
               }           
               var capacitiesDataSource = new MemoryDataSource(capacities);
               var capacitiesSelectSelector = new SelectSelector('quantity_rate_3', capacitiesDataSource);
@@ -202,6 +278,19 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
             $('#tickets').hide();
           }
 
+        },
+
+        format: function(quantity, priceDescription, price) {
+           var extraSpaceIdx = (quantity < 10) ? ' ' : '';
+           var extraSpacePrice = '';
+           var max = 15 - price.toString().length;
+           for (var idx=0; idx < max; idx++) {
+             extraSpacePrice += ' ';
+           }
+
+           var value = quantity + extraSpaceIdx + ' X ' + priceDescription + extraSpacePrice +
+                       price.toFixed(2) + '€';
+           return value;
         }
     };
 

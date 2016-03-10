@@ -140,7 +140,9 @@ booking_console:
   adjust_prices: Ajustes masivos precios    
   calendars: Calendarios
   timetables: Horarios
-  receipts: Cobros  
+  receipts: Cobros
+  products_billing: Facturación stock
+  extras_billing: Facturación extras  
   information_requests: Solicitudes información
   report_reservations: Reservas alquiler
   report_customers: Clientes reservas
@@ -811,6 +813,8 @@ not_assigned_bookings:
     status: Estado   
     resource: Recurso
     color: Color 
+    show_stock: Mostrar stock asignado
+    hide_stock: Ocultar stock asignado
   form:  
     assign: Asignar
     reassign: Reasignar
@@ -847,6 +851,13 @@ booking_dashboard:
   delivery: Entregas del día
   transit: En curso
   return: Devoluciones del día
+  billing: Facturación
+  products_billing: Facturación productos
+  extras_billing: Facturación extras
+  stock_cost: Valor stock
+  products_billing_vs_total: Facturación productos vs Facturación total
+  extras_billing_vs_total: Facturación extras vs Facturación total
+  amortization: Amortización
 booking_activity_management:
   title: Actividades 
   form:

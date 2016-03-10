@@ -375,7 +375,8 @@ module Sinatra
              :order => [:date_from.asc]
             ) 
 
-          bookings.to_json(:only => [:id, :date_from, :date_to, :planning_color],
+          bookings.to_json(:only => [:id, :date_from, :time_from, :date_to, :time_to, :customer_name, 
+                           :customer_surname, :planning_color],
                            :relationships => {:booking_line_resources => {}})
 
         end
@@ -396,7 +397,7 @@ module Sinatra
              :order => [:date_from.asc]
             )
 
-          bookings.to_json(:only => [:id, :date_from, :date_to, :customer_name, :customer_surname,
+          bookings.to_json(:only => [:id, :date_from, :time_from, :date_to, :time_to, :customer_name, :customer_surname,
               :customer_phone, :customer_mobile_phone, :status, :planning_color], 
                            :relationships => {:booking_line_resources => {}})
 
@@ -421,7 +422,10 @@ module Sinatra
             :date_from.gte => from,
             :date_from.lte => to,
             :status => [:confirmed, :in_progress, :done],
-            :order => [:date_from.asc, :time_from.asc])
+            :order => [:date_from.asc, :time_from.asc]).sort do |x,y| 
+              comp = x.date_from <=> y.date_from 
+              comp.zero? ? Time.parse(x.time_from) <=> Time.parse(y.time_from) : comp
+             end
 
            data.to_json
 
@@ -446,7 +450,10 @@ module Sinatra
             :date_to.gte => from,
             :date_to.lte => to,
             :status => [:confirmed, :in_progress, :done],
-            :order => [:date_to.asc, :time_to.asc])
+            :order => [:date_to.asc, :time_to.asc]).sort do |x,y| 
+               comp = x.date_to <=> y.date_to 
+               comp.zero? ? Time.parse(x.time_to) <=> Time.parse(y.time_to) : comp
+             end 
 
            data.to_json
 

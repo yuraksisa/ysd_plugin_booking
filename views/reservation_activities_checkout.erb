@@ -1,0 +1,51 @@
+<style>
+  #activities_checkout_form {
+    background-color: white;
+  }
+</style>
+<h2>Resumen del pedido</h2>
+<%= partial :shopping_cart_summary %>
+<h2>Datos de la reserva</h2>
+<div class="container_12">
+    <form name="activities_checkout_form" id="activities_checkout_form" class="all-space top-margin">
+      <div class="grid_6">
+	          <div class="formrow">
+	            <label id="label_customer_email" for="customer_name" class="fieldtitle"><%=t.new_booking.customer_name.label%> *</label>
+	            <input type="text" name="customer_name" id="customer_name" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_name.placeholder%>" <%unless @shopping_cart.nil?%>value="<%=@shopping_cart.customer_name%>"<%end%>/>
+	          </div>
+	          <div class="formrow">
+	            <label id="label_customer_surname" for="customer_surname" class="fieldtitle"><%=t.new_booking.customer_surname.label%> *</label>
+	            <input type="text" name="customer_surname" id="customer_surname" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_surname.placeholder%>" <%unless @shopping_cart.nil?%>value="<%=@shopping_cart.customer_surname%>"<%end%>/>	          
+	          </div>
+	          <div class="formrow">
+	            <label id="label_customer_email" for="customer_email" class="fieldtitle"><%=t.new_booking.customer_email.label%> *</label>
+	            <input type="text" name="customer_email" id="customer_email" class="fieldcontrol" placeholder="<%=t.new_booking.customer_email.placeholder%>" maxlength="40" <%unless @shopping_cart.nil?%>value="<%=@shopping_cart.customer_email%>"<%end%>/>
+	          </div>	          
+	          <div class="formrow">
+	            <label id="label_customer_phone" for="customer_phone" class="fieldtitle"><%=t.new_booking.customer_phone.label%> *</label>
+	            <input type="text" name="customer_phone" id="customer_phone" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_booking.customer_phone.placeholder%>" <%unless @shopping_cart.nil?%>value="<%=@shopping_cart.customer_phone%>"<%end%>/>      
+	          </div>
+
+	          <div class="formrow">
+	            <label id="label_comments" for="comments" class="fieldtitle"><%=t.new_booking.comments.label%></label>
+	            <textarea id="comments" name="comments" class="fieldcontrol" rows="10" placeholder="<%=t.new_booking.comments.placeholder%>"><%unless @shopping_cart.nil?%><%=@shopping_cart.comments%><%end%></textarea>
+	          </div>	      
+	          <p class="form-reservation-right-column"> <span id="booking_comments_length"></span> <%=t.available_chars%></p>
+
+              <div class="formrow centered_text">
+	        	  <div style="display:inline-block">
+	      	        <button type="submit" name="pay_now" value="true" id="button_ir_a_pagar_reserva" class="form-button botones">
+                      <span><%=t.new_booking.go_to_pay_line1%></span><br/>
+                      <span><%=t.new_booking.go_to_pay_line2%></span><br/>
+	      	        </button>
+	              </div>
+	        	  <div style="display:inline-block">	            
+	                <button type="submit" name="pay_now" value="false" id="button_confirmar_reserva" class="form-button botones">
+                       <span><%=t.new_booking.confirm_line1%></span><br/>
+                       <span><%=t.new_booking.confirm_line2%></span>
+	                </button>
+	              </div>
+              </div>
+    </div>
+  </form>
+</div>

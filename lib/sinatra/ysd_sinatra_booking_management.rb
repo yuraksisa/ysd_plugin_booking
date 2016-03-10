@@ -31,6 +31,9 @@ module Sinatra
           @pickup_today = BookingDataSystem::Booking.count_pickup(today)
           @transit_today = BookingDataSystem::Booking.count_transit(today)
           @delivery_today = BookingDataSystem::Booking.count_delivery(today)
+          @product_total_billing = BookingDataSystem::Booking.products_billing_total(@year)
+          @extras_total_billing = BookingDataSystem::Booking.extras_billing_total(@year)
+          @product_total_cost = BookingDataSystem::Booking.stock_cost_total
           load_page(:booking_dashboard)
         end
 
@@ -105,6 +108,7 @@ module Sinatra
         # Bookings planning
         # 
         app.get '/admin/booking/planning', :allowed_usergroups => ['booking_manager', 'staff'] do
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           load_page(:bookings_planning)
         end
 
@@ -257,7 +261,41 @@ module Sinatra
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
         end
+
+        # ------------------ Billing ------------------------
+
+        #
+        # Get the product billing for a year
+        #
+        app.get '/admin/booking/product-billing', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          today = Date.today
+          @year = params[:year].to_i == 0 ? today.year : params[:year].to_i
+          @previous_year = @year - 1
+          @next_year = @year + 1
+
+          @data = BookingDataSystem::Booking.products_billing_summary_by_stock(@year)
+          
+          load_page :products_billing
+
+        end
         
+        #
+        # Get the extras billing for a year
+        #
+        app.get '/admin/booking/extras-billing', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          today = Date.today
+          @year = params[:year].to_i == 0 ? today.year : params[:year].to_i
+          @previous_year = @year - 1
+          @next_year = @year + 1
+
+          @data = BookingDataSystem::Booking.extras_billing_summary_by_extra(@year)
+          
+          load_page :extras_billing
+
+        end
+
         # ------------------ Occupation ---------------------
 
         #
@@ -270,13 +308,14 @@ module Sinatra
           @month = params[:month].to_i == 0 ? today.month : params[:month].to_i
           @year = params[:year].to_i == 0 ? today.year : params[:year].to_i
           @product = params[:product]
+          @mode = params[:mode]
 
           @period = Date.civil(@year, @month)
           @next_period = @period >> 1
           @previous_period = @period << 1
 
           @days = Date.civil(@year, @month, -1).day
-          @data = BookingDataSystem::Booking.monthly_occupation(@month, @year, @product)
+          @data = BookingDataSystem::Booking.monthly_occupation(@month, @year, @product, @mode)
           
           load_page :monthly_occupation
 
@@ -315,7 +354,7 @@ module Sinatra
             product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
             locals.store(:product_family, product_family)
           end
-          load_page(:pickup_return, :locals => locals)
+          load_page(:report_pickup_return, :locals => locals)
         end
 
         app.get '/admin/booking/reports/pickup-return-pdf', :allowed_usergroups => ['booking_manager', 'staff'] do
@@ -325,6 +364,7 @@ module Sinatra
              begin
                from = DateTime.strptime(params[:from], '%Y-%m-%d')
              rescue
+               logger.error("pickup/return date from is not valid #{params[:from]}")
              end
            end
 
@@ -333,6 +373,7 @@ module Sinatra
              begin
                to = DateTime.strptime(params[:to], '%Y-%m-%d')
              rescue
+               logger.error("pickup/return date to is not valid #{params[:to]}")
              end
            end
 
@@ -342,12 +383,60 @@ module Sinatra
         end
 
         #
-        # Reservations report (html)
+        # Reservations report (pdf)
         #
-        app.get '/admin/booking/reports/reservations', :allowed_usergroups => ['booking_manager'] do 
+        app.get '/admin/booking/reports/reservations-pdf/?*', :allowed_usergroups => ['booking_manager'] do 
+          
           year = Date.today.year
           date_from = Date.civil(year,1,1)
           date_to = Date.civil(year,12,31)
+
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:to]}")
+            end
+          end
+
+          content_type 'application/pdf'
+          pdf = ::Yito::Model::Booking::Pdf::Reservations.new(date_from, date_to).build.render          
+        end  
+
+        #
+        # Reservations report (html)
+        #
+        app.get '/admin/booking/reports/reservations/?*', :allowed_usergroups => ['booking_manager'] do 
+          
+          year = Date.today.year
+
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+          
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:to]}")
+            end
+          end
+
           @reservations = BookingDataSystem::Booking.all(
              :conditions => {:date_from.gte => date_from,
                              :date_to.lte => date_to,
@@ -359,16 +448,6 @@ module Sinatra
           load_page(:report_reservations, :locals => locals)
         end  
         
-        #
-        # Reservations report (pdf)
-        #
-        app.get '/admin/booking/reports/reservations-pdf', :allowed_usergroups => ['booking_manager'] do 
-          year = Date.today.year
-
-          content_type 'application/pdf'
-          pdf = ::Yito::Model::Booking::Pdf::Reservations.new(year).build.render          
-        end  
-
         #
         # Customers report (html)
         #

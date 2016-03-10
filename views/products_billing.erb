@@ -1,0 +1,52 @@
+<style>
+#table {
+  table-layout: fixed
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.5em;
+   font-size: 0.9em;
+ }
+</style>
+<div class="top-navigation-bar">
+<h2 class="entity-title">Facturación por stock</h2>
+</div>
+<div class="top-margin bottom-margin-1line">
+	<div class="more_contrast_text centered_text top-margin-1line bottom-margin-2lines">
+		<span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?year=<%=@previous_year%>">&lt;</a></span>
+		<span class="all-space">
+		  <span id="year" class="right-margin"><%=@year%></span>
+	  </span>
+		<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?year=<%=@next_year%>">&gt;</a></span>   
+	</div>
+</div>
+<div class="admin_content_wrapper">
+  <div>
+    <table id="table" class="table">
+      <thead class="table-header">
+        <tr>
+          <th class="table-cell left_text" scope="col" style="width: 80px">Producto</th>
+          <% (1..12).each do |month| %>
+          <th class="table-cell centered_text" scope="col"><%=month%></th>
+          <% end %>     
+          <th class="table-cell centered_text" scope="col">Total</th>
+          <th class="table-cell centered_text" scope="col">Coste</th>
+          <th class="table-cell centered_text" scope="col">%</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @data.each do |product, billing| %>        
+        <tr>
+          <td class="table-cell"><%if product ==:TOTAL%><%= product %><%else%><a href="/admin/booking/booking-items/<%=product%>"><%= product %></a><%end%></td>
+          <% (1..12).each do |month| %>
+          <td class="table-cell right_text <%if product == :TOTAL%>more_contrast_text<% end %>"><%="%.2f" % billing[month]%></td> 
+          <% end %>
+          <td class="table-cell right_text more_contrast_text"><%="%.2f" % billing[:total]%></td>
+          <td class="table-cell right_text more_contrast_text"><%="%.2f" % billing[:cost]%></td>
+          <td class="table-cell right_text more_contrast_text"><%="%.2f" % billing[:percentage]%>%</td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

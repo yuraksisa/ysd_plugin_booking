@@ -48,17 +48,19 @@
    </li>
    <li class='<%if ['/admin/booking/reports/reservations',
       '/admin/booking/reports/customers',
-      '/admin/booking/pickup-return',
+      '/admin/booking/reports/pickup-return',
       ].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.listing%></a>
       <ul>
         <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>
-        <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>        
         <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%></a></li>           
+        <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>   
       </ul>    
    </li>
-   <li class='<%if ['/admin/charges'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
+   <li class='<%if ['/admin/charges','/admin/booking/product-billing','/admin/booking/extras-billing'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
       <ul>
-        <li><a href='/admin/charges'><%=t.booking_console.receipts%></a></li>           
+        <li><a href='/admin/charges'><%=t.booking_console.receipts%></a></li>
+        <li><a href='/admin/booking/product-billing'><%=t.booking_console.products_billing%></a></li>         
+        <li><a href='/admin/booking/extras-billing'><%=t.booking_console.extras_billing%></a></li>
       </ul>    
    </li>
    <li class='<%if ['/admin/booking/summary','/admin/booking/monthly-occupation'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.statistics%></a>

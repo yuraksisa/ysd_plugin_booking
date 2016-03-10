@@ -13,11 +13,13 @@
 </div>
 <div class="top-margin bottom-margin-1line">
 	<div class="more_contrast_text centered_text top-margin-1line bottom-margin-2lines">
-		<span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@previous_period.month%>&year=<%=@previous_period.year%>">&lt;</a></span>
+		<span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@previous_period.month%>&year=<%=@previous_period.year%>&mode=<%=@mode%>">&lt;</a></span>
 		<span class="all-space">
 		  <span id="month" class="left-margin"><%=@month%></span> - <span id="year" class="right-margin"><%=@year%></span>
 	    </span>
-		<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@next_period.month%>&year=<%=@next_period.year%>">&gt;</a></span>
+		<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@next_period.month%>&year=<%=@next_period.year%>&mode=<%=@mode%>">&gt;</a></span>
+    <span class="all-space left-margin color-2"><%=@mode=='stock' ? 'ocupación x stock asignado' : 'ocupación x producto reservado'%></span>
+    <span id="mode" class="all-space left-margin over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@month%>&year=<%=@year%>&mode=<%=@mode=='stock'?'product':'stock'%>"><%=@mode=='stock' ? 'cambiar a ocupación x producto reservado' : 'cambiar a ocupación x stock asignado'%></a></span>    
 	</div>
 </div>
 <div class="admin_content_wrapper">

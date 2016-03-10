@@ -1,0 +1,100 @@
+<style>
+  body {
+    background-color: #DDD;
+  }
+  .activity_list_item {
+    background-color: white;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    padding-bottom: 2em;
+    padding-top: 1em;
+    padding-right: 2em;
+  }
+  .shopping_cart_total {
+    background-color: #EEE;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    padding-right: 2em;    
+  }
+  .shopping_cart_item {
+    border-bottom: 1px solid black;
+  }
+</style>
+<h2>Su compra</h2>
+  <% @shopping_cart.shopping_cart_items_group_by_date_time_item_id.each do |idx,shopping_cart_items| %>
+    <% first_shopping_cart_item = shopping_cart_items[:items].first %>
+    <% activity = ::Yito::Model::Booking::Activity.get(first_shopping_cart_item.item_id) %>
+    <div class="activity_list_item top-margin bottom-margin">
+      <div class="container_12">
+          <div class="grid_3">
+            <div style="height:108px">
+              <% if activity.photo_url_small.nil? or activity.photo_url_small.empty?%> 
+                <div class="element-row-selector" style="width:144px; height: 108px" rel="<%%= index %>">
+                   <span class="centered_text" style="font-size:5em; display: block" data-icon="&#xe072;"></span> 
+                </div> 
+              <% else  %>
+                <img src="<%= activity.photo_url_small %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto" rel="<%%= index %>"/>
+              <% end %>
+            </div>            
+          </div>
+          <div class="grid_7">
+            <div class="left-margin">
+              <h4><%=activity.name%></h4>
+              <div class="less_contrast_text"><%=first_shopping_cart_item.date.strftime("%d %B %Y")%> <%first_shopping_cart_item.time%></div>
+              <div class="top-margin">
+                <% shopping_cart_items[:items].each do |shopping_cart_item| %>
+                <div class="grid_8 shopping_cart_item">
+                  <div class="more_contrast_text"><%=shopping_cart_item.quantity%> <%=shopping_cart_item.item_description%> x <%="%.2f" % shopping_cart_item.item_unit_cost%>€</div>
+                </div>
+                <div class="grid_2 shopping_cart_item">
+                  <div class="right_text"><%="%.2f" % shopping_cart_item.item_cost%>€</div>
+                </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="grid_2">
+            <div class="left-margin right-margin">
+              <div class="right_text more_contrast_text" style="font-size: 2.2em"><%="%.2f" % shopping_cart_items[:total]%>€</div>
+              <div class="centered_text" style="color:red">
+                <form name="remove_shopping_item_form" action="/p/activity/remove-to-shopping-cart" method="post" class="top-margin">
+                  <input type="hidden" name="id" value="<%=first_shopping_cart_item.id%>"/> 
+                  <input type="submit" value="Eliminar" class="form-button red-button"/>
+                </form>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  <% end %>
+  <div class="shopping_cart_total">
+      <div class="container_12">
+        <div class="grid_3">
+          <span>&nbsp;</span>
+        </div>
+        <div class="grid_7">
+          <span>&nbsp;</span>
+        </div>
+        <div class="grid_2">
+            <div class="centered_text">
+              <div class="less_contrast_text">TOTAL</div>
+            </div>
+            <div class="left-margin right-margin">
+              <div class="right_text more_contrast_text" style="font-size: 2.2em"><%="%.2f" % @shopping_cart.total_cost%>€</div>              
+            </div>
+        </div>
+      </div>
+  </div>
+  <% unless @shopping_cart.empty? %>
+  <div class="shopping_cart_checkout">
+      <div class="container_12">
+        <div class="prefix_9 grid_3">
+          <form name="activities_checkout_form" action="/p/activities/shopping-cart-checkout" method="post" class="top-margin bottom-margin-2lines">            
+            <input type="submit" value="REALIZAR RESERVA" class="form-button green-button" style="width:100%"/>
+          </form>
+        </div>  
+      </div>
+  </div>
+  <% end %>

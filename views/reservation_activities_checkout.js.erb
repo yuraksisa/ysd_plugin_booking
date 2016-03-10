@@ -1,0 +1,77 @@
+require(['jquery','YSDForms', 'jquery.validate', 
+           'jquery.placeholder'], function($, YSDForms) {
+
+  checkoutModel = {
+
+  };
+
+  checkoutController = {
+
+  };
+
+  checkoutView = {
+
+    initForm: function() {
+      YSDForms.improve();
+      YSDForms.limit_text_area_content_size(document.getElementById('comments'),
+         256, function (content_remain) {
+           document.getElementById('booking_comments_length').innerHTML =
+           '<strong>' + content_remain + '</strong>';
+      });
+    },
+
+    initValidation: function() {
+
+      $('#activities_checkout_form').validate(
+        {
+            
+          submitHandler: function(form) {
+            return true;
+          },
+                               
+          rules : {
+           
+               'customer_name': 'required',
+               'customer_surname': 'required',
+               'customer_email' : {
+                 required: true,
+                 email: true 
+               },
+               'customer_phone': {
+                 required: true,
+                 minlength: 9  
+               },            
+            },
+            
+            messages : {
+              
+              'customer_name': '<%=t.new_booking.customer_name.required%>',
+              'customer_surname' : '<%=t.new_booking.customer_surname.required%>',
+              'customer_email' : {
+                 required: '<%=t.new_booking.customer_email.required%>',
+                 email: '<%=t.new_booking.customer_email.format%>'
+              },                        
+              'customer_phone': {
+                'required': '<%=t.new_booking.customer_phone.required%>',
+                'minlength': '<%=t.new_booking.customer_phone.min_length%>' 
+              }, 
+
+            }
+        });
+
+    },
+
+    init: function() {
+      this.initForm();
+      this.initValidation();
+    }    
+
+  };
+
+  $(document).ready(function() {
+    
+    checkoutView.init();
+
+  });
+
+});

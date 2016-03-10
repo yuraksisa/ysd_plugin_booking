@@ -2,25 +2,33 @@
         div.ui-datepicker-inline {
           width: 97%;
         }
+        select option {white-space: pre;}
       </style>
-      <form>
+      <form name="activity_form" id="activity_form" action="/p/activity/add-to-shopping-cart" method="post">
+        <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
         <div id="datepicker"></div>
+        <div id="activity_date">
+          <input type="hidden" name="date" id="date">
+          <h3 id="date_text"></h3>
+        </div>
         <div id="turns" class="top-margin"></div>
         <% if @activity.mode == :partial %>
         <div id="tickets" class="top-margin">
           <div>
-            <select name="quantity_rate_1" id="quantity_rate_1" style="width:100%"></select>
+            <select name="quantity_rate_1" id="quantity_rate_1" class="quantity_rate" style="width:99%"></select>
           </div>
           <div>
-            <select name="quantity_rate_2" id="quantity_rate_2" style="width:100%"></select>
+            <select name="quantity_rate_2" id="quantity_rate_2" class="quantity_rate" style="width:99%"></select>
           </div>
           <div>
-            <select name="quantity_rate_3" id="quantity_rate_3" style="width:100%"></select>	
+            <select name="quantity_rate_3" id="quantity_rate_3" class="quantity_rate" style="width:99%"></select>	
           </div>
         </div>
         <% end %>
+        <div id="total" class="centered_text more_contrast_text" style="font-size:3em">         
+        </div>
         <div id="botonera" class="top-margin">
-          <input type="button" class="form-button green-button" style="width:100%" value="Reservar"/>
+          <input type="submit" class="form-button green-button" style="width:100%" value="Reservar"/>
         </div>
       </form>
 
@@ -40,22 +48,23 @@
         	    afternoonTurns.length == 0 && 
         	    nightTurns.length == 0) {%>
         <p>No hay turnos este día</p>
-        <%% }%>
-
+        <%% } else { %>
+        <%% }%> 
+     
         <%% if (morningTurns.length > 0) {%>
-        <h3>Mañanas</h3>
+        <h4>Mañanas</h4>
         <%% } %>
         <%% for (var idx=0;idx<morningTurns.length;idx++) { %>
           <input type="radio" name="turn" value="<%%=morningTurns[idx]%>"><%%=morningTurns[idx]%></input>
         <%% } %>
         <%% if (afternoonTurns.length > 0) {%>        
-        <h3>Tardes</h3>
+        <h4>Tardes</h4>
         <%% } %>        
         <%% for (var idx=0;idx<afternoonTurns.length;idx++) { %>
             <input type="radio" name="turn" value="<%%=afternoonTurns[idx]%>"><%%=afternoonTurns[idx]%></input>
         <%% } %>     
         <%% if (nightTurns.length > 0) {%>           
-        <h3>Noches</h3>
+        <h4>Noches</h4>
         <%% } %>        
         <%% for (var idx=0;idx<nightTurns.length;idx++) { %>
             <input type="radio" name="turn" value="<%%=nightTurns[idx]%>"><%%=nightTurns[idx]%></input>

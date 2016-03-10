@@ -345,6 +345,9 @@ module Huasi
         :theme => Themes::ThemeManager.instance.selected_theme.name},
        {:name => 'booking_admin_menu',
         :module_name => :booking,
+        :theme => Themes::ThemeManager.instance.selected_theme.name},
+       {:name => 'booking_activities_shopping_cart',
+        :module_name => :booking,
         :theme => Themes::ThemeManager.instance.selected_theme.name}        
       ]
         
@@ -381,6 +384,9 @@ module Huasi
       end      
 
       case block_name
+        when 'booking_activities_shopping_cart'
+          shopping_cart = ::Yito::Model::Order::ShoppingCart.get(app.session[:shopping_cart_id]) || ::Yito::Model::Order::ShoppingCart.new
+          app.partial(:activities_shopping_cart, :locals => {shopping_cart: shopping_cart}) 
         when 'booking_selector'    
           app.partial(:booking_selector, :locals => locals)
         when 'booking_selector_inline'         
@@ -514,14 +520,14 @@ module Huasi
     # Ignore the following path prefixes in language processor
     #
     def ignore_path_prefix_language(context={})
-      %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking)
+      %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
     end
 
     #
     # Ignore the following path prefix in cms
     #
     def ignore_path_prefix_cms(context={})
-      %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking)
+      %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
     end
 
   end

@@ -1,0 +1,7 @@
+<div id="activities_shopping_cart" style="display:online-block">
+  <a href="/p/activities/shopping-cart"><img src="/booking/img/shopping-cart.png" style="width:32px">
+  <% if shopping_cart.items_count > 0 %>
+    <span id="shopping_cart_items" style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -7px; left: -13px; color: white; text-decoration: none"><%=shopping_cart.items_count%></span>
+  <% end %>
+  </a>
+</div>

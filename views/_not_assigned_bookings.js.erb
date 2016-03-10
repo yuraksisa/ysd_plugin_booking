@@ -226,6 +226,17 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget',
 
     planningColorChanged: function(control) {
       confirmedBookingsModel.updatePlanningColor($(control.form).formParams(false));
+    },
+
+    stockShowClick: function(control) {
+      var id = $(control).attr('rel');
+      $('#stock_items_'+id).toggle();
+      if ($('#stock_items_'+id).is(':visible')) {
+        $(control).html('<%= t.not_assigned_bookings.table.hide_stock %>');
+      }
+      else {
+        $(control).html('<%= t.not_assigned_bookings.table.show_stock %>');
+      }      
     }
 
   };
@@ -283,6 +294,9 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget',
           $('.planning_color').bind('change', function() {
             confirmedBookingsController.planningColorChanged($(this)[0]);
           });
+          $('.stock_show').bind('click', function(event) {
+            confirmedBookingsController.stockShowClick($(this)[0]);
+          })
 
     }
 

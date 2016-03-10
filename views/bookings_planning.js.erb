@@ -1,7 +1,7 @@
 <%= partial('not_assigned_bookings.js'.to_sym) %>
 
-require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'], 
-        function(Spreadsheet, EventTarget, $, confirmedBooking) {
+require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDFormatter'], 
+        function(Spreadsheet, EventTarget, $, confirmedBooking, formatter) {
 
   planningModel = {
 
@@ -255,7 +255,9 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
           1,                                     // input size
           "centered_text",                       // class
           true,                                  // readonly
-          planningModel.bookingItemsDescription);  // row description  
+          planningModel.bookingItemsDescription,
+          null,
+          10);  // row description  
 
       $('.spread_input').bind('click', function(event) { /* Select the bookings */
          var exp = /(\[[\w|-]+])/g;
@@ -331,6 +333,30 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking'],
              if (booking.planning_color) {
                $(selector).css('background', booking.planning_color);
                //$(selector).css('color', 'white');
+             }
+             var tooltipSelector = $(selector).parent();
+             if (tooltipSelector.attr('data-tip') == undefined) {
+               tooltipSelector.attr('data-tip', 
+                booking.id + ' - ' + 
+                booking.customer_name + ' ' + 
+                booking.customer_surname + ' ' +
+                formatter.formatDate(booking.date_from,'yyyy-MM-dd') + ' ' + 
+                booking.time_from + ' -- ' +
+                formatter.formatDate(booking.date_to,'yyyy-MM-dd') + ' ' + 
+                booking.time_to                             
+                );
+             }
+             else {
+               tooltipSelector.attr('data-tip', tooltipSelector.attr('data-tip') +
+                ' \n ' +
+                booking.id + ' - ' + 
+                booking.customer_name + ' ' + 
+                booking.customer_surname + ' ' +
+                formatter.formatDate(booking.date_from,'yyyy-MM-dd') + ' ' + 
+                booking.time_from + ' -- ' +
+                formatter.formatDate(booking.date_to,'yyyy-MM-dd') + ' ' + 
+                booking.time_to                
+                );
              }
            }
         }
