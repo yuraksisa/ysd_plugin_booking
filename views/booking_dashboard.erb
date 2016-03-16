@@ -67,12 +67,12 @@
       <div class="centered_text smaller_text"><%=t.booking_dashboard.stock_cost%></div>     
     </div>          
     <div class="grid_4" style="min-height: 10em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%="%.f%" % (@product_total_billing / (@product_total_billing + @extras_total_billing) * 100) %></div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@product_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%></div>
       <div class="centered_text smaller_text"><%="%.f" % @product_total_billing%>€/<%="%.f" % (@product_total_billing + @extras_total_billing)%>€</div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.products_billing_vs_total%></div>      
     </div>  
     <div class="grid_4" style="min-height: 10em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%="%.f%" % (@extras_total_billing / (@product_total_billing + @extras_total_billing) * 100) %></div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@extras_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%></div>
       <div class="centered_text smaller_text"><%="%.f" % @extras_total_billing%>€/<%="%.f" % (@product_total_billing + @extras_total_billing)%>€</div>     
       <div class="centered_text smaller_text"><%=t.booking_dashboard.extras_billing_vs_total%></div>     
     </div>              

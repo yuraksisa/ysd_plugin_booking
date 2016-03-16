@@ -20,17 +20,17 @@
 </style>
   <% @shopping_cart.shopping_cart_items_group_by_date_time_item_id.each do |idx,shopping_cart_items| %>
     <% first_shopping_cart_item = shopping_cart_items[:items].first %>
-    <% activity = ::Yito::Model::Booking::Activity.get(first_shopping_cart_item.item_id) %>
+    <% activity = ::Yito::Model::Booking::Activity.first(code:first_shopping_cart_item.item_id) %>
     <div class="activity_list_item">
       <div class="container_12">
           <div class="grid_7">
             <div class="left-margin">
               <h4><%=activity.name%></h4>
-              <div class="less_contrast_text"><%=first_shopping_cart_item.date.strftime("%d %B %Y")%> <%first_shopping_cart_item.time%></div>
+              <div class="less_contrast_text"><%=l(first_shopping_cart_item.date,"%d %B %Y")%> <%first_shopping_cart_item.time%></div>
               <div class="top-margin">
                 <% shopping_cart_items[:items].each do |shopping_cart_item| %>
                 <div class="grid_8 shopping_cart_item">
-                  <div class="more_contrast_text"><%=shopping_cart_item.quantity%> <%=shopping_cart_item.item_description%> x <%="%.2f" % shopping_cart_item.item_unit_cost%>€</div>
+                  <div class="more_contrast_text"><%=shopping_cart_item.quantity%> <%=shopping_cart_item.item_price_description%> x <%="%.2f" % shopping_cart_item.item_unit_cost%>€</div>
                 </div>
                 <div class="grid_2 shopping_cart_item">
                   <div class="right_text"><%="%.2f" % shopping_cart_item.item_cost%>€</div>

@@ -36,31 +36,34 @@ module Sinatra
             if !quantity_rate_1.nil? and quantity_rate_1 > 0
               @shopping_cart.add_item(date, 
                                       time, 
-                                      activity.id, 
-                                      activity.price_1_description,
+                                      activity.code, 
+                                      activity.name,
                                       1,
                                       quantity_rate_1,
-                                      activity.rates(date)[1][1])
+                                      activity.rates(date)[1][1],
+                                      activity.price_1_description)
             end
 
             if !quantity_rate_2.nil? and quantity_rate_2 > 0
               @shopping_cart.add_item(date, 
                                       time, 
-                                      activity.id, 
-                                      activity.price_2_description,
+                                      activity.code, 
+                                      activity.name,
                                       2,
                                       quantity_rate_2,
-                                      activity.rates(date)[2][1]) 
+                                      activity.rates(date)[2][1],
+                                      activity.price_2_description) 
             end
 
             if !quantity_rate_3.nil? and quantity_rate_3 > 0
               @shopping_cart.add_item(date, 
                                       time, 
-                                      activity.id, 
-                                      activity.price_3_description,
+                                      activity.code, 
+                                      activity.name,
                                       3,
                                       quantity_rate_3,
-                                      activity.rates(date)[3][1])               
+                                      activity.rates(date)[3][1],
+                                      activity.price_3_description)               
             end
 
             begin
@@ -120,6 +123,33 @@ module Sinatra
         # Creates an order from the shopping cart
         #
         app.post '/p/activities/shopping-cart-order/?*' do
+
+          if session[:shopping_cart_id]
+            @shopping_cart = ::Yito::Model::Order::ShoppingCart.get(session[:shopping_cart_id])
+            if @shopping_cart 
+              @order = ::Yito::Model::Order::Order.create_from_shopping_cart(@shopping_cart)
+              @order.comments = params[:comments]
+              @order.customer_name = params[:customer_name]
+              @order.customer_surname = params[:customer_surname]
+              @order.customer_email = params[:customer_email]
+              @order.customer_phone = params[:customer_phone]
+              @order.customer_language = session[:locale] || 'es'
+              @order.init_user_agent_data(request.env["HTTP_USER_AGENT"])
+              allow_deposit_payment = SystemConfiguration::Variable.get_value('order.allow_deposit_payment','false').to_bool
+              deposit = SystemConfiguration::Variable.get_value('order.deposit').to_i
+              if allow_deposit_payment and deposit > 0
+                @order.reservation_amount = (@order.total_cost * deposit / 100).round
+              end
+              @order.save
+              @shopping_cart.destroy
+              session.delete(:shopping_cart_id) 
+              redirect "/p/myorder/#{@order.free_access_id}"
+            else
+              status 404
+            end
+          else
+            status 404
+          end
 
         end
 

@@ -136,6 +136,18 @@
                   <input type="text" maxlength="80" id="stock_plate" name="stock_plate" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.stock_plate%>" <%% } %>/>
                 </div> 
                 <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_1.label %></label>
+                  <input type="text" maxlength="80" id="characteristic_1" name="characteristic_1" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_1%>" <%% } %>/>
+                </div>  
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_2.label %></label>
+                  <input type="text" maxlength="80" id="characteristic_2" name="characteristic_2" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_2%>" <%% } %>/>
+                </div>       
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_3.label %></label>
+                  <input type="text" maxlength="80" id="characteristic_3" name="characteristic_3" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_3%>" <%% } %>/>
+                </div>                                            
+                <div class="formrow">
                   <label class="fieldtitle"><%= t.booking_item_management.form.cost.label %></label>
                   <input type="text" maxlength="80" id="cost" name="cost" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.cost).toFixed(2)%>" <%% } %>/>
                 </div>                   

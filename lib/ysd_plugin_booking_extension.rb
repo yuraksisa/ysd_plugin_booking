@@ -109,6 +109,11 @@ module Huasi
          :description => 'Price if the pickup/return is not on pickup/return timetable'})
 
       SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.renting'},
+        {:value => 'true',
+         :description => 'Allow renting integration'})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.activities'},
         {:value => 'false',
          :description => 'Allow activities integration'})

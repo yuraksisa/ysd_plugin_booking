@@ -235,10 +235,7 @@
           <%% } %>
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="resources_tab" href="#resources_tab"><%= t.booking_management.form.booking_resources.title %></a>
-          </li>  
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="planning_tab" href="#planning_tab"><%= t.booking_management.form.planning_tab %></a>
-          </li>            
+          </li>           
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="notifications_tab" href="#notifications_tab"><%= t.booking_management.form.notifications.title %></a>
           </li>
@@ -279,10 +276,6 @@
 
          <div id="resources_tab" class="top-margin-1line">
              <%= partial :booking_management_resources, :locals => {:booking_item_family => booking_item_family} %>
-         </div>
-
-         <div id="planning_tab" class="top-margin-1line">
-             <%= partial :booking_management_planning %>
          </div>
 
          <div id="notifications_tab" class="top-margin-1line">

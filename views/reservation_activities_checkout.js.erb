@@ -26,7 +26,8 @@ require(['jquery','YSDForms', 'jquery.validate',
         {
             
           submitHandler: function(form) {
-            return true;
+            form.submit();
+            return false;
           },
                                
           rules : {

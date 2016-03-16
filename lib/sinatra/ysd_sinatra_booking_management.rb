@@ -31,9 +31,9 @@ module Sinatra
           @pickup_today = BookingDataSystem::Booking.count_pickup(today)
           @transit_today = BookingDataSystem::Booking.count_transit(today)
           @delivery_today = BookingDataSystem::Booking.count_delivery(today)
-          @product_total_billing = BookingDataSystem::Booking.products_billing_total(@year)
-          @extras_total_billing = BookingDataSystem::Booking.extras_billing_total(@year)
-          @product_total_cost = BookingDataSystem::Booking.stock_cost_total
+          @product_total_billing = BookingDataSystem::Booking.products_billing_total(@year) || 0
+          @extras_total_billing = BookingDataSystem::Booking.extras_billing_total(@year) || 0
+          @product_total_cost = BookingDataSystem::Booking.stock_cost_total || 0
           load_page(:booking_dashboard)
         end
 
@@ -69,6 +69,11 @@ module Sinatra
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
                        :categories => t.booking_settings.form.reservation_starts_with.categories,
                        :shopcart => t.booking_settings.form.reservation_starts_with.shoppingcart} }
+          locals.store(:booking_renting, 
+              SystemConfiguration::Variable.get_value('booking.renting','false').to_bool)        
+          locals.store(:booking_activities, 
+              SystemConfiguration::Variable.get_value('booking.activities','false').to_bool)        
+         
           load_page(:config_booking, {:locals => locals})
         end
 
@@ -467,6 +472,37 @@ module Sinatra
           pdf = ::Yito::Model::Booking::Pdf::Customers.new().build.render   
 
         end 
+
+        #
+        # Charges report (html)
+        #
+        app.get '/admin/booking/reports/charges/?*', :allowed_usergroups => ['booking_manager'] do
+
+          year = Date.today.year
+
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+          
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:to]}")
+            end
+          end
+
+          @charges = BookingDataSystem::Booking.charges(date_from, date_to)
+          load_page(:report_charges)
+
+        end
 
       end
 

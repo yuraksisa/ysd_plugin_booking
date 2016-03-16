@@ -7,7 +7,7 @@
 <%= partial :shopping_cart_summary %>
 <h2>Datos de la reserva</h2>
 <div class="container_12">
-    <form name="activities_checkout_form" id="activities_checkout_form" class="all-space top-margin">
+    <form name="activities_checkout_form" id="activities_checkout_form" class="all-space top-margin" action="/p/activities/shopping-cart-order" method="post">
       <div class="grid_6">
 	          <div class="formrow">
 	            <label id="label_customer_email" for="customer_name" class="fieldtitle"><%=t.new_booking.customer_name.label%> *</label>

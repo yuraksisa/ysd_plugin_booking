@@ -20,14 +20,23 @@
            <th class="table-header-title centered_text" scope="col" style="width:40%"><%=t.booking_console.confirmed%></th>
          </tr>
        </thead>
-       <tbody id="elements_tbody" class="table-tbody">  
+       <tbody id="elements_tbody" class="table-tbody">
+         <%% var total_requests = 0; %>
+         <%% var total_confirmed = 0; %>  
          <%% for (item in data) { %>          
          <tr class="table-row"> 
            <td class="table-cell"><%%=item%></td>
            <td class="table-cell"><%%=data[item].requests%></td>
            <td class="table-cell"><%%=data[item].confirmed%></td>
+           <%% total_requests += data[item].requests; %>
+           <%% total_confirmed += data[item].confirmed; %>
          </tr>
          <%% } %>
+         <tr class="table-row"> 
+           <td class="table-cell">TOTAL</td>
+           <td class="table-cell"><%%=total_requests%></td>
+           <td class="table-cell"><%%=total_confirmed%></td>
+         </tr>  
        </tbody>
     </table>
 </script>

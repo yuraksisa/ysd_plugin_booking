@@ -55,6 +55,8 @@ booking_settings:
       dates: Selección fechas (para 1 producto)
       categories: Selección producto (para 1 producto)
       shoppingcart: Reserva múltiples productos
+    renting: Gestión de alquileres
+    activities: Gestión de actividades o eventos
     deposit: "% Depósito"
     allow_total_payment: Permitir pagar el total de la reserva
     min_days: Numero mínimo de días    
@@ -83,9 +85,16 @@ booking_settings:
     payment_group: Pago online
     turns_group: Turnos
     people_group: Gente   
-    rent_group: Alquiler 
+    rent_group: Alquiler
+    activities_group: Actividades 
     item_hold_time: Caducidad (en horas) de la reserva
     payment_cadence: Cadencia de pago    
+    activities_payment: Permitir pago online
+    activities_deposit: "% depósito"
+    activities_allow_deposit_payment: Permitir el pago del depósito
+    activities_allow_total_payment: Permitir el pago total del pedido
+    activities_item_hold_time: Caducidad (en horas) del pedido
+    activities_payment_cadence: Cadencia de pago
 booking_rates:
   title: Tarifas    
   seasons: Temporadas
@@ -444,9 +453,9 @@ booking_management:
     m2_notification: Gestor (reserva recibida con pago online)
   form:
     reservation_tab: Datos de la reserva
-    flight_tab: Datos del vuelo
+    flight_tab: Vuelo + Dirección destino
     driver_tab: Conductor
-    additional_drivers_tab: Conductores A.
+    additional_drivers_tab: Cond. Adic.
     weight_height_tab: Peso/Altura
     charges_tab: Detalle cobros
     payment_tab: Pago
@@ -560,6 +569,7 @@ booking_management:
     other: Otra información
     free_access_id: Acceso directo
     payment_method: Forma de pago 
+    flight_title: Vuelo
     flight_company: Compañía
     flight_number: Número de vuelo
     flight_time: Hora de llegada
@@ -570,9 +580,10 @@ booking_management:
     unlink_booking_button_message: ¿Está seguro que desea desvincular la reserva?
     main_booking: Grupo de reservas
     main_booking_search: Buscar reserva principal
-    related_bookings: Reservas relacionadas
+    related_bookings: Res. relac.
     charges: Pagos recibidos
     no_charges: No se ha recibido ningún pago
+    commercial_agent: Comercial
     booking_line:
       title: Productos contratados
       item: Producto
@@ -722,6 +733,12 @@ booking_item_management:
       label: Modelo
     plate:
       label: Matrícula o referencia 
+    characteristic_1:
+      label: Característica 1
+    characteristic_2:
+      label: Característica 2
+    characteristic_3:
+      label: Característica 3      
     cost: 
       label: Coste         
 booking_places_definition_management:

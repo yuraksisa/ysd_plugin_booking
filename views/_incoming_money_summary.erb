@@ -19,13 +19,19 @@
            <th class="table-header-title right_text right-margin" scope="col" style="width:40%"><%=t.booking_incoming.total%></th>
          </tr>
        </thead>
-       <tbody id="elements_tbody" class="table-tbody">  
+       <tbody id="elements_tbody" class="table-tbody"> 
+         <%% var incoming_total = 0; %> 
          <%% for (item in data) { %>          
          <tr class="table-row"> 
            <td class="table-cell"><%%=item%></td>
            <td class="table-cell right_text right-margin"><%%=data[item].total%></td>
-         </tr>
+           <%% incoming_total += new Number(data[item].total); %>
+         </tr>  
          <%% } %>
+         <tr class="table-row"> 
+           <td class="table-cell">TOTAL</td>
+           <td class="table-cell right_text right-margin"><%%=incoming_total.toFixed(2)%></td>
+         </tr>         
        </tbody>
     </table>
 </script>

@@ -56,9 +56,10 @@
         <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>   
       </ul>    
    </li>
-   <li class='<%if ['/admin/charges','/admin/booking/product-billing','/admin/booking/extras-billing'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
+   <li class='<%if ['/admin/charges','/admin/booking/reports/charges','/admin/booking/product-billing','/admin/booking/extras-billing'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
       <ul>
         <li><a href='/admin/charges'><%=t.booking_console.receipts%></a></li>
+        <li><a href="/admin/booking/reports/charges">Listado de cobros</a></li>
         <li><a href='/admin/booking/product-billing'><%=t.booking_console.products_billing%></a></li>         
         <li><a href='/admin/booking/extras-billing'><%=t.booking_console.extras_billing%></a></li>
       </ul>    
