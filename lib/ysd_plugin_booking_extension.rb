@@ -296,6 +296,10 @@ module Huasi
           {:description => 'Mensaje que se envía al gestor de reservas cuando un cliente realiza una solicitud de reserva con pago',
            :text => BookingDataSystem::Booking.manager_notification_pay_now_template})
 
+      ContentManagerSystem::Template.first_or_create({:name => 'booking_confirmation_manager_notification'},
+          {:description => 'Mensaje que se envía al gestor de reservas cuando se confirma una reserva',
+           :text => BookingDataSystem::Booking.manager_confirm_notification_template})
+
       ContentManagerSystem::Template.first_or_create({:name => 'booking_customer_req_notification'},
           {:description=>'Mensaje que se envía al cliente cuando realiza solicitud de reserva (sin pago)',
            :text => BookingDataSystem::Booking.customer_notification_booking_request_template}) 

@@ -4,7 +4,7 @@
                   <div class="left-margin">
                     <%% if (entity.status != 'cancelled') { %>
                       <%% var booking_payment_enabled = <%=booking_payment_enabled%>; %>
-                      <%% if ((!booking_payment_enabled || entity.is_expired) && !entity.force_allow_payment) { %>
+                      <%% if (!entity.can_pay) { %>
                         <div class="guiblock error-status bottom-margin">
                           <%=t.booking_management.form.payment_not_allowed%>
                         </div>  

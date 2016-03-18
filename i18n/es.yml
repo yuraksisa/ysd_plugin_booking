@@ -40,6 +40,7 @@ booking_configuration_templates:
   email_customer_payment_enabled: Cuando se habilita el pago de la reserva
   email_manager_request_received: Cuando se recibe una nueva solucitud
   email_manager_payment_request_received: Cuando se recibe una nueva solicitud con pago online
+  email_manager_confirmation: Cuando se confirma una solicitud
 booking_settings:
   form:
     title: Configuración General
@@ -451,6 +452,7 @@ booking_management:
     c4_notification: Cliente (notificación cobro habilitado)
     m1_notification: Gestor (reserva recibida)
     m2_notification: Gestor (reserva recibida con pago online)
+    m3_notification: Gestor (reserva confirmada)
   form:
     reservation_tab: Datos de la reserva
     flight_tab: Vuelo + Dirección destino

@@ -142,6 +142,13 @@ module Sinatra
               end
               @order.save
               @shopping_cart.destroy
+              if params[:pay_now].to_bool
+                @order.notify_manager_pay_now
+                @order.notify_request_to_customer_pay_now  
+              else
+                @order.notify_manager 
+                @order.notify_request_to_customer
+              end
               session.delete(:shopping_cart_id) 
               redirect "/p/myorder/#{@order.free_access_id}"
             else

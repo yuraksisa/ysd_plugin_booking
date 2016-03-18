@@ -40,6 +40,7 @@
     <div>
     <span class="more_contrast_text">m:</span><span class="less_contrast_text"><%=t.booking_management.footer.m1_notification%></span>&nbsp;
     <span class="more_contrast_text">m2:</span><span class="less_contrast_text"><%=t.booking_management.footer.m2_notification%></span>&nbsp;    
+    <span class="more_contrast_text">m2:</span><span class="less_contrast_text"><%=t.booking_management.footer.m3_notification%></span>&nbsp;     
     </div>
   </div>
 </script>
@@ -71,6 +72,7 @@
          <%% if (entity.customer_payment_enabled_sent) { %><span class="element-status confirmed-status smaller_text">c4</span> <%%}%>                  
          <%% if (entity.manager_notification_sent) { %><span class="element-status confirmed-status smaller_text">m</span><%%}%>
          <%% if (entity.manager_notification_p_n_sent) { %><span class="element-status confirmed-status smaller_text">m2</span><%%}%>
+         <%% if (entity.manager_confirm_notification_sent) { %><span class="element-status confirmed-status smaller_text">m3</span><%%}%>         
       </td> 
     </tr>
 </script>

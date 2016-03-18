@@ -78,26 +78,54 @@ module Sinatra
         end
 
         app.get '/admin/booking/config/templates', :allowed_usergroups => ['booking_manager', 'staff'] do
-          
-          contract = ContentManagerSystem::Template.first({:name => 'booking_contract'})
-          conditions = ContentManagerSystem::Content.first({:alias => '/renting_conditions'})
-          summary_message = ContentManagerSystem::Template.first({:name => 'booking_summary_message'})      
-          b_m_n = ContentManagerSystem::Template.first({:name => 'booking_manager_notification'})
-          b_m_n_pay_now = ContentManagerSystem::Template.first({:name => 'booking_manager_notification_pay_now'})
-          b_m_r_c = ContentManagerSystem::Template.first({:name => 'booking_customer_req_notification'})
-          b_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
-          b_m_c_c = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
-          b_m_c_c_pay_enabled = ContentManagerSystem::Template.first({:name => 'booking_customer_notification_payment_enabled'})
 
-          locals = {:conditions => conditions,
+          booking_renting = SystemConfiguration::Variable.get_value('booking.renting','false').to_bool
+          booking_activities = SystemConfiguration::Variable.get_value('booking.activities','false').to_bool
+          
+          if booking_renting
+            contract = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+            conditions = ContentManagerSystem::Content.first({:alias => '/renting_conditions'})
+            summary_message = ContentManagerSystem::Template.first({:name => 'booking_summary_message'})      
+            b_m_n = ContentManagerSystem::Template.first({:name => 'booking_manager_notification'})
+            b_m_n_pay_now = ContentManagerSystem::Template.first({:name => 'booking_manager_notification_pay_now'})
+            b_m_c_n = ContentManagerSystem::Template.first({:name => 'booking_confirmation_manager_notification'})
+            b_m_r_c = ContentManagerSystem::Template.first({:name => 'booking_customer_req_notification'})
+            b_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
+            b_m_c_c = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
+            b_m_c_c_pay_enabled = ContentManagerSystem::Template.first({:name => 'booking_customer_notification_payment_enabled'})
+          end
+
+          if booking_activities 
+            o_m_n = ContentManagerSystem::Template.first({:name => 'order_manager_notification'})
+            o_m_n_pay_now = ContentManagerSystem::Template.first({:name => 'order_manager_notification_pay_now'})
+            o_m_c_n = ContentManagerSystem::Template.first({:name => 'order_confirmation_manager_notification'})
+            o_m_r_c = ContentManagerSystem::Template.first({:name => 'order_customer_req_notification'})
+            o_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'order_customer_req_pay_now_notification'})
+            o_m_c_c = ContentManagerSystem::Template.first({:name => 'order_customer_notification'})
+            o_m_c_c_pay_enabled = ContentManagerSystem::Template.first({:name => 'order_customer_notification_payment_enabled'})
+          end
+
+          locals = {:booking_renting => booking_renting,
+                    :booking_activities => booking_activities}
+
+          locals.merge!({:conditions => conditions,
                     :contract => contract,
                     :summary_message => summary_message,
                     :b_m_n => b_m_n, 
                     :b_m_n_pay_now => b_m_n_pay_now, 
+                    :b_m_c_n => b_m_c_n,
                     :b_m_r_c => b_m_r_c,
                     :b_m_r_c_pay_now => b_m_r_c_pay_now, 
                     :b_m_c_c => b_m_c_c,
-                    :b_m_c_c_pay_enabled => b_m_c_c_pay_enabled}
+                    :b_m_c_c_pay_enabled => b_m_c_c_pay_enabled})  if booking_renting   
+
+          locals.merge!({:o_m_n => o_m_n, 
+                    :o_m_n_pay_now => o_m_n_pay_now, 
+                    :o_m_c_n => o_m_c_n,
+                    :o_m_r_c => o_m_r_c,
+                    :o_m_r_c_pay_now => o_m_r_c_pay_now, 
+                    :o_m_c_c => o_m_c_c,
+                    :o_m_c_c_pay_enabled => o_m_c_c_pay_enabled})  if booking_activities   
 
           load_page(:console_booking_configuration_templates, :locals => locals)
         end
