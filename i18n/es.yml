@@ -618,6 +618,7 @@ booking_management:
     amount: Importe
     bank_transfer: Transferencia bancaria
     cash: Efectivo
+    credit_card: Tarjeta crédito/débito
     done: Cobro registrado
 simple_booking_management:
    table:
@@ -918,4 +919,13 @@ booking_activity_management:
                  <h4>Forma de compra</h4>
                  <p>El cliente final compra la actividad
                  completa o bien compra unos tickets o entradas para un número de 
-                 personas</p>                       
+                 personas</p>
+    date_from: Fecha inicio
+    date_to: Fecha fin
+    actity_date_description: Titulo
+    activity_date_date_from: Fecha inicio
+    activity_date_date_to: Fecha fin
+    activity_date_new_date: Nueva fecha     
+    no_dates: No hay fechas
+    activity_date:
+      done: Creada fecha de la actividad                  

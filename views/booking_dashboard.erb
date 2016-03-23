@@ -20,15 +20,15 @@
     <div class="grid_12">
       <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.day_work%></div> 
     </div>
-    <div class="grid_4" style="min-height: 10em">
+    <div class="grid_4" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><%=@pickup_today%></div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.delivery%></div>
     </div>
-    <div class="grid_4" style="min-height: 10em">
+    <div class="grid_4" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><%=@transit_today%></div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.transit%></div>      
     </div>  
-    <div class="grid_4" style="min-height: 10em">
+    <div class="grid_4" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><%=@delivery_today%></div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.return%></div>     
     </div>          
@@ -37,51 +37,19 @@
   	<div class="grid_12">
     	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.summary%> <%=@year%></div> 
   	</div>  
-    <div class="grid_4" style="min-height: 10em">
+    <div class="grid_4" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><%=@received_reservations%></div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.received_reservations%></div>
     </div>      	
-    <div class="grid_4" style="min-height: 10em">
+    <div class="grid_4" style="min-height: 7.5em">
     	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@pending_confirmation_reservations%></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.pending_confirmation_reservations%></div>
     </div>
-    <div class="grid_4" style="min-height: 10em">
+    <div class="grid_4" style="min-height: 7.5em">
     	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@confirmed_reservations%></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.confirmed_reservations%></div>    	
     </div>	        	
-  </div>
-  <div class="container_12">
-    <div class="grid_12">
-      <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.billing%> <%=@year%></div> 
-    </div>
-    <div class="grid_4" style="min-height: 10em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/product-billing"><%=("%.f" % @product_total_billing).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.products_billing%></div>
-    </div>
-    <div class="grid_4" style="min-height: 10em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/extras-billing"><%=("%.f" % @extras_total_billing).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.extras_billing%></div>      
-    </div>  
-    <div class="grid_4" style="min-height: 10em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @product_total_cost).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.stock_cost%></div>     
-    </div>          
-    <div class="grid_4" style="min-height: 10em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@product_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%></div>
-      <div class="centered_text smaller_text"><%="%.f" % @product_total_billing%>€/<%="%.f" % (@product_total_billing + @extras_total_billing)%>€</div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.products_billing_vs_total%></div>      
-    </div>  
-    <div class="grid_4" style="min-height: 10em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@extras_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%></div>
-      <div class="centered_text smaller_text"><%="%.f" % @extras_total_billing%>€/<%="%.f" % (@product_total_billing + @extras_total_billing)%>€</div>     
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.extras_billing_vs_total%></div>     
-    </div>              
-    <div class="grid_4" style="min-height: 10em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@product_total_cost == 0 ? "-" : "%.f%" % (@product_total_billing / @product_total_cost * 100) %></div>
-      <div class="centered_text smaller_text"><%="%.f" % @product_total_billing%>€/<%="%.f" % @product_total_cost%>€</div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.amortization%></div>
-    </div>
-  </div>  
+  </div> 
   <div class="container_12">
     <div class="grid_6">
     	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_category%> <%=@year%></div>
@@ -107,4 +75,36 @@
 
     </div>
   </div>  
+  <div class="container_12">
+    <div class="grid_12">
+      <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.billing%> <%=@year%></div> 
+    </div>
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/product-billing"><%=("%.f" % @product_total_billing).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</a></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.products_billing%></div>
+    </div>
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/extras-billing"><%=("%.f" % @extras_total_billing).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</a></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.extras_billing%></div>      
+    </div>  
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @product_total_cost).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.stock_cost%></div>     
+    </div>          
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@product_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%></div>
+      <div class="centered_text smaller_text"><%="%.f" % @product_total_billing%>€/<%="%.f" % (@product_total_billing + @extras_total_billing)%>€</div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.products_billing_vs_total%></div>      
+    </div>  
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@extras_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%></div>
+      <div class="centered_text smaller_text"><%="%.f" % @extras_total_billing%>€/<%="%.f" % (@product_total_billing + @extras_total_billing)%>€</div>     
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.extras_billing_vs_total%></div>     
+    </div>              
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@product_total_cost == 0 ? "-" : "%.f%" % (@product_total_billing / @product_total_cost * 100) %></div>
+      <div class="centered_text smaller_text"><%="%.f" % @product_total_billing%>€/<%="%.f" % @product_total_cost%>€</div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.amortization%></div>
+    </div>
+  </div>   
 </div>

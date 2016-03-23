@@ -85,7 +85,7 @@ module Sinatra
           to = (from >> 1) - 1
 
           condition = Conditions::JoinComparison.new('$and',
-           [Conditions::Comparison.new(:status, '$eq', :confirmed),
+           [Conditions::Comparison.new(:status, '$in', [:confirmed,:in_progress,:done]),
             Conditions::JoinComparison.new('$or', 
               [Conditions::JoinComparison.new('$and', 
                  [Conditions::Comparison.new(:date_from,'$lte', from),
@@ -125,7 +125,7 @@ module Sinatra
           to = (from >> 1) - 1
 
           condition = Conditions::JoinComparison.new('$and',
-           [Conditions::Comparison.new(:status, '$eq', :confirmed),
+           [Conditions::Comparison.new(:status, '$in', [:confirmed,:in_progress,:done]),
             Conditions::JoinComparison.new('$or', 
               [Conditions::JoinComparison.new('$and', 
                  [Conditions::Comparison.new(:date_from,'$lte', from),

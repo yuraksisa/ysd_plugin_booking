@@ -3,7 +3,7 @@
 <%= partial('price_definition_creation.js'.to_sym, locals: {suffix: '_3'}) %>
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
          "YSDRemoteDataSource", "YSDMemoryDataSource", "YSDSelectSelector", 
-         "jquery.ui", "YSDjson2"],
+         "jquery.ui", 'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation', "YSDjson2"],
          function($, EntityManagement, EntityManagementComplementHooks,
           RemoteDataSource, MemoryDataSource, SelectSelector) {
     
@@ -25,7 +25,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
                 dataType: 'text'}).done(function(html) {
           var dom = $('<html />').prop('innerHTML', html);
           $('#prices_1_container').html(dom.find('body #page_wrapper'));
-          $('head').append(dom.find('script'));
+          $('head').append(dom.find('script:not([src])'));
         });
       }
 
@@ -33,7 +33,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_2_id, dataType: 'text'}).done(function(html) {
           var dom = $('<html />').prop('innerHTML', html);
           $('#prices_2_container').html(dom.find('body #page_wrapper'));
-          $('head').append(dom.find('script'));
+          $('head').append(dom.find('script:not([src])'));
         });
       }
 
@@ -41,10 +41,51 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_3_id, dataType: 'text'}).done(function(html) {
           var dom = $('<html />').prop('innerHTML', html);
           $('#prices_3_container').html(dom.find('body #page_wrapper'));
-          $('head').append(dom.find('script'));
+          $('head').append(dom.find('script:not([src])'));
         });
       }
       
+      $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+      $('#date_from').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+      $('#date_from').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingActivitiesManager.view.formatDate(entity.date_from, 'dd/MM/yyyy')));
+      $('#date_to').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+      $('#date_to').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingActivitiesManager.view.formatDate(entity.date_to, 'dd/MM/yyyy')));
+      
+      $('#new_activity_date').bind('click', function(){
+        $('#new_activity_date_button').unbind('click');
+        $('#activity_date_date_from').datepicker(
+            {numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+            '<%= session[:locale] %>');
+        $('#activity_date_date_from').datetimepicker('setDate', new Date());
+        $('#activity_date_date_to').datepicker(
+            {numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+            '<%= session[:locale] %>');
+        $('#activity_date_date_to').datetimepicker('setDate', new Date());        
+        $('#new_activity_date_button').bind('click', function(){
+           var formdata = $('form[name="activity_date"]').formParams(true);
+           var json_request = JSON.stringify(formdata);
+           $.ajax({
+               type: 'POST',
+               data : json_request,
+               url : '/api/booking-activities/date',
+               success: function(data, textStatus, jqXHR) {
+                 bookingActivitiesManager.model.synchronizeCurrentEntity(data);
+                 bookingActivitiesManager.model.change_state('entity_updated_successfully');
+                 alert('<%=t.booking_activity_management.form.activity_date.done%>');
+                 $('form[name="activity_date"]').hide();
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error updating resource');
+               }
+           });
+        });       
+        if ($('form[name="activity_date"]').is(':visible')) {
+          $('form[name="activity_date"]').hide();
+        }
+        else {
+          $('form[name="activity_date"]').show();          
+        }
+      });
 
 
     },
@@ -80,7 +121,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
             $.ajax({url: '/admin/calendar/events/'+entity.calendar_id, dataType: 'text'}).done(function(html) {
               var dom = $('<html />').prop('innerHTML', html);
               $('#calendar_container').html(dom.find('body #page_wrapper'));
-              $('head').append(dom.find('script'));
+              $('head').append(dom.find('script:not([src])'));
               $('#calendar').fullCalendar('render');
             });
           }
@@ -274,7 +315,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
   // Add the complement hooks
   hooks = hooks.concat(EntityManagementComplementHooks.complements);
                  
-  var contentsManager = new EntityManagement(urls, 'booking_activity', <%= booking_activity_page_size %>, hooks,
+  var bookingActivitiesManager = new EntityManagement(urls, 'booking_activity', <%= booking_activity_page_size %>, hooks,
     {prefix: '/admin/booking',hold_form_after_action:true});  
 
   

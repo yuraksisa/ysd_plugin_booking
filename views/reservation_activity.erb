@@ -6,18 +6,18 @@
 <div class="container_12">
   <div class="grid_10">
     <h1 style="font-size:2.5em; text-align:left; margin-top: 0.6em"><%=@activity.name%></h1>
-    <p class="less_contrast_text"><%=@activity.short_description%></p>
+    <p class="top-margin-1line bottom-margin-1line less_contrast_text"><%=@activity.short_description%></p>
   </div>
 </div>
 <div class="container_12">
   <div class="grid_8" style="background-color: white">
-    <div>
+    <div class="top-space-1line">
       <% if @activity.photo_url_full.nil? or @activity.photo_url_full.empty?%> 
          <div>
             <span class="centered_text" style="font-size:25em; display: block" data-icon="&#xe072;"></span> 
          </div> 
       <% else  %>
-         <img src="<%= activity.photo_url_small %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto" rel="<%%= index %>"/>
+         <img src="<%= @activity.photo_url_full %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto" rel="<%%= index %>"/>
       <% end %>
     </div>  
     <div style="padding:2em">
@@ -28,6 +28,8 @@
   	<div class="left-margin">
       <% if @activity.occurence == :cyclic %>
          <%= partial :reservation_activity_cyclic %>
+      <% elsif @activity.occurence == :one_time %>
+         <%= partial :reservation_activity_one_time %>
       <% end %>
   	</div>
   </div>

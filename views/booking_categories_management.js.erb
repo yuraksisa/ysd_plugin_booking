@@ -21,7 +21,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_id, dataType: 'text'}).done(function(html) {
         var dom = $('<html />').prop('innerHTML', html);
         $('#prices_container').html(dom.find('body #page_wrapper'));
-        $('head').append(dom.find('script'));
+        $('head').append(dom.find('script:not([src])'));
       });
 
     },
@@ -62,7 +62,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
             $.ajax({url: '/admin/calendar/events/'+entity.calendar_id, dataType: 'text'}).done(function(html) {
               var dom = $('<html />').prop('innerHTML', html);
               $('#calendar_container').html(dom.find('body #page_wrapper'));
-              $('head').append(dom.find('script'));
+              $('head').append(dom.find('script:not([src)]'));
               $('#calendar').fullCalendar('render');
             });
           }

@@ -1,0 +1,59 @@
+        <div class="container_12">
+          <div class="grid_7">
+             <div class="bottom-margin bottom-space" style="border:1px solid #EEE">
+                  <%% if (entity.activity_dates.length > 0) { %>
+                     <table class="table bottom-margin-line bottom-separator">
+                        <thead class="table-header">
+                          <tr>
+                            <th class="table-cell left_text" scope="col" style="width:30%"><%=t.booking_activity_management.form.actity_date_description%></th>
+                            <th class="table-cell left_text" scope="col" style="width:20%"><%=t.booking_activity_management.form.activity_date_date_from%></th>                            
+                            <th class="table-cell left_text" scope="col" style="width:20%"><%=t.booking_activity_management.form.activity_date_date_to%></th>
+                          </tr>
+                        </thead>
+                        <tbody class="table-tbody">
+                          <%% for (var activityDateIdx=entity.activity_dates.length-1; activityDateIdx >=0 ; activityDateIdx--) { %>
+                            <tr class="table-row">
+                               <td class="table-cell left_text"><%%= entity.activity_dates[activityDateIdx].description %></td>
+                               <td class="table-cell left_text"><%%=self.formatDate(entity.activity_dates[activityDateIdx].date_from, 'dd.MM.yyyy')%> <%%=entity.activity_dates[activityDateIdx].time_from%></td>
+                               <td class="table-cell left_text"><%%=self.formatDate(entity.activity_dates[activityDateIdx].date_to, 'dd.MM.yyyy')%> <%%=entity.activity_dates[activityDateIdx].time_to%></td>
+                            </tr>
+                          <%% } %>
+                        </tbody>
+                     </table>        
+                  <%% } else { %>
+                    <p class="all-space"><%=t.booking_activity_management.form.no_dates%></p>
+                  <%% } %>  
+            </div>
+          </div>
+          <div class="grid_5">
+                <div class="top-margin-top-space left-margin">
+                   <button id="new_activity_date" type="button" class="form-button green-button" style="background: none; color:black;text-decoration:underline"><%=t.booking_activity_management.form.activity_date_new_date%></button>
+                   <form name="activity_date" style="display:none">
+                    <div class="grid_6">
+                      <input type="hidden" name="id" value="<%%=entity.id%>"/> <div class="formrow">
+                        <label for="description" class="fieldtitle">Titulo</label>
+                        <input type="text" name="description" id="activity_date_description" class="fieldcontrol" size="60" maxlength="80"/>
+                      </div>
+
+                      <div class="formrow">
+                        <label for="date_from" class="fieldtitle"><%=t.booking_activity_management.form.activity_date_date_from%></label>
+                        <input type="text" name="date_from" id="activity_date_date_from" class="date_control" size="12" maxlength="10"/>
+                        <input type="text" name="time_from" id="activity_date_time_from" class="" size="10" maxlength="5"/>
+                      </div>
+
+                      <div class="formrow">
+                        <label for="date_to" class="fieldtitle"><%=t.booking_activity_management.form.activity_date_date_to%></label>
+                        <input type="text" name="date_to" id="activity_date_date_to" class="date_control" size="12" maxlength="10"/>
+                        <input type="text" name="time_to" id="activity_date_time_to" class="" size="10" maxlength="5"/>
+                      </div>
+      
+                      <div class="navigation-bar bottom-margin">
+                        <div class="navigation-bar-crud-buttons right-float">
+                           <input id="new_activity_date_button" type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                        </div>
+                      </div>  
+                    </div>
+                  </form>                  
+                </div>
+          </div>
+        </div>

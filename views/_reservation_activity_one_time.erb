@@ -1,0 +1,24 @@
+      <h3 style="font-size:1.2em"><%=l(@activity.date_from,"%d %B %Y")%> <%=l(@activity.date_to,"- %d %B %Y") if @activity.date_to != @activity.date_from%></h3>
+      <form name="activity_form" id="activity_form" action="/p/activity/add-to-shopping-cart" method="post">
+        <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
+        <input type="hidden" name="date" id="date" value="<%=@activity.date_from.strftime('%Y-%m-%d')%>">
+        <input type="hidden" name="turn" id="turn" value="<%=@activity.time_from%>">
+        <% if @activity.mode == :partial %>
+        <div id="tickets" class="top-margin">
+          <div>
+            <select name="quantity_rate_1" id="quantity_rate_1" class="quantity_rate" style="width:99%"></select>
+          </div>
+          <div>
+            <select name="quantity_rate_2" id="quantity_rate_2" class="quantity_rate" style="width:99%"></select>
+          </div>
+          <div>
+            <select name="quantity_rate_3" id="quantity_rate_3" class="quantity_rate" style="width:99%"></select>	
+          </div>
+        </div>
+        <% end %>
+        <div id="total" class="centered_text more_contrast_text" style="font-size:3em">         
+        </div>        
+        <div id="botonera" class="top-margin" style="display:none">
+          <input type="submit" class="form-button green-button" style="width:100%" value="Reservar"/>
+        </div>
+      </form>        

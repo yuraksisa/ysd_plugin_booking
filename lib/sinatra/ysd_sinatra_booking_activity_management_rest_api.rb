@@ -4,6 +4,37 @@ module Sinatra
 
       def self.registered(app)
 
+        #
+        # Register a activity date
+        #
+        app.post '/api/booking-activities/date', :allowed_usergroups => ['bookings_manager','staff'] do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys! 
+
+          if activity = ::Yito::Model::Booking::Activity.get(data[:id])
+            activity.transaction do  
+              activity_date = ::Yito::Model::Booking::ActivityDate.new
+              activity_date.description = data[:description]
+              activity_date.date_from = data[:date_from]
+              activity_date.time_from = data[:time_from]
+              activity_date.date_to = data[:date_to]
+              activity_date.time_to = data[:time_to]
+              activity_date.activity = activity
+              activity_date.save
+              activity.reload
+            end
+            content_type :json
+            status 200
+            activity.to_json
+          else
+            status 404
+          end
+
+        end
+
+
         #                    
         # Query booking activity
         #

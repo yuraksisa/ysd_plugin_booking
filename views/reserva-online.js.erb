@@ -1339,7 +1339,9 @@
             else {
               $('#return_place_value').val($('#return_place option:selected').val()); 
             }
-            this.configureDates();       
+            this.configureDates();  
+            bookingModel.set_pickup_place($('#pickup_place').val());
+            bookingModel.set_return_place($('#return_place').val());     
             this.calculate_prices();
           }
 

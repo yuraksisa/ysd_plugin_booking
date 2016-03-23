@@ -600,6 +600,8 @@ label.form-reservation-error {
   padding: 0.5em;
   color: red;
   border: 1px solid;
+  display: block;
+  margin: 2em;  
 }
 
 #booking_item_reference {

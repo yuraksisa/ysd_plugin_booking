@@ -1,0 +1,63 @@
+<style>
+.table {
+  table-layout: fixed
+}
+.table .table-cell {
+  border-right: 1px solid #EEE;
+  width: 1.5em;
+  font-size: 0.7em;
+}
+</style>
+<div class="top-navigation-bar">
+<h2 class="entity-title">Ocupación mensual actividades</h2>
+</div>
+<div class="top-margin bottom-margin-1line">
+	<div class="more_contrast_text centered_text top-margin-1line bottom-margin-2lines">
+		<span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@previous_period.month%>&year=<%=@previous_period.year%>&mode=<%=@mode%>">&lt;</a></span>
+		<span class="all-space">
+		  <span id="month" class="left-margin"><%=@month%></span> - <span id="year" class="right-margin"><%=@year%></span>
+	    </span>
+		<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@next_period.month%>&year=<%=@next_period.year%>&mode=<%=@mode%>">&gt;</a></span>    
+	</div>
+</div>
+<div class="admin_content_wrapper">
+  
+  <% @data.each do |activity_id, activity_detail| %> 
+  <h3 class="guiblock"><%=activity_id%>-<%=activity_detail[:name]%></h3>
+  <div>
+    <table id="table-<%=activity_id%>" class="table">
+      <thead class="table-header">
+        <tr>
+          <th class="table-cell" scope="col" style="width: 80px"></th>
+          <% (1..@days).each do |day| %>
+          <th class="table-cell centered_text" scope="col"><%=day%></th>
+          <% end %>     
+        </tr>
+      </thead>
+      <tbody>
+        <% activity_detail[:occupation].each do |timetable, occupation_detail| %>        
+        <tr>
+          <td class="table-cell"><%= timetable %></td>
+          <% occupation_detail.each do |day, value| %>
+            <% if value.is_a?Hash %>
+              <td class="table-cell centered_text">
+                <% total = 0 %>
+                <% value.each do |item_price_type, quantity| %>
+                  <% total += quantity %>
+                  <div <%if quantity >0%>class="more_contrast_text"<%end%>><%=activity_detail[:price_literals][item_price_type][0]%>:<%="%.f" %quantity%></div>
+                <% end %>
+                 <% percentage = total.to_f / activity_detail[:capacity].to_f * 100%>
+                  <div class="more_contrast_text" style="top-margin:0.5em;bottom-margin:0.5em;border-top:1px solid #CCC; <% if percentage >= 100 %>background:red; color: white<%elsif percentage >= 75 and !percentage.infinite?%>background:orange<%elsif percentage > 0 and !percentage.infinite?%>background:yellow<%end%>"><%="%.f" %total%>/<%="%.f" %activity_detail[:capacity]%></div>             
+              </td>
+            <% else %>
+            <td class="table-cell centered_text"><%=value%></td>
+            <% end %>
+          <% end %>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <% end %>
+
+</div>

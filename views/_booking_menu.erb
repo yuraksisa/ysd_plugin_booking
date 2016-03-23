@@ -40,6 +40,12 @@
         <li><a href='/admin/order/orders'><%=t.booking_console.reservations%></a></li>
       </ul>
    </li>
+   <li class='<%if ['/admin/booking/activities-summary','/admin/booking/activities-occupation'].index(request.path)%>active <%end%>has-sub'><a href='#'>Gestión actividades</a>
+      <ul>   
+        <li><a href='/admin/booking/activities-summary'>Resumen</a></li>
+        <li><a href='/admin/booking/activities-occupation'>Ocupación</a></li>
+      </ul>
+   </li>   
    <% end %>
    <li class='<%if ['/admin/order/information-requests'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.crm%></a>
       <ul>

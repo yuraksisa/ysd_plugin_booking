@@ -156,7 +156,11 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
           {
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', pickup_place_id);  
-              optionItem.text = optionItem.innerText = bookingDataSystem.pickup_places[pickup_place_id];
+              var text = bookingDataSystem.pickup_places[pickup_place_id];
+              if (bookingDataSystem.pickup_placesRates[pickup_place_id]>0) {
+                 text += " (" + bookingDataSystem.pickup_placesRates[pickup_place_id] + "€)";
+              }
+              optionItem.text = optionItem.innerText = text;
               comboItems.appendChild(optionItem);
           }
 
@@ -164,7 +168,10 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
               optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
-              comboItems.appendChild(optionItem);    
+              if (bookingDataSystem.custom_pickup_return_place_price > 0) {
+                optionItem.text += " (" + bookingDataSystem.custom_pickup_return_place_price + "€)";
+              }              
+              comboItems.appendChild(optionItem);  
           <% end %>        
 
        },
@@ -193,8 +200,12 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
           for (var return_place_id in bookingDataSystem.return_places)
           {
               var optionItem = document.createElement('option');
-              optionItem.setAttribute('value', return_place_id);  
-              optionItem.text = optionItem.innerText = bookingDataSystem.return_places[return_place_id];
+              optionItem.setAttribute('value', return_place_id); 
+              var text = bookingDataSystem.return_places[return_place_id];
+              if (bookingDataSystem.return_placesRates[return_place_id]>0) {
+                 text += " (" + bookingDataSystem.return_placesRates[return_place_id] + "€)";
+              } 
+              optionItem.text = optionItem.innerText = text;
               comboItems.appendChild(optionItem);
           }
 
@@ -202,6 +213,9 @@ require(['jquery', <% if defined?booking_js %>'booking_js'<% else %>'/js/booking
               var optionItem = document.createElement('option');
               optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
               optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+              if (bookingDataSystem.custom_pickup_return_place_price > 0) {
+                optionItem.text += " (" + bookingDataSystem.custom_pickup_return_place_price + "€)";
+              }
               comboItems.appendChild(optionItem);    
           <% end %>            
 

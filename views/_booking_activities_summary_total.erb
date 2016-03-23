@@ -1,0 +1,16 @@
+        <% total = 0 %>
+        <tr class="table-row more_contrast_text">
+          <td class="table-cell">TOTAL</td>
+          <td class="table-cell">
+            <% summary.each do |key, value| %>
+              <p><%=value%> x <%=key%></p>
+              <% total += value %>
+            <% end %>
+            <p style="border-top: 1px solid #EEE; margin-top: 0.5em; padding-top: 0.5em;"><%=total%> x plazas de <%=last_activity_capacity%></p>
+          </td>
+          <td class="table-cell"></td>
+          <td class="table-cell"></td>
+          <td class="table-cell"></td>
+          <td class="table-cell"></td>
+          <td class="table-cell"><%="%.2f" % paid%></td>          
+        </tr>

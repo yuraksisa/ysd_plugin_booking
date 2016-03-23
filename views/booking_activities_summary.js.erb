@@ -1,0 +1,98 @@
+require(['jquery', 
+         'jquery.ui', 'jquery.ui.datepicker-es','datejs'], function($) {
+
+
+  activitiesModel = {
+
+  };
+
+  activitiesController = {
+
+    searchButtonClick: function() {
+      var date_from = $('#date_from').datepicker('getDate').toString('yyyy-MM-dd');
+      var date_to = $('#date_to').datepicker('getDate').toString('yyyy-MM-dd');
+      $('#from').val(date_from);
+      $('#to').val(date_to);
+      $('#date_from').prop('disabled',true);
+      $('#date_to').prop('disabled',true);      
+      $('form[name=report_reservations_form]').submit();
+    }
+
+  };
+
+  activitiesView = {
+
+    getUrlVars : function() {
+          var vars = [], hash;
+          var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+          for(var i = 0; i < hashes.length; i++)
+          {
+             hash = hashes[i].split('=');
+             vars.push(hash[0]);
+             vars[hash[0]] = hash[1];
+          }
+          return vars;
+    },
+
+    init : function() {
+         var url_vars = this.getUrlVars();
+         var from = url_vars['from'] === undefined ? '<%=Date.civil(Date.today.year,1,1).strftime("%Y-%m-%d")%>' : decodeURIComponent(url_vars['from']);        
+         var to = url_vars['to'] === undefined ? '<%=Date.civil(Date.today.year,12,31).strftime("%Y-%m-%d")%>' : decodeURIComponent(url_vars['to']);
+         $('#print_link').attr('href', '/admin/booking/activities-summary-pdf?from='+from+'&to='+to);
+         var date_from = $.datepicker.parseDate("yy-mm-dd", from);
+         var date_to = $.datepicker.parseDate("yy-mm-dd", to);
+
+         var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];             
+         $.datepicker.setDefaults($.datepicker.regional["<%=session[:locale] || 'es'%>"]);
+
+         $('#date_from').datepicker(
+                 {controlType: 'select', 
+                  showTimezone: false, 
+                  useLocalTimezone: true, 
+                  numberOfMonths:1, 
+                  maxDate: new Date().add(365).days(),
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function(dateText) {
+                    activitiesController.dateFromChanged();
+                    activitiesController.dateChanged();
+                  }},
+                  locale
+                  );
+         
+         if (date_from != null) {
+           $('#date_from').datepicker('setDate', date_from);
+         }
+         else {
+           $('#date_from').datepicker('setDate', '+0');
+         }
+
+         $('#date_to').datepicker(
+                 {controlType: 'select',
+                  showTimezone: false, 
+                  useLocalTimezone: true,
+                  numberOfMonths:1, 
+                  maxDate: new Date().add(365).days(),
+                  dateFormat: 'dd/mm/yy',
+                  onSelect: function(dateText) {
+                    activitiesController.dateChanged();
+                  }},
+                  locale
+                  );         
+         if (date_to != null) {
+           $('#date_to').datepicker('setDate',date_to);
+         }
+         else {
+           $('#date_to').datepicker('setDate', '+0');
+         }
+
+         $('#search').bind('click', function() {
+           activitiesController.searchButtonClick();
+         });
+
+    }
+
+  };
+
+  activitiesView.init();
+
+});
