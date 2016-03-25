@@ -5,6 +5,7 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
          function($, tmpl, MemoryDataSource, SelectSelector) {
     cyclicModel = {
        date: null,
+       turn: null,
        dateLiteral: null,
        total: 0,
        capacity: <%=@activity.capacity%>,
@@ -168,8 +169,6 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
             $('.quantity_rate').bind('change', function() {
                cyclicController.onQuantityChanged();
             });
-            //this.updateDate();         
-            //this.updateTurns(); 
             cyclicModel.buildTurns();
             this.loadCapacity();
         },
@@ -190,11 +189,6 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
         },
 
         updateTurns: function() {
-
-           /*
-           var html = tmpl('script_turns', 
-             {turns: cyclicModel.morningTurns.concat(cyclicModel.afternoonTurns).concat(cyclicModel.nightTurns)});
-           */
 
            var html = tmpl('script_turns_blocks',
              {morningTurns: cyclicModel.morningTurns,

@@ -5,7 +5,7 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
            'jquery.tools', 'jquery.formparams', 'datejs'],
          function($, tmpl, MemoryDataSource, SelectSelector) {
 
-  oneTimeModel = {
+  multipleDatesModel = {
        total: 0,
        capacity: <%=@activity.capacity%>,  	
        price_1_defined : <%=!@activity.price_definition_1.nil?%>,
@@ -51,20 +51,23 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
        }    
   }
 
-  oneTimeController = {
+  multipleDatesController = {
     onQuantityChanged: function() {
-      oneTimeModel.calculatePrice();
+      multipleDatesModel.calculatePrice();
     }
   }
 
-  oneTimeView = {
+  multipleDatesView = {
     init: function() {
-              this.loadCapacity();
+      this.loadCapacity();
+      $('#activity_date_select').bind('change', function(e) {
+        $(this)[0].form.submit();
+      });
     },
     
     updatePrice: function() {
-           $('#total').html(oneTimeModel.total.toFixed(2) + '€');
-           if (oneTimeModel.total > 0) {
+           $('#total').html(multipleDatesModel.total.toFixed(2) + '€');
+           if (multipleDatesModel.total > 0) {
              $('#total').show();
            }
            else {
@@ -74,14 +77,14 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
 
     loadCapacity: function() {
              // Price 1
-            if (oneTimeModel.price_1_defined) {
+            if (multipleDatesModel.price_1_defined) {
               var capacities = [];
               capacities.push({id:0,
-                               description: 'Seleccione número tickets ... ' + oneTimeModel.price_1_description});
-              for (idx=1;idx <=Math.min(10,(oneTimeModel.capacity-<%=@occupation[:occupation_detail][1].to_i || 0%>)); idx++) {
+                               description: 'Seleccione número tickets ... ' + multipleDatesModel.price_1_description});
+              for (idx=1;idx <=Math.min(10, (multipleDatesModel.capacity-<%=@occupation[:occupation_detail][1].to_i || 0%>)); idx++) {
                 capacities.push({id:idx,
-                                 description:this.format(idx,oneTimeModel.price_1_description,
-                                                    oneTimeModel.prices_1[idx])});
+                                 description:this.format(idx,multipleDatesModel.price_1_description,
+                                                    multipleDatesModel.prices_1[idx])});
               }           
               var capacitiesDataSource = new MemoryDataSource(capacities);
               var capacitiesSelectSelector = new SelectSelector('quantity_rate_1', capacitiesDataSource);
@@ -91,14 +94,14 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
               $('#quantity_rate_1').hide();
             }
             // Price 2
-            if (oneTimeModel.price_2_defined) {
+            if (multipleDatesModel.price_2_defined) {
               var capacities = [];
               capacities.push({id:0,
-                               description: 'Seleccione número tickets ... ' + oneTimeModel.price_2_description});              
-              for (idx=1;idx <=Math.min(10, (oneTimeModel.capacity-<%=@occupation[:occupation_detail][2].to_i || 0%>)); idx++) {
+                               description: 'Seleccione número tickets ... ' + multipleDatesModel.price_2_description});              
+              for (idx=1;idx <=Math.min(10, (multipleDatesModel.capacity-<%=@occupation[:occupation_detail][2].to_i || 0%>)); idx++) {
                 capacities.push({id:idx,
-                                 description:this.format(idx,oneTimeModel.price_2_description,
-                                                    oneTimeModel.prices_2[idx])});
+                                 description:this.format(idx,multipleDatesModel.price_2_description,
+                                                    multipleDatesModel.prices_2[idx])});
               }           
               var capacitiesDataSource = new MemoryDataSource(capacities);
               var capacitiesSelectSelector = new SelectSelector('quantity_rate_2', capacitiesDataSource);
@@ -108,14 +111,14 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
               $('#quantity_rate_2').hide();
             }
             // Price 3
-            if (oneTimeModel.price_3_defined) {
+            if (multipleDatesModel.price_3_defined) {
               var capacities = [];
               capacities.push({id:0,
-                               description: 'Seleccione número tickets ... ' + oneTimeModel.price_3_description});              
-              for (idx=1;idx <=10, Math.min(10, (oneTimeModel.capacity-<%=@occupation[:occupation_detail][3].to_i || 0%>)); idx++) {
+                               description: 'Seleccione número tickets ... ' + multipleDatesModel.price_3_description});              
+              for (idx=1;idx <=Math.min(10, (multipleDatesModel.capacity-<%=@occupation[:occupation_detail][3].to_i || 0%>)); idx++) {
                 capacities.push({id:idx,
-                                 description:this.format(idx,oneTimeModel.price_3_description,
-                                                    oneTimeModel.prices_3[idx])});
+                                 description:this.format(idx,multipleDatesModel.price_3_description,
+                                                    multipleDatesModel.prices_3[idx])});
               }           
               var capacitiesDataSource = new MemoryDataSource(capacities);
               var capacitiesSelectSelector = new SelectSelector('quantity_rate_3', capacitiesDataSource);
@@ -124,8 +127,8 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
             else {
               $('#quantity_rate_3').hide();
             }
-            if (oneTimeModel.price_1_defined || oneTimeModel.price_2_defined ||
-            	oneTimeModel.price_3_defined) {
+            if (multipleDatesModel.price_1_defined || multipleDatesModel.price_2_defined ||
+            	multipleDatesModel.price_3_defined) {
             	$('#botonera').show();
             }
             else {
@@ -147,7 +150,7 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
         }    
   }
 
-  oneTimeView.init();
+  multipleDatesView.init();
 
 });
 <% end %>

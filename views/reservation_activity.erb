@@ -26,10 +26,13 @@
   </div>
   <div class="grid_4">
   	<div class="left-margin">
+      <p>Plazas reservadas: <%= @occupation[:total_occupation].to_i%></p>
       <% if @activity.occurence == :cyclic %>
          <%= partial :reservation_activity_cyclic %>
       <% elsif @activity.occurence == :one_time %>
          <%= partial :reservation_activity_one_time %>
+      <% elsif @activity.occurence == :multiple_dates %>
+         <%= partial :reservation_activity_multiple_dates %>
       <% end %>
   	</div>
   </div>

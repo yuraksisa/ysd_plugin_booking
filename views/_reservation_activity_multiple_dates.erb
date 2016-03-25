@@ -1,0 +1,42 @@
+  <% if @activity.lives? %>
+      <form name="select_date_form" id="select_date_form" action="/p/activity/select-date"
+            method="post">
+        <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
+        <h3>Fecha</h3>
+        <select name="activity_date_id" id="activity_date_select" style="width:99%">
+          <option>Seleccione la fecha</option>
+          <% @activity.activity_dates.each do |activity_date| %>
+            <option value="<%=activity_date.id%>" <%if defined?@activity_date and !@activity_date.nil? and @activity_date.id == activity_date.id%>selected="true"<%end%>><%=activity_date.description%></option>
+          <% end %>
+        </select>
+      </form> 
+    <% if @activity.capacity > @occupation[:total_occupation].to_i %>
+      <% if defined?@activity_date and !@activity_date.nil? %>
+        <form name="activity_form" id="activity_form" action="/p/activity/add-to-shopping-cart" method="post">
+          <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
+          <input type="hidden" name="activity_date_id" id="activity_date_id" value="<%=@activity_date.id%>"/>
+          <% if @activity.mode == :partial %>
+            <h3>Tickets</h3>
+            <div id="tickets" class="top-margin">
+              <div>
+                <select name="quantity_rate_1" id="quantity_rate_1" class="quantity_rate" style="width:99%"></select>
+              </div>
+              <div>
+                <select name="quantity_rate_2" id="quantity_rate_2" class="quantity_rate" style="width:99%"></select>
+              </div>
+              <div>
+                <select name="quantity_rate_3" id="quantity_rate_3" class="quantity_rate" style="width:99%"></select>	
+              </div>
+            </div>
+          <% end %>
+          <div id="total" class="centered_text more_contrast_text" style="font-size:3em"></div> <div id="botonera" class="top-margin" style="display:none">
+            <input type="submit" class="form-button green-button" style="width:100%" value="Reservar"/>
+          </div>
+        </form>
+      <% end %>
+    <% else %>
+      <div class="highlight_block all-border-solid-light smaller_text centered_text top-margin-1line"><%=t.activity.activity_not_available_dates%></div>    
+    <% end %>          
+  <% else %>
+    <div class="highlight_block all-border-solid-light smaller_text centered_text" style="margin-top:0"><%=t.activity.activity_finished%></div>
+  <% end %>        

@@ -1,3 +1,5 @@
+  <% if @activity.lives? %> 
+    <% if @activity.capacity > @occupation[:total_occupation].to_i %>
       <h3 style="font-size:1.2em"><%=l(@activity.date_from,"%d %B %Y")%> <%=l(@activity.date_to,"- %d %B %Y") if @activity.date_to != @activity.date_from%></h3>
       <form name="activity_form" id="activity_form" action="/p/activity/add-to-shopping-cart" method="post">
         <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
@@ -21,4 +23,10 @@
         <div id="botonera" class="top-margin" style="display:none">
           <input type="submit" class="form-button green-button" style="width:100%" value="Reservar"/>
         </div>
-      </form>        
+      </form>
+    <% else %>
+      <div class="highlight_block all-border-solid-light smaller_text centered_text" style="margin-top:0"><%=t.activity.activity_not_available%></div>    
+    <% end %>
+  <% else %>
+    <div class="highlight_block all-border-solid-light smaller_text centered_text" style="margin-top:0"><%=t.activity.activity_finished%></div>
+  <% end %>                   

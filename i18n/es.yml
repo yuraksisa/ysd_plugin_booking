@@ -123,8 +123,9 @@ booking_console:
   products: Productos
   activities: Actividades
   rates: Tarifas
-  bookings: Reservas alquiler
-  activity_bookings: Reservas actividades
+  bookings: Alquiler
+  activity_bookings: Actividades/Tours
+  orders: Pedidos
   crm: CRM
   finances: Finanzas
   statistics: Estadísticas
@@ -154,8 +155,8 @@ booking_console:
   products_billing: Facturación stock
   extras_billing: Facturación extras  
   information_requests: Solicitudes información
-  report_reservations: Reservas alquiler
-  report_customers: Clientes reservas
+  report_reservations: Listado de reservas
+  report_customers: Listado de clientes
   report_pickup_return: Entregas y recogidas
 booking_console_restaurant:
   table_types: Tipos de mesa 
@@ -928,4 +929,8 @@ booking_activity_management:
     activity_date_new_date: Nueva fecha     
     no_dates: No hay fechas
     activity_date:
-      done: Creada fecha de la actividad                  
+      done: Creada fecha de la actividad
+activity:
+  activity_not_available: Lo sentimos, no hay plazas disponibles. Por favor, consulte telefónicamente.
+  activity_not_available_dates: Lo sentimos, no hay plazas disponibles en esta fecha. Por favor, consulte telefónicamente.
+  activity_finished: Lo sentimos, la actividad ya se llevó a cabo. Por favor, consulte telefónicamente.                  
