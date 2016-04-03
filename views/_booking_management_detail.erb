@@ -1,3 +1,12 @@
+<style>
+ .edit-icon {
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    cursor: hand;
+    cursor: pointer;      
+  }
+</style>
                   <div class="bottom-margin" style="border:1px solid #EEE"> 
                      <table class="table">
                         <thead class="table-header">
@@ -15,9 +24,9 @@
                             <tr class="table-row">
                                <td class="table-cell left_text"><%%=entity.booking_lines[lineIdx].item_id%> - <%%= entity.booking_lines[lineIdx].item_description %></td>
                                <td class="table-cell right_text"><%%= entity.days %></td>                               
-                               <td class="table-cell right_text"><%%= entity.booking_lines[lineIdx].quantity %></td>
-                               <td class="table-cell right_text"><%%if(entity.booking_lines[lineIdx].item_unit_cost != entity.booking_lines[lineIdx].item_unit_cost_base){%><span class="smaller_text less_constrast_text" style="text-decoration:line-through"><%%= new Number(entity.booking_lines[lineIdx].item_unit_cost_base).toFixed(2) %>&nbsp;</span><%%}%><%%= new Number(entity.booking_lines[lineIdx].item_unit_cost).toFixed(2) %></td>
-                               <td class="table-cell right_text"><%%= new Number(entity.booking_lines[lineIdx].product_deposit_cost).toFixed(2) %></td>                               
+                               <td class="table-cell right_text"><%%= entity.booking_lines[lineIdx].quantity %> <span class="booking-line-quantity ui-icon ui-icon-pencil edit-icon" data-id="<%%=entity.booking_lines[lineIdx].id%>" data-value="<%%=entity.booking_lines[lineIdx].quantity%>"></span></td>
+                               <td class="table-cell right_text"><%%if(entity.booking_lines[lineIdx].item_unit_cost != entity.booking_lines[lineIdx].item_unit_cost_base){%><span class="smaller_text less_constrast_text" style="text-decoration:line-through"><%%= new Number(entity.booking_lines[lineIdx].item_unit_cost_base).toFixed(2) %>&nbsp;</span><%%}%><%%= new Number(entity.booking_lines[lineIdx].item_unit_cost).toFixed(2) %> <span class="booking-line-unit-cost ui-icon ui-icon-pencil edit-icon" data-id="<%%=entity.booking_lines[lineIdx].id%>" data-value="<%%=new Number(entity.booking_lines[lineIdx].item_unit_cost).toFixed(2)%>" ></span></td>
+                               <td class="table-cell right_text"><%%= new Number(entity.booking_lines[lineIdx].product_deposit_cost).toFixed(2) %> <span class="booking-line-deposit ui-icon ui-icon-pencil edit-icon" data-id="<%%=entity.booking_lines[lineIdx].id%>" data-value="<%%=new Number(entity.booking_lines[lineIdx].product_deposit_cost).toFixed(2)%>"></span></td>                               
                                <td class="table-cell right_text"><%%= new Number(entity.booking_lines[lineIdx].item_cost).toFixed(2) %></td>
                             </tr>
                           <%% } %>
@@ -25,8 +34,8 @@
                             <tr class="table-row">
                                <td class="table-cell left_text less_contrast_text"><%%= entity.booking_extras[extraIdx].extra_description %></td>
                                <td class="table-cell right_text"><%%= entity.days %></td>                               
-                               <td class="table-cell right_text"><%%= entity.booking_extras[extraIdx].quantity %></td>
-                               <td class="table-cell right_text"><%%= new Number(entity.booking_extras[extraIdx].extra_unit_cost).toFixed(2) %></td>
+                               <td class="table-cell right_text"><%%= entity.booking_extras[extraIdx].quantity %> <span class="booking-extra-quantity ui-icon ui-icon-pencil edit-icon" data-id="<%%=entity.booking_extras[extraIdx].id%>" data-value="<%%=entity.booking_extras[extraIdx].quantity%>"></span></td>
+                               <td class="table-cell right_text"><%%= new Number(entity.booking_extras[extraIdx].extra_unit_cost).toFixed(2) %> <span class="booking-extra-item-cost ui-icon ui-icon-pencil edit-icon" data-id="<%%=entity.booking_extras[extraIdx].id%>" data-value="<%%=new  Number(entity.booking_extras[extraIdx].extra_unit_cost).toFixed(2)%>"></span></td>
                                <td class="table-cell"></td>
                                <td class="table-cell right_text"><%%= new Number(entity.booking_extras[extraIdx].extra_cost).toFixed(2) %></td>
                             </tr>
@@ -141,5 +150,9 @@
 
                         </tbody>
                      </table>  
-
+                     <div class="top-margin all-space top-separator">
+                        <button id="new_booking_line_button" class="form-button">Añadir producto</button>
+                        <button id="new_booking_extra_button" class="form-button">Añadir extra</button>
+                        <button id="booking_supplements_button" class="form-button">Suplementos entrega y devolución</button>
+                     </div>
                   </div>

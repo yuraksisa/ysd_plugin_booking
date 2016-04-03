@@ -3,38 +3,43 @@
           width: 97%;
         }
         select option {white-space: pre;}
+        h3 {
+          border-bottom: 1px solid;
+        }
       </style>
-      <form name="activity_form" id="activity_form" action="/p/activity/add-to-shopping-cart" method="post">
+      <h3><%=t.activity.reservation%></h3>
+      <h4><%=t.activity.dates%></h4>
+      <form name="select_date_form" id="select_date_form" action="/p/activity/select-date" method="post">
         <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
-        <div id="datepicker"></div>
         <div id="activity_date">
-          <input type="hidden" name="date" id="date">
-          <h3 id="date_text"></h3>
-        </div>
+          <input type="hidden" name="date" id="select_date">
+          <h5 id="date_text" class="smaller_text less_contrast_text"></h5>
+        </div>              
+        <div id="datepicker"></div>
         <div id="turns" class="top-margin"></div>
-        <% if @activity.mode == :partial %>
-        <div id="tickets" class="top-margin">
-          <div>
-            <select name="quantity_rate_1" id="quantity_rate_1" class="quantity_rate" style="width:99%"></select>
-          </div>
-          <div>
-            <select name="quantity_rate_2" id="quantity_rate_2" class="quantity_rate" style="width:99%"></select>
-          </div>
-          <div>
-            <select name="quantity_rate_3" id="quantity_rate_3" class="quantity_rate" style="width:99%"></select>	
-          </div>
-        </div>
-        <% end %>
-        <div id="total" class="centered_text more_contrast_text" style="font-size:3em">         
-        </div>
-        <div id="botonera" class="top-margin">
-          <input type="submit" class="form-button green-button" style="width:100%" value="Reservar"/>
-        </div>
       </form>
-
+      
+      <% if @activity.capacity > @occupation[:total_occupation].to_i %>
+        <% if defined?@date and !@date.nil? and defined?@time and !@time.nil? %>
+          <form name="activity_form" id="activity_form" action="/p/activity/add-to-shopping-cart" method="post">
+            <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
+            <input type="hidden" name="date" value="<%=@date%>"/>
+            <input type="hidden" name="turn" value="<%=@time%>"/>
+            <% if @activity.mode == :partial %>
+              <%= partial :reservation_activity_tickets %>
+            <% end %>
+            <div id="total" class="centered_text more_contrast_text" style="font-size:3em"></div>
+            <div id="botonera" class="top-margin">
+              <input type="submit" class="form-button green-button" style="width:100%" value="Reservar"/>
+            </div>
+          </form>
+        <% end %>
+      <% else %>
+        <div class="highlight_block all-border-solid-light smaller_text centered_text top-margin-1line"><%=t.activity.activity_not_available_dates%></div>    
+      <% end %>      
       <script type="text/tpml" id="script_turns">
         <%% if (turns.length > 0 && turns[0] != '') {%>
-        <h3>Turnos</h3>
+        <h4><%=t.activity.turn%></h3>
         <%% } else { %>
         <p>No hay turnos este día</p>
         <%% } %>
@@ -50,21 +55,21 @@
         <p>No hay turnos este día</p>
         <%% } else { %>
         <%% }%> 
-     
+        <h4><%=t.activity.turns%></h3>
         <%% if (morningTurns.length > 0) {%>
-        <h4>Mañanas</h4>
+        <h5 class="smaller_text"><%=t.activity.mornings%></h4>
         <%% } %>
         <%% for (var idx=0;idx<morningTurns.length;idx++) { %>
           <input type="radio" name="turn" value="<%%=morningTurns[idx]%>"><%%=morningTurns[idx]%></input>
         <%% } %>
         <%% if (afternoonTurns.length > 0) {%>        
-        <h4>Tardes</h4>
+        <h5 class="smaller_text"><%=t.activity.afternoons%></h4>
         <%% } %>        
         <%% for (var idx=0;idx<afternoonTurns.length;idx++) { %>
             <input type="radio" name="turn" value="<%%=afternoonTurns[idx]%>"><%%=afternoonTurns[idx]%></input>
         <%% } %>     
         <%% if (nightTurns.length > 0) {%>           
-        <h4>Noches</h4>
+        <h5 class="smaller_text"><%=t.activity.evenings%></h4>
         <%% } %>        
         <%% for (var idx=0;idx<nightTurns.length;idx++) { %>
             <input type="radio" name="turn" value="<%%=nightTurns[idx]%>"><%%=nightTurns[idx]%></input>

@@ -931,6 +931,16 @@ booking_activity_management:
     activity_date:
       done: Creada fecha de la actividad
 activity:
+  reservation: Reservar
+  mornings: Mañanas
+  afternoons: Tardes
+  evenings: Noches
+  dates: Seleccionar la fecha
+  turns: Seleccionar el horario
+  tickets: Seleccionar los tickets
+  choose_tickets: Número de tickets (%1)
+  event_date: Fecha
+  no_ticket_selected: No ha seleccionado tickets
   activity_not_available: Lo sentimos, no hay plazas disponibles. Por favor, consulte telefónicamente.
   activity_not_available_dates: Lo sentimos, no hay plazas disponibles en esta fecha. Por favor, consulte telefónicamente.
   activity_finished: Lo sentimos, la actividad ya se llevó a cabo. Por favor, consulte telefónicamente.                  

@@ -813,6 +813,465 @@ module Sinatra
           data.to_json        
 
         end
+        
+        #
+        # Update booking supplements
+        #
+        app.post '/api/booking/booking-supplements', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+          
+          id = data_request[:booking_id]
+          time_from_cost = data_request[:time_from_cost]
+          time_to_cost = data_request[:time_to_cost]
+          pickup_place_cost = data_request[:pickup_place_cost]
+          return_place_cost = data_request[:return_place_cost]                              
+
+          if booking = BookingDataSystem::Booking.get(id)
+            if data_request[:time_from_cost] or data_request[:time_to_cost] or
+               data_request[:pickup_place_cost] or data_request[:return_place_cost] 
+              booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+              old_total_supplements = booking.time_from_cost + booking.time_to_cost +
+                                      booking.pickup_place_cost + booking.return_place_cost
+              booking.time_from_cost = time_from_cost 
+              booking.time_to_cost = time_to_cost 
+              booking.pickup_place_cost = pickup_place_cost 
+              booking.return_place_cost = return_place_cost
+              total_supplements = booking.time_from_cost + booking.time_to_cost +
+                                  booking.pickup_place_cost + booking.return_place_cost
+              booking.total_cost += (total_supplements - old_total_supplements)
+              booking.total_pending += (total_supplements - old_total_supplements)
+              booking.booking_amount += ((total_supplements - old_total_supplements) * booking_deposit / 100).round unless booking_deposit == 0 
+              booking.save
+              booking.reload
+              content_type :json
+              booking.to_json
+            else
+              body "Ningún suplemento especificado"
+            end
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Create booking line
+        #
+        app.post '/api/booking/booking-line', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_id]
+
+          if booking = BookingDataSystem::Booking.get(id)
+            if data_request[:item_id] and data_request[:quantity]
+              item_id = data_request[:item_id]
+              quantity = data_request[:quantity].to_i
+              product_lines = booking.booking_lines.select do |booking_line|
+                                booking_line.item_id == item_id
+                              end
+              if product_lines.empty?
+                if product = ::Yito::Model::Booking::BookingCategory.get(item_id)
+                  booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+                  product_unit_cost = product.unit_price(booking.date_from, booking.days)
+                  product_deposit_cost = product.deposit
+                  booking.transaction do 
+                    # Create booking line
+                    booking_line = BookingDataSystem::BookingLine.new
+                    booking_line.booking = booking
+                    booking_line.item_id = item_id 
+                    booking_line.item_description = product.name 
+                    booking_line.item_unit_cost_base = product_unit_cost
+                    booking_line.item_unit_cost = product_unit_cost
+                    booking_line.item_cost = product_unit_cost * quantity
+                    booking_line.quantity = quantity
+                    booking_line.product_deposit_unit_cost = product_deposit_cost
+                    booking_line.product_deposit_cost = product_deposit_cost * quantity
+                    booking_line.save
+                    # Create booking line resources
+                    (1..quantity).each do |resource_number|
+                      booking_line_resource = BookingDataSystem::BookingLineResource.new 
+                      booking_line_resource.booking_line = booking_line
+                      booking_line_resource.save
+                    end
+                    # Update booking cost
+                    item_cost_increment = product_unit_cost * quantity
+                    deposit_cost_increment = product_deposit_cost * quantity
+                    total_cost_increment = item_cost_increment + deposit_cost_increment
+                    booking.item_cost += item_cost_increment
+                    booking.product_deposit_cost += deposit_cost_increment
+                    booking.total_cost += total_cost_increment
+                    booking.total_pending += total_cost_increment
+                    booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
+                    booking.save
+                  end
+                  booking.reload
+                  content_type :json
+                  booking.to_json
+                else
+                  body "Producto no existe"
+                  status 500 
+                end
+              else
+                body "Ya existe el producto en la reserva. Por favor, modifique la cantidad"
+                status 500
+              end
+            else 
+              body "Producto o cantidad no especificadas"
+              status 500
+            end
+          else
+            status 404
+          end
+        end
+        
+        #
+        # Create booking extra
+        #
+        app.post '/api/booking/booking-extra', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_id]
+
+          if booking = BookingDataSystem::Booking.get(id)
+            if data_request[:extra_id] and data_request[:quantity]
+              extra_id = data_request[:extra_id]
+              quantity = data_request[:quantity].to_i
+              booking_extras = booking.booking_extras.select do |booking_extra|
+                                 booking_extra.extra_id == extra_id
+                               end
+              if booking_extras.empty?
+                if extra = ::Yito::Model::Booking::BookingExtra.get(extra_id)
+                  booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+                  extra_unit_cost = extra.unit_price(booking.date_from, booking.days)
+                  booking.transaction do 
+                    # Create the booking extra line
+                    booking_extra = BookingDataSystem::BookingExtra.new
+                    booking_extra.booking = booking
+                    booking_extra.extra_id = extra_id
+                    booking_extra.extra_description = extra.name
+                    booking_extra.quantity = quantity
+                    booking_extra.extra_unit_cost = extra_unit_cost
+                    booking_extra.extra_cost = extra_unit_cost * quantity
+                    booking_extra.save
+                    # Updates the booking
+                    extra_cost_increment = extra_unit_cost * quantity
+                    total_cost_increment = extra_cost_increment
+                    booking.extras_cost += extra_cost_increment
+                    booking.total_cost += total_cost_increment
+                    booking.total_pending += total_cost_increment
+                    booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
+                    booking.save
+                  end
+                  booking.reload
+                  content_type :json
+                  booking.to_json
+                else
+                  body "Extra no existe"
+                  status 500 
+                end
+              else
+                body "Ya existe el extra en la reserva. Por favor, modifique la cantidad"
+                status 500
+              end
+            else 
+              body "Extra o cantidad no especificadas"
+              status 500
+            end
+          else
+            status 404
+          end
+        end
+
+        #
+        # Update booking line item
+        #
+        app.put '/api/booking/booking-line/item', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+        end
+
+        #
+        # Update booking line: quantity
+        #
+        app.put '/api/booking/booking-line/quantity', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+          id = data_request[:booking_line_id]
+          if booking_line = BookingDataSystem::BookingLine.get(id)
+            if data_request[:quantity]
+              quantity = data_request[:quantity]
+              if product = ::Yito::Model::Booking::BookingCategory.get(booking_line.item_id)
+                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+                booking = booking_line.booking
+                #product_unit_cost = product.unit_price(booking.date_from, booking.days)
+                product_deposit_cost = product.deposit
+                old_quantity = booking_line.quantity
+                old_booking_line_item_cost = booking_line.item_cost
+                old_booking_line_product_deposit_cost = booking_line.product_deposit_cost
+                booking_line.transaction do 
+                  booking_line.quantity = quantity
+                  #booking_line.item_unit_cost = product_unit_cost
+                  booking_line.item_cost = booking_line.item_unit_cost * quantity
+                  booking_line.product_deposit_unit_cost = product_deposit_cost
+                  booking_line.product_deposit_cost = product_deposit_cost * quantity                  
+                  booking_line.save
+                  # Add or remove booking line resources
+                  if quantity < old_quantity
+                    (quantity..(old_quantity-1)).each do |resource_number|
+                      booking_line.booking_line_resources[quantity].destroy unless booking_line.booking_line_resources[quantity].nil?
+                    end  
+                  elsif quantity > old_quantity
+                    (old_quantity..(quantity-1)).each do |resource_number|
+                      booking_line_resource = BookingDataSystem::BookingLineResource.new 
+                      booking_line_resource.booking_line = booking_line
+                      booking_line_resource.save
+                    end
+                  end
+                  # Update the booking (cost)
+                  item_cost_increment = booking_line.item_cost - old_booking_line_item_cost
+                  deposit_cost_increment = booking_line.product_deposit_cost - old_booking_line_product_deposit_cost
+                  total_cost_increment = item_cost_increment + deposit_cost_increment
+                  booking.item_cost += item_cost_increment
+                  booking.product_deposit_cost += deposit_cost_increment
+                  booking.total_cost += total_cost_increment
+                  booking.total_pending += total_cost_increment
+                  booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
+                  booking.save
+                end
+                booking.reload
+                content_type :json
+                booking.to_json
+              else
+                body "Producto no existe. Imposible recalcular precio"
+                status 500
+              end  
+            else 
+              body "Cantidad no especificada"
+              status 500
+            end
+          else
+            status 404
+          end
+
+        end
+        
+        #
+        # Update booking line : item cost
+        #
+        app.put '/api/booking/booking-line/item-cost', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_line_id]
+          if booking_line = BookingDataSystem::BookingLine.get(id)
+            if data_request[:item_unit_cost]
+              item_unit_cost = data_request[:item_unit_cost]
+              if product = ::Yito::Model::Booking::BookingCategory.get(booking_line.item_id)
+                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+                booking = booking_line.booking
+                old_booking_line_item_cost = booking_line.item_cost
+                booking_line.transaction do 
+                  booking_line.item_unit_cost = item_unit_cost
+                  booking_line.item_cost = booking_line.item_unit_cost * booking_line.quantity
+                  booking_line.save
+                  # Update the booking (cost)
+                  item_cost_increment = booking_line.item_cost - old_booking_line_item_cost
+                  total_cost_increment = item_cost_increment
+                  booking.item_cost += item_cost_increment
+                  booking.total_cost += total_cost_increment
+                  booking.total_pending += total_cost_increment
+                  booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
+                  booking.save
+                end
+                booking.reload
+                content_type :json
+                booking.to_json
+              else
+                body "Producto no existe. Imposible recalcular precio"
+                status 500
+              end  
+            else 
+              body "Coste no especificado"
+              status 500
+            end
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Update booking line: deposit
+        #
+        app.put '/api/booking/booking-line/deposit', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_line_id]
+          if booking_line = BookingDataSystem::BookingLine.get(id)
+            if data_request[:item_deposit]
+              booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+              item_deposit = data_request[:item_deposit]
+              booking = booking_line.booking
+              old_booking_line_product_deposit_cost = booking_line.product_deposit_cost
+              booking_line.transaction do 
+                booking_line.product_deposit_unit_cost = (item_deposit / booking_line.quantity).round
+                booking_line.product_deposit_cost = item_deposit
+                booking_line.save
+                # Update the booking (cost)
+                deposit_cost_increment = booking_line.product_deposit_cost - old_booking_line_product_deposit_cost
+                total_cost_increment = deposit_cost_increment
+                booking.total_cost += total_cost_increment
+                booking.total_pending += total_cost_increment
+                booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
+                booking.save
+              end
+              booking.reload
+              content_type :json
+              booking.to_json
+            else 
+              body "Fianza no especificada"
+              status 500
+            end
+          else
+            status 404
+          end
+
+        end
+        
+
+        #
+        # Update booking line item
+        #
+        app.put '/api/booking/booking-line/item', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+        end
+
+        #
+        # Update booking extra: quantity
+        #
+        app.put '/api/booking/booking-extra/quantity', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_extra_id]
+          if booking_extra = BookingDataSystem::BookingExtra.get(id)
+            if data_request[:quantity]
+              quantity = data_request[:quantity]
+              if extra = ::Yito::Model::Booking::BookingExtra.get(booking_extra.extra_id)
+                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+                booking = booking_extra.booking
+                #extra_unit_cost = extra.unit_price(booking.date_from, booking.days)
+                old_quantity = booking_extra.quantity
+                old_booking_extra_extra_cost = booking_extra.extra_cost
+                booking_extra.transaction do 
+                  booking_extra.quantity = quantity
+                  #booking_extra.extra_unit_cost = extra_unit_cost
+                  booking_extra.extra_cost = booking_extra.extra_unit_cost * quantity
+                  booking_extra.save
+                  # Update the booking (cost)
+                  extra_cost_increment = booking_extra.extra_cost - old_booking_extra_extra_cost
+                  total_cost_increment = extra_cost_increment 
+                  booking.extras_cost += extra_cost_increment
+                  booking.total_cost += total_cost_increment
+                  booking.total_pending += total_cost_increment
+                  booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
+                  booking.save
+                end
+                booking.reload
+                content_type :json
+                booking.to_json
+              else
+                body "Extra no existe. Imposible recalcular precio"
+                status 500
+              end  
+            else 
+              body "Cantidad no especificada"
+              status 500
+            end
+          else
+            status 404
+          end
+
+        end
+        
+        #
+        # Update booking extra : extra cost
+        #
+        app.put '/api/booking/booking-extra/extra-cost', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_extra_id]
+          if booking_extra = BookingDataSystem::BookingExtra.get(id)
+            if data_request[:extra_unit_cost]
+              extra_unit_cost = data_request[:extra_unit_cost]
+              if extra = ::Yito::Model::Booking::BookingExtra.get(booking_extra.extra_id)
+                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+                booking = booking_extra.booking
+                old_booking_extra_extra_cost = booking_extra.extra_cost
+                booking_extra.transaction do 
+                  booking_extra.extra_unit_cost = extra_unit_cost
+                  booking_extra.extra_cost = booking_extra.extra_unit_cost * booking_extra.quantity
+                  booking_extra.save
+                  # Update the booking (cost)
+                  extra_cost_increment = booking_extra.item_cost - old_booking_extra_extra_cost
+                  total_cost_increment = extra_cost_increment
+                  booking.extras_cost += extra_cost_increment
+                  booking.total_cost += total_cost_increment
+                  booking.total_pending += total_cost_increment
+                  booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
+                  booking.save
+                end
+                booking.reload
+                content_type :json
+                booking.to_json
+              else
+                body "Extra no existe. Imposible recalcular precio"
+                status 500
+              end  
+            else 
+              body "Coste no especificado"
+              status 500
+            end
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Delete booking line
+        #
+        app.delete '/api/booking/booking-line', :allowed_usergroups => ['booking_manager', 'staff'] do
+        
+        end
+
+        #
+        # Delete booking extra
+        #
+        app.delete '/api/booking/booking-extra', :allowed_usergroups => ['booking_manager', 'staff'] do
+        
+        end
 
         # Update booking resource
         #

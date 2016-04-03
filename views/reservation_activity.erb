@@ -1,32 +1,34 @@
 <style>
   body {
-    background-color: #DDD;
+    /*background-color: #DDD;*/
   }
 </style>
 <div class="container_12">
+  <h1 style="font-size:2.5em; text-align:left; margin-top: 0.6em"><%=@activity.name%></h1>
   <div class="grid_10">
-    <h1 style="font-size:2.5em; text-align:left; margin-top: 0.6em"><%=@activity.name%></h1>
-    <p class="top-margin-1line bottom-margin-1line less_contrast_text"><%=@activity.short_description%></p>
+    <div class="top-margin-1line bottom-margin-1line less_contrast_text">
+      <%=@activity.short_description%>
+    </div>
   </div>
 </div>
 <div class="container_12">
   <div class="grid_8" style="background-color: white">
-    <div class="top-space-1line">
+    <div>
       <% if @activity.photo_url_full.nil? or @activity.photo_url_full.empty?%> 
          <div>
             <span class="centered_text" style="font-size:25em; display: block" data-icon="&#xe072;"></span> 
          </div> 
       <% else  %>
-         <img src="<%= @activity.photo_url_full %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto" rel="<%%= index %>"/>
+         <img id="activity_image" src="<%= @activity.photo_url_full %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto" rel="<%%= index %>"/>
       <% end %>
     </div>  
-    <div style="padding:2em">
+    <div class="top-margin-1line bottom-margin-2lines">
       <%= @activity.description %> 
     </div>
   </div>
   <div class="grid_4">
-  	<div class="left-margin">
-      <p>Plazas reservadas: <%= @occupation[:total_occupation].to_i%></p>
+  	<div class="left-margin" style="position:relative; top: -10px">
+      <div id="activity_reservation" class="highlight_block smaller_text">
       <% if @activity.occurence == :cyclic %>
          <%= partial :reservation_activity_cyclic %>
       <% elsif @activity.occurence == :one_time %>
@@ -34,6 +36,8 @@
       <% elsif @activity.occurence == :multiple_dates %>
          <%= partial :reservation_activity_multiple_dates %>
       <% end %>
+      <p class="smaller_text less_contrast_text">Plazas reservadas: <%= @occupation[:total_occupation].to_i%></p>
+      </div>
   	</div>
   </div>
 </div>

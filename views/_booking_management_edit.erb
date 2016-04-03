@@ -1,0 +1,140 @@
+<script type="text/tmpl" id="new_booking_line_script">
+  <form name="new_booking_line" class="all-space" style="background: white; min-width: 300px">
+    <h3>Añadir producto</h3>
+    <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Producto</label>
+      <input type="text" name="item_id" class="fieldcontrol" maxlength="20"/>
+    </div>
+    <div class="formrow">
+      <label class="fieldtitle">Cantidad</label>
+      <input type="text" name="quantity" class="fieldcontrol" maxlength="5"/>
+    </div>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="create_booking_line_button" type="button" class="form-button green-button" value="<%=t.entitymanagement.create%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+<script type="text/tmpl" id="new_booking_extra_script">
+  <form name="new_booking_extra" class="all-space" style="background: white; min-width: 300px">
+    <h3>Añadir extra</h3>
+    <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Extra</label>
+      <input type="text" name="extra_id" class="fieldcontrol" maxlength="20"/>
+    </div>
+    <div class="formrow">
+      <label class="fieldtitle">Cantidad</label>
+      <input type="text" name="quantity" class="fieldcontrol" maxlength="5"/>
+    </div>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="create_booking_extra_button" type="button" class="form-button green-button" value="<%=t.entitymanagement.create%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+<script type="text/tmpl" id="edit_booking_line_quantity_script">
+  <form name="update_booking_line_quantity" class="all-space" style="background: white; min-width: 300px">
+    <h3>Modificar cantidad</h3>
+    <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Cantidad</label>
+      <input type="text" name="quantity" class="fieldcontrol" maxlength="5" value="<%%=quantity%>"/>
+    </div>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="edit_booking_line_quantity_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+<script type="text/tmpl" id="edit_booking_line_item_cost_script">
+  <form name="update_booking_line_item_cost" class="all-space" style="background: white; min-width: 300px">
+    <h3>Modificar coste unitario</h3>
+    <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Coste unitario (todos los días)</label>
+      <input type="text" name="item_unit_cost" class="fieldcontrol" maxlength="10" value="<%%=item_unit_cost%>"/>
+    </div>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="edit_booking_item_cost_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+<script type="text/tmpl" id="edit_booking_line_deposit_cost_script">
+  <form name="update_booking_line_deposit_cost" class="all-space" style="background: white; min-width: 300px">
+    <h3>Modificar fianza</h3>
+    <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Fianza</label>
+      <input type="text" name="item_deposit" class="fieldcontrol" maxlength="10" value="<%%=item_deposit%>"/>
+    </div>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="edit_booking_item_deposit_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+<script type="text/tmpl" id="edit_booking_extra_quantity_script">
+  <form name="update_booking_extra_quantity" class="all-space" style="background: white; min-width: 300px">
+    <h3>Modificar cantidad</h3>
+    <input type="hidden" name="booking_extra_id" value="<%%=booking_extra_id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Cantidad</label>
+      <input type="text" name="quantity" class="fieldcontrol" maxlength="5" value="<%%=quantity%>"/>
+    </div>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="edit_booking_extra_quantity_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+<script type="text/tmpl" id="edit_booking_extra_item_cost_script">
+  <form name="update_booking_extra_item_cost" class="all-space" style="background: white; min-width: 300px">
+    <h3>Modificar coste unitario</h3>
+    <input type="hidden" name="booking_extra_id" value="<%%=booking_extra_id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Coste unitario (todos los días)</label>
+      <input type="text" name="extra_unit_cost" class="fieldcontrol" maxlength="10" value="<%%=extra_unit_cost%>"/>
+    </div>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="edit_booking_extra_cost_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+<script type="text/tmpl" id="edit_booking_supplements_script">
+  <form name="edit_booking_supplements" class="all-space" style="background: white; min-width: 300px">
+    <h3>Suplementos</h3>
+    <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Entrega fuera horas</label>
+      <input type="text" name="time_from_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(entity.time_from_cost).toFixed(2)%>"/>
+    </div>
+    <div class="formrow">
+      <label class="fieldtitle">Devolución fuera horas</label>
+      <input type="text" name="time_to_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(entity.time_to_cost).toFixed(2)%>"/>
+    </div>
+    <div class="formrow">
+      <label class="fieldtitle">Lugar de entrega</label>
+      <input type="text" name="pickup_place_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(entity.pickup_place_cost).toFixed(2)%>"/>
+    </div>
+    <div class="formrow">
+      <label class="fieldtitle">Lugar de devolución</label>
+      <input type="text" name="return_place_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(entity.return_place_cost).toFixed(2)%>"/>
+    </div>    
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="update_booking_supplements_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>     
+  </form>
+</script>

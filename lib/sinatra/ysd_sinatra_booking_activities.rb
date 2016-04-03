@@ -195,6 +195,11 @@ module Sinatra
         #
         app.get '/p/activities/?*' do 
 
+          session.delete(:activity_date_id)
+          session.delete(:date)
+          session.delete(:turn)
+
+
           @activities = ::Yito::Model::Booking::Activity.all(active: true)
           load_page(:reservation_activities)
 
@@ -206,16 +211,40 @@ module Sinatra
         app.get '/p/activity/:id/?*' do
 
           @activity = ::Yito::Model::Booking::Activity.get(params[:id])
-          @occupation = []
           
-          case @activity.occurence
-            when :one_time
-              @occupation = @activity.occupation(@activity.date_from, @activity.time_from)
-            when :multiple_dates
-              @occupation = {total_occupation: 0, occupation_detail: {}}
-            when :cyclic
-              @occupation = {total_occupation: 0, occupation_detail: {}}
+          #@occupation = []         
+          #case @activity.occurence
+          #  when :one_time
+          #    @occupation = @activity.occupation(@activity.date_from, @activity.time_from)
+          #  when :multiple_dates
+          #    @occupation = {total_occupation: 0, occupation_detail: {}}
+          #  when :cyclic
+          #    @occupation = {total_occupation: 0, occupation_detail: {}}
+          #end
+            @occupation = {total_occupation: 0, occupation_detail: {}}
+            if session[:activity_date_id]
+              @activity_date_id = session[:activity_date_id]
+              if @activity_date = ::Yito::Model::Booking::ActivityDate.get(@activity_date_id)
+                @occupation = @activity.occupation(@activity_date.date_from, @activity_date.time_from)
+              end
+            elsif session[:date] or session[:time]
+              @date = session[:date]
+              @time = session[:turn]
+              if @date and !@date.nil? and @time and !@time.nil?
+                @occupation = @activity.occupation(@date, @time)
+              end
+            end
+
+          # Load or build the shopping cart
+          @shopping_cart = nil
+            
+          if session[:shopping_cart_id]
+            @shopping_cart = ::Yito::Model::Order::ShoppingCart.get(session[:shopping_cart_id])
           end
+
+          unless @shopping_cart
+            @shopping_cart = ::Yito::Model::Order::ShoppingCart.new(:creation_date => DateTime.now)
+          end       
 
           if @activity and @activity.active
             load_page(:reservation_activity)
@@ -231,19 +260,37 @@ module Sinatra
         app.post '/p/activity/select-date/?*' do
 
           if @activity = ::Yito::Model::Booking::Activity.get(params[:activity_id]) and @activity.active
+            
             @occupation = {total_occupation: 0, occupation_detail: {}}
             if params[:activity_date_id]
-              if @activity_date = ::Yito::Model::Booking::ActivityDate.get(params[:activity_date_id])
+              @activity_date_id = params[:activity_date_id]
+              if @activity_date = ::Yito::Model::Booking::ActivityDate.get(@activity_date_id)
                 @occupation = @activity.occupation(@activity_date.date_from, @activity_date.time_from)
               end
+              session[:activity_date_id] = @activity_date_id
             elsif params[:date] or params[:time]
               @date = params[:date]
               @time = params[:turn]
               if @date and !@date.nil? and @time and !@time.nil?
                 @occupation = @activity.occupation(@date, @time)
               end
+              session[:date] = @date
+              session[:turn] = @time
             end
-            load_page(:reservation_activity)
+
+            # Load or build the shopping cart
+            @shopping_cart = nil
+            
+            if session[:shopping_cart_id]
+              @shopping_cart = ::Yito::Model::Order::ShoppingCart.get(session[:shopping_cart_id])
+            end
+
+            unless @shopping_cart
+              @shopping_cart = ::Yito::Model::Order::ShoppingCart.new(:creation_date => DateTime.now)
+            end       
+
+            #load_page(:reservation_activity)
+            redirect "/p/activity/#{@activity.id}"
           else
             status 404
           end

@@ -1,150 +1,61 @@
 <% if @activity.lives? %> 
 require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jquery.ui", 'jquery.validate', 
            'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
-           'jquery.ui.datepicker.validation',
+           'jquery.ui.datepicker.validation', 'jquery.validate',
            'jquery.tools', 'jquery.formparams', 'datejs'],
          function($, tmpl, MemoryDataSource, SelectSelector) {
 
   oneTimeModel = {
-       total: 0,
-       capacity: <%=@activity.capacity%>,  	
-       price_1_defined : <%=!@activity.price_definition_1.nil?%>,
-       price_1_description: '<%=@activity.price_1_description%>',
-       price_2_defined : <%=!@activity.price_definition_2.nil?%>,
-       price_2_description: '<%=@activity.price_2_description%>',
-       price_3_defined: <%=!@activity.price_definition_3.nil?%>,
-       price_3_description: '<%=@activity.price_3_description%>',
-       <% rates = @activity.rates(Date.today) %>
-       prices_1 : {
-         <% if !@activity.price_definition_1.nil? and !rates.nil? and rates[1] %>
-            <% rates[1].each do |quantity, price| %>
-              '<%=quantity%>':<%="%.2f" % price%>, 
-            <% end %>
-         <% end %>
-       },
-       prices_2 : {
-         <% if !@activity.price_definition_2.nil? and !rates.nil? and rates[2] %>
-            <% rates[2].each do |quantity, price| %>
-              '<%=quantity%>':<%="%.2f" % price%>,  
-            <% end %>
-         <% end %>
-       },
-       prices_3 : {
-         <% if !@activity.price_definition_3.nil? and !rates.nil? and rates[3]%>
-            <% rates[3].each do |quantity, price| %>
-              '<%=quantity%>':<%="%.2f" % price%>,
-            <% end %>  
-         <% end %>
-       },
+       total: 0,	
        calculatePrice: function() {
           this.total = 0;
-          if (this.prices_1[$('#quantity_rate_1').val()]) {
-            this.total += this.prices_1[$('#quantity_rate_1').val()];
+          if ($('#quantity_rate_1 option:selected').attr('data-total') != undefined) {
+            this.total += new Number($('#quantity_rate_1 option:selected').attr('data-total'));
           }
-          if (this.prices_2[$('#quantity_rate_2').val()]) {
-            this.total += this.prices_2[$('#quantity_rate_2').val()];
+          if ($('#quantity_rate_2 option:selected').attr('data-total') != undefined) {
+            this.total += new Number($('#quantity_rate_2 option:selected').attr('data-total'));
           }
-          if (this.prices_3[$('#quantity_rate_3').val()]) {
-            this.total += this.prices_1[$('#quantity_rate_3').val()];
+          if ($('#quantity_rate_3 option:selected').attr('data-total') != undefined) {
+            this.total += new Number($('#quantity_rate_3 option:selected').attr('data-total'));
           }          
-          cyclicView.updatePrice();
+          oneTimeView.updatePrice();
        }    
   }
 
   oneTimeController = {
     onQuantityChanged: function() {
       oneTimeModel.calculatePrice();
+    },
+    onActivityFormSubmited: function() {
+      if (oneTimeModel.total == 0) {
+        alert('<%=t.activity.no_ticket_selected%>');
+        return false;
+      }
+      return true;
     }
   }
 
   oneTimeView = {
     init: function() {
-              this.loadCapacity();
+      $('.quantity_rate').bind('change', function(){
+        oneTimeController.onQuantityChanged();
+      });
+      $('form[name=activity_form]').bind('submit', function() {
+        return oneTimeController.onActivityFormSubmited();
+      });
     },
     
     updatePrice: function() {
            $('#total').html(oneTimeModel.total.toFixed(2) + '€');
            if (oneTimeModel.total > 0) {
              $('#total').show();
+             $('#botonera').show();
            }
            else {
              $('#total').hide();
+             $('#botonera').hide();
            }
-    },
-
-    loadCapacity: function() {
-             // Price 1
-            if (oneTimeModel.price_1_defined) {
-              var capacities = [];
-              capacities.push({id:0,
-                               description: 'Seleccione número tickets ... ' + oneTimeModel.price_1_description});
-              for (idx=1;idx <=Math.min(10,(oneTimeModel.capacity-<%=@occupation[:occupation_detail][1].to_i || 0%>)); idx++) {
-                capacities.push({id:idx,
-                                 description:this.format(idx,oneTimeModel.price_1_description,
-                                                    oneTimeModel.prices_1[idx])});
-              }           
-              var capacitiesDataSource = new MemoryDataSource(capacities);
-              var capacitiesSelectSelector = new SelectSelector('quantity_rate_1', capacitiesDataSource);
-              $('#quantity_rate_1').show();
-            }
-            else {
-              $('#quantity_rate_1').hide();
-            }
-            // Price 2
-            if (oneTimeModel.price_2_defined) {
-              var capacities = [];
-              capacities.push({id:0,
-                               description: 'Seleccione número tickets ... ' + oneTimeModel.price_2_description});              
-              for (idx=1;idx <=Math.min(10, (oneTimeModel.capacity-<%=@occupation[:occupation_detail][2].to_i || 0%>)); idx++) {
-                capacities.push({id:idx,
-                                 description:this.format(idx,oneTimeModel.price_2_description,
-                                                    oneTimeModel.prices_2[idx])});
-              }           
-              var capacitiesDataSource = new MemoryDataSource(capacities);
-              var capacitiesSelectSelector = new SelectSelector('quantity_rate_2', capacitiesDataSource);
-              $('#quantity_rate_2').show();
-            }
-            else {
-              $('#quantity_rate_2').hide();
-            }
-            // Price 3
-            if (oneTimeModel.price_3_defined) {
-              var capacities = [];
-              capacities.push({id:0,
-                               description: 'Seleccione número tickets ... ' + oneTimeModel.price_3_description});              
-              for (idx=1;idx <=10, Math.min(10, (oneTimeModel.capacity-<%=@occupation[:occupation_detail][3].to_i || 0%>)); idx++) {
-                capacities.push({id:idx,
-                                 description:this.format(idx,oneTimeModel.price_3_description,
-                                                    oneTimeModel.prices_3[idx])});
-              }           
-              var capacitiesDataSource = new MemoryDataSource(capacities);
-              var capacitiesSelectSelector = new SelectSelector('quantity_rate_3', capacitiesDataSource);
-              $('#quantity_rate_3').show();
-            }
-            else {
-              $('#quantity_rate_3').hide();
-            }
-            if (oneTimeModel.price_1_defined || oneTimeModel.price_2_defined ||
-            	oneTimeModel.price_3_defined) {
-            	$('#botonera').show();
-            }
-            else {
-            	$('#botonera').show();
-            }
-
-    },
-        format: function(quantity, priceDescription, price) {
-           var extraSpaceIdx = (quantity < 10) ? ' ' : '';
-           var extraSpacePrice = '';
-           var max = 15 - price.toString().length;
-           for (var idx=0; idx < max; idx++) {
-             extraSpacePrice += ' ';
-           }
-
-           var value = quantity + extraSpaceIdx + ' X ' + priceDescription + extraSpacePrice +
-                       price.toFixed(2) + '€';
-           return value;
-        }    
+    }    
   }
 
   oneTimeView.init();
