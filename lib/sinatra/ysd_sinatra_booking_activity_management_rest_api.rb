@@ -74,7 +74,11 @@ module Sinatra
         #
         app.get "/api/booking-activities" do
 
-          data = ::Yito::Model::Booking::Activity.all
+          data = if params[:all] and params[:all] == 'yes'
+                   ::Yito::Model::Booking::Activity.all(active: true)
+                 else
+                   ::Yito::Model::Booking::Activity.all(active: true, web_public: true)
+                 end
 
           status 200
           content_type :json

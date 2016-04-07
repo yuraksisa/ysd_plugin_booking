@@ -98,7 +98,11 @@
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.active.label%></label>
                 <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
-              </div>                
+              </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.web_public.label%></label>
+                <input type="checkbox" name="web_public" value="true" id="web_public" <%% if (entity && entity.web_public) { %>checked="checked"<%%}%>/>
+              </div>                                
               <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                 <div class="navigation-bar-crud-buttons">
                   <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
@@ -141,6 +145,11 @@
                 <input type="text" class="fieldcontrol" name="capacity" id="capacity" <%% if (entity){%>value="<%%=entity.capacity%>" <%%} else { %>value="0"<%%}%>/>
                 <p class="smaller_text less_contrast_text">Esta opción permite establecer la capacidad en personas del producto</p>                
               </div>  
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.alias.label%></label>
+                <input type="text" class="fieldcontrol" name="alias" id="alias" <%% if (entity){%>value="<%%=entity.alias%>" <%%} else { %>value="0"<%%}%>/>
+                <p class="smaller_text less_contrast_text">Esta opción permite establecer una url alternativa para visualizar el producto en el navegador</p>                
+              </div>               
               <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                 <div class="navigation-bar-crud-buttons">
                   <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>

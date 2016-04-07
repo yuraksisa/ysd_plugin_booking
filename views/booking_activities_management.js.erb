@@ -261,6 +261,15 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       }
 
+      if ($('#web_public').length > 0) {
+        if ($('#web_public').prop('checked')) {
+          data.web_public = true;
+        }
+        else {
+          data.web_public = false;
+        }
+      }      
+
       if ($('#capacities_on_multiple_prices').length > 0) {
         if ($('#capacities_on_multiple_prices').prop('checked')) {
           data.capacities_on_multiple_prices = true;

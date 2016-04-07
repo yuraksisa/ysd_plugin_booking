@@ -43,8 +43,11 @@ module Sinatra
         #
         app.get "/api/booking-categories" do
 
-          booking_categories = ::Yito::Model::Booking::BookingCategory.all
-
+          booking_categories = if params[:all] and params[:all] == 'yes'
+                                 ::Yito::Model::Booking::BookingCategory.all(active: true)
+                               else
+                                 ::Yito::Model::Booking::BookingCategory.all(active: true, web_public: true)
+                               end
           status 200
           content_type :json
           booking_categories.to_json

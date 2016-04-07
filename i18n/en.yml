@@ -457,7 +457,19 @@ booking_category_management:
     deposit:
       label: Deposit      
     active:
-      label: Active      
+      label: Active
+    web_public:
+      label: Public
+    alias:
+      label: Alias
+    create_rates:
+      label: Generate prices
+    create_calendar:
+      label: Generate calendar
+      description: >
+                   <p class="less_contrast_text">Asociando un calendario a una categoría puede configurar
+                   si desea impedir realizar reservas, habilitar los pagos, ...
+                   en fechas determinadas</p>                        
 booking_extra_management:
   title: Extras management
   description: Extras management
@@ -475,7 +487,11 @@ booking_extra_management:
     max_quantity:
       label: Max quantity 
     price:
-      label: Prices                 
+      label: Prices
+    active:
+      label: Active
+    web_public:
+      label: Public 
 booking_item_management:
   table:
     calendar: Calendar management

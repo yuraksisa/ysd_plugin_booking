@@ -238,6 +238,12 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       var html = tmpl('new_booking_line_script', {entity: entity});
       $("#dialogs_container").html(html);
+
+      var dataSourceModel = new RemoteDataSource('/api/booking-categories?all=yes',{'id':'code','description':'name'});
+      var valueModel = null; 
+      var selectorModel = new SelectSelector('new_booking_line_item_id',
+                                             dataSourceModel, valueModel, true );
+
       $('#create_booking_line_button').unbind('click');
       $('#create_booking_line_button').bind('click', function(){
 
@@ -296,6 +302,12 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       var html = tmpl('new_booking_extra_script', {entity: entity});
       $("#dialogs_container").html(html);
+
+      var dataSourceModel = new RemoteDataSource('/api/booking-extras?all=yes',{'id':'code','description':'name'});
+      var valueModel = null; 
+      var selectorModel = new SelectSelector('new_booking_extra_extra_id',
+                                             dataSourceModel, valueModel, true);
+
       $('#create_booking_extra_button').unbind('click');
       $('#create_booking_extra_button').bind('click', function(){
 

@@ -685,6 +685,10 @@ booking_category_management:
       label: Depósito
     active:
       label: Activo
+    web_public:
+      label: Público
+    alias:
+      label: Alias
     create_rates:
       label: Generar tarifas
     create_calendar:
@@ -712,7 +716,9 @@ booking_extra_management:
     price_definition:
       label: Precio  
     active:
-      label: Activo             
+      label: Activo
+    web_public:
+      label: Público 
 booking_item_management:
   table:
     calendar: Gestió del calendario
@@ -928,6 +934,8 @@ booking_activity_management:
     activity_date_date_to: Fecha fin
     activity_date_new_date: Nueva fecha     
     no_dates: No hay fechas
+    web_public: Pública
+    alias: Alias
     activity_date:
       done: Creada fecha de la actividad
 activity:

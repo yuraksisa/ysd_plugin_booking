@@ -1234,7 +1234,7 @@ module Sinatra
                   booking_extra.extra_cost = booking_extra.extra_unit_cost * booking_extra.quantity
                   booking_extra.save
                   # Update the booking (cost)
-                  extra_cost_increment = booking_extra.item_cost - old_booking_extra_extra_cost
+                  extra_cost_increment = booking_extra.extra_cost - old_booking_extra_extra_cost
                   total_cost_increment = extra_cost_increment
                   booking.extras_cost += extra_cost_increment
                   booking.total_cost += total_cost_increment

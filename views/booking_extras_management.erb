@@ -95,7 +95,10 @@
                   <label class="fieldtitle"><%= t.booking_extra_management.form.active.label%></label>
                   <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
                 </div>                         
-             
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.web_public.label%></label>
+                  <input type="checkbox" name="web_public" value="true" id="web_public" <%% if (entity && entity.web_public) { %>checked="checked"<%%}%>/>
+                </div>                
                 <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                   <div class="navigation-bar-crud-buttons">
                     <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>

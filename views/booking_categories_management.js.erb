@@ -124,7 +124,15 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           data.active = false;
         }
       }
-
+      
+      if ($('#web_public').length > 0) {
+        if ($('#web_public').prop('checked')) {
+          data.web_public = true;
+        }
+        else {
+          data.web_public = false;
+        }
+      } 
 
       return data;  
       

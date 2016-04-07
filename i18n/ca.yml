@@ -249,7 +249,17 @@ booking_category_management:
     deposit:
       label: Dipòsit     
     active:
-      label: Actiu          
+      label: Actiu
+    web_public:
+      label: Públic
+    create_rates:
+      label: Generar tarifes
+    create_calendar:
+      label: Generar calendari
+      description: >
+                   <p class="less_contrast_text">Asociando un calendario a una categoría puede configurar
+                   si desea impedir realizar reservas, habilitar los pagos, ...
+                   en fechas determinadas</p>                      
 booking_extra_management:
   title: Gestió d'extras
   description: Gestió d'extras
@@ -267,7 +277,11 @@ booking_extra_management:
     max_quantity:
       label: Quantitat màxima
     price_definition:
-      label: Preus                
+      label: Preus
+    active:
+      label: Actiu
+    web_public:
+      label: Públic                       
 booking_item_management:
   table:
     calendar: Gestió del calendari
