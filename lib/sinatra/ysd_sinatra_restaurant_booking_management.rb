@@ -25,9 +25,10 @@ module Sinatra
           	  SystemConfiguration::Variable.get_value('booking.max_adults_extra'))
             locals.store(:confirm_booking_url,
               '/api/restaurant/booking')
-            booking_js = catalog_template
-            locals.store(:booking_js, booking_js.text) 
-
+            #booking_js = catalog_template
+            #locals.store(:booking_js, booking_js.text) 
+            locals.store(:booking_js, '')
+            
             load_page('reserva-online-restaurant'.to_sym, :locals => locals)
 
           end

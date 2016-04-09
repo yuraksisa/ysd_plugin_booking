@@ -20,6 +20,18 @@ module Sinatra
         app.set :bookingcharge_gateway_return_nok, '/p/booking/payment-gateway-return/nok'
         
         #
+        # Get the booking script (with products and prices)
+        #
+        app.get '/booking_js.js/?*' do 
+          if booking_js = ContentManagerSystem::Template.find_by_name('booking_js')
+            content_type 'application/javascript'
+            booking_js.text
+          else
+            status 404
+          end
+        end
+
+        #
         # Shows a booking: To be managed by the customer
         #   
         app.get '/p/mybooking/:id/?*' do
@@ -80,11 +92,12 @@ module Sinatra
             locals.store(:promotion_codes_active, ::Yito::Model::Rates::PromotionCode.active?(Date.today))
             locals.store(:offer_discount, ::Yito::Model::Rates::Discount.active(Date.today).first)
 
-            booking_js = catalog_template(catalog)
-
-            if booking_js and not booking_js.text.empty?
-              locals.store(:booking_js, booking_js.text) 
-            end
+            #booking_js = catalog_template(catalog)
+            #
+            #if booking_js and not booking_js.text.empty?
+            #  locals.store(:booking_js, booking_js.text) 
+            #end
+            locals.store(:booking_js, '') 
                  
             load_page('reserva-online'.to_sym, options.merge(:locals => locals))
           

@@ -162,8 +162,8 @@
                 <input type="text" maxlength="12" id="from_price_offer" name="from_price_offer" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.from_price_offer).toFixed(2)%>" <%% } %>/>
               </div>
               <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_activity_management.form.alias.label%></label>
-                <input type="text" class="fieldcontrol" name="alias" id="alias" <%% if (entity){%>value="<%%=entity.alias%>" <%%} else { %>value="0"<%%}%>/>
+                <label class="fieldtitle"><%= t.booking_activity_management.form.alias%></label>
+                <input type="text" class="fieldcontrol" name="alias" id="alias" <%% if (entity){%>value="<%%=entity.alias%>" <%%} else { %>value=""<%%}%>/>
                 <p class="smaller_text less_contrast_text">Esta opción permite establecer una url alternativa para visualizar el producto en el navegador</p>                
               </div>                             
               <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">

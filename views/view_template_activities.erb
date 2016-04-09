@@ -1,0 +1,5 @@
+<% activities.each do |activity| %>
+
+  <%= CMSRenders::ActivityRender.new(activity, self, 'teaser').render({}, [:ignore_complements, :ignore_blocks]) %>
+
+<% end %>

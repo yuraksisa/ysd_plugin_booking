@@ -230,11 +230,11 @@ module Sinatra
             locals.store(:promotion_codes_active, ::Yito::Model::Rates::PromotionCode.active?(Date.today))
             locals.store(:offer_discount, ::Yito::Model::Rates::Discount.active(Date.today).first)
 
-            booking_js = catalog_template(catalog)
-
-            if booking_js and not booking_js.text.empty?
-              locals.store(:booking_js, booking_js.text) 
-            end
+            #booking_js = catalog_template(catalog)
+            #if booking_js and not booking_js.text.empty?
+            #  locals.store(:booking_js, booking_js.text) 
+            #end
+            locals.store(:booking_js, '')
                  
             load_page('reserva-online'.to_sym, :locals => locals)
           
@@ -258,11 +258,12 @@ module Sinatra
                 SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i) 
               locals.store(:booking, booking)
 
-              booking_js = catalog_template(catalog)
-
-              if booking_js and not booking_js.text.empty?
-                locals.store(:booking_js, booking_js.text) 
-              end
+              #booking_js = catalog_template(catalog)
+              #
+              #if booking_js and not booking_js.text.empty?
+              #  locals.store(:booking_js, booking_js.text) 
+              #end
+              locals.store(:booking_js, '')
 
               load_page(:booking_edit_pickupreturn, :locals => locals)
             else
