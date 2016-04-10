@@ -573,5 +573,12 @@ module Huasi
       %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
     end
 
+    #
+    # Ignore the following path prefix in breadcrumb
+    #
+    def ignore_path_prefix_breadcrumb(context={})
+      %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
+    end
+
   end
 end
