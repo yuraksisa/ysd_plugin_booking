@@ -1,4 +1,22 @@
              <div class="formrow">
+                <label class="fieldtitle bottom-margin">¿Funciona todo el año?</label>
+                <input type="radio" name="all_year" value="true" <%% if (entity.all_year){%>checked="checked"<%%}%>>Si</input>
+                <input type="radio" name="all_year" value="false" <%% if (!entity.all_year){%>checked="checked"<%%}%>>No</input>
+             </div>
+             <div id="periods" class="formrow top-margin" <%%if (entity.all_year){%>style="display:none"<%%}%>>
+               <div class="formrow">
+                 <label for="from" class="fieldtitle"><%= t.rate_season_management.form.from %> <span class="mandatoryfield">*</span></label>
+                 <select name="from_month" id="from_month"/>
+                 <select name="from_day" id="from_day"/>
+               </div>
+               <div class="formrow">
+                 <label for="to" class="fieldtitle"><%= t.rate_season_management.form.to %> <span class="mandatoryfield">*</span></label>
+                 <select name="to_month" id="to_month"/>
+                 <select name="to_day" id="to_day"/>
+               </div>
+             </div>
+
+             <div class="formrow top-margin-2lines top-space top-separator" style="margin-top: 1.5em; padding-top: 1.5em;">
                 <label class="fieldtitle bottom-margin">¿Funciona todos los días de la semana?</label>
                 <input type="radio" name="all_days" value="true" <%% if (entity.all_days){%>checked="checked"<%%}%>>Si</input>
                 <input type="radio" name="all_days" value="false" <%% if (!entity.all_days){%>checked="checked"<%%}%>>No</input>

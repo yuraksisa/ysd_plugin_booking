@@ -5,17 +5,21 @@ module Sinatra
 
       def load_activity
           @occupation = {total_occupation: 0, occupation_detail: {}}
+          p "activity_date_id: #{session[:activity_date_id]}"
+          p "date: #{session[:date]} turn: #{session[:turn]}"
           if session[:activity_date_id]
             @activity_date_id = session[:activity_date_id]
             if @activity_date = ::Yito::Model::Booking::ActivityDate.get(@activity_date_id)
               @occupation = @activity.occupation(@activity_date.date_from, @activity_date.time_from)
             end
-          elsif session[:date] or session[:time]
-            @date = session[:date]
-            @time = session[:turn]
+            p "activity_date_id: #{@activity_date_id}"
+          elsif session[:date] or session[:turn]
+            @date = session[:date] ? Date.strptime(session[:date],'%Y-%m-%d') : nil
+            @time = session[:turn] 
             if @date and !@date.nil? and @time and !@time.nil?
               @occupation = @activity.occupation(@date, @time)
             end
+            p "date: #{@date} time: #{@time}"
           end
 
           # Load or build the shopping cart
@@ -30,7 +34,7 @@ module Sinatra
           end       
 
           if @activity and @activity.active
-            load_page(:reservation_activity)
+            load_page(:reservation_activity, {cache: false})
           else
             status 404
           end
@@ -56,9 +60,7 @@ module Sinatra
           end
 
           # Query activity
-          p "path--: #{request.path_info}"
           if @activity = ::Yito::Model::Booking::Activity.first(:alias => request.path_info)
-            p "activity: #{request.path_info}"
             load_activity        
           else
             pass
@@ -268,7 +270,8 @@ module Sinatra
         # Show an activity
         #
         app.get '/p/activity/:id/?*' do
-
+          
+          p "Loading activity #{params[:id]}"
           @activity = ::Yito::Model::Booking::Activity.get(params[:id])
           load_activity
 
@@ -281,6 +284,8 @@ module Sinatra
 
           if @activity = ::Yito::Model::Booking::Activity.get(params[:activity_id]) and @activity.active
             
+            p "p_d: #{params[:date]} p_t: #{params[:turn]}"
+
             @occupation = {total_occupation: 0, occupation_detail: {}}
             if params[:activity_date_id]
               @activity_date_id = params[:activity_date_id]
@@ -288,7 +293,7 @@ module Sinatra
                 @occupation = @activity.occupation(@activity_date.date_from, @activity_date.time_from)
               end
               session[:activity_date_id] = @activity_date_id
-            elsif params[:date] or params[:time]
+            elsif params[:date] or params[:turn]
               @date = params[:date]
               @time = params[:turn]
               if @date and !@date.nil? and @time and !@time.nil?
@@ -309,7 +314,6 @@ module Sinatra
               @shopping_cart = ::Yito::Model::Order::ShoppingCart.new(:creation_date => DateTime.now)
             end       
 
-            #load_page(:reservation_activity)
             redirect "/p/activity/#{@activity.id}"
           else
             status 404

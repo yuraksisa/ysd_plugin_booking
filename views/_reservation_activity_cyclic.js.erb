@@ -137,6 +137,55 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
               minDate: new Date(),
               beforeShowDay: function(date){
                 // Make sure invalidates not available dates
+                <% unless @activity.all_year %>
+                if (((date.getMonth() < <%=@activity.from_month-1%>) ||
+                    (date.getMonth() == <%=@activity.from_month-1%> && 
+                      date.getDate() < <%=@activity.from_day%>)) || 
+                    (date.getMonth() > <%=@activity.to_month-1%> ||
+                     (date.getMonth() == <%=@activity.to_month-1%> && 
+                      date.getDate() > <%=@activity.to_day%>))) {
+                  return [false];
+                }
+                <% end %>
+                <% unless @activity.all_days %>
+                  switch (date.getDay()) {
+                     case 0:
+                       <% unless @activity.sundays %>
+                       return [false];
+                       <% end %>
+                       break;
+                     case 1:
+                       <% unless @activity.mondays %>
+                       return [false];
+                       <% end %>                     
+                       break;
+                     case 2:
+                       <% unless @activity.tuesdays %>
+                       return [false];
+                       <% end %>                     
+                       break;
+                     case 3:
+                       <% unless @activity.wednesdays %>
+                       return [false];
+                       <% end %>                     
+                       break;
+                     case 4:
+                       <% unless @activity.thursdays %>
+                       return [false];
+                       <% end %>                     
+                       break;
+                     case 5:
+                       <% unless @activity.fridays %>
+                       return [false];
+                       <% end %>                     
+                       break;
+                     case 6:
+                       <% unless @activity.saturdays %>
+                       return [false];
+                       <% end %>                   
+                       break;
+                  }
+                <% end %>
                 /*
                 if (date.getDate() == 14) {
                     return [false];

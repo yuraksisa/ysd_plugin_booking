@@ -17,6 +17,7 @@ booking_console_configuration:
   payment: Forma de Pago
   templates: Plantillas      
   create_rates: Generar tarifas web
+  admin: Administración web
 booking_create_rates:
   title: Generar tarifas
   description: > 

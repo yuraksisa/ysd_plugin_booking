@@ -71,7 +71,7 @@
     '/admin/calendar/timetables',
     '/admin/rates/seasons','/admin/booking/booking-places',
     '/admin/rates/season-defs','/admin/rates/factor-defs',
-    '/admin/rates/promotion-codes'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.configuration%></a>
+    '/admin/rates/promotion-codes','/admin'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.configuration%></a>
       <ul>
         <li><a href='/admin/booking/config/general'><%=t.booking_console_configuration.general_configuration%></a></li>
         <li><a href='/admin/booking/config/templates'><%=t.booking_console_configuration.templates%></a></li>
@@ -88,7 +88,8 @@
             <li><a href='/admin/rates/promotion-codes'><%=t.rates_console.promotion_codes%></a></li>     
             <li><a href='/admin/rates/discounts'><%=t.rates_console.discounts%></a></li>                   
           </ul>    
-        </li>                           
+        </li> 
+        <li><a href='/admin'><%=t.booking_console_configuration.admin%></a></li>                          
       </ul>
    </li>
             

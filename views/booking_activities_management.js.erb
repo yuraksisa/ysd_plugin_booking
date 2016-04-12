@@ -50,7 +50,34 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $('#date_from').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingActivitiesManager.view.formatDate(entity.date_from, 'dd/MM/yyyy')));
       $('#date_to').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
       $('#date_to').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingActivitiesManager.view.formatDate(entity.date_to, 'dd/MM/yyyy')));
+  
+      var days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
+      var daysDataSource = new MemoryDataSource(days);
+
+      var months = [{id:1,description:'<%=t.months.january%>'},
+                    {id:2,description:'<%=t.months.february%>'},
+                    {id:3,description:'<%=t.months.march%>'},
+                    {id:4,description:'<%=t.months.april%>'},
+                    {id:5,description:'<%=t.months.may%>'},
+                    {id:6,description:'<%=t.months.june%>'},
+                    {id:7,description:'<%=t.months.july%>'},
+                    {id:8,description:'<%=t.months.august%>'},
+                    {id:9,description:'<%=t.months.september%>'},
+                    {id:10,description:'<%=t.months.october%>'},
+                    {id:11,description:'<%=t.months.november%>'},
+                    {id:12,description:'<%=t.months.december%>'}];
+      var monthsDataSource = new MemoryDataSource(months);
       
+      var fromDayValue = (entity && entity.from_day)?entity.from_day:0;
+      var fromDayselect = new SelectSelector('from_day', daysDataSource, fromDayValue);
+      var fromMonthValue = (entity && entity.from_month)?entity.from_month:0;
+      var fromMonthselect = new SelectSelector('from_month', monthsDataSource, fromMonthValue);
+
+      var toDayValue = (entity && entity.to_day)?entity.to_day:0;
+      var toDayselect = new SelectSelector('to_day', daysDataSource, toDayValue);
+      var toMonthValue = (entity && entity.to_month)?entity.to_month:0;
+      var toMonthselect = new SelectSelector('to_month', monthsDataSource, toMonthValue);
+
       $('#new_activity_date').bind('click', function(){
         $('#new_activity_date_button').unbind('click');
         $('#activity_date_date_from').datepicker(
@@ -159,6 +186,14 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       });
 
+      $('input[name=all_year]').bind('change', function(event){
+        if ($('input[name=all_year]:checked').val() == 'true') {
+          $('#periods').hide();
+        }
+        else {
+          $('#periods').show();
+        }
+      });
 
       $('input[name=all_days]').bind('change', function(event){
         if ($('input[name=all_days]:checked').val() == 'true') {
