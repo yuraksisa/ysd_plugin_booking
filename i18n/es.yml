@@ -159,6 +159,7 @@ booking_console:
   report_reservations: Listado de reservas
   report_customers: Listado de clientes
   report_pickup_return: Entregas y recogidas
+  report_stock: Listado de stock
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas
@@ -953,3 +954,14 @@ activity:
   activity_not_available: Lo sentimos, no hay plazas disponibles. Por favor, consulte telefónicamente.
   activity_not_available_dates: Lo sentimos, no hay plazas disponibles en esta fecha. Por favor, consulte telefónicamente.
   activity_finished: Lo sentimos, la actividad ya se llevó a cabo. Por favor, consulte telefónicamente.                  
+report_stock:
+  title: Listado de stock
+  print: Imprimir
+  table:
+    category_code: Producto
+    reference: Referencia
+    stock_model: Modelo
+    stock_plate: Matrícula/Id.
+    characteristic_1: Caract. 1
+    characteristic_2: Caract. 2
+    characteristic_3: Caract. 3

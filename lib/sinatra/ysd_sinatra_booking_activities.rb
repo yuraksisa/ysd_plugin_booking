@@ -4,6 +4,9 @@ module Sinatra
     module BookingActivitiesHelper
 
       def load_activity
+   
+          p "load activity: #{session[:shopping_cart_id]}"
+
           @occupation = {total_occupation: 0, occupation_detail: {}}
           p "activity_date_id: #{session[:activity_date_id]}"
           p "date: #{session[:date]} turn: #{session[:turn]}"
@@ -97,54 +100,53 @@ module Sinatra
             
             # Load or build the shopping cart
             @shopping_cart = nil
-            
-            if session[:shopping_cart_id]
-              @shopping_cart = ::Yito::Model::Order::ShoppingCart.get(session[:shopping_cart_id])
-            end
 
-            unless @shopping_cart
-              @shopping_cart = ::Yito::Model::Order::ShoppingCart.new(:creation_date => DateTime.now)
-            end
+            ::Yito::Model::Order::ShoppingCart.transaction do 
+              begin
+                if session[:shopping_cart_id]
+                  @shopping_cart = ::Yito::Model::Order::ShoppingCart.get(session[:shopping_cart_id])
+                end
+                unless @shopping_cart
+                  @shopping_cart = ::Yito::Model::Order::ShoppingCart.create(:creation_date => DateTime.now)
+                end
+                # Appends items
+                if !quantity_rate_1.nil? and quantity_rate_1 > 0
+                  @shopping_cart.add_item(date, 
+                                          time, 
+                                          activity.code, 
+                                          activity_name,
+                                          1,
+                                          quantity_rate_1,
+                                          activity.rates(date)[1][1],
+                                          activity.price_1_description)
+                end
 
-            # Appends items
-            if !quantity_rate_1.nil? and quantity_rate_1 > 0
-              @shopping_cart.add_item(date, 
-                                      time, 
-                                      activity.code, 
-                                      activity_name,
-                                      1,
-                                      quantity_rate_1,
-                                      activity.rates(date)[1][1],
-                                      activity.price_1_description)
-            end
+                if !quantity_rate_2.nil? and quantity_rate_2 > 0
+                  @shopping_cart.add_item(date, 
+                                          time, 
+                                          activity.code, 
+                                          activity_name,
+                                          2,
+                                          quantity_rate_2,
+                                          activity.rates(date)[2][1],
+                                          activity.price_2_description) 
+                end
 
-            if !quantity_rate_2.nil? and quantity_rate_2 > 0
-              @shopping_cart.add_item(date, 
-                                      time, 
-                                      activity.code, 
-                                      activity_name,
-                                      2,
-                                      quantity_rate_2,
-                                      activity.rates(date)[2][1],
-                                      activity.price_2_description) 
-            end
+                if !quantity_rate_3.nil? and quantity_rate_3 > 0
+                  @shopping_cart.add_item(date, 
+                                          time, 
+                                          activity.code, 
+                                          activity_name,
+                                          3,
+                                          quantity_rate_3,
+                                          activity.rates(date)[3][1],
+                                          activity.price_3_description)               
+                end
+              rescue DataMapper::SaveFailureError => error
+                p "Error adding item(s) to shopping_cart. #{@shopping_cart.inspect} #{@shopping_cart.errors.inspect}"
+                raise error
+              end
 
-            if !quantity_rate_3.nil? and quantity_rate_3 > 0
-              @shopping_cart.add_item(date, 
-                                      time, 
-                                      activity.code, 
-                                      activity_name,
-                                      3,
-                                      quantity_rate_3,
-                                      activity.rates(date)[3][1],
-                                      activity.price_3_description)               
-            end
-
-            begin
-              @shopping_cart.save
-            rescue DataMapper::SaveFailureError => error
-              p "Error saving shopping_cart. #{@shopping_cart.inspect} #{@shopping_cart.errors.inspect}"
-              raise error
             end
 
             if session.has_key?(:shopping_cart_id) 
@@ -167,9 +169,16 @@ module Sinatra
         app.post '/p/activity/remove-to-shopping-cart' do  
         
           if shopping_cart_item = ::Yito::Model::Order::ShoppingCartItem.get(params[:id])
-            shopping_cart_item.shopping_cart.remove_item(shopping_cart_item.date,
-                                                         shopping_cart_item.time,
-                                                         shopping_cart_item.item_id)
+            shopping_cart_item.transaction do
+              begin
+                shopping_cart_item.shopping_cart.remove_item(shopping_cart_item.date,
+                                                             shopping_cart_item.time,
+                                                             shopping_cart_item.item_id)
+              rescue DataMapper::SaveFailureError => error
+                p "Error removing item from shopping cart. #{@shopping_cart.inspect} #{@shopping_cart.errors.inspect}"
+                raise error
+              end
+            end              
             flash[:notice] = 'Producto eliminado del carrito'
           end
 
@@ -200,22 +209,30 @@ module Sinatra
 
           if session[:shopping_cart_id]
             @shopping_cart = ::Yito::Model::Order::ShoppingCart.get(session[:shopping_cart_id])
-            if @shopping_cart 
-              @order = ::Yito::Model::Order::Order.create_from_shopping_cart(@shopping_cart)
-              @order.comments = params[:comments]
-              @order.customer_name = params[:customer_name]
-              @order.customer_surname = params[:customer_surname]
-              @order.customer_email = params[:customer_email]
-              @order.customer_phone = params[:customer_phone]
-              @order.customer_language = session[:locale] || 'es'
-              @order.init_user_agent_data(request.env["HTTP_USER_AGENT"])
-              allow_deposit_payment = SystemConfiguration::Variable.get_value('order.allow_deposit_payment','false').to_bool
-              deposit = SystemConfiguration::Variable.get_value('order.deposit').to_i
-              if allow_deposit_payment and deposit > 0
-                @order.reservation_amount = (@order.total_cost * deposit / 100).round
+            if @shopping_cart              
+              @shopping_cart.transaction do 
+                begin
+                  @order = ::Yito::Model::Order::Order.create_from_shopping_cart(@shopping_cart)
+                  @order.comments = params[:comments]
+                  @order.customer_name = params[:customer_name]
+                  @order.customer_surname = params[:customer_surname]
+                  @order.customer_email = params[:customer_email]
+                  @order.customer_phone = params[:customer_phone]
+                  @order.customer_language = session[:locale] || 'es'
+                  @order.init_user_agent_data(request.env["HTTP_USER_AGENT"])
+                  allow_deposit_payment = SystemConfiguration::Variable.get_value('order.allow_deposit_payment','false').to_bool
+                  deposit = SystemConfiguration::Variable.get_value('order.deposit').to_i
+                  if allow_deposit_payment and deposit > 0
+                    @order.reservation_amount = (@order.total_cost * deposit / 100).round
+                  end
+                  @order.save
+                  @shopping_cart.destroy
+                rescue DataMapper::SaveFailureError => error
+                  p "Error creating order from shopping cart. #{@order.inspect} #{@order.errors.inspect}"
+                  raise error
+                end               
               end
-              @order.save
-              @shopping_cart.destroy
+
               if params[:pay_now].to_bool
                 @order.notify_manager_pay_now
                 @order.notify_request_to_customer_pay_now  

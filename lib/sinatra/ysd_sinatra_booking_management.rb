@@ -532,6 +532,31 @@ module Sinatra
           load_page(:report_charges)
 
         end
+        
+        #
+        # Stock report (pdf)
+        #
+        app.get '/admin/booking/reports/stock-pdf', :allowed_usergroups => ['booking_manager'] do
+
+          content_type 'application/pdf'
+          pdf = ::Yito::Model::Booking::Pdf::Stock.new().build.render   
+
+        end 
+
+        #
+        # Stock report
+        #
+        app.get '/admin/booking/reports/stock/?*', :allowed_usergroups => ['booking_manager'] do
+
+          @stocks = ::Yito::Model::Booking::BookingItem.all(
+               :conditions => {:active => true},
+               :order => [:category_code, :reference, :stock_model, :stock_plate])
+          
+          load_page(:report_stock)          
+
+        end
+
+        # ------------------------------------------------------------------
 
       end
 

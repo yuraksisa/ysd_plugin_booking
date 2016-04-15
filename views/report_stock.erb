@@ -1,0 +1,47 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.report_stock.title%></h2>
+  <div class="form-button" style="float: right">
+     <a id="print_link" href="/admin/booking/reports/stock-pdf" target="_blank"><%=t.report_stock.print%></a>
+  </div>   
+</div>
+<div class="admin_content_wrapper">
+  <div>
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell left_text" scope="col"><%= t.report_stock.table.category_code %></th>
+            <th class="table-cell left_text" scope="col"><%= t.report_stock.table.reference %></th>
+            <th class="table-cell left_text" scope="col"><%= t.report_stock.table.stock_model %></th>
+            <th class="table-cell left_text" scope="col"><%= t.report_stock.table.stock_plate %></th> 
+            <th class="table-cell left_text" scope="col"><%= t.report_stock.table.characteristic_1 %></th>
+            <th class="table-cell left_text" scope="col"><%= t.report_stock.table.characteristic_2 %></th>
+            <th class="table-cell left_text" scope="col"><%= t.report_stock.table.characteristic_3 %></th>
+          </tr>
+        </thead>
+        <tbody>    
+          <% @stocks.each do |stock| %>  
+          <tr class="table-row">
+            <td class="table-cell"><%= stock.category_code %></td>
+            <td class="table-cell"><%= stock.reference %></td>
+            <td class="table-cell"><%= stock.stock_model %></td>
+            <td class="table-cell"><%= stock.stock_plate %></td>
+            <td class="table-cell"><%= stock.characteristic_1 %></td>
+            <td class="table-cell"><%= stock.characteristic_2 %></td>
+            <td class="table-cell"><%= stock.characteristic_3 %></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+  </div>
+</div>

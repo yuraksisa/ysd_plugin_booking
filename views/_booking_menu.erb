@@ -16,17 +16,23 @@
 
 <div id="cssmenu" class="booking_menu admin_menu smaller_text all-space">
   <ul>
-   <li class='<%if ['/admin/booking/catalog','/admin/booking/booking-categories','/admin/booking/booking-items','/admin/booking/booking-extras', '/admin/rates/adjust-prices','/admin/booking/activities'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.products%></a>
+   <li class='<%if ['/admin/booking/catalog','/admin/booking/booking-categories','/admin/booking/booking-items','/admin/booking/booking-extras', '/admin/rates/adjust-prices','/admin/booking/activities','/admin/booking/reports/stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.products%></a>
       <ul>
+        <% if booking_renting %>
         <li><a href='/admin/booking/booking-categories'><%=t.booking_console.categories%></a></li>
         <li><a href='/admin/booking/booking-extras'><%=t.booking_console.extras%></a></li>
         <li><a href='/admin/booking/booking-items'><%=t.booking_console.items%></a></li>
+        <% end %>
         <% if booking_activities %>
         <li><a href='/admin/booking/activities'><%=t.booking_console.activities%></a></li>                                
-        <% end %>       
-        <li><a href='/admin/rates/adjust-prices'><%=t.booking_console.adjust_prices%></a></li>                        
+        <% end %>
+        <% if booking_renting %>       
+        <li><a href='/admin/rates/adjust-prices'><%=t.booking_console.adjust_prices%></a></li>
+        <li><a href='/admin/booking/reports/stock'><%=t.booking_console.report_stock%></a></li>
+        <% end %>
       </ul>    
    </li>    
+   <% if booking_renting %>
    <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning','/admin/booking/monthly-occupation','/admin/booking/reports/pickup-return','/admin/booking/reports/reservations','/admin/booking/reports/customers'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
       <ul>
         <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>           
@@ -38,6 +44,7 @@
         <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>                           
       </ul>    
    </li>   
+   <% end %>
    <% if booking_activities %>
    <li class='<%if ['/admin/order/orders','/admin/booking/activities-occupation','/admin/booking/activities-summary'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.activity_bookings%></a>
       <ul>   

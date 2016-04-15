@@ -71,15 +71,48 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        $('#additional_driver_2_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_date, 'dd/MM/yyyy')));
 
        // Configure resources combo 
-       var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
-    
+
        for (var lineIdx=0; lineIdx < entity.booking_lines.length; lineIdx++) { 
          for (var resourceIdx=0; resourceIdx < entity.booking_lines[lineIdx].booking_line_resources.length; resourceIdx++) { 
            var valueModel = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].booking_item_reference; 
+           var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference',
+                                                      'description':'reference'});
+           dataSourceModel.addListener('data_available', function(event){
+             var exists = false;
+             for (var idx=0;idx<event.data.length;idx++) {
+                if (event.data['reference'] == valueModel) {
+                  exists = true;
+                  break;
+                }
+             }
+             if (!exists) {
+               event.data.push({'id':valueModel, 'description': valueModel});
+             }
+           });
            var selectorModel = new SelectSelector('booking_item_reference_'+entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id,
                                                   dataSourceModel, valueModel, true );
          }
        }
+
+       // Improve height and weights (including current value if not in list)
+       
+       for (var lineIdx=0; lineIdx < entity.booking_lines.length; lineIdx++) { 
+         for (var resourceIdx=0; resourceIdx < entity.booking_lines[lineIdx].booking_line_resources.length; resourceIdx++) { 
+           var heightValue = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_height;
+           if (heightValue != null) {
+             if ($('select[name=customer_height][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+'] option[value="'+heightValue+'""]').length == 0) {
+               $('select[name=customer_height][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+']').append('<option value="'+heightValue+'" selected="selected">'+heightValue+'</option>');
+             }
+           }
+           var weightValue = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_weight;
+           if (weightValue != null) {
+             if ($('select[name=customer_weight][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+'] option[value="'+weightValue+'""]').length == 0) {
+               $('select[name=customer_weight][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+']').append('<option value="'+weightValue+'" selected="selected">'+weightValue+'</option>');
+             }           
+           }
+         }
+       }
+
               
        $.ajax({
                type: 'GET',
