@@ -4,25 +4,19 @@ module Sinatra
     module BookingActivitiesHelper
 
       def load_activity
-   
-          p "load activity: #{session[:shopping_cart_id]}"
 
           @occupation = {total_occupation: 0, occupation_detail: {}}
-          p "activity_date_id: #{session[:activity_date_id]}"
-          p "date: #{session[:date]} turn: #{session[:turn]}"
           if session[:activity_date_id]
             @activity_date_id = session[:activity_date_id]
             if @activity_date = ::Yito::Model::Booking::ActivityDate.get(@activity_date_id)
               @occupation = @activity.occupation(@activity_date.date_from, @activity_date.time_from)
             end
-            p "activity_date_id: #{@activity_date_id}"
           elsif session[:date] or session[:turn]
             @date = session[:date] ? Date.strptime(session[:date],'%Y-%m-%d') : nil
             @time = session[:turn] 
             if @date and !@date.nil? and @time and !@time.nil?
               @occupation = @activity.occupation(@date, @time)
             end
-            p "date: #{@date} time: #{@time}"
           end
 
           # Load or build the shopping cart
@@ -106,7 +100,7 @@ module Sinatra
                 if session[:shopping_cart_id]
                   @shopping_cart = ::Yito::Model::Order::ShoppingCart.get(session[:shopping_cart_id])
                 end
-                unless @shopping_cart
+                if @shopping_cart.nil?
                   @shopping_cart = ::Yito::Model::Order::ShoppingCart.create(:creation_date => DateTime.now)
                 end
                 # Appends items
