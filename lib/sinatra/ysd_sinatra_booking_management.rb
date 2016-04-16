@@ -503,6 +503,35 @@ module Sinatra
         end 
 
         #
+        # Charges report (pdf)
+        #
+        app.get '/admin/booking/reports/charges-pdf/?*', :allowed_usergroups => ['booking_manager'] do 
+          
+          year = Date.today.year
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("charges from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("charges from date not valid #{params[:to]}")
+            end
+          end
+
+          content_type 'application/pdf'
+          pdf = ::Yito::Model::Booking::Pdf::Charges.new(date_from, date_to).build.render          
+        end  
+
+        #
         # Charges report (html)
         #
         app.get '/admin/booking/reports/charges/?*', :allowed_usergroups => ['booking_manager'] do

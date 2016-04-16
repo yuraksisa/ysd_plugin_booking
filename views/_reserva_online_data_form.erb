@@ -66,13 +66,13 @@
 	            </div>
 	            <div class="formrow">
 	              <label id="label_driver_document" for="booking[driver_document_id]" class="fieldtitle"><%=t.new_driving_booking.driver_nif.label%></label>
-	              <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol" maxlength="15" placeholder="<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver_nif.placeholder : t.new_booking.contact_nif.placeholder%>" <%unless booking.nil?%>value="<%=booking.driver_document_id%>"<%end%>/>
+	              <input type="text" name="booking[driver_document_id]" id="booking[driver_document_id]" class="fieldcontrol" maxlength="50" placeholder="<%=booking_item_family.driver_literal == :driver ? t.new_driving_booking.driver_nif.placeholder : t.new_booking.contact_nif.placeholder%>" <%unless booking.nil?%>value="<%=booking.driver_document_id%>"<%end%>/>
 	            </div>	        
 	            <% if booking_item_family.driver_license %>
                 <legend class="legend-second-level top-margin"><%=t.new_driving_booking.driver_license%></legend>
 	            <div class="formrow">
 	              <label id="label_driver_driving_license_number" for="booking[driver_driving_license_number]" class="fieldtitle"><%=t.new_driving_booking.driver_license_number.label%></label>
-	              <input type="text" name="booking[driver_driving_license_number]" id="booking[driver_driving_license_number]" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_driving_booking.driver_license_number.placeholder%>" <%unless booking.nil?%>value="<%=booking.driver_driving_license_number%>"<%end%>/>
+	              <input type="text" name="booking[driver_driving_license_number]" id="booking[driver_driving_license_number]" class="fieldcontrol" maxlength="50" placeholder="<%=t.new_driving_booking.driver_license_number.placeholder%>" <%unless booking.nil?%>value="<%=booking.driver_driving_license_number%>"<%end%>/>
 	            </div>
 	            <div class="formrow">
   	              <label id="label_driver_driving_license_date" for="booking[driver_driving_license_date]" class="fieldtitle"><%=t.new_driving_booking.driver_license_date.label%></label>

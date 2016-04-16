@@ -11,7 +11,7 @@
 </style>
 <div class="top-navigation-bar">
   <h2 class="entity-title">Listado de cobros</h2>
-  <div class="form-button" style="float: right; display: none">
+  <div class="form-button" style="float: right">
      <a id="print_link" href="/admin/booking/reports/charges-pdf" target="_blank">Imprimir</a>
   </div>  
 </div>
@@ -74,7 +74,7 @@
           <td class="table-cell"><%=charge.date.strftime('%Y-%m-%d %H:%M:%S')%> </td>
           <td class="table-cell"><%=charge.payment_method_id%></td>
           <td class="table-cell right_text"><%="%.2f" % charge.amount%></td>
-          <td class="table-cell"><%=charge.source%> <%=charge.source_id%></td>
+          <td class="table-cell"><%=charge.source_link%></td>
           <td class="table-cell"><%=charge.customer_name%> <%=charge.customer_surname%></td>
         </tr>
     <% last_month = charge.date.month %>
