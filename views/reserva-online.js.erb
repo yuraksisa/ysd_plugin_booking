@@ -1051,12 +1051,18 @@
                                               document.getElementById('booking[driver_date_of_birth_month]'),
                                               document.getElementById('booking[driver_date_of_birth_year]'), 
                                               document.getElementById('booking[driver_date_of_birth]'));
+           <%if !booking.nil? and !booking.driver_date_of_birth.nil?%>
+           dataControlDateOfBirth.setDate(new Date('<%="#{booking.driver_date_of_birth.strftime("%Y-%m-%d")}"%>'));
+           <%end%>
          }
          if (document.getElementById('booking[driver_driving_license_date_day]')) {
            var dataControlLicenseDate = new DateControl(document.getElementById('booking[driver_driving_license_date_day]'), 
                                               document.getElementById('booking[driver_driving_license_date_month]'),
                                               document.getElementById('booking[driver_driving_license_date_year]'), 
                                               document.getElementById('booking[driver_driving_license_date]'));
+           <%if !booking.nil? and !booking.driver_driving_license_date.nil?%>
+           dataControlLicenseDate.setDate(new Date('<%="#{booking.driver_driving_license_date.strftime("%Y-%m-%d")}"%>'));
+           <%end%>
          }
          
          $('#datefrom').bind('change', function() {
