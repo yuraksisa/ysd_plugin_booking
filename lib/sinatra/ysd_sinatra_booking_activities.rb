@@ -282,7 +282,6 @@ module Sinatra
         #
         app.get '/p/activity/:id/?*' do
           
-          p "Loading activity #{params[:id]}"
           @activity = ::Yito::Model::Booking::Activity.get(params[:id])
           load_activity
 
@@ -295,8 +294,6 @@ module Sinatra
 
           if @activity = ::Yito::Model::Booking::Activity.get(params[:activity_id]) and @activity.active
             
-            p "p_d: #{params[:date]} p_t: #{params[:turn]}"
-
             @occupation = {total_occupation: 0, occupation_detail: {}}
             if params[:activity_date_id]
               @activity_date_id = params[:activity_date_id]
@@ -324,8 +321,13 @@ module Sinatra
             unless @shopping_cart
               @shopping_cart = ::Yito::Model::Order::ShoppingCart.new(:creation_date => DateTime.now)
             end       
-
-            redirect "/p/activity/#{@activity.id}"
+            
+            if !@activity.alias.nil? and !@activity.alias.empty?
+              redirect @activity.alias
+            else
+              redirect "/p/activity/#{@activity.id}"
+            end
+            
           else
             status 404
           end
