@@ -332,6 +332,35 @@ module Sinatra
 
         # ------------------ Occupation ---------------------
 
+        app.get '/admin/booking/period-occupation', :allowed_usergroups => ['booking_manager','staff'] do
+
+          date_from = Date.today
+          date_to = Date.today + 7
+
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:to]}")
+            end
+          end          
+
+          @summary, @data = BookingDataSystem::Booking.max_period_occupation(date_from.to_date, date_to.to_date)
+          
+          p "data: #{@data.inspect}"
+          
+          load_page :period_occupation
+
+        end
+
         #
         # Get the product occupation for a month
         #
@@ -471,10 +500,30 @@ module Sinatra
             end
           end
 
-          @reservations = BookingDataSystem::Booking.all(
-             :conditions => {:date_from.gte => date_from,
-                             :date_to.lte => date_to,
-                             :status.not => :cancelled},
+          condition = Conditions::JoinComparison.new('$and',
+           [Conditions::Comparison.new(:status, '$ne', :cancelled),
+            Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new(:date_from,'$lte', date_from),
+                  Conditions::Comparison.new(:date_to,'$gte', date_from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', date_to),
+                  Conditions::Comparison.new(:date_to,'$gte', date_to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', date_from),
+                  Conditions::Comparison.new(:date_to,'$gte', date_to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from, '$gte', date_from),
+                  Conditions::Comparison.new(:date_to, '$lte', date_to)])               
+              ]
+            ),
+            ]
+          )
+
+          @reservations = condition.build_datamapper(BookingDataSystem::Booking).all(
              :order => [:date_from, :time_from])
           locals = {}
           locals.store(:booking_reservation_starts_with,

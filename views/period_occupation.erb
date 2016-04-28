@@ -1,0 +1,97 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.period_occupation.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="report_charges_form" action="/admin/booking/period-occupation" method="get">
+        <div class="formrow">
+          <div style="display: inline-block">
+            <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <% if @data.empty? %>
+      <div class="all-border-solid-light top-margin-1line">
+         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+      </div>
+    <% else %>    
+    <h3><%=t.period_occupation.summary%></h3>
+    <table id="table" class="table">
+      <thead class="table-header">
+        <tr>
+          <% @summary.keys.each do |product| %>
+            <th class="table-cell" scope="col" style="width:1em"><%=product%></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <% @summary.values.each do |value| %>
+            <td class="table-cell centered_text" scope="col" style="<%if value[:occupation]<value[:stock]%>background:green; color:white<%else%>background:red; color: white<%end%>"><%=value[:occupation]%>/<%=value[:stock]%></td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3><%=t.period_occupation.detail%></h3>
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width: 15%">Fecha</th>
+            <th class="table-cell" scope="col" style="width: 85%">Ocupación</th>
+          </tr>
+        </thead>
+        <tbody>      
+        <% @data.each do |date, detail| %>  
+        <tr class="table-row">
+          <td class="table-cell centered_text"><%=date%></td>
+          <td class="table-cell">
+
+              <table id="table" class="table">
+                <thead class="table-header">
+                  <tr>
+                    <% detail.keys.each do |product| %>
+                    <th class="table-cell" scope="col" style="width:1em"><%=product%></th>
+                    <% end %>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <% detail.values.each do |value| %>
+                    <td class="table-cell centered_text" scope="col"><%=value[:occupation]%>/<%=value[:stock]%></td>
+                    <% end %>
+                  </tr>
+                </tbody>
+              </table>
+
+          </td>
+        </tr>
+        <% end %>  
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

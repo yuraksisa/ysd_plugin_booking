@@ -139,7 +139,8 @@ booking_console:
   prices: Precios
   reservations: Reservas
   planning: Planning 
-  monthly_occupation: Ocupación mensual   
+  monthly_occupation: Ocupación mensual
+  check_availability: Disponibilidad   
   period: Período
   requested: Solicitudes
   confirmed: Confirmadas
@@ -965,3 +966,7 @@ report_stock:
     characteristic_1: Caract. 1
     characteristic_2: Caract. 2
     characteristic_3: Caract. 3
+period_occupation:
+  title: Comprobar disponibilidad
+  summary: Resumen
+  detail: Detalle
