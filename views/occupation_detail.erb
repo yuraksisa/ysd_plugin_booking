@@ -1,0 +1,46 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="admin_content_wrapper all-space">
+  <div>
+    <% if @reservations.empty? %>
+    <div class="all-border-solid-light top-margin-1line">
+         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+    </div>
+    <% else %>    
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:1.2em">Localizador</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
+            <th class="table-cell" scope="col" style="width:3.5em">Cliente</th>
+            <th class="table-cell" scope="col" style="width:4.5em">Producto</th>
+          </tr>
+        </thead>
+        <tbody>      
+        <% @reservations.each do |reservation| %>  
+        <tr class="table-row">
+          <td class="table-cell right_text"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
+          <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_from%><% end %></td>
+          <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_to%><%end%></td>
+          <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
+          <td class="table-cell"><%=reservation.item_id%> - <%=reservation.booking_item_reference%></td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <div class="all-space">
+        <p class="right_text"><%=t.occupation_detail.summary(@reservations.size)%></p>
+      </div>
+    <% end %>
+  </div>
+</div>

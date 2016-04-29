@@ -1,0 +1,60 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.report_pending_confirmation.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <div>
+    <% if @reservations.empty? %>
+    <div class="all-border-solid-light top-margin-1line">
+         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+    </div>
+    <% end %>    
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:2em">Fecha recepción</th>
+            <th class="table-cell" scope="col" style="width:1.2em">Localizador</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
+            <th class="table-cell" scope="col" style="width:3.5em">Cliente</th>
+            <th class="table-cell" scope="col" style="width:2em">Teléfono</th>
+            <th class="table-cell" scope="col" style="width:4.5em">Email</th>
+            <th class="table-cell" scope="col" style="width:1em">Productos</th>
+            <th class="table-cell" scope="col" style="width:1em">Total</th>             
+          </tr>
+        </thead>
+        <tbody>      
+        <% @reservations.each do |reservation| %>  
+        <tr class="table-row">
+          <td class="table-cell"><%=reservation.creation_date.strftime('%Y-%m-%d %H:%M')%></td>          
+          <td class="table-cell right_text"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
+          <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_from%><% end %></td>
+          <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_to%><%end%></td>
+          <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
+          <td class="table-cell"><%=reservation.customer_phone%> <%=reservation.customer_mobile_phone%></td>
+          <td class="table-cell"><%=reservation.customer_email%></td>
+          <td class="table-cell">
+            <% reservation.booking_lines.each do |booking_line| %>
+              <div><%= booking_line.item_id %><%if booking_reservation_starts_with == :shopcart%>: <%=booking_line.quantity%><%end%></div>
+            <% end %>
+          </td>
+          <td class="table-cell right_text"><%="%.2f" % reservation.total_cost%></td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <div class="all-space">
+        <p class="right_text"><%=t.report_pending_confirmation.summary(@reservations.size)%></p>
+      </div>
+  </div>
+</div>

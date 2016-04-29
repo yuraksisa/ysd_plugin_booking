@@ -80,13 +80,12 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <% detail.values.each do |value| %>
-                    <td class="table-cell centered_text" scope="col"><%=value[:occupation]%>/<%=value[:stock]%></td>
+                    <% detail.each do |product, value| %>
+                    <td class="table-cell centered_text" scope="col"><span class="occupation-detail" <% if value[:occupation] > 0 %> data-url="/admin/booking/occupation-detail?date=<%=date%>&category=<%=product%>&layout=no" style="cursor: hand; cursor: pointer; font-weight: bold"<%end%> ><%=value[:occupation]%>/<%=value[:stock]%></span></td>
                     <% end %>
                   </tr>
                 </tbody>
               </table>
-
           </td>
         </tr>
         <% end %>  
@@ -95,3 +94,5 @@
     <% end %>
   </div>
 </div>
+    <div id="occupation-detail" class="all-space" style="width:800px; height: 250px; background: white; overflow-y: scroll">
+    </div>

@@ -158,6 +158,7 @@ booking_console:
   extras_billing: Facturación extras  
   information_requests: Solicitudes información
   report_reservations: Listado de reservas
+  report_pending_confirmation: Pendientes confirmación
   report_customers: Listado de clientes
   report_pickup_return: Entregas y recogidas
   report_stock: Listado de stock
@@ -966,7 +967,12 @@ report_stock:
     characteristic_1: Caract. 1
     characteristic_2: Caract. 2
     characteristic_3: Caract. 3
+report_pending_confirmation:
+  title: Reservas pendientes de confirmación
+  summary: Hay <strong>%1</strong> reservas pendientes de confirmación
 period_occupation:
   title: Comprobar disponibilidad
   summary: Resumen
   detail: Detalle
+occupation_detail: 
+  summary: Hay <strong>%1</strong> productos reservados 

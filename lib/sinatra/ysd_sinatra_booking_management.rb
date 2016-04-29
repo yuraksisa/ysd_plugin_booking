@@ -19,7 +19,7 @@ module Sinatra
         # Booking dashboard
         #
         app.get '/admin/booking/dashboard', :allowed_usergroups => ['booking_manager', 'staff'] do
-          today = Date.today
+          @today = Date.today
           @year = DateTime.now.year
           @received_reservations = BookingDataSystem::Booking.count_received_reservations(@year)
           @pending_confirmation_reservations = BookingDataSystem::Booking.count_pending_confirmation_reservations(@year)
@@ -28,9 +28,9 @@ module Sinatra
           @reservations_by_category = BookingDataSystem::Booking.reservations_by_category(@year)
           @reservations_by_status = BookingDataSystem::Booking.reservations_by_status(@year)
           @last_30_days_reservations = BookingDataSystem::Booking.last_30_days_reservations
-          @pickup_today = BookingDataSystem::Booking.count_pickup(today)
-          @transit_today = BookingDataSystem::Booking.count_transit(today)
-          @delivery_today = BookingDataSystem::Booking.count_delivery(today)
+          @pickup_today = BookingDataSystem::Booking.count_pickup(@today)
+          @transit_today = BookingDataSystem::Booking.count_transit(@today)
+          @delivery_today = BookingDataSystem::Booking.count_delivery(@today)
           @product_total_billing = BookingDataSystem::Booking.products_billing_total(@year) || 0
           @extras_total_billing = BookingDataSystem::Booking.extras_billing_total(@year) || 0
           @product_total_cost = BookingDataSystem::Booking.stock_cost_total || 0
@@ -354,12 +354,50 @@ module Sinatra
           end          
 
           @summary, @data = BookingDataSystem::Booking.max_period_occupation(date_from.to_date, date_to.to_date)
-          
-          p "data: #{@data.inspect}"
-          
+                    
           load_page :period_occupation
 
         end
+        
+        #
+        # Occupation detail (date and category)
+        #
+        app.get '/admin/booking/occupation-detail', :allowed_usergroups => ['booking_manager','staff'] do
+
+          locals = {}
+          locals.store(:booking_reservation_starts_with,
+              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
+          if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
+            product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
+            locals.store(:product_family, product_family)
+          end
+
+          date = Date.today
+          category = ::Yito::Model::Booking::BookingCategory.first
+          category_code = category ? category.code : nil
+
+          if params[:date]
+            begin
+              date = DateTime.strptime(params[:date], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:date]}")
+            end
+          end
+
+          if params[:category]
+            category_code = params[:category]
+          end
+          
+          options = {}
+          if params[:layout]
+            options.store(:layout, params[:layout])
+          end
+          options.store(:locals, locals)
+
+          @reservations = BookingDataSystem::Booking.occupation_detail(date, category_code)
+          load_page :occupation_detail, options
+
+        end  
 
         #
         # Get the product occupation for a month
@@ -406,6 +444,27 @@ module Sinatra
         end         
 
         # ------------------- Reports ---------------------
+
+        #
+        # Pending of confirmation
+        #
+        app.get '/admin/booking/reports/pending-confirmation', :allowed_usergroups => ['booking_manager', 'staff'] do
+         
+          locals = {}
+          locals.store(:booking_reservation_starts_with,
+              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
+          if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
+            product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
+            locals.store(:product_family, product_family)
+          end
+
+          @reservations = BookingDataSystem::Booking.all(
+            :conditions => {:status => [:pending_confirmation], :date_from.gte => Date.today.to_date},
+            :order => :creation_date.desc)
+
+          load_page(:report_pending_confirmation, :locals => locals)
+
+        end 
 
         #
         # Pickup and return

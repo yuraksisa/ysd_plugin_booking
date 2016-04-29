@@ -1,5 +1,5 @@
-require(['jquery', 
-         'jquery.ui', 'jquery.ui.datepicker-es','datejs'], function($) {
+require(['YSDGui','jquery', 
+         'jquery.ui', 'jquery.ui.datepicker-es','datejs'], function(YSDGui, $) {
 
 
   reservationsModel = {
@@ -86,6 +86,13 @@ require(['jquery',
 
          $('#search').bind('click', function() {
            reservationsController.searchButtonClick();
+         });
+
+         $('.occupation-detail').bind('click', function() {
+           if ($(this).attr('data-url')) {
+             $('#occupation-detail').load($(this).attr('data-url') + ' .admin_content_wrapper');
+             YSDGui.showElement(document.getElementById('occupation-detail'), true);
+           }
          });
 
     }

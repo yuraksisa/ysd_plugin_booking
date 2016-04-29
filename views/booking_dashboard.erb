@@ -21,7 +21,7 @@
       <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.day_work%></div> 
     </div>
     <div class="grid_4" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@pickup_today%></div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pickup-return"><%=@pickup_today%></a></div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.delivery%></div>
     </div>
     <div class="grid_4" style="min-height: 7.5em">
@@ -29,7 +29,7 @@
       <div class="centered_text smaller_text"><%=t.booking_dashboard.transit%></div>      
     </div>  
     <div class="grid_4" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@delivery_today%></div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pickup-return"><%=@delivery_today%></a></div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.return%></div>     
     </div>          
   </div>  
@@ -42,7 +42,7 @@
       <div class="centered_text smaller_text"><%=t.booking_dashboard.received_reservations%></div>
     </div>      	
     <div class="grid_4" style="min-height: 7.5em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@pending_confirmation_reservations%></div>
+    	<div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pending-confirmation"><%=@pending_confirmation_reservations%></a></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.pending_confirmation_reservations%></div>
     </div>
     <div class="grid_4" style="min-height: 7.5em">
