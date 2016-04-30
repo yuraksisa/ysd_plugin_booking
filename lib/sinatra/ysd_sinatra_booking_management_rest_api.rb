@@ -999,8 +999,67 @@ module Sinatra
         #
         # Update booking line item
         #
-        app.put '/api/booking/booking-line/item', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.put '/api/booking/booking-line/item-id', :allowed_usergroups => ['booking_manager', 'staff'] do
 
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!          
+          id = data_request[:booking_line_id]
+          if booking_line = BookingDataSystem::BookingLine.get(id)
+            if data_request[:item_id] && data_request[:item_id] != booking_line.item_id
+              item_id = data_request[:item_id]
+              if product = ::Yito::Model::Booking::BookingCategory.get(item_id)
+                booking = booking_line.booking 
+                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+                item_description = product.name
+                old_price = new_price = booking_line.item_unit_cost
+                old_product_deposit = new_product_deposit = booking_line.product_deposit_unit_cost
+                if data_request[:price_modification] and data_request[:price_modification] == 'update'                 
+                  new_price = product.unit_price(booking.date_from, booking.days).round
+                  new_product_deposit = product.deposit
+                end
+                # Update the booking line and the booking
+                booking_line.transaction do
+                  item_cost_increment = new_price - old_price
+                  deposit_cost_increment = new_product_deposit - old_product_deposit
+                  total_cost_increment = item_cost_increment + deposit_cost_increment              
+                  # Update booking line
+                  booking_line.item_id = item_id
+                  booking_line.item_description = item_description
+                  if item_cost_increment != 0
+                    booking_line.item_unit_cost += item_cost_increment
+                    booking_line.item_cost = booking_line.item_unit_cost * booking_line.quantity
+                  end
+                  if deposit_cost_increment != 0
+                    booking_line.product_deposit_unit_cost += deposit_cost_increment
+                    booking_line.product_deposit_cost = booking_line.product_deposit_unit_cost * booking_line.quantity
+                  end
+                  booking_line.save
+                  # Update booking
+                  if item_cost_increment > 0 || deposit_cost_increment > 0
+                    booking.item_cost += item_cost_increment
+                    booking.product_deposit_cost += deposit_cost_increment
+                    booking.total_cost += total_cost_increment
+                    booking.total_pending += total_cost_increment
+                    booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
+                    booking.save
+                  end
+                  booking.reload
+                  content_type :json
+                  booking.to_json                                    
+                end
+              else
+                body "Producto no existe"
+                status 500
+              end
+            else
+              body "Producto no especificado"
+              status 500
+            end
+          else
+            status 404
+          end
+            
         end
 
         #

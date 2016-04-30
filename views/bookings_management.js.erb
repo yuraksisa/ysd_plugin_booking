@@ -211,6 +211,13 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         self.prepareFormBookingSupplements(entity);
       });
 
+      $('.booking-line-item-id').bind('click', function() {
+        var id = $(this).attr('data-id');
+        var value = $(this).attr('data-value');
+        var priceValue = $(this).attr('data-value-price');
+        self.prepareFormEditBookingLineItemId(id, value, priceValue);
+      });
+
       $('.booking-line-quantity').bind('click', function() {
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');
@@ -366,6 +373,43 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       YSDGui.showElement(document.getElementById('dialogs_container'), true);
 
     }
+
+    this.prepareFormEditBookingLineItemId = function(booking_line_id, item_id, price) {
+
+      var html = tmpl('edit_booking_line_item_id_script', {booking_line_id: booking_line_id, 
+         item_id: item_id, price: price});
+      $("#dialogs_container").html(html);
+      
+      var dataSourceModel = new RemoteDataSource('/api/booking-categories?all=yes',{'id':'code','description':'name'});
+      var valueModel = item_id; 
+      var selectorModel = new SelectSelector('edit_booking_line_item_id',
+                                             dataSourceModel, valueModel, true );
+
+      $('#edit_booking_line_item_id_button').unbind('click');
+      $('#edit_booking_line_item_id_button').bind('click', function(){
+
+        var formdata = $('form[name="update_booking_line_item_id"]').formParams(true);
+        var json_request = JSON.stringify(formdata);
+        $.ajax({
+               type: 'PUT',
+               data : json_request,
+               url : '/api/booking/booking-line/item-id',
+               success: function(data, textStatus, jqXHR) {
+                 bookingManager.model.synchronizeCurrentEntity(data);
+                 bookingManager.model.change_state('entity_updated_successfully');
+                 alert('Producto actualizado');
+                 YSDGui.hideElement(document.getElementById('dialogs_container'));
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error actualizando producto: ' + data.responseText);
+               }
+           });
+
+      });
+      
+      YSDGui.showElement(document.getElementById('dialogs_container'), true);
+
+    } 
 
     this.prepareFormEditBookingLineQuantity = function(booking_line_id, quantity) { /* Show the form to create a new booking line */
 

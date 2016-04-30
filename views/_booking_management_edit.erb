@@ -36,6 +36,28 @@
     </div>     
   </form>
 </script>
+<script type="text/tmpl" id="edit_booking_line_item_id_script">
+  <form name="update_booking_line_item_id" class="all-space" style="background: white; min-width: 300px">
+    <h3>Modificar producto</h3>
+    <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Producto</label>
+      <select name="item_id" id="edit_booking_line_item_id" class="fieldcontrol"></select>
+    </div>
+    <div class="formrow">
+      <label class="fieldtitle">Precio</label>
+      <select name="price_modification" class="fieldcontrol">
+        <option value="hold">Mantener el precio</option>
+        <option value="update">Actualizar el precio</option>
+      </select>
+    </div>    
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="edit_booking_line_item_id_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
 <script type="text/tmpl" id="edit_booking_line_quantity_script">
   <form name="update_booking_line_quantity" class="all-space" style="background: white; min-width: 300px">
     <h3>Modificar cantidad</h3>
