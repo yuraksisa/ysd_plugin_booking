@@ -226,6 +226,19 @@ module Sinatra
               SystemConfiguration::Variable.get_value('booking.payment_cadence', '0').to_i)          
             locals.store(:booking_allow_custom_pickup_return_place,
               SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+
+            # Adwords integration
+            locals.store(:booking_adwords_active,
+              SystemConfiguration::Variable.get_value('booking.adwords_active', 'false').to_bool)
+            locals.store(:booking_adwords_booking_request_conversion_id,
+              SystemConfiguration::Variable.get_value('booking.adwords_booking_request_conversion_id', '0').to_i)            
+            locals.store(:booking_adwords_booking_request_conversion_label,
+              SystemConfiguration::Variable.get_value('booking.adwords_booking_request_conversion_label', '0'))            
+            locals.store(:booking_adwords_booking_pay_now_conversion_id,
+              SystemConfiguration::Variable.get_value('booking.adwords_booking_pay_now_conversion_id', '0').to_i)            
+            locals.store(:booking_adwords_booking_pay_now_conversion_label,
+              SystemConfiguration::Variable.get_value('booking.adwords_booking_pay_now_conversion_label', '0'))            
+
             locals.store(:booking, booking)
             locals.store(:promotion_codes_active, ::Yito::Model::Rates::PromotionCode.active?(Date.today))
             locals.store(:offer_discount, ::Yito::Model::Rates::Discount.active(Date.today).first)

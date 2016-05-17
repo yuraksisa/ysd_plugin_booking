@@ -85,6 +85,7 @@ booking_settings:
     general_group: Datos básicos
     pickup_return_group: Entrega y recogida    
     payment_group: Pago online
+    adwords_group: Adwords
     turns_group: Turnos
     people_group: Gente   
     rent_group: Alquiler
@@ -97,6 +98,11 @@ booking_settings:
     activities_allow_total_payment: Permitir el pago total del pedido
     activities_item_hold_time: Caducidad (en horas) del pedido
     activities_payment_cadence: Cadencia de pago
+    adwords_active: Conversión adwords
+    booking_request_conversion_id: Solicitud reserva conversion_id 
+    booking_request_conversion_label: Solicitud reserva conversion_label
+    booking_pay_now_conversion_id: Pago online reserva conversion_id
+    booking_pay_now_conversion_label: Pago online reserva conversion_label
 booking_rates:
   title: Tarifas    
   seasons: Temporadas

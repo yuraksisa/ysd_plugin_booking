@@ -243,6 +243,36 @@ module Huasi
          :description => 'Booking scheduler finish time',
          :module => :booking})
 
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.adwords_active'},
+        {:value => 'false',
+         :description => 'Activate adwords for booking',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.adwords_booking_request_conversion_id'},
+        {:value => '',
+         :description => 'Adwords booking request conversion id',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.adwords_booking_request_conversion_label'},
+        {:value => '',
+         :description => 'Adwords booking request conversion label',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.adwords_booking_pay_now_conversion_id'},
+        {:value => '',
+         :description => 'Adwords booking pay now conversion id',
+         :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.adwords_booking_pay_now_conversion_label'},
+        {:value => '',
+         :description => 'Adwords booking pay now conversion label',
+         :module => :booking})
+
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
         {:driver => false,
          :guests => true,
