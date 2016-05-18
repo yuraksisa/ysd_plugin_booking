@@ -65,6 +65,14 @@ module Sinatra
                       :rent => t.booking_settings.form.booking_mode.rent,
                       :restaurant => t.booking_settings.form.booking_mode.restaurant
                     },
+                    :calendar_modes => {
+                      :first_day =>  t.booking_settings.form.calendar_mode.first_day,
+                      :default => t.booking_settings.form.calendar_mode.default
+                    },
+                    :availability_modes => {
+                      :product => t.booking_settings.form.availability_mode.product,
+                      :resource => t.booking_settings.form.availability_mode.resource
+                    },
                     :reservation_starts_with => {
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
                        :categories => t.booking_settings.form.reservation_starts_with.categories,

@@ -242,6 +242,16 @@ module Huasi
         {:value => '',
          :description => 'Booking scheduler finish time',
          :module => :booking})
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.renting_calendar_season_mode'},
+        {:value => 'first_day',
+         :description => 'Calendar for season: first_day, default',
+         :module => :booking})
+      SystemConfiguration::Variable.first_or_create(
+        {:name => 'booking.renting_availability_mode'},
+        {:value => 'product',
+         :description => 'Availability mode: product, resource',
+         :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.adwords_active'},

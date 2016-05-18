@@ -887,7 +887,11 @@
       pay_now_button_click: function(data) { /* Go to payment button click */
 
         if (typeof _gaq != 'undefined') {
+          var event_label = $('#booking\\[customer_email\\]').val() + ' ' + 
+                            $('#booking\\[customer_name\\]').val() + ' ' +
+                            $('#booking\\[customer_surname\\]').val();          
           _gaq.push(['_trackEvent', 'Reservations', 'Go to payment',
+                     event_label,
                      bookingModel.booking.total_cost]);
         }
 
@@ -903,7 +907,11 @@
 
       confirm_booking : function (data) { /* Confirm button click */
         if (typeof _gaq != 'undefined') {
+          var event_label = $('#booking\\[customer_email\\]').val() + ' ' + 
+                            $('#booking\\[customer_name\\]').val() + ' ' +
+                            $('#booking\\[customer_surname\\]').val();
           _gaq.push(['_trackEvent', 'Reservations', 'Confirm Booking',
+                     event_label,
                      bookingModel.booking.total_cost]);
         }
 

@@ -51,7 +51,15 @@ booking_settings:
     booking_mode:
       title: Modo
       rent: Alquiler
-      restaurant: Restaurante       
+      restaurant: Restaurante
+    calendar_mode:
+      title: Modo calendario
+      default: Por defecto
+      first_day: Primer día
+    availability_mode:
+      title: Modo disponibilidad
+      product: Producto
+      resource: Recurso (stock)       
     reservation_starts_with:
       title: Tipo formulario de reserva
       dates: Selección fechas (para 1 producto)

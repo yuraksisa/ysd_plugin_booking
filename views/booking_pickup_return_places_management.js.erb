@@ -14,8 +14,30 @@ require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"],
   
     onNew : function() {
       $('#name').focus();
-    }
+    },
         
+    adaptFormData : function(data) {
+            
+      if ($('input[name=is_pickup]').length > 0) {
+        if ($('input[name=is_pickup]').prop('checked')) {
+          data.is_pickup = true;
+        }
+        else {
+          data.is_pickup = false;
+        }
+      }
+
+      if ($('input[name=is_return]').length > 0) {
+        if ($('input[name=is_return]').prop('checked')) {
+          data.is_return = true;
+        }
+        else {
+          data.is_return = false;
+        }
+      }      
+
+      return data;
+    }
 
   };
 
