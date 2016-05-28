@@ -1054,9 +1054,11 @@
          <% else %>
            <% if booking_payment %>
              $('#button_ir_a_pagar_reserva').show();
+             $('#reservation_payment_information').show();
              $('#button_confirmar_reserva').show();
            <% else %>  
              $('#button_ir_a_pagar_reserva').hide();
+             $('#reservation_payment_information').hide();
              $('#button_confirmar_reserva').show();
            <% end %>
          <% end %>
@@ -1754,11 +1756,14 @@
              var available = (bookingModel.categoriesAvailable.indexOf(family) > - 1) ? buttonSelect : notAvailable ;
            <% end%>
 
+           var dailyPrice = new Number(prices[family] / bookingModel.booking.days).toFixed(bookingDataSystem.configuration.roundDecimals || 2);
+
            content += 
               '<div class="grid_3">' + 
               '<div class="car_price_container" itemprop="offers" itemscope itemtype="http://schema.org/Offer">'+
                 (bookingModel.discount.value > 0 ? '<div class="car_price_total_base">' + bookingModel.all_prices_base[family].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€</div><div class="car_price_total_base_offer"><%=t.new_booking.offer%></div>' : '') +
                 '<div class="car_price_total"><span itemprop="price">'+prices[family].toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' + '</span></div>' +
+                '<div class="car_daily_price centered_text"><span class="smaller_text more_contrast_text">'+ dailyPrice + '€/' + '<%=t.new_booking.by_day%>' +'</span></div>'+
                 '<div class="car_price_booking top-margin">' + 
                   available + 
                 '</div>' +                
@@ -1993,6 +1998,7 @@
           if ($('#button_ir_a_pagar_reserva').is(":visible") && 
               bookingModel.pendingTimeToStartBooking < <%= booking_payment_cadence %>) {
             $('#button_ir_a_pagar_reserva').hide();
+            $('#reservation_payment_information').hide();
           }
           else {
             if (!$('#button_ir_a_pagar_reserva').is(":visible")) {
@@ -2003,6 +2009,7 @@
 
               if (notAllowed.length == 0) {
                 $('#button_ir_a_pagar_reserva').show();
+                $('#reservation_payment_information').show();
               }
             }
           }

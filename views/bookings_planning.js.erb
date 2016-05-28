@@ -1,7 +1,12 @@
 <%= partial('not_assigned_bookings.js'.to_sym) %>
 
-require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDFormatter'], 
-        function(Spreadsheet, EventTarget, $, confirmedBooking, formatter) {
+require(['YSDSpreadSheet', 'ysdtemplate', 'YSDEventTarget', 'jquery', 
+         'confirmedBooking', 'YSDFormatter', 'YSDGui', 
+         'YSDRemoteDataSource', 'YSDSelectSelector',
+         'jquery.ui', 'jquery.ui.datepicker-es', 
+         'jquery.ui.datepicker.validation','jquery.formparams', 'datejs'], 
+        function(Spreadsheet, tmpl, EventTarget, $, confirmedBooking, formatter,
+                 YSDGui, RemoteDataSource, SelectSelector) {
 
   planningModel = {
 
@@ -12,6 +17,15 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
                                    of booking items of this category. Used to display the table of bookings **/
      bookings: [],                // Array of the bookings represented in the planning
      bookingsHash: {},            // Hash where the id is booking.id and the value the booking
+
+     booking_prereservations: [], // Array of the booking prereservations represented in the planning
+     booking_prereservationsHash: {}, // Hash where the id is booking_prereservation.id and the value the prereservation
+ 
+     filter: 'all',
+     filterResource: null,
+     filterDay: null,
+     filterBookings: [],
+     filterPrereservations: [],
 
      month:new Date().getMonth()+1,
      year:new Date().getFullYear(),
@@ -136,6 +150,40 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
 
 
      },
+
+     loadPrereservations: function() {
+
+        $.ajax({
+                 type: 'GET',
+                 url: '/api/booking-prereservations/planning?month=' + this.month + '&year=' + this.year,
+                 contentType: 'application/json; charset=utf-8',
+                 dataType: 'json',
+                 success: function(data, textStatus, jqXHR) {
+                   planningModel.booking_prereservations = data;
+                   planningModel.booking_prereservationsHash = {};
+                   data.forEach(function(value, index, array) {
+                      planningModel.booking_prereservationsHash[value.id] = value;
+                   });
+                   planningView.update('booking_prereservations_available');
+                 }
+        });
+
+
+     },
+
+     changeFilter: function(filter) {
+        this.filter = filter;
+        planningView.update('filter_changed');
+
+     },
+
+     filterDayResourcePrereservations: function(resource, day, prereservations) {
+       this.filterResource = resource;
+       this.filterDay = day;
+       this.filterPrereservations = prereservations;
+       this.changeFilter('day-resource');
+     },
+
      prepareBookingForPlanning: function(booking) {
 
         var from, to;
@@ -163,12 +211,135 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
             else {
               to = Math.min(booking.date_to.getDate())
             }
-            booking.planning.push({ resource: booking_item_reference , from: from, to: to, booking_id: booking.id });
+            booking.planning.push({ resource: booking_item_reference ,
+                                    from: from, 
+                                    to: to, 
+                                    booking_id: booking.id,
+                                    tip: 'R: ' +booking.id + ' - ' + 
+                                         booking.customer_name + ' ' + 
+                                         booking.customer_surname + ' ' +
+                                         formatter.formatDate(booking.date_from,'yyyy-MM-dd') + ' ' + 
+                                         booking.time_from + ' -- ' +
+                                         formatter.formatDate(booking.date_to,'yyyy-MM-dd') + ' ' + 
+                                         booking.time_to   });
             is_in_planning = true;
         }
 
         return is_in_planning;
     },     
+
+    prepareBookingPrereservationForPlanning: function(prereservation) {
+
+        var from, to;
+        var booking_item_reference;
+        var is_in_planning = false;
+        prereservation.planning = [];
+
+        booking_item_reference = prereservation.booking_item_reference;
+        from = prereservation.date_from.getDate();
+        if (prereservation.date_to.getMonth() != prereservation.date_from.getMonth()) {
+          if (prereservation.date_from.getMonth()+1 == planningModel.month) {
+            to = new Date(prereservation.date_from.getFullYear(), prereservation.date_from.getMonth() +1,0).getDate();
+          }
+          else {
+            from = 1;
+            if (prereservation.date_to.getMonth()+1 == planningModel.month) {
+              to = prereservation.date_to.getDate();
+            }
+            else {
+              to = new Date(planningModel.year, planningModel.month,0).getDate(); 
+            }
+          }
+        }
+        else {
+         to = Math.min(prereservation.date_to.getDate())
+        }
+        prereservation.planning = { resource: booking_item_reference ,
+                                    from: from, 
+                                    to: to, 
+                                    prereservation_id: prereservation.id,
+                                    tip: 'PR: ' + prereservation.title + ' - ' +
+                                         formatter.formatDate(prereservation.date_from,'yyyy-MM-dd') + ' ' + 
+                                         prereservation.time_from + ' -- ' +
+                                         formatter.formatDate(prereservation.date_to,'yyyy-MM-dd') + ' ' + 
+                                        prereservation.time_to };
+    },
+
+    createPrereservation: function() {
+        var formdata = $('form[name="element"]').formParams(true);
+        var json_request = JSON.stringify(formdata);      
+        $.ajax({
+               type: 'POST',
+               data : json_request,
+               url : '/api/booking-prereservation',
+               success: function(data, textStatus, jqXHR) {
+                 planningModel.booking_prereservations.push(data);
+                 planningModel.booking_prereservationsHash[data.id] = data;
+                 planningModel.prepareBookingPrereservationForPlanning(data);
+                 planningView.loadPrereservation(data);
+                 planningView.loadPrereservationInTable(data);
+                 alert('Prereserva creada');
+                 YSDGui.hideElement(document.getElementById('prereservation_container'));
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error creando prereserva: ' + data.responseText);
+               }
+           });       
+    },
+
+    updatePrereservation: function() {
+        var formdata = $('form[name="element"]').formParams(true);
+        var json_request = JSON.stringify(formdata);
+        var oldPrereservation = this.booking_prereservationsHash[formdata.id];      
+        $.ajax({
+               type: 'PUT',
+               data : json_request,
+               url : '/api/booking-prereservation',
+               success: function(data, textStatus, jqXHR) {
+                 planningModel.booking_prereservationsHash[data.id] = data;
+                 planningModel.prepareBookingPrereservationForPlanning(data);
+                 planningView.unloadPrereservation(oldPrereservation);
+                 planningView.unloadPrereservationInTable(oldPrereservation);
+                 planningView.loadPrereservation(data);
+                 planningView.loadPrereservationInTable(data);
+                 alert('Prereserva actualizada');
+                 YSDGui.hideElement(document.getElementById('prereservation_container'));
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error actualizando prereserva: ' + data.responseText);
+               }
+           });  
+    },
+
+    deletePrereservation: function(id) {
+        var json_request = JSON.stringify(this.booking_prereservationsHash[id]);   
+        $.ajax({
+               type: 'DELETE',
+               data : json_request,
+               url : '/api/booking-prereservation',
+               success: function(data, textStatus, jqXHR) {
+                 // Remove from the view
+                 planningView.unloadPrereservation(planningModel.booking_prereservationsHash[id]);
+                 planningView.unloadPrereservationInTable(planningModel.booking_prereservationsHash[id]);
+                 // Remove from the model
+                 var index=-1;
+                 for (var idx=0;idx<planningModel.booking_prereservations.length;idx++) {
+                   if (planningModel.booking_prereservations[idx].id == id) {
+                     index = id;
+                     break;
+                   }
+                 }
+                 if (index > -1) {
+                   planningModel.booking_prereservations.splice(index, 1);
+                   delete planningModel.booking_prereservationsHash[data.id];
+                 }
+                 alert('Prereserva eliminada');
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error eliminando prereserva: ' + data.responseText);
+               }
+           });       
+    }
 
   };
 
@@ -180,7 +351,99 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
 
     nextMonthClick: function() {
        planningModel.nextMonth();
-    } 
+    },
+
+    newPrereservationClick: function() { // New prereservation button click
+       $('#prereservation_container form[name=element]').reset();
+       // Prepare controls
+       $('#id').val(null);
+       $('#date_from').datepicker("setDate", new Date()); 
+       $('#date_to').datepicker("setDate", new Date());
+       var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
+       var valueModel = null; 
+       var selectorModel = new SelectSelector('booking_item_reference', dataSourceModel, valueModel, false );
+       $('#prereservation_title').html('<%=t.bookings_planning.prereservation.create_title%>');
+       $('#prereservation_button').val('<%=t.entitymanagement.create%>');
+       $('#prereservation_button').unbind('click');
+       $('#prereservation_button').bind('click', function(){
+         planningController.createPrereservationButtonClick();
+       });
+       YSDGui.showElement(document.getElementById('prereservation_container'), true);
+    },
+
+    editPrereservationClick: function(id) { // Button to edit a prereservation
+
+       var prereservation = planningModel.booking_prereservationsHash[id];
+       if (prereservation != null) {
+         $('#id').val(id);
+         $('#date_from').datepicker("setDate", prereservation.date_from); 
+         $('#time_from').val(prereservation.time_from);
+         $('#date_to').datepicker("setDate", prereservation.date_to);
+         $('#time_to').val(prereservation.time_to);
+         $('#title').val(prereservation.title);
+         $('#notes').val(prereservation.notes);
+         var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference','description':'reference'});
+         var valueModel = prereservation.booking_item_reference; 
+         var selectorModel = new SelectSelector('booking_item_reference', dataSourceModel, valueModel, false );       
+         $('#prereservation_title').html('<%=t.bookings_planning.prereservation.update_title%>');
+         $('#prereservation_button').val('<%=t.entitymanagement.update%>');
+         $('#prereservation_button').unbind('click');
+         $('#prereservation_button').bind('click', function(){
+           planningController.updatePrereservationButtonClick();
+         });
+         YSDGui.showElement(document.getElementById('prereservation_container'), true);          
+       }
+    },
+
+    createPrereservationButtonClick: function() { // Create prereservation button click
+       planningModel.createPrereservation();
+    },
+
+    updatePrereservationButtonClick: function() { // Update prereservation button click
+       planningModel.updatePrereservation();
+    },
+
+    deletePreservationClick: function(id) { // Delete prereservation
+
+        $("<div title='" + '<%=t.bookings_planning.prereservations_table.confirm_delete_title%>' + "'>" +
+                           '<%=t.bookings_planning.prereservations_table.confirm_delete_message%>' + "</div>").dialog( 
+           { height: 250, modal: true,        
+             buttons: {
+                  Ok: function() {
+                        response = true;
+                        $(this).dialog( "close" );
+                      },
+                  Cancel: function() {
+                        response = false;  
+                        $( this ).dialog( "close" );
+                      }
+             },
+             close : function(event, ui) {                   
+                       if (response) {
+                         planningModel.deletePrereservation(id);
+                       }
+                     }
+            }); 
+
+    },
+
+    filterChanged: function(value) {
+      planningModel.changeFilter(value);
+      if (value == 'all') {
+        planningModel.events.fireEvent({type:'filter',
+                                      data: {filter: 'all'}}); 
+      }
+      else {
+        planningModel.events.fireEvent({type:'filter',
+                data: {filter: 'day-resource',
+                       resource: planningModel.filterResource, 
+                       day : planningModel.filterDay,
+                       month: planningModel.month,
+                       bookings: planningModel.filterBookings,
+                       prereservations: planningModel.filterPrereservations}});
+      }
+
+    }
 
   };
 
@@ -199,7 +462,15 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
       $('#next').bind('click', function() {
          planningController.nextMonthClick();
       });
-
+      $('#new_prereservation').bind('click', function(){
+         planningController.newPrereservationClick();
+      });
+      $('#filter').bind('change', function() {
+        planningController.filterChanged($(this).val());
+      });
+      $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+      $('#date_from').datepicker({numberOfMonths:2, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+      $('#date_to').datepicker({numberOfMonths:2, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
     },
 
     update: function(event, data) {
@@ -218,6 +489,11 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
 
          case 'bookings_available':
            this.loadBookings();
+           planningModel.loadPrereservations();
+           break;
+
+         case 'booking_prereservations_available':
+           this.loadPrereservations();
            break;
 
          case 'booking_assigned':
@@ -233,6 +509,10 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
         case 'booking_updated':
           this.unloadBooking(data.booking);
           this.loadBooking(data.booking);
+          break;
+
+        case 'filter_changed':
+          this.loadPrereservationsInTable();
           break;
       }
 
@@ -270,24 +550,43 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
          if (values.length == 3) {
            var resource = values[1].substring(1,values[1].length-1);
            var day = parseInt(values[2].substring(1,values[2].length-1));
-           var selectedBookings = planningModel.bookings.filter(function(booking) {
-             var isIn = false;
-             for (var idx=0;idx<booking.planning.length;idx++) {
-               if (booking.planning[idx].resource == resource &&
-                   booking.planning[idx].from <= day && 
-                   booking.planning[idx].to >= day) {
-                 isIn = true;
-                 break;
-               }
-             }
-             return isIn;
-           }).map(function(booking) {
-             return booking.id;
+           planningModel.filterBookings = planningModel.bookings.filter(function(booking) {
+              var isIn = false;
+              for (var idx=0;idx<booking.planning.length;idx++) {
+                if (booking.planning[idx].resource == resource &&
+                    booking.planning[idx].from <= day && 
+                    booking.planning[idx].to >= day) {
+                  isIn = true;
+                  break;
+                }
+              }
+              return isIn;
+            }).map(function(booking) {
+            return booking.id;
            });
+           planningModel.filterPrereservations = planningModel.booking_prereservations.filter(function(prereservation){
+              var isIn = prereservation.planning.resource == resource &&
+                         prereservation.planning.from <= day && 
+                         prereservation.planning.to >= day;
+              return isIn;
+            }).map(function(prereservation) {
+            return prereservation.id;
+           });
+           // Setup the filter select
+           var select = $("#filter");
+           var option = $("#filter option[value='day-resource']");
+           if ($("#filter option[value='day-resource']").length == 1) {
+             $("#filter option[value='day-resource']").remove();
+           }
+           $(select).append("<option value=\"day-resource\" selected=\"selected\">" +
+              planningModel.month + "/" + day + " " + resource + "</option>");
+           // Notify event
            planningModel.events.fireEvent({type:'filter',
-                 data: {resource: resource, 
+                 data: {filter: 'day-resource',
+                        resource: resource, 
                         day : day,
-                        bookings: selectedBookings}});
+                        bookings: planningModel.filterBookings,
+                        prereservations: planningModel.filterPrereservations}});
          }
       });                             
 
@@ -337,31 +636,16 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
              }
              if (booking.planning_color) {
                $(selector).css('background', booking.planning_color);
-               //$(selector).css('color', 'white');
              }
              var tooltipSelector = $(selector).parent();
              if (tooltipSelector.attr('data-tip') == undefined) {
-               tooltipSelector.attr('data-tip', 
-                booking.id + ' - ' + 
-                booking.customer_name + ' ' + 
-                booking.customer_surname + ' ' +
-                formatter.formatDate(booking.date_from,'yyyy-MM-dd') + ' ' + 
-                booking.time_from + ' -- ' +
-                formatter.formatDate(booking.date_to,'yyyy-MM-dd') + ' ' + 
-                booking.time_to                             
-                );
+               tooltipSelector.attr('data-tip', planning.tip);
              }
              else {
-               tooltipSelector.attr('data-tip', tooltipSelector.attr('data-tip') +
-                ' \n ' +
-                booking.id + ' - ' + 
-                booking.customer_name + ' ' + 
-                booking.customer_surname + ' ' +
-                formatter.formatDate(booking.date_from,'yyyy-MM-dd') + ' ' + 
-                booking.time_from + ' -- ' +
-                formatter.formatDate(booking.date_to,'yyyy-MM-dd') + ' ' + 
-                booking.time_to                
-                );
+               if (tooltipSelector.attr('data-tip').indexOf(planning.tip)==-1){
+                 tooltipSelector.attr('data-tip', tooltipSelector.attr('data-tip') +
+                  ' \n ' + planning.tip);
+               }
              }
            }
         }
@@ -384,6 +668,7 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
              var value = $(selector).val();
              if (value == 'X') {
                $(selector).val('');
+               $(selector).css('background', 'white');
              }
              else if (value == '2') {
                $(selector).val('X');
@@ -394,12 +679,148 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
                  $(selector).val(parseInt(value)-1);
                }
              }
-             $(selector).css('background', 'none');
+             var tooltipSelector = $(selector).parent();
+             if (tooltipSelector.attr('data-tip') != undefined) {
+               tooltipSelector.attr('data-tip', tooltipSelector.attr('data-tip').replace(planning.tip, ''));
+               if (tooltipSelector.attr('data-tip').replace('\n','').length==0) {
+                 tooltipSelector.removeAttr('data-tip');
+               }
+             }
            }
         }
-    }
+    },
 
+    loadPrereservations: function() { // Display the prereservations in the spreedsheet
 
+      // Display in the spreedsheet
+      for (var i=0;i<planningModel.booking_prereservations.length;i++) {
+        planningModel.prepareBookingPrereservationForPlanning(planningModel.booking_prereservations[i]);
+        this.loadPrereservation(planningModel.booking_prereservations[i]);           
+      }
+
+      // Display in the table
+      this.loadPrereservationsInTable();
+    },
+
+    loadPrereservationsInTable: function() {
+      // Display in the table
+      var template = tmpl('script_prereservation_line');
+      var result = '';
+      for (var i=0;i<planningModel.booking_prereservations.length;i++) {
+        if (planningModel.filter == 'all' || 
+             (planningModel.filterPrereservations instanceof Array &&
+              planningModel.filterPrereservations.indexOf(planningModel.booking_prereservations[i].id)>-1)) {
+          result += template({entity: planningModel.booking_prereservations[i], 
+                            formatter: formatter});
+        }
+      }
+      $('#prereservations_tbody').html(result);  
+      $('.delete-prereservation-icon').unbind('click');
+      $('.delete-prereservation-icon').bind('click', function(){
+        planningController.deletePreservationClick($(this).attr('data-id'));
+      });
+      $('.edit-prereservation-icon').unbind('click');
+      $('.edit-prereservation-icon').bind('click', function(){
+        planningController.editPrereservationClick($(this).attr('data-id'));
+      });
+    },
+
+    loadPrereservationInTable: function(prereservation) {
+      var template = tmpl('script_prereservation_line');
+      var row = template({entity: planningModel.booking_prereservationsHash[prereservation.id], 
+                            formatter: formatter});
+      $('#prereservations_table tr:last').after(row);
+      $('tr#' + prereservation.id + ' .delete-prereservation-icon').bind('click', function(){
+        planningController.deletePreservationClick($(this).attr('data-id'));
+      });
+      $('tr#' + prereservation.id + ' .edit-prereservation-icon').bind('click', function(){
+        planningController.editPrereservationClick($(this).attr('data-id'));
+      });             
+    },
+
+    unloadPrereservationInTable: function(prereservation) {
+      $('#prereservations_table tr#'+prereservation.id).remove();
+    },
+
+    loadPrereservation: function(prereservation) {
+
+      if (!prereservation.planning) {
+        return;
+      }
+
+      planning = prereservation.planning;
+
+      for (var day=planning.from;day<=planning.to;day++) {
+             var selector = '#\\[planning\\]\\['+planning.resource+'\\]\\['+day+'\\]';
+             var value = $(selector).val();
+             if (value == '') {
+               $(selector).val('X');
+             }
+             else if (value == 'X') {
+               $(selector).val('2');
+               $(selector).addClass('more_contrast_text');               
+             }
+             else {
+               if (parseInt(value) != NaN) {
+                 $(selector).val(parseInt(value)+1);
+               }
+             }
+             var tooltipSelector = $(selector).parent();
+             if (tooltipSelector.attr('data-tip') == undefined) {
+               tooltipSelector.attr('data-tip', 
+                'PR: ' + prereservation.title + ' - ' +
+                formatter.formatDate(prereservation.date_from,'yyyy-MM-dd') + ' ' + 
+                prereservation.time_from + ' -- ' +
+                formatter.formatDate(prereservation.date_to,'yyyy-MM-dd') + ' ' + 
+                prereservation.time_to                             
+                );
+             }
+             else {
+               tooltipSelector.attr('data-tip', tooltipSelector.attr('data-tip') +
+                ' \n ' +
+                'PR: ' + prereservation.title + ' - ' +
+                formatter.formatDate(prereservation.date_from,'yyyy-MM-dd') + ' ' + 
+                prereservation.time_from + ' -- ' +
+                formatter.formatDate(prereservation.date_to,'yyyy-MM-dd') + ' ' + 
+                prereservation.time_to                
+                );
+             }
+      }
+
+    },
+
+   unloadPrereservation: function(prereservation) {
+
+        if (!prereservation.planning) {
+          return;
+        }
+        planning = prereservation.planning;
+        
+        for (var day=planning.from;day<=planning.to;day++) {
+          var selector = '#\\[planning\\]\\['+planning.resource+'\\]\\['+day+'\\]';
+          var value = $(selector).val();
+          if (value == 'X') {
+            $(selector).val('');
+            $(selector).css('background', 'white');
+          }
+          else if (value == '2') {
+            $(selector).val('X');
+            $(selector).removeClass('more_contrast_text');               
+          }
+          else {
+            if (parseInt(value) != NaN) {
+              $(selector).val(parseInt(value)-1);
+            }
+          } 
+          var tooltipSelector = $(selector).parent();
+          if (tooltipSelector.attr('data-tip') != undefined) {
+            tooltipSelector.attr('data-tip', tooltipSelector.attr('data-tip').replace(planning.tip, ''));
+            if (tooltipSelector.attr('data-tip').replace('\n','').length==0) {
+               tooltipSelector.removeAttr('data-tip');
+            }
+          }                  
+        }   
+    }   
 
   };
 
@@ -412,10 +833,18 @@ require(['YSDSpreadSheet', 'YSDEventTarget', 'jquery', 'confirmedBooking', 'YSDF
   });
 
   planningModel.addListener('filter', function(data) {
-    confirmedBooking.model.filterDayResourceBookings(data.data.resource,
+    if (data.data.filter == 'all') {
+      confirmedBooking.model.changeFilter(data.data.filter);
+    }
+    else {
+      confirmedBooking.model.filterDayResourceBookings(data.data.resource,
                                   data.data.day,
                                   planningModel.month,
                                   data.data.bookings);
+      planningModel.filterDayResourcePrereservations(data.data.resource,
+                                  data.data.day,
+                                  data.data.prereservations);
+    }
   });
 
   confirmedBooking.model.addListener('booking_assigned', function(data) {

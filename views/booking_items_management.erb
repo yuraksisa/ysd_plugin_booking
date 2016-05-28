@@ -146,11 +146,19 @@
                 <div class="formrow">
                   <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_3.label %></label>
                   <input type="text" maxlength="80" id="characteristic_3" name="characteristic_3" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_3%>" <%% } %>/>
-                </div>                                            
+                </div>    
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_4.label %></label>
+                  <input type="text" maxlength="80" id="characteristic_4" name="characteristic_4" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_4%>" <%% } %>/>
+                </div>                                                         
                 <div class="formrow">
                   <label class="fieldtitle"><%= t.booking_item_management.form.cost.label %></label>
                   <input type="text" maxlength="80" id="cost" name="cost" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.cost).toFixed(2)%>" <%% } %>/>
-                </div>                   
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.planning_order.label %></label>
+                  <input type="text" maxlength="10" id="planning_order" name="planning_order" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.planning_order%>" <%% } %>/>
+                </div>                                    
                 <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                   <div class="navigation-bar-crud-buttons">
                     <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>

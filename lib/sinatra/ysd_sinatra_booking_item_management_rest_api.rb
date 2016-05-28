@@ -42,7 +42,7 @@ module Sinatra
         
         app.get "/api/booking-items" do
 
-          booking_items = ::Yito::Model::Booking::BookingItem.all(:order => [:category_code.asc, :reference.asc])
+          booking_items = ::Yito::Model::Booking::BookingItem.all(:order => [:planning_order.asc, :category_code.asc, :reference.asc])
 
           status 200
           content_type :json

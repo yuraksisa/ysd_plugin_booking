@@ -130,7 +130,7 @@
 	        	<div style="text-align:center">
 	        	  <div style="display:inline-block">
 	      	        <button type="submit" id="button_ir_a_pagar_reserva" class="form-button botones" style="display:none">
-                      <span><%=t.new_booking.go_to_pay_line1%></span><br/>
+                      <span><%=t.new_booking.go_to_pay_line1(booking_deposit)%></span><br/>
                       <span><%=t.new_booking.go_to_pay_line2%></span><br/>
 	      	        </button>
 	              </div>
@@ -148,6 +148,9 @@
 	              </div>	              
 	            </div>
 	        </fieldset>
+          <div id="reservation_payment_information"  style="display:none" class="guiblock smaller_text">
+            <%=t.new_booking.payment_information(booking_deposit) if booking_deposit > 0%>
+          </div>
 	        <div id="reservation_error">
 	        </div>	
 	      </div>

@@ -72,15 +72,6 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget',
 
      filterDayResourceBookings: function(booking_item_reference, day, month, filtered_bookings) {
         
-        var select = $("#filter");
-        var option = $("#filter option[value='day-resource']");
-
-        if ($("#filter option[value='day-resource']").length == 1) {
-          $("#filter option[value='day-resource']").remove();
-        }
-        $(select).append("<option value=\"day-resource\" selected=\"selected\">" +
-              month + "/" + day + " " + booking_item_reference + "</option>");
-
         this.filterResource = booking_item_reference;
         this.filterDay = day;
         this.filterMonth = month;
@@ -244,9 +235,6 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget',
   confirmedBookingsView = {
 
     init: function() {
-      $('#filter').bind('change', function() {
-        confirmedBookingsModel.changeFilter($(this).val());
-      });
     },
 
     update: function(event) {

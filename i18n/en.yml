@@ -168,8 +168,10 @@ new_booking:
   confirm_line2: reservation
   confirm_line1_manager: Save
   confirm_line2_manager: reservation
-  go_to_pay_line1: Pay now
-  go_to_pay_line2: (Confirm Reservation)  
+  go_to_pay_line1: Pay a %1% deposit now
+  go_to_pay_line2: (Confirm Reservation)
+  payment_information: >
+                       You need to pay %1% of the reservation in order to confirm it.  
   pay: Pay
   not_available: It\'s not available on this dates
   not_available_manager: It\'s not available on this dates

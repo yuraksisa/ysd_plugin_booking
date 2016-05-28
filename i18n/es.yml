@@ -274,9 +274,14 @@ new_booking:
   confirm_line2: Reserva
   confirm_line1_manager: Guardar
   confirm_line2_manager: Reserva  
-  go_to_pay_line1: Pagar ahora
+  go_to_pay_line1: >
+                   %1% Paga y señal
   go_to_pay_line2: (Confirmar Reserva)
+  payment_information: >
+                       Atención: Para confirmar la reserva se requiere una paga y 
+                       señal del %1% del importe total de la reserva 
   pay: Pagar
+  by_day: día
   not_available: Confirme reserva telefónicamente
   not_available_manager: No hay disponibilidad
   not_stock: No disponible
@@ -766,7 +771,11 @@ booking_item_management:
     characteristic_2:
       label: Característica 2
     characteristic_3:
-      label: Característica 3      
+      label: Característica 3
+    characteristic_4:
+      label: Característica 4
+    planning_order:
+      label: Orden en el planning      
     cost: 
       label: Coste         
 booking_places_definition_management:
@@ -846,6 +855,28 @@ restaurant_booking:
     n: "%1 personas"
 bookings_planning:
   title: Planning de recursos 
+  new_preservation: Nueva prereserva
+  bookings_and_prereservations: Reservas y prereservas (o bloqueos de stock)
+  bookings: Reservas
+  prereservations: Prereservas (o bloqueos de stock)
+  show_all: Mostrar todas
+  prereservation:
+    create_title: Nueva prereserva
+    update_title: Modificar prereserva
+    from: Desde
+    to: Hasta
+    resource: Recurso
+    subject: Titulo
+    notes: Notas
+  prereservations_table:
+    resource: Recurso
+    date_from: Fecha inicio
+    date_to: Fecha fin
+    title: Título
+    notes: Notas
+    actions: Acciones
+    confirm_delete_title: Eliminar prereserva
+    confirm_delete_message: ¿Está seguro que desea eliminar la prereserva?
 not_assigned_bookings:
   title: Reservas no asignadas
   table:
