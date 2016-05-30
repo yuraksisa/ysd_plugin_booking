@@ -1,12 +1,20 @@
 <style>
+#occupation_table {
+  table-layout: fixed
+}
+ #occupation_table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 2.3em;
+   font-size: 0.60em;
+ }
 #table {
   table-layout: fixed
 }
  #table .table-cell {
    border-right: 1px solid #EEE;
-   width: 1.5em;
-   font-size: 0.7em;
- }
+   width: 1.6em;
+   font-size: 0.85em;
+ } 
 </style>
 <div class="top-navigation-bar">
 <h2 class="entity-title">Ocupación mensual</h2>
@@ -22,10 +30,10 @@
 </div>
 <div class="admin_content_wrapper">
   <div>
-    <table id="table" class="table">
+    <table id="occupation_table" class="table">
       <thead class="table-header">
         <tr>
-          <th class="table-cell" scope="col" style="width: 80px"></th>
+          <th class="table-cell" scope="col" style="width: 50px"></th>
           <% (1..@days).each do |day| %>
           <th class="table-cell centered_text" scope="col"><%=day%></th>
           <% end %>     
@@ -48,5 +56,5 @@
   </div>
 </div>
 
-<div id="occupation-detail" class="all-space" style="width:800px; height: 400px; background: white; overflow-y: scroll; font-size: 1em">
+<div id="occupation-detail" class="all-space" style="width:800px; height: 400px; background: white; overflow-y: scroll; font-size: 1em; display: none">
 </div>
