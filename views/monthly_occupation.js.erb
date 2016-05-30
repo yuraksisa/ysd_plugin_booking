@@ -1,0 +1,24 @@
+require(['YSDGui','jquery', 
+         'jquery.ui', 'jquery.ui.datepicker-es','datejs'], function(YSDGui, $) {
+
+  monthlyOccupationModel = {
+
+  };
+
+  monthlyOccupationController = {
+
+  };
+
+  monthlyOccupationView = {
+	init: function(){
+         $('.occupation-detail').bind('click', function() {
+           if ($(this).attr('data-url')) {
+             $('#occupation-detail').load($(this).attr('data-url') + ' .admin_content_wrapper');
+             YSDGui.showElement(document.getElementById('occupation-detail'), true);
+           }
+         });		
+	}
+  };
+
+  monthlyOccupationView.init();
+});

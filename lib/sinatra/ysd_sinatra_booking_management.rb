@@ -71,7 +71,7 @@ module Sinatra
                     },
                     :availability_modes => {
                       :product => t.booking_settings.form.availability_mode.product,
-                      :resource => t.booking_settings.form.availability_mode.resource
+                      :stock => t.booking_settings.form.availability_mode.resource
                     },
                     :reservation_starts_with => {
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
@@ -374,7 +374,10 @@ module Sinatra
             end
           end          
 
-          @summary, @data = BookingDataSystem::Booking.max_period_occupation(date_from.to_date, date_to.to_date)
+          @summary, @data = BookingDataSystem::Booking.max_period_occupation(
+              date_from.to_date, 
+              date_to.to_date,
+              SystemConfiguration::Variable.get_value('booking.renting_availability_mode','product'))
                     
           load_page :period_occupation
 
@@ -393,20 +396,20 @@ module Sinatra
             locals.store(:product_family, product_family)
           end
 
-          date = Date.today
+          @date = Date.today
           category = ::Yito::Model::Booking::BookingCategory.first
-          category_code = category ? category.code : nil
+          @category_code = category ? category.code : nil
 
           if params[:date]
             begin
-              date = DateTime.strptime(params[:date], '%Y-%m-%d')
+              @date = DateTime.strptime(params[:date], '%Y-%m-%d')
             rescue
               logger.error("date not valid #{params[:date]}")
             end
           end
 
           if params[:category]
-            category_code = params[:category]
+            @category_code = params[:category]
           end
           
           options = {}
@@ -415,7 +418,7 @@ module Sinatra
           end
           options.store(:locals, locals)
 
-          @reservations = BookingDataSystem::Booking.occupation_detail(date, category_code)
+          @reservations = BookingDataSystem::Booking.occupation_detail(@date, @category_code)
           load_page :occupation_detail, options
 
         end  
@@ -430,14 +433,16 @@ module Sinatra
           @month = params[:month].to_i == 0 ? today.month : params[:month].to_i
           @year = params[:year].to_i == 0 ? today.year : params[:year].to_i
           @product = params[:product]
-          @mode = params[:mode]
 
           @period = Date.civil(@year, @month)
           @next_period = @period >> 1
           @previous_period = @period << 1
 
           @days = Date.civil(@year, @month, -1).day
-          @data = BookingDataSystem::Booking.monthly_occupation(@month, @year, @product, @mode)
+          @data = BookingDataSystem::Booking.monthly_occupation(@month,
+             @year, 
+             @product, 
+             SystemConfiguration::Variable.get_value('booking.renting_availability_mode','product'))
           
           load_page :monthly_occupation
 

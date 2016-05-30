@@ -687,12 +687,14 @@ module Sinatra
 
           if booking_line_resource = BookingDataSystem::BookingLineResource.get(params[:id].to_i)
             if booking_item = ::Yito::Model::Booking::BookingItem.get(params[:booking_item_reference])
+              booking_line_resource.booking_item_category = booking_item.category.code if booking_item.category
               booking_line_resource.booking_item_reference = booking_item.reference
               booking_line_resource.booking_item_stock_model = booking_item.stock_model
               booking_line_resource.booking_item_stock_plate = booking_item.stock_plate
               booking_line_resource.booking_item_characteristic_1 = booking_item.characteristic_1
               booking_line_resource.booking_item_characteristic_2 = booking_item.characteristic_2
-              booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3              
+              booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3
+              booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4              
               booking_line_resource.save
               content_type :json
               booking_line_resource.to_json
@@ -1349,12 +1351,14 @@ module Sinatra
             booking_item_reference = data.delete(:booking_item_reference)
             if booking_item_reference != booking_line_resource.booking_item_reference
               if booking_item = ::Yito::Model::Booking::BookingItem.get(booking_item_reference) 
+                booking_line_resource.booking_item_category = booking_item.category.code if booking_item.category
                 booking_line_resource.booking_item_reference = booking_item.reference
                 booking_line_resource.booking_item_stock_model = booking_item.stock_model
                 booking_line_resource.booking_item_stock_plate = booking_item.stock_plate
                 booking_line_resource.booking_item_characteristic_1 = booking_item.characteristic_1
                 booking_line_resource.booking_item_characteristic_2 = booking_item.characteristic_2
-                booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3              
+                booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3
+                booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4              
               end
             end
             booking_line_resource.attributes = data

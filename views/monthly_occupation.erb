@@ -13,13 +13,11 @@
 </div>
 <div class="top-margin bottom-margin-1line">
 	<div class="more_contrast_text centered_text top-margin-1line bottom-margin-2lines">
-		<span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@previous_period.month%>&year=<%=@previous_period.year%>&mode=<%=@mode%>">&lt;</a></span>
+		<span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@previous_period.month%>&year=<%=@previous_period.year%>">&lt;</a></span>
 		<span class="all-space">
 		  <span id="month" class="left-margin"><%=@month%></span> - <span id="year" class="right-margin"><%=@year%></span>
 	    </span>
-		<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@next_period.month%>&year=<%=@next_period.year%>&mode=<%=@mode%>">&gt;</a></span>
-    <span class="all-space left-margin color-2"><%=@mode=='stock' ? 'ocupación x stock asignado' : 'ocupación x producto reservado'%></span>
-    <span id="mode" class="all-space left-margin over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@month%>&year=<%=@year%>&mode=<%=@mode=='stock'?'product':'stock'%>"><%=@mode=='stock' ? 'cambiar a ocupación x producto reservado' : 'cambiar a ocupación x stock asignado'%></a></span>    
+		<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@next_period.month%>&year=<%=@next_period.year%>">&gt;</a></span> 
 	</div>
 </div>
 <div class="admin_content_wrapper">
@@ -40,11 +38,15 @@
           <% occupation.each do |day, value| %>
             <% x, y = value.split('/') %>
             <% percentage = x.to_f / y.to_f * 100 %>
-            <td class="table-cell centered_text" <% if percentage >= 100 %>style="background:red; color: white"<%elsif percentage >= 75 and !percentage.infinite?%>style="background:orange"<%elsif percentage > 0 and !percentage.infinite?%>style="background:yellow"<%end%>><%= (percentage.nan? or percentage.infinite?) ? "-" : "#{value}" %></td>
+            <% date = Date.new(@year, @month, day) %>
+            <td class="table-cell centered_text occupation-detail" <% if percentage >= 100 %>style="background:red; color: white; cursor: hand; cursor: pointer; font-weight: 400"<%elsif percentage >= 75 and !percentage.infinite?%>style="background:orange; cursor: hand; cursor: pointer; font-weight: 400"<%elsif percentage > 0 and !percentage.infinite?%>style="background:yellow; cursor: hand; cursor: pointer; font-weight: 400"<%end%> <%if percentage > 0%>data-url="/admin/booking/occupation-detail?date=<%=date%>&category=<%=product%>&layout=no"<%end%>><%= (percentage.nan? or percentage.infinite?) ? "-" : "#{value}" %></td>
           <% end %>
         </tr>
         <% end %>
       </tbody>
     </table>
   </div>
+</div>
+
+<div id="occupation-detail" class="all-space" style="width:800px; height: 400px; background: white; overflow-y: scroll; font-size: 1em">
 </div>

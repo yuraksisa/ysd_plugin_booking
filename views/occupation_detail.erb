@@ -15,7 +15,11 @@
     <div class="all-border-solid-light top-margin-1line">
          <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
     </div>
-    <% else %>    
+    <% else %>
+      <div class="guiblock">
+        <div><strong><%=t.occupation_detail.date%>:</strong> <%=@date.strftime('%d.%m.%Y')%>
+        &nbsp;<strong><%=t.occupation_detail.product%>:</strong> <%=@category_code%></div>  
+      </div>   
       <table id="table" class="table">
         <thead class="table-header">
           <tr>
@@ -33,7 +37,7 @@
           <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_from%><% end %></td>
           <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_to%><%end%></td>
           <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
-          <td class="table-cell"><%=reservation.item_id%> - <%=reservation.booking_item_reference%></td>
+          <td class="table-cell"><%if reservation.booking_item_reference.nil?%><strong><%=t.occupation_detail.not_assigned%></strong><%else%><%=reservation.booking_item_category ? reservation.booking_item_category : reservation.item_id%> - <%=reservation.booking_item_reference%><%end%> <%if reservation.item_id != reservation.booking_item_category%>(<%=t.occupation_detail.requested(reservation.item_id)%>)<%end%></td>
         </tr>
         <% end %>
         </tbody>

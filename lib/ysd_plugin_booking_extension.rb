@@ -250,7 +250,7 @@ module Huasi
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.renting_availability_mode'},
         {:value => 'product',
-         :description => 'Availability mode: product, resource',
+         :description => 'Availability mode: product, stock',
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(

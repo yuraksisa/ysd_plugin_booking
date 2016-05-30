@@ -1019,5 +1019,10 @@ period_occupation:
   title: Comprobar disponibilidad
   summary: Resumen
   detail: Detalle
-occupation_detail: 
-  summary: Hay <strong>%1</strong> productos reservados 
+occupation_detail:
+  title: Detalle ocupación
+  date: Fecha
+  product: Producto 
+  requested: Solicitado %1 
+  summary: Hay <strong>%1</strong> productos reservados
+  not_assigned: No asignado 

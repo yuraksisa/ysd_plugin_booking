@@ -354,7 +354,7 @@ require(['YSDSpreadSheet', 'ysdtemplate', 'YSDEventTarget', 'jquery',
     },
 
     newPrereservationClick: function() { // New prereservation button click
-       $('#prereservation_container form[name=element]').reset();
+       $('#prereservation_container form[name=element]')[0].reset();
        // Prepare controls
        $('#id').val(null);
        $('#date_from').datepicker("setDate", new Date()); 
