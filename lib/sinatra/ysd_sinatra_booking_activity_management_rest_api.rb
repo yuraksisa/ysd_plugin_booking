@@ -34,14 +34,12 @@ module Sinatra
 
         end
 
-
         #                    
         # Query booking activity
         #
         ["/api/booking-activities","/api/booking-activities/page/:page"].each do |path|
           
-          app.post path do
-
+          app.post path, :allowed_usergroups => ['booking_manager', 'staff'] do
             page = [params[:page].to_i, 1].max  
             page_size = 20
             offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:code.asc]} 
@@ -72,7 +70,7 @@ module Sinatra
         #
         # Get booking activities
         #
-        app.get "/api/booking-activities" do
+        app.get "/api/booking-activities", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           data = if params[:all] and params[:all] == 'yes'
                    ::Yito::Model::Booking::Activity.all(active: true)
@@ -89,7 +87,7 @@ module Sinatra
         #
         # Get a booking activity
         #
-        app.get "/api/booking-activity/:id" do
+        app.get "/api/booking-activity/:id", :allowed_usergroups => ['booking_manager', 'staff'] do
         
           data = ::Yito::Model::Booking::Activity.get(params['id'])
           
@@ -103,7 +101,7 @@ module Sinatra
         # Create a new booking activity
         #
         #
-        app.post "/api/booking-activity" do
+        app.post "/api/booking-activity", :allowed_usergroups => ['booking_manager', 'staff'] do
         
           request_data = body_as_json(::Yito::Model::Booking::Activity)
           
@@ -125,7 +123,7 @@ module Sinatra
         #
         # Updates a booking activity
         #
-        app.put "/api/booking-activity" do
+        app.put "/api/booking-activity", :allowed_usergroups => ['booking_manager', 'staff'] do
           
           data_request = body_as_json(::Yito::Model::Booking::Activity)
 
@@ -147,7 +145,7 @@ module Sinatra
         #
         # Deletes a booking activity
         #
-        app.delete "/api/booking-activity" do
+        app.delete "/api/booking-activity", :allowed_usergroups => ['booking_manager', 'staff'] do
         
           data_request = body_as_json(::Yito::Model::Booking::Activity)
           

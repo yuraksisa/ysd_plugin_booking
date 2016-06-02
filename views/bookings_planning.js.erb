@@ -31,6 +31,25 @@ require(['YSDSpreadSheet', 'ysdtemplate', 'YSDEventTarget', 'jquery',
      year:new Date().getFullYear(),
      events: new EventTarget(),
 
+     getDateFrom: function() {
+        var date = new Date(this.year, this.month-1, 1);
+        return date;
+     },
+
+     getDateTo: function() {
+        var date = new Date(this.year, this.month, 0);
+        return date;
+     },
+
+     isInPeriod: function(dateFrom, dateTo) {
+        var from = this.getDateFrom();
+        var to = this.getDateTo();
+        return (dateFrom <= from && dateTo >= from) ||
+               (dateFrom <= to && dateTo >= to) ||
+               (dateFrom <= from && dateTo >= to) ||
+               (dateFrom >= from && dateTo <= to);
+     },
+
      addListener: function(type, listener) { /* addListener */
        this.events.addEventListener(type, listener); 
      },
@@ -267,6 +286,7 @@ require(['YSDSpreadSheet', 'ysdtemplate', 'YSDEventTarget', 'jquery',
 
     createPrereservation: function() {
         var formdata = $('form[name="element"]').formParams(true);
+        delete formdata.id;
         var json_request = JSON.stringify(formdata);      
         $.ajax({
                type: 'POST',
@@ -726,6 +746,11 @@ require(['YSDSpreadSheet', 'ysdtemplate', 'YSDEventTarget', 'jquery',
     },
 
     loadPrereservationInTable: function(prereservation) {
+      
+      if (!planningModel.isInPeriod(prereservation.date_from, prereservation.date_to)) {
+        return;
+      }
+
       var template = tmpl('script_prereservation_line');
       var row = template({entity: planningModel.booking_prereservationsHash[prereservation.id], 
                             formatter: formatter});
@@ -747,6 +772,10 @@ require(['YSDSpreadSheet', 'ysdtemplate', 'YSDEventTarget', 'jquery',
       if (!prereservation.planning) {
         return;
       }
+
+      if (!planningModel.isInPeriod(prereservation.date_from, prereservation.date_to)) {
+        return;
+      }      
 
       planning = prereservation.planning;
 

@@ -419,6 +419,12 @@ module Sinatra
           options.store(:locals, locals)
 
           @reservations = BookingDataSystem::Booking.occupation_detail(@date, @category_code)
+
+          @items = ::Yito::Model::Booking::BookingItem.all(category_code: @category_code).map { |item| item.reference } 
+          @reservation_items = @reservations.map { |r| r.booking_item_reference }
+          @available_items = @items - @reservation_items
+
+
           load_page :occupation_detail, options
 
         end  

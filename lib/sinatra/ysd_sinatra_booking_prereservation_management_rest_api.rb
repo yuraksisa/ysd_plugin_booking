@@ -1,6 +1,6 @@
 module Sinatra
   module YitoExtension
-    module BookingActivityManagementRESTApi
+    module BookingPrereservationManagementRESTApi
 
       def self.registered(app)
 
@@ -108,6 +108,9 @@ module Sinatra
           
           begin
             data = BookingDataSystem::BookingPrereservation.new(request_data)
+            if booking_item = ::Yito::Model::Booking::BookingItem.get(data.booking_item_reference)
+              data.booking_item_category = booking_item.category.code if booking_item.category
+            end
             data.save
           rescue DataMapper::SaveFailureError => error
             p "Error saving booking prereservation. #{data.inspect} #{data.errors.inspect}"
@@ -131,6 +134,9 @@ module Sinatra
           if data = BookingDataSystem::BookingPrereservation.get(data_request.delete(:id))     
             begin
               data.attributes=(data_request)  
+              if booking_item = ::Yito::Model::Booking::BookingItem.get(data.booking_item_reference)
+                data.booking_item_category = booking_item.category.code if booking_item.category and booking_item.category.code != data.booking_item_category
+              end              
               data.save
             rescue DataMapper::SaveFailureError => error
               p "Error updating booking prereservation. #{data.inspect} #{data.errors.inspect}"

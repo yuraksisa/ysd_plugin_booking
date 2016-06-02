@@ -17,7 +17,7 @@
  } 
 </style>
 <div class="top-navigation-bar">
-<h2 class="entity-title">Ocupación mensual</h2>
+<h2 class="entity-title"><%=t.monthly_occupation.title%></h2>
 </div>
 <div class="top-margin bottom-margin-1line">
 	<div class="more_contrast_text centered_text top-margin-1line bottom-margin-2lines">
@@ -40,19 +40,28 @@
         </tr>
       </thead>
       <tbody>
+        <% total_x = 0 %>
+        <% total_y = 0 %>
         <% @data.each do |product, occupation| %>        
         <tr>
           <td class="table-cell"><%= product %></td>
           <% occupation.each do |day, value| %>
-            <% x, y = value.split('/') %>
+            <% x, y = value[:occupation].split('/') %>
+            <% total_x = total_x + x.to_f %>
+            <% total_y = total_y + y.to_f %>
             <% percentage = x.to_f / y.to_f * 100 %>
             <% date = Date.new(@year, @month, day) %>
-            <td class="table-cell centered_text occupation-detail" <% if percentage >= 100 %>style="background:red; color: white; cursor: hand; cursor: pointer; font-weight: 400"<%elsif percentage >= 75 and !percentage.infinite?%>style="background:orange; cursor: hand; cursor: pointer; font-weight: 400"<%elsif percentage > 0 and !percentage.infinite?%>style="background:yellow; cursor: hand; cursor: pointer; font-weight: 400"<%end%> <%if percentage > 0%>data-url="/admin/booking/occupation-detail?date=<%=date%>&category=<%=product%>&layout=no"<%end%>><%= (percentage.nan? or percentage.infinite?) ? "-" : "#{value}" %></td>
+            <td class="table-cell centered_text occupation-detail" <% if percentage >= 100 %>style="background:red; color: white; cursor: hand; cursor: pointer; font-weight: 400"<%elsif percentage >= 75 and !percentage.infinite?%>style="background:orange; cursor: hand; cursor: pointer; font-weight: 400"<%elsif percentage > 0 and !percentage.infinite?%>style="background:yellow; cursor: hand; cursor: pointer; font-weight: 400"<%end%> <%if percentage > 0%>data-url="/admin/booking/occupation-detail?date=<%=date%>&category=<%=product%>&layout=no"<%end%>><%= (percentage.nan? or percentage.infinite?) ? "-" : "#{value[:occupation]}" %></td>
           <% end %>
         </tr>
         <% end %>
       </tbody>
     </table>
+  </div>
+  <div class="guiblock">
+    <div class="centered_text">
+       <%=t.monthly_occupation.summary%> <span class="more_contrast_text"><%=(total_x / total_y * 100).round(2)%>%</span> (<%=total_x.to_i%>/<%=total_y.to_i%>)
+    </div>
   </div>
 </div>
 

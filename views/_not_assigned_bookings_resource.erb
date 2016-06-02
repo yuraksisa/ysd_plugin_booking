@@ -6,15 +6,17 @@
               <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
               <input type="hidden" name="booking_resource_idx" value="<%%=resourceIdx%>"/>
               <input type="hidden" name="id" value="<%%=item.id%>"/>
-              <select name="booking_item_reference" class="fieldcontrol" rel="<%%=item.id%>">
+              <select name="booking_item_reference" class="fieldcontrol item-reference" rel="<%%=item.id%>">
                  <%% for (var idx=0;idx<item_resources.length;idx++) { %>
-                    <option value="<%%=item_resources[idx]%>" <%% if (item_resources[idx]==item.booking_item_reference){%>selected="selected" <%%}%> ><%%=item_resources[idx]%></option>
+                    <option value="<%%=item_resources[idx]%>" style="background:red; color:white" <%% if (item_resources[idx]==item.booking_item_reference){%>selected="selected" <%%}%> ><%%=item_resources[idx]%></option>
                  <%% } %>    
                  <%% if (item_resources.indexOf(item.booking_item_reference) == -1) { %>
                     <option value="<%%=item.booking_item_reference%>" selected="selected"><%%=item.booking_item_reference%></option>
                  <%% } %>       
               </select>
-              <button type="button" class="reassign_button form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
+              <div>
+                <button type="button" class="reassign_button form-button blue-button"><%=t.not_assigned_bookings.form.reassign%></button>
+              </div>
             </div>
           </form>
           <%% } %>
@@ -25,7 +27,7 @@
               <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
               <input type="hidden" name="booking_resource_idx" value="<%%=resourceIdx%>"/>
               <input type="hidden" name="id" value="<%%=item.id%>"/>
-              <select name="booking_item_reference" class="fieldcontrol" rel="<%%=item.id%>">
+              <select name="booking_item_reference" class="fieldcontrol item-reference" rel="<%%=item.id%>">
                  <%% for (var idx=0;idx<allResources.length;idx++) { %>
                     <option value="<%%=allResources[idx]%>" <%% if (allResources[idx]==item.booking_item_reference){%>selected="selected" <%%}%> ><%%=allResources[idx]%></option>
                  <%% } %> 

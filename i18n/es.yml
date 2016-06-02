@@ -1019,10 +1019,19 @@ period_occupation:
   title: Comprobar disponibilidad
   summary: Resumen
   detail: Detalle
+monthly_occupation:
+  title: Ocupación mensual
+  summary: Ocupación total
 occupation_detail:
   title: Detalle ocupación
   date: Fecha
   product: Producto 
   requested: Solicitado %1 
-  summary: Hay <strong>%1</strong> productos reservados
-  not_assigned: No asignado 
+  summary: Hay <strong>%1</strong> reservas
+  not_assigned: No asignado
+  prereservation: Bloqueado 
+  available_stock: Stock disponible
+  not_available_stock: No hay productos disponibles
+  available_stock_summary: !!pl
+    1: Hay <strong>%1</strong> producto disponible
+    n: Hay <strong>%1</strong> productos disponibles 

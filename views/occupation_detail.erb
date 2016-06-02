@@ -10,13 +10,14 @@
  }
 </style>
 <div class="admin_content_wrapper all-space">
+  <h2><%=t.occupation_detail.title%></h2>
   <div>
     <% if @reservations.empty? %>
     <div class="all-border-solid-light top-margin-1line">
          <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
     </div>
     <% else %>
-      <div class="guiblock">
+      <div class="guiblock all-space">
         <div><strong><%=t.occupation_detail.date%>:</strong> <%=@date.strftime('%d.%m.%Y')%>
         &nbsp;<strong><%=t.occupation_detail.product%>:</strong> <%=@category_code%></div>  
       </div>   
@@ -33,7 +34,13 @@
         <tbody>      
         <% @reservations.each do |reservation| %>  
         <tr class="table-row">
-          <td class="table-cell right_text"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
+          <td class="table-cell right_text">
+            <% if reservation.origin == 'booking' %>
+            <a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a>
+            <% else %>
+            <%=t.occupation_detail.prereservation%>
+            <% end %>
+          </td>
           <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_from%><% end %></td>
           <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_to%><%end%></td>
           <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
@@ -46,5 +53,20 @@
         <p class="right_text"><%=t.occupation_detail.summary(@reservations.size)%></p>
       </div>
     <% end %>
+    <h3><%=t.occupation_detail.available_stock%></h3>
+    <% if !@available_items.nil? and !@available_items.empty? %>
+      <div><%= t.occupation_detail.available_stock_summary(@available_items.size) %></div>
+      <div>
+      <% @available_items.each do |ai| %>
+        <div class="grid_3">
+          <div class="all-space guiblock">
+           <%= ai %>
+          </div>
+        </div>
+      <% end %>
+      </div>
+    <% else %>
+      <div><%= t.occupation_detail.not_available_stock %></div>
+    <% end %>    
   </div>
 </div>

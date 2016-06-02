@@ -1,5 +1,5 @@
 define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget', 
-       'jquery', 'jquery.formparams'], 
+       'jquery', 'jquery.formparams', 'jquery.ui'], 
   function(tmpl, ysdFormatter, EventTarget, $) {
 
   confirmedBookingsModel = {
@@ -228,6 +228,7 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget',
       else {
         $(control).html('<%= t.not_assigned_bookings.table.show_stock %>');
       }      
+
     }
 
   };
@@ -262,13 +263,15 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget',
              if (confirmedBookingsModel.filter == 'all' || 
                  (confirmedBookingsModel.filterBookings instanceof Array &&
                  confirmedBookingsModel.filterBookings.indexOf(confirmedBookingsModel.data[i].id)>-1)) {
-               result += template({entity: confirmedBookingsModel.data[i], 
+               result += template(
+                 {entity: confirmedBookingsModel.data[i], 
                   resources: confirmedBookingsModel.resources,
                   allResources: confirmedBookingsModel.allResources,
                   formatter: ysdFormatter});
              }
           }
-          $('#elements_tbody').html(result);       
+          $('#elements_tbody').html(result);  
+
           $('.assign_button').unbind('click');
           $('.assign_button').bind('click', function() {
             confirmedBookingsController.assignButtonClick($(this)[0]);
@@ -284,10 +287,9 @@ define('confirmedBooking', ['ysdtemplate', 'YSDFormatter', 'YSDEventTarget',
           });
           $('.stock_show').bind('click', function(event) {
             confirmedBookingsController.stockShowClick($(this)[0]);
-          })
+          });
 
     }
-
   };
 
   confirmedBookings = {
