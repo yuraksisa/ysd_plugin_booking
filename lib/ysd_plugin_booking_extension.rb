@@ -466,7 +466,9 @@ module Huasi
             menu_locals.store(:booking_activities, 
               SystemConfiguration::Variable.get_value('booking.activities','false').to_bool) 
             menu_locals.store(:booking_renting, 
-              SystemConfiguration::Variable.get_value('booking.renting','false').to_bool)                      
+              SystemConfiguration::Variable.get_value('booking.renting','false').to_bool)
+            menu_locals.store(:booking_availability_mode,
+              SystemConfiguration::Variable.get_value('booking.renting_availability_mode','product'))                      
             app.partial(:booking_menu, :locals => menu_locals)
           elsif booking_mode == 'restaurant'
             app.partial(:booking_menu_restaurant)

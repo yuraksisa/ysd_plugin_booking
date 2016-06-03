@@ -40,8 +40,11 @@
         <li><a href='/admin/booking/reports/pending-confirmation'><%=t.booking_console.report_pending_confirmation%></a></li>
         <li><a href='/admin/booking/planning'><%=t.booking_console.planning%></a></li>    
         <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%></a></li>
+        <% if booking_availability_mode == 'product' %>
         <li><a href="/admin/booking/period-occupation"><%=t.booking_console.check_availability%></a></li>
-        <li><a href='/admin/booking/resources-occupation'>Disponibilidad stock</a></li>         
+        <% elsif booking_availability_mode == 'stock' %>
+        <li><a href='/admin/booking/resources-occupation'><%=t.booking_console.check_availability%></a></li>  
+        <% end %>    
         <li><a href='/admin/booking/monthly-occupation'><%=t.booking_console.monthly_occupation%></a></li>
         <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>     
         <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>                          

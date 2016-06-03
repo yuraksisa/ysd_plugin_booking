@@ -50,7 +50,7 @@
       <tbody>
         <tr>
           <% @summary.values.each do |value| %>
-            <td class="table-cell centered_text" scope="col" style="<%if value[:occupation]<value[:stock]%>background:green; color:white<%else%>background:red; color: white<%end%>"><%=value[:occupation]%>/<%=value[:stock]%></td>
+            <td class="table-cell centered_text" scope="col" style="<%if value[:occupation]<value[:stock]%>background:green; color:white<%else%>background:red; color: white<%end%>"><%=value[:stock] - value[:occupation]%>/<%=value[:stock]%></td>
           <% end %>
         </tr>
       </tbody>

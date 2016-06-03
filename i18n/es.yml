@@ -153,7 +153,7 @@ booking_console:
   prices: Precios
   reservations: Reservas
   planning: Planning 
-  monthly_occupation: Ocupación mensual
+  monthly_occupation: Ocupación
   check_availability: Disponibilidad   
   period: Período
   requested: Solicitudes
@@ -1020,7 +1020,7 @@ period_occupation:
   summary: Resumen
   detail: Detalle
 monthly_occupation:
-  title: Ocupación mensual
+  title: Ocupación
   summary: Ocupación total
 occupation_detail:
   title: Detalle ocupación
