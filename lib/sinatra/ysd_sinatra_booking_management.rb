@@ -453,6 +453,37 @@ module Sinatra
           load_page :monthly_occupation
 
         end
+         
+        #
+        # Check the resources occupation
+        # 
+        app.get '/admin/booking/resources-occupation', :allowed_usergroups => ['booking_manager','staff'] do 
+
+          @date_from = Date.today
+          @date_to = Date.today + 7
+
+          if params[:from]
+            begin
+              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:to]}")
+            end
+          end   
+
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          @data,@detail = BookingDataSystem::Booking.resources_occupation(@date_from, @date_to)
+          
+          load_page :resources_occupation
+
+        end
 
         # ------------------- Contract --------------------
 
@@ -474,6 +505,26 @@ module Sinatra
            end
 
         end         
+
+        # ------------------- Assign stock ----------------
+
+        #
+        # Assign stock
+        #
+        app.get '/admin/booking/assign-stock/:id', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if @booking_line_resource = BookingDataSystem::BookingLineResource.get(params[:id])
+            @booking = @booking_line_resource.booking_line.booking
+            @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+            @data,@detail = BookingDataSystem::Booking.resources_occupation(
+              @booking.date_from, @booking.date_to,
+              @booking_line_resource.booking_item_category || @booking_line_resource.booking_line.item_id)
+            load_page :booking_line_resource_assign_stock
+          else
+            status 404
+          end
+        end
+
 
         # ------------------- Reports ---------------------
 

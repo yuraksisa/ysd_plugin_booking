@@ -30,6 +30,14 @@ module Sinatra
 
       end
 
+      #
+      # Get the booking occupation for the dates
+      #
+      # @params[Hash]
+      #
+      #   from : Date from
+      #   to   : Date to
+      #
       def booking_occupation(params)
 
         if params['from'].nil? or params['to'].nil?

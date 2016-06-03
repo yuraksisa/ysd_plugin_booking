@@ -1,0 +1,122 @@
+<style>
+ 
+ .table {
+   table-layout: fixed;
+   border: 1px solid #EEE;
+ }
+
+ .table .table-cell {
+   border-right: 1px solid #EEE;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Ocupación de recursos</h2>
+</div>
+<div class="admin_content_wrapper all-space">
+
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="report_charges_form" action="/admin/booking/resources-occupation" method="get">
+        <div class="formrow">
+          <div style="display: inline-block">
+            <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+    <h3>Resumen</h3>
+
+    <table id="table" class="table">
+      <thead class="table-header">
+        <tr>
+          <% @detail.keys.each do |product| %>
+            <th class="table-cell" scope="col" style="width:1em"><%=product%></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <% @detail.values.each do |value| %>
+            <td class="table-cell centered_text" scope="col" style="<%if value[:occupation]<value[:stock]%>background:green; color:white<%else%>background:red; color: white<%end%>"><%=value[:occupation]%>/<%=value[:stock]%></td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Stock disponible</h3>
+
+    <% @detail.each do |product, value| %>
+      <% unless value[:available_stock].empty? %>
+        <h4><%=product%></h4>
+        <div class="container_12">
+          <% value[:available_stock].each do |v| %>
+          <div class="grid_3">
+            <div class="guiblock"><%=v%></div>
+          </div> 
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <h3>Detalle</h3>
+
+  <div>  
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:80px">Producto</th>
+            <th class="table-cell" scope="col" style="width:120px">Stock</th>
+            <th class="table-cell" scope="col">Ocupación</th>
+          </tr>
+        </thead>
+        <tbody>      
+        <% @data.each do |id, detail| %>  
+        <tr class="table-row">
+          <td class="table-cell centered_text">
+            <span <% if detail[:available] %>style="color:green"<% else %>style="color:red"<%end%>><%=detail[:category]%></span>            
+          </td>
+          <td class="table-cell">
+            <span <% if detail[:available] %>style="color:green"<% else %>style="color:red"<%end%>><%=id%></span>
+          </td>
+          <td class="table-cell">
+             <% if detail[:detail].size > 0 %>
+
+               <table class="table">
+                 <thead class="table-header">
+                   <tr>
+                     <th class="table-cell" scope="col" style="width:80px">Id</th>
+                     <th class="table-cell" scope="col" style="width:150px">Info</th>
+                     <th class="table-cell" scope="col" style="width:150px">Fecha inicio</th>
+                     <th class="table-cell" scope="col" style="width:150px">Fecha fin</th>
+                   </tr>
+                 </thead>
+                 <tbody>  
+                   <% detail[:detail].each do |item| %>
+                     <tr>
+                       <td class="table-cell"><%= item.id %></td>
+                       <td class="table-cell"><%= item.title%></td>
+                       <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
+                       <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>
+                     </tr>      
+                   <% end %>
+                 </tbody>
+               </table>
+             <% end %>
+          </td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+  </div>
+</div>

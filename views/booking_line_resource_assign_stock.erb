@@ -1,0 +1,84 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   font-size: 0.85em;
+ }
+</style>
+<div class="admin_content_wrapper all-space">
+  <h2>Asignación stock</h2>
+  <div>
+      <div class="guiblock all-space">
+        <div class="container_12">
+        <div  class="grid_6">
+          <div>
+            <strong class="entity-fieldlabel less_contrast_text">Reserva:</strong> <%=@booking.id%>
+          </div>
+          <div>
+            <strong class="entity-fieldlabel less_contrast_text">Entrega:</strong> <%=@booking.date_from.strftime('%d.%m.%Y')%> <%if @product_family.time_to_from%> <%=@booking.time_from %><% end %>
+          </div>
+          <div>
+            <strong class="entity-fieldlabel less_contrast_text">Devolución:</strong> <%=@booking.date_to.strftime('%d.%m.%Y')%> <%if @product_family.time_to_from%><%=@booking.time_to %> <% end %>         
+          </div>
+          <% if @product_family.named_resources %>  
+          <div>
+             <strong class="entity-fieldlabel less_contrast_text">Nombre:</strong> <%=@booking_line_resource.resource_user_name%> <%=@booking_line_resource.resource_user_surname%>
+          </div>
+          <% end %>
+          <% if @product_family.height or @product_family.weight %>
+          <div>
+             <strong class="entity-fieldlabel less_contrast_text">Altura:</strong> <%=@booking_line_resource.customer_height%>
+             <strong class="entity-fieldlabel less_contrast_text">Peso:</strong> <%=@booking_line_resource.customer_weight%>
+          </div>
+          <% end %>
+        </div>
+        </div>
+      </div>   
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:0.5em"></th>
+            <th class="table-cell" scope="col" style="width:2em">Recurso</th>
+            <th class="table-cell" scope="col" style="width:3em">Ocupación</th>
+          </tr>
+        </thead>
+        <tbody>      
+        <% @data.each do |id, detail| %>  
+        <tr class="table-row">
+          <td class="table-cell right_text">
+          </td>
+          <td class="table-cell">
+            <span <% if detail[:available] %>style="color:green"<% else %>style="color:red"<%end%>><%=detail[:category]%> - <%=id%></span>
+          </td>
+          <td class="table-cell">
+             <% if detail[:detail].size > 0 %>
+
+               <table class="table">
+                 <thead class="table-header">
+                   <tr>
+                     <th class="table-cell" scope="col" style="width:80px">Id</th>
+                     <th class="table-cell" scope="col" style="width:150px">Info</th>
+                     <th class="table-cell" scope="col" style="width:150px">Fecha inicio</th>
+                     <th class="table-cell" scope="col" style="width:150px">Fecha fin</th>
+                   </tr>
+                 </thead>
+                 <tbody>  
+                   <% detail[:detail].each do |item| %>
+                     <td class="table-cell"><%= item.id %></td>
+                     <td class="table-cell"><%= item.title%></td>
+                     <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
+                     <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>    
+                   <% end %>
+                 </tbody>
+               </table>
+             <% end %>
+          </td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+  </div>
+</div>
