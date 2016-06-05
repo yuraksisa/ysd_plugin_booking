@@ -55,11 +55,7 @@ booking_settings:
     calendar_mode:
       title: Modo calendario
       default: Por defecto
-      first_day: Primer día
-    availability_mode:
-      title: Modo disponibilidad
-      product: Producto
-      resource: Recurso (stock)       
+      first_day: Primer día    
     reservation_starts_with:
       title: Tipo formulario de reserva
       dates: Selección fechas (para 1 producto)

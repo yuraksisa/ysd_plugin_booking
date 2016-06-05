@@ -247,11 +247,6 @@ module Huasi
         {:value => 'first_day',
          :description => 'Calendar for season: first_day, default',
          :module => :booking})
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.renting_availability_mode'},
-        {:value => 'product',
-         :description => 'Availability mode: product, stock',
-         :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.adwords_active'},
@@ -467,8 +462,6 @@ module Huasi
               SystemConfiguration::Variable.get_value('booking.activities','false').to_bool) 
             menu_locals.store(:booking_renting, 
               SystemConfiguration::Variable.get_value('booking.renting','false').to_bool)
-            menu_locals.store(:booking_availability_mode,
-              SystemConfiguration::Variable.get_value('booking.renting_availability_mode','product'))                      
             app.partial(:booking_menu, :locals => menu_locals)
           elsif booking_mode == 'restaurant'
             app.partial(:booking_menu_restaurant)

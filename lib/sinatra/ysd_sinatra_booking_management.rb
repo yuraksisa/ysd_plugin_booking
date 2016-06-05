@@ -69,10 +69,6 @@ module Sinatra
                       :first_day =>  t.booking_settings.form.calendar_mode.first_day,
                       :default => t.booking_settings.form.calendar_mode.default
                     },
-                    :availability_modes => {
-                      :product => t.booking_settings.form.availability_mode.product,
-                      :stock => t.booking_settings.form.availability_mode.resource
-                    },
                     :reservation_starts_with => {
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
                        :categories => t.booking_settings.form.reservation_starts_with.categories,
@@ -351,38 +347,7 @@ module Sinatra
 
         end
 
-        # ------------------ Occupation ---------------------
-
-        app.get '/admin/booking/period-occupation', :allowed_usergroups => ['booking_manager','staff'] do
-
-          date_from = Date.today
-          date_to = Date.today + 7
-
-          if params[:from]
-            begin
-              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:from]}")
-            end
-          end
-
-          if params[:to]
-            begin
-              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:to]}")
-            end
-          end          
-
-          @summary, @data = BookingDataSystem::Booking.max_period_occupation(
-              date_from.to_date, 
-              date_to.to_date,
-              SystemConfiguration::Variable.get_value('booking.renting_availability_mode','product'))
-                    
-          load_page :period_occupation
-
-        end
-        
+        # ------------------ Occupation ---------------------        
         #
         # Occupation detail (date and category)
         #
@@ -447,8 +412,7 @@ module Sinatra
           @days = Date.civil(@year, @month, -1).day
           @data = BookingDataSystem::Booking.monthly_occupation(@month,
              @year, 
-             @product, 
-             SystemConfiguration::Variable.get_value('booking.renting_availability_mode','product'))
+             @product)
           
           load_page :monthly_occupation
 
