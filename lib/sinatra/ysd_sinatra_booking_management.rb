@@ -445,6 +445,9 @@ module Sinatra
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           @data,@detail = BookingDataSystem::Booking.resources_occupation(@date_from, @date_to)
           
+          p "data: #{@data.inspect}"
+          p "detail: #{@detail.inspect}"
+
           load_page :resources_occupation
 
         end

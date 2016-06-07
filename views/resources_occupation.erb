@@ -85,15 +85,25 @@
             <tr>
               <th class="table-cell" scope="col" style="width:80px">Id</th>
               <th class="table-cell" scope="col" style="width:150px">Info</th>
-              <th class="table-cell" scope="col" style="width:150px">Fecha inicio</th>
-              <th class="table-cell" scope="col" style="width:150px">Fecha fin</th>
+              <th class="table-cell" scope="col" style="width:50px">Producto</th>
+              <th class="table-cell" scope="col" style="width:150px">Detalle</th>
+              <th class="table-cell" scope="col" style="width:80px">Fecha inicio</th>
+              <th class="table-cell" scope="col" style="width:80px">Fecha fin</th>
             </tr>
           </thead>
           <tbody>  
             <% @detail[key][:assignation_pending].each do |item| %>
               <tr>
-                <td class="table-cell"><%= item.id %></td>
+                <td class="table-cell">
+                  <% if item.origin == 'booking' %>
+                  <a href="/admin/booking/bookings/<%=item.id%>"><%=item.id%></a>
+                  <% else %>
+                  <%= item.id %>
+                  <% end %>
+                </td>
                 <td class="table-cell"><%= item.title%></td>
+                <td class="table-cell"><%= item.item_id%></td>
+                <td class="table-cell"><%= item.detail%></td>
                 <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
                 <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>
               </tr> 
