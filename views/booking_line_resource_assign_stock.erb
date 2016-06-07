@@ -7,15 +7,31 @@
    border-right: 1px solid #EEE;
    font-size: 0.85em;
  }
+ .selected_blr {
+   background: rgba(214,200,121,0.17);
+   font-weight: bold;
+ }
+ .selected_resource {
+   background: rgba(214,200,121,0.17);
+ }
+ .same_booking {
+   background: yellow;
+ }
 </style>
+<div class="top-navigation-bar">
+<h2 class="entity-title">Asignación de stock</h2>
+</div>
 <div class="admin_content_wrapper all-space">
-  <h2>Asignación stock</h2>
   <div>
+    <div id="assign_stock_header">
       <div class="guiblock all-space">
         <div class="container_12">
         <div  class="grid_6">
           <div>
-            <strong class="entity-fieldlabel less_contrast_text">Reserva:</strong> <%=@booking.id%>
+            <strong class="entity-fieldlabel less_contrast_text">Reserva:</strong> <a href="/admin/booking/bookings/<%=@booking.id%>"><%=@booking.id%></a>
+          </div>
+          <div>
+            <strong class="entity-fieldlabel less_contrast_text">Cliente:</strong> <%=@booking.customer_name%> <%=@booking.customer_surname %>
           </div>
           <div>
             <strong class="entity-fieldlabel less_contrast_text">Entrega:</strong> <%=@booking.date_from.strftime('%d.%m.%Y')%> <%if @product_family.time_to_from%> <%=@booking.time_from %><% end %>
@@ -23,62 +39,149 @@
           <div>
             <strong class="entity-fieldlabel less_contrast_text">Devolución:</strong> <%=@booking.date_to.strftime('%d.%m.%Y')%> <%if @product_family.time_to_from%><%=@booking.time_to %> <% end %>         
           </div>
-          <% if @product_family.named_resources %>  
-          <div>
-             <strong class="entity-fieldlabel less_contrast_text">Nombre:</strong> <%=@booking_line_resource.resource_user_name%> <%=@booking_line_resource.resource_user_surname%>
-          </div>
-          <% end %>
-          <% if @product_family.height or @product_family.weight %>
-          <div>
-             <strong class="entity-fieldlabel less_contrast_text">Altura:</strong> <%=@booking_line_resource.customer_height%>
-             <strong class="entity-fieldlabel less_contrast_text">Peso:</strong> <%=@booking_line_resource.customer_weight%>
-          </div>
-          <% end %>
         </div>
         </div>
-      </div>   
-      <table id="table" class="table">
-        <thead class="table-header">
-          <tr>
-            <th class="table-cell" scope="col" style="width:0.5em"></th>
-            <th class="table-cell" scope="col" style="width:2em">Recurso</th>
-            <th class="table-cell" scope="col" style="width:3em">Ocupación</th>
-          </tr>
-        </thead>
-        <tbody>      
-        <% @data.each do |id, detail| %>  
-        <tr class="table-row">
-          <td class="table-cell right_text">
-          </td>
-          <td class="table-cell">
-            <span <% if detail[:available] %>style="color:green"<% else %>style="color:red"<%end%>><%=detail[:category]%> - <%=id%></span>
-          </td>
-          <td class="table-cell">
-             <% if detail[:detail].size > 0 %>
+      </div>
+    </div>
+    <div id="assign_stock_detail">  
+      <h3 class="highlight_block">Productos contratados</h3>
 
-               <table class="table">
-                 <thead class="table-header">
-                   <tr>
-                     <th class="table-cell" scope="col" style="width:80px">Id</th>
-                     <th class="table-cell" scope="col" style="width:150px">Info</th>
-                     <th class="table-cell" scope="col" style="width:150px">Fecha inicio</th>
-                     <th class="table-cell" scope="col" style="width:150px">Fecha fin</th>
-                   </tr>
-                 </thead>
-                 <tbody>  
-                   <% detail[:detail].each do |item| %>
-                     <td class="table-cell"><%= item.id %></td>
-                     <td class="table-cell"><%= item.title%></td>
-                     <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
-                     <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>    
-                   <% end %>
-                 </tbody>
-               </table>
-             <% end %>
-          </td>
-        </tr>
-        <% end %>
-        </tbody>
-      </table>
+      <form name="select_booking_line">  
+        <table id="table" class="table">
+          <thead class="table-header">
+            <tr>
+              <th class="table-cell" scope="col" style="width:100px">Producto</th>
+              <th class="table-cell" scope="col" style="width:100px">Cantidad</th>
+              <th class="table-cell" scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>   
+            <% @booking.booking_lines.each do |bl| %>
+              <tr>
+                <td class="table-cell centered_text"><%=bl.item_id%></td>
+                <td class="table-cell centered_text"><%=bl.quantity%></td>
+                <td class="table-cell">
+                  <table id="table" class="table">
+                    <thead class="table-header">
+                      <tr>
+                        <th class="table-cell" scope="col" style="width:30px"></th>
+                        <th class="table-cell" scope="col" style="width:150px">Referencia</th>
+                        <% if @product_family.named_resources%>
+                        <th class="table-cell" scope="col">Nombre</th>
+                        <% end %>
+                        <% if @product_family.height%>
+                        <th class="table-cell" scope="col" style="width: 100px">Altura</th>
+                        <% end %>
+                        <% if @product_family.weight%>
+                        <th class="table-cell" scope="col" style="width: 100px">Peso</th>
+                        <% end %>
+                      </tr>
+                    </thead>
+                    <tbody>   
+                      <% bl.booking_line_resources.each do |blr| %>
+                        <% selected = @booking_line_resource.id == blr.id %>
+                        <tr  <% if selected %>class="selected_blr"<%end%> >
+                          <td class="table-cell">
+                          <input type="radio" name="booking_item_reference" <%if selected%>checked="true"<% end %> style="width:20px" class="select_booking_line_resource" rel="<%=blr.id%>"></input>
+                          </td>
+                          <td class="table-cell"><%if blr.booking_item_reference.nil?%>NO ASIGNADO<%else%><%=blr.booking_item_reference%><%end%></td>
+                          <% if @product_family.named_resources%>
+                          <td class="table-cell"><%=blr.resource_user_name%> <%= blr.resource_user_surname %></td>
+                          <% end %>
+                          <% if @product_family.height%>
+                          <td class="table-cell"><%=blr.customer_height%></td>
+                          <% end %>
+                          <% if @product_family.weight%>
+                          <td class="table-cell"><%=blr.customer_weight%></td>
+                          <% end %>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                </td>   
+            <% end %>
+          </tbody>
+        </table>
+      </form>  
+    </div>
+    <div id="assign_stock_assignation">
+      <h3 class="guiblock"><%if @assigned%>Reasignar stock<%else%>Asignar stock<%end%></h3>  
+
+      <div class="all-space all-border-dotted">
+        <div class="container_12">
+        <div  class="grid_6">
+          <div>
+            <strong class="entity-fieldlabel less_contrast_text">Recurso asignado:</strong> <%if @booking_line_resource.booking_item_reference.nil?%>NO ASIGNADO<%else%><%=@booking_line_resource.booking_item_reference%><%end%>         
+          </div>
+          <div>
+            <strong class="entity-fieldlabel less_contrast_text">Nombre:</strong> <%=@booking_line_resource.resource_user_name%> <%=@booking_line_resource.resource_user_surname%>
+          </div>
+          <div>
+            <strong class="entity-fieldlabel less_contrast_text">Altura:</strong> <%=@booking_line_resource.customer_height%>
+          </div>
+          <div>
+            <strong class="entity-fieldlabel less_contrast_text">Peso:</strong> <%=@booking_line_resource.customer_weight%>         
+          </div>
+        </div>
+        </div>
+      </div>
+
+
+      <form name="assign_stock">
+        <input type="hidden" name="id" value="<%=@booking_line_resource.id%>"/>
+        <table id="table" class="table">
+          <thead class="table-header">
+            <tr>
+              <th class="table-cell" scope="col" style="width:30px"></th>
+              <th class="table-cell" scope="col" style="width:150px">Recurso</th>
+              <th class="table-cell" scope="col">Ocupación</th>
+            </tr>
+          </thead>
+          <tbody>      
+            <% @data.each do |id, detail| %>  
+              <% selected_resource = (!@booking_line_resource.booking_item_reference.nil? and @booking_line_resource.booking_item_reference == id) %>
+              <tr class="table-row <%if selected_resource%>selected_resource<%end%>">
+                <td class="table-cell right_text">
+                  <input type="radio" name="booking_item_reference" value="<%=id%>"
+                  <% if selected_resource %>checked="true"<%end%>/>
+                </td>
+                <td class="table-cell">
+                  <span <%if selected_resource%>style="color:black;font-weight:bold"<% elsif detail[:available] %>style="color:green"<% else %>style="color:red"<%end%>><%=detail[:category]%> - <%=id%></span>
+                </td>
+                <td class="table-cell">
+                  <% if detail[:detail].size > 0 %>
+                    <table class="table">
+                      <thead class="table-header">
+                        <tr>
+                          <th class="table-cell" scope="col" style="width:80px">Id</th>
+                          <th class="table-cell" scope="col" style="width:150px">Info</th>
+                          <th class="table-cell" scope="col" style="width:150px">Fecha inicio</th>
+                          <th class="table-cell" scope="col" style="width:150px">Fecha fin</th>
+                        </tr>
+                      </thead>
+                      <tbody>  
+                        <% detail[:detail].each do |item| %>
+                          <tr <%if item.id == @booking.id and item.origin == 'booking'%>class="same_booking"<%end%>>
+                            <td class="table-cell"><%= item.id %></td>
+                            <td class="table-cell"><%= item.title%></td>
+                            <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
+                            <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td> 
+                          </tr>   
+                        <% end %>
+                      </tbody>
+                    </table>
+                  <% else %>
+                    <div class="centered_text" style="color: green">Recurso disponible</div>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <div class="formrow">
+          <button id="assign_reassign_btn" class="form-button blue-button all-space" style="width: 100%" type="button"><%if @assigned%>Reasignar<%else%>Asignar<%end%></button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

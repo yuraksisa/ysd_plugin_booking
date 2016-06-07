@@ -1,5 +1,5 @@
      <div class="container_12">
-       <div class="grid_6">
+       <div class="grid_8">
              <div class="bottom-margin" style="border:1px solid #EEE">             
                      <table class="table">
                         <thead class="table-header">
@@ -72,9 +72,17 @@
                           <%% } %>
                         </tbody>
                       </table>
+                      <%% if (entity.booking_lines.length > 0 && entity.booking_lines[0].booking_line_resources.length > 0) {%>
+                      <div class="all-space">
+                        <div class="form-button orange-button">
+                          <a href="/admin/booking/assign-stock/<%%=entity.booking_lines[0].booking_line_resources[0].id%>">Asistente asignación stock</a>
+                        </div>
+                      </div>
+                      <%% } %>
+
                   </div>
        </div>
-       <div class="grid_6">
+       <div class="grid_4">
 
          <div class="left-margin bottom-margin all-space" style="border:1px solid #EEE">
             <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline"><%= t.booking_management.form.planning_color.title %></div>

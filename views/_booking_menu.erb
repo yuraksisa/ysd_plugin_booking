@@ -33,7 +33,7 @@
       </ul>    
    </li>    
    <% if booking_renting %>
-   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning','/admin/booking/monthly-occupation', '/admin/booking/reports/pickup-return','/admin/booking/reports/reservations','/admin/booking/reports/pending-confirmation','/admin/booking/reports/customers','/admin/booking/resources-occupation'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
+   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning','/admin/booking/monthly-occupation', '/admin/booking/reports/pickup-return','/admin/booking/reports/reservations','/admin/booking/reports/pending-confirmation','/admin/booking/reports/customers','/admin/booking/resources-occupation','/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
       <ul>
         <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>           
         <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>

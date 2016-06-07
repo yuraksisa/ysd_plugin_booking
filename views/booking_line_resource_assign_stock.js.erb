@@ -1,0 +1,41 @@
+assignResourceModel = {
+  assign: function(id, booking_item_reference) {
+    $.ajax({
+             type: 'POST',
+             url : '/api/booking/assign/'+id+'/'+booking_item_reference,
+             success: function(data, textStatus, jqXHR) {
+                alert('recurso asignado');
+                window.location.href='/admin/booking/assign-stock/'+id;
+             },
+             error: function(data, textStatus, jqXHR) {
+             	alert('Error asignando el recurso')
+             }
+          });
+  }
+};
+
+assignResourceController = {
+  selectBookingLineResourceChange: function(id) {
+  	window.location.href='/admin/booking/assign-stock/'+id;
+  },
+  assignReassignButtonClick: function() {
+    var id = $('form[name=assign_stock] input[name=id]').val();
+    var bookingItemReference = $('form[name=assign_stock] input[name=booking_item_reference]:checked').val();
+    assignResourceModel.assign(id, bookingItemReference);
+  }
+};
+
+assignResourceView = {
+
+  init: function() {
+    $('.select_booking_line_resource').bind('change', function(event) {
+      assignResourceController.selectBookingLineResourceChange($(this).attr('rel'));
+    });
+    $('#assign_reassign_btn').bind('click', function(event) {
+      assignResourceController.assignReassignButtonClick();
+    }); 
+  }
+
+};
+
+assignResourceView.init();

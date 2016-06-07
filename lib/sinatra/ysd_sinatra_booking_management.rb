@@ -483,6 +483,11 @@ module Sinatra
             @data,@detail = BookingDataSystem::Booking.resources_occupation(
               @booking.date_from, @booking.date_to,
               @booking_line_resource.booking_item_category || @booking_line_resource.booking_line.item_id)
+            p "category: #{@booking_line_resource.booking_item_category || @booking_line_resource.booking_line.item_id}"
+            p "c1: #{@booking_line_resource.booking_item_category} c2: #{@booking_line_resource.booking_line.item_id}"
+            p "data: #{@data.inspect}"
+            p "detail: #{@detail.inspect}"
+            @assigned = !@booking_line_resource.booking_item_reference.nil?
             load_page :booking_line_resource_assign_stock
           else
             status 404
