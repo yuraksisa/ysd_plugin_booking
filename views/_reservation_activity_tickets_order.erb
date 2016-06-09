@@ -1,0 +1,34 @@
+              <h4><%=t.activity.tickets%></h3>
+              <% rates = @activity.rates_hash(@date) %>
+              <div id="tickets" class="top-margin">
+                <% unless @activity.price_definition_1.nil? %>
+                <div>
+                  <select name="quantity_rate_1" id="quantity_rate_1" class="quantity_rate" style="width:99%">
+                    <option value="0" data-total="0"><%=t.activity.choose_tickets(@activity.price_1_description)%></option>
+                    <% (1..[10 - @order.item_quantity(@activity.code, 1), @activity.capacity - ((@occupation[:occupation_detail][1].to_i) || 0)].min).each do |quantity| %>
+                      <option value="<%=quantity%>" data-total="<%="%.2f" % rates[1][quantity]%>"><%="#{quantity} X #{@activity.price_1_description} #{"%.2f" % rates[1][quantity]}€"%></option>
+                    <% end %>
+                  </select>
+                </div>
+                <% end %>
+                <% unless @activity.price_definition_2.nil? %>
+                <div>
+                  <select name="quantity_rate_2" id="quantity_rate_2" class="quantity_rate" style="width:99%">
+                    <option value="0" data-total="0"><%=t.activity.choose_tickets(@activity.price_2_description)%></option>
+                    <% (1..[10 - @order.item_quantity(@activity.code, 2), @activity.capacity - ((@occupation[:occupation_detail][2].to_i) || 0)].min).each do |quantity| %>
+                      <option value="<%=quantity%>" data-total="<%="%.2f" % rates[2][quantity]%>"><%="#{quantity} X #{@activity.price_2_description} #{"%.2f" % rates[2][quantity]}€"%></option>
+                    <% end %>                    
+                  </select>
+                </div>
+                <% end %>
+                <% unless @activity.price_definition_3.nil? %>
+                <div>
+                  <select name="quantity_rate_3" id="quantity_rate_3" class="quantity_rate" style="width:99%">
+                    <option value="0" data-total="0"><%=t.activity.choose_tickets(@activity.price_3_description)%></option>
+                    <% (1..[10 - @order.item_quantity(@activity.code, 3), @activity.capacity - ((@occupation[:occupation_detail][3].to_i) || 0)].min).each do |quantity| %>
+                      <option value="<%=quantity%>" data-total="<%="%.2f" % rates[3][quantity]%>"><%="#{quantity} X #{@activity.price_3_description} #{"%.2f" % rates[3][quantity]}€"%></option>
+                    <% end %>                    
+                  </select>	
+                </div>
+                <% end %>
+             </div>

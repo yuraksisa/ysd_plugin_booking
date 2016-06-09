@@ -8,12 +8,19 @@
       <h3><%=t.activity.reservation%></h3>
       <h4><%=t.activity.event_date%></h3>
       <h5 class="smaller_text less_contrast_text"><%=l(@activity.date_from,"%d %B %Y")%> <%=l(@activity.date_to,"- %d %B %Y") if @activity.date_to != @activity.date_from%></h4>
-      <form name="activity_form" id="activity_form" action="/p/activity/add-to-shopping-cart" method="post">
+      <form name="activity_form" id="activity_form" <%if request.path.starts_with?('/admin')%>action="/admin/order/new-order-item-add-activity"<%else%>action="/p/activity/add-to-shopping-cart"<%end%> method="post">
+        <% if request.path.starts_with?('/admin') %>
+          <input type="hidden" name="order_id" id="order_id" value="<%=@order.id%>"/>
+        <% end %> 
         <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
         <input type="hidden" name="date" id="date" value="<%=@activity.date_from.strftime('%Y-%m-%d')%>">
         <input type="hidden" name="turn" id="turn" value="<%=@activity.time_from%>">
         <% if @activity.mode == :partial %>
-          <%= partial :reservation_activity_tickets %>
+              <%if request.path.starts_with?('/admin')%> 
+                <%= partial :reservation_activity_tickets_order %>
+              <% else %>
+                <%= partial :reservation_activity_tickets %>
+              <% end %>
         <% end %>
         <div id="total" class="centered_text more_contrast_text" style="font-size:3em">
         </div>        

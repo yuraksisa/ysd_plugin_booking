@@ -9,7 +9,10 @@
       </style>
       <h3><%=t.activity.reservation%></h3>
       <h4><%=t.activity.dates%></h4>
-      <form name="select_date_form" id="select_date_form" action="/p/activity/select-date" method="post">
+      <form name="select_date_form" id="select_date_form" <%if request.path.starts_with?('/admin')%>action="/admin/order/new-order-item-select-date"<%else%>action="/p/activity/select-date"<%end%> method="post">
+        <% if request.path.starts_with?('/admin') %>
+        <input type="hidden" name="order_id" id="order_id" value="<%=@order.id%>"/>
+        <% end %>
         <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
         <div id="activity_date">
           <input type="hidden" name="date" id="select_date">
@@ -21,12 +24,19 @@
       
       <% if @activity.capacity > @occupation[:total_occupation].to_i %>
         <% if defined?@date and !@date.nil? and defined?@time and !@time.nil? %>
-          <form name="activity_form" id="activity_form" action="/p/activity/add-to-shopping-cart" method="post">
+          <form name="activity_form" id="activity_form" <%if request.path.starts_with?('/admin')%>action="/admin/order/new-order-item-add-activity"<%else%>action="/p/activity/add-to-shopping-cart"<%end%> method="post">
+            <% if request.path.starts_with?('/admin') %>
+              <input type="hidden" name="order_id" id="order_id" value="<%=@order.id%>"/>
+            <% end %>            
             <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
             <input type="hidden" name="date" value="<%=@date%>"/>
             <input type="hidden" name="turn" value="<%=@time%>"/>
             <% if @activity.mode == :partial %>
-              <%= partial :reservation_activity_tickets %>
+              <%if request.path.starts_with?('/admin')%> 
+                <%= partial :reservation_activity_tickets_order %>
+              <% else %>
+                <%= partial :reservation_activity_tickets %>
+              <% end %>
             <% end %>
             <div id="total" class="centered_text more_contrast_text" style="font-size:3em"></div>
             <div id="botonera" class="top-margin">
