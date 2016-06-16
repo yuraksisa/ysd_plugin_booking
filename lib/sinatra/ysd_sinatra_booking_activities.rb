@@ -284,9 +284,6 @@ module Sinatra
 
           date = Date.today
 
-          year = Date.today.year
-          date = Date.civil(year,1,1)
-
           @activities = ::Yito::Model::Order::Order.public_programmed_activities(date)
           load_page(:reservation_programmed_activities)
 
