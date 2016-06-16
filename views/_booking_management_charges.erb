@@ -8,7 +8,8 @@
                             <th class="table-cell" scope="col" style="width:20%"><%=t.booking_management.form.charge_date%></th>
                             <th class="table-cell" scope="col" style="width:20%"><%=t.booking_management.form.charge_payment_method%></th>                            
                             <th class="table-cell" scope="col" style="width:30%"><%=t.booking_management.form.charge_amount%></th>
-                            <th class="table-cell" scope="col" style="width:30%"><%=t.booking_management.form.charge_status%></th>        
+                            <th class="table-cell" scope="col" style="width:25%"><%=t.booking_management.form.charge_status%></th>    
+                            <th class="table-cell" scope="col" style="width:5%"></th>    
                           </tr>
                         </thead>
                         <tbody class="table-tbody">
@@ -18,6 +19,11 @@
                                <td class="table-cell centered_text"><%%=entity.charges[chargeIdx].payment_method_id%></td>
                                <td class="table-cell centered_text"><%%= new Number(entity.charges[chargeIdx].amount).toFixed(2) %></td>
                                <td class="table-cell centered_text"><span class="element-status <%%=self.model.entityHooks[0].chargeStatusClass(entity.charges[chargeIdx])%>"><%%= self.model.entityHooks[0].chargeStatusDescription[entity.charges[chargeIdx].status] %></span></td>
+                               <td class="table-cell">
+                                <%% if (['bank_transfer','credit_card','cash'].indexOf(entity.charges[chargeIdx].payment_method_id)>-1) {%>
+                                <span class="remove-booking-charges ui-icon ui-icon-trash remove-icon" data-charge-id="<%%=entity.charges[chargeIdx].id%>" data-booking-id="<%%=entity.id%>"></span>
+                                <%% } %>
+                               </td>
                             </tr>
                           <%% } %>
                         </tbody>
@@ -43,7 +49,7 @@
       
                       <div class="formrow">
                         <label for="payment_method" class="fieldtitle"><%=t.booking_management.charge_form.payment_method%></label>
-                        <select name="payment_method_id" class="fieldcontrol customer_height">
+                        <select name="payment_method_id" class="fieldcontrol">
                           <option value="bank_transfer"><%=t.booking_management.charge_form.bank_transfer%></option>
                           <option value="cash"><%=t.booking_management.charge_form.cash%></option>
                           <option value="credit_card"><%=t.booking_management.charge_form.credit_card%></option>

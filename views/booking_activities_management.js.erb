@@ -296,6 +296,15 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       }
 
+      if ($('#notify_customer_if_empty').length > 0) {
+        if ($('#notify_customer_if_empty').prop('checked')) {
+          data.notify_customer_if_empty = true;
+        }
+        else {
+          data.notify_customer_if_empty = false;
+        }
+      }
+
       if ($('#web_public').length > 0) {
         if ($('#web_public').prop('checked')) {
           data.web_public = true;

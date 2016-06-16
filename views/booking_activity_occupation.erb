@@ -7,6 +7,9 @@
   width: 1.5em;
   font-size: 0.7em;
 }
+.occupation-detail {
+  cursor: hand; cursor: pointer;
+}
 </style>
 <div class="top-navigation-bar">
 <h2 class="entity-title">Ocupación mensual actividades</h2>
@@ -47,7 +50,7 @@
                   <div <%if quantity >0%>class="more_contrast_text"<%end%>><%=activity_detail[:price_literals][item_price_type][0]%>:<%="%.f" %quantity%></div>
                 <% end %>
                  <% percentage = total.to_f / activity_detail[:capacity].to_f * 100%>
-                  <div class="more_contrast_text" style="top-margin:0.5em;bottom-margin:0.5em;border-top:1px solid #CCC; <% if percentage >= 100 %>background:red; color: white<%elsif percentage >= 75 and !percentage.infinite?%>background:orange<%elsif percentage > 0 and !percentage.infinite?%>background:yellow<%end%>"><%="%.f" %total%>/<%="%.f" %activity_detail[:capacity]%></div>             
+                  <div class="more_contrast_text <%if percentage > 0 %>occupation-detail<%end%>" style="top-margin:0.5em;bottom-margin:0.5em;border-top:1px solid #CCC; <% if percentage >= 100 %>background:red; color: white<%elsif percentage >= 75 and !percentage.infinite?%>background:orange<%elsif percentage > 0 and !percentage.infinite?%>background:yellow<%end%>" <%if percentage > 0%>data-url="/admin/booking/activity-detail?date=<%=@year%>-<%=@month.to_s.rjust(2, '0')%>-<%=day%>&time=<%=timetable%>&item_id=<%=activity_id%>&layout=no"<%end%>><%="%.f" %total%>/<%="%.f" %activity_detail[:capacity]%></div>             
               </td>
             <% else %>
             <td class="table-cell centered_text"><%=value%></td>
@@ -60,4 +63,6 @@
   </div>
   <% end %>
 
+</div>
+<div id="occupation-detail" class="all-space" style="width:800px; height: 400px; background: white; overflow-y: scroll; font-size: 1em; display: none">
 </div>

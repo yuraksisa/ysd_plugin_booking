@@ -631,6 +631,16 @@ booking_management:
     user_agent_os: Sistema Operativo
     new_charge: Registrar nuevo cobro
     audit: Auditoría
+    extra_removed:
+      confirm_delete_title: Eliminar extra
+      confirm_delete_message: ¿Está seguro que desea eliminar el extra de la reserva?
+      done: Extra eliminado con éxito
+      error: Error eliminando extra
+    charge_removed:
+      confirm_delete_title: Eliminar cobro
+      confirm_delete_message: ¿Está seguro que desea eliminar el cobro de la reserva?
+      done: Cobro eliminado con éxito
+      error: Error eliminando cobro
   charge_form:
     title: Cobro
     date: Fecha 
@@ -706,6 +716,8 @@ booking_category_management:
       label: Activo
     web_public:
       label: Público
+    notify_customer_if_empty:
+      label: Avisar al cliente si no hay reservas
     alias:
       label: Alias
     create_rates:
@@ -1030,4 +1042,11 @@ occupation_detail:
   not_available_stock: No hay productos disponibles
   available_stock_summary: !!pl
     1: Hay <strong>%1</strong> producto disponible
-    n: Hay <strong>%1</strong> productos disponibles 
+    n: Hay <strong>%1</strong> productos disponibles
+new_reservation_activity:
+  notify_customer_empty: Por favor, confirmar con el centro la fecha seleccionada 
+programmed_activities:
+  title: Actividades programadas
+  empty: Lo sentimos, pero en este momento no hay actividades programadas
+shopping_cart:
+  empty: El carrito de la compra está vacío  

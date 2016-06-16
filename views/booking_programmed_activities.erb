@@ -1,0 +1,59 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Resumen actividades</h2>
+  <div class="form-button" style="float: right; display:none">
+     <a id="print_link" href="/admin/booking/reports/programmed-activities" target="_blank">Imprimir</a>
+  </div>  
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="report_programmed_activities_form" action="/admin/booking/programmed-activities" method="get">
+        <div class="formrow">
+          <div style="display: inline-block">
+            <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <% if @activities.empty? %>
+      <div class="all-border-solid-light top-margin-1line">
+         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+      </div>
+    <% else %> 
+      <table id="table" class="table">
+        <thead class="table-header">
+            <tr>
+              <th class="table-cell left_text" scope="col" style="width:150px">Fecha</th>
+              <th class="table-cell left_text" scope="col" style="width:260px">Actividad</th>
+              <th class="table-cell right_text" scope="col" style="width:150px">Plazas confirmadas</th>
+              <th class="table-cell" scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>   
+        <% @activities.each do |activity| %>  
+          <tr class="table-row">
+            <td class="table-cell"><%=activity.date.strftime('%d-%m-%Y')%> <%=activity.time%></td>
+            <td class="table-cell"><%=activity.item_description%></td>
+            <td class="table-cell right_text"><%="%.0f" % activity.occupation%></td>
+            <td class="table-cell">
+              <div class="form-button green-button" style="margin-left: 5em">
+                <a href="/admin/booking/activity-detail?date=<%=activity.date.strftime('%Y-%m-%d')%>&time=<%=activity.time%>&item_id=<%=activity.item_id%>">Ver detalle</a>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>  
+</div>

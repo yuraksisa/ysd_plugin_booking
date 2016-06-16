@@ -1,5 +1,5 @@
 <style>
- .edit-icon {
+ .edit-icon, .remove-icon {
     display: inline-block;
     position: relative;
     top: 3px;
@@ -32,7 +32,7 @@
                           <%% } %>
                           <%% for (var extraIdx=0; extraIdx < entity.booking_extras.length; extraIdx++) { %>
                             <tr class="table-row">
-                               <td class="table-cell left_text less_contrast_text"><%%= entity.booking_extras[extraIdx].extra_description %></td>
+                               <td class="table-cell left_text less_contrast_text"><%%= entity.booking_extras[extraIdx].extra_description %> <span class="remove-booking-extra-id ui-icon ui-icon-trash remove-icon" data-id="<%%=entity.booking_extras[extraIdx].id%>"></span></td>
                                <td class="table-cell right_text"><%%= entity.days %></td>                               
                                <td class="table-cell right_text"><%%= entity.booking_extras[extraIdx].quantity %> <span class="booking-extra-quantity ui-icon ui-icon-pencil edit-icon" data-id="<%%=entity.booking_extras[extraIdx].id%>" data-value="<%%=entity.booking_extras[extraIdx].quantity%>"></span></td>
                                <td class="table-cell right_text"><%%= new Number(entity.booking_extras[extraIdx].extra_unit_cost).toFixed(2) %> <span class="booking-extra-item-cost ui-icon ui-icon-pencil edit-icon" data-id="<%%=entity.booking_extras[extraIdx].id%>" data-value="<%%=new  Number(entity.booking_extras[extraIdx].extra_unit_cost).toFixed(2)%>"></span></td>

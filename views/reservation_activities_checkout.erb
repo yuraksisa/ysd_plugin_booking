@@ -1,14 +1,24 @@
 <style>
-  #activities_checkout_form {
-    background-color: white;
+  #checkout_container {
+    background-color: #EEE;
   }
 </style>
-<h2>Resumen del pedido</h2>
-<%= partial :shopping_cart_summary %>
-<h2>Datos de la reserva</h2>
-<div class="container_12">
-    <form name="activities_checkout_form" id="activities_checkout_form" class="all-space top-margin" action="/p/activities/shopping-cart-order" method="post">
-      <div class="grid_6">
+<h2>Realizar pedido</h2>
+
+<div class="container_12 bottom-margin-2lines">
+
+  <div class="grid_5">
+    <h3 class="guiblock smaller_text">Resumen del pedido</h3>
+    <div class="smaller_text">
+      <%= partial :shopping_cart_summary %>
+    </div>
+  </div>
+
+  <div class="grid_7">
+  	<div class="left-margin">
+    <h3 class="guiblock smaller_text">Datos de la reserva</h3>
+    <form name="activities_checkout_form" id="activities_checkout_form" class="guiblock top-margin" action="/p/activities/shopping-cart-order" method="post">
+      	<div id="checkout_container" class="all-space smaller_text">
 	          <div class="formrow">
 	            <label id="label_customer_email" for="customer_name" class="fieldtitle"><%=t.new_booking.customer_name.label%> *</label>
 	            <input type="text" name="customer_name" id="customer_name" class="fieldcontrol" maxlength="40" placeholder="<%=t.new_booking.customer_name.placeholder%>" <%unless @shopping_cart.nil?%>value="<%=@shopping_cart.customer_name%>"<%end%>/>
@@ -46,6 +56,8 @@
 	                </button>
 	              </div>
               </div>
-    </div>
-  </form>
+         </div>
+       </form>
+       </div>
+  </div>
 </div>

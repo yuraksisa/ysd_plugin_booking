@@ -25,11 +25,11 @@
 <script type="text/tmpl" id="elements_list_template">
   <div class="entity-block-container">
     <div class="entity-block-container-inside all-space">
-      <div style="height:108px">
+      <div style="max-height:108px">
         <%% if (entity && entity.photo_url_small != null && entity.photo_url_small.length > 0)  { %> 
         <img src="<%%= entity.photo_url_small %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto" rel="<%%= index %>"/>
         <%% } else { %>
-        <div class="box-shadow element-row-selector" style="width:144px; height: 108px" rel="<%%= index %>">
+        <div class="box-shadow element-row-selector" style="max-width:144px; max-height: 108px" rel="<%%= index %>">
           <span class="centered_text" style="font-size:5em; display: block" data-icon="&#xe072;"></span> 
         </div> 
         <%% } %>

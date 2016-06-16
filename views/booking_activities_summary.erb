@@ -1,7 +1,7 @@
 <div class="top-navigation-bar">
-  <h2 class="entity-title">Reservas de actividades</h2>
-  <div class="form-button" style="float: right">
-     <a id="print_link" href="/admin/booking/reports/reservations-pdf" target="_blank">Imprimir</a>
+  <h2 class="entity-title">Listado actividades</h2>
+  <div class="form-button" style="float: right; display:none">
+     <a id="print_link" href="/admin/booking/reports/activities-summary-pdf" target="_blank">Imprimir</a>
   </div>  
 </div>
 <div class="admin_content_wrapper">
@@ -24,74 +24,5 @@
       </form>
     </div>
   </div>
-  <div>
-    <% if @activities.empty? %>
-    <div class="all-border-solid-light top-margin-1line">
-         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
-    </div>
-    <% end %> 
-
-    <% last_date = nil %>
-    <% last_activity = nil %>
-    <% last_activity_capacity = nil %>
-    <% last_time = nil %>
-    <% summary = {} %>
-    <% paid = 0 %>
- 
-    <% @activities.each do |activity| %>  
-      <% if last_date != activity.date or last_activity != activity.item_id or 
-            last_time != activity.time %>
-        <% unless last_date.nil? %>  
-            <%= partial :booking_activities_summary_total, locals: {summary: summary, last_activity_capacity: last_activity_capacity, paid: paid} %>        
-            </tbody>
-          </table>
-        <% end %>
-        <% if last_date != activity.date %>     
-        <h3 class="guiblock"><%=activity.date.strftime('%d-%m-%Y')%></h3>
-        <% end %> 
-        <% if last_date != activity.date or last_activity != activity.item_id %>
-        <h4 class="bottom-border-solid"><%=activity.item_id%>-<%=activity.item_description%></h4>
-        <% end %>
-        <h5 class="top-margin-1line bottom-margin-1line less_contrast_text highlight_block" style="font-size:1em">Horario: <%=activity.time%></h5>
-        <table id="table" class="table">
-          <thead class="table-header">
-            <tr>
-              <th class="table-cell left_text" scope="col" style="width:2.5em">Localizador</th>
-              <th class="table-cell left_text" scope="col" style="width:150px">Cliente</th>
-              <th class="table-cell left_text" scope="col" style="width:2em">Teléfono</th>
-              <th class="table-cell left_text" scope="col" style="width:4.5em">Email</th>
-              <th class="table-cell left_text" scope="col" style="width:140px">Tipo</th>
-              <th class="table-cell left_text" scope="col" style="width:2em">Precio</th>
-              <th class="table-cell left_text" scope="col" style="width:2em">Total</th>
-            </tr>
-          </thead>
-          <tbody>   
-          <% summary.clear %>   
-          <% paid = 0%>
-      <% end %>  
-        <tr class="table-row">
-          <td class="table-cell"><a href="/admin/orders/order/<%=activity.order_id%>"><%=activity.order_id%></a></td>
-          <td class="table-cell"><%=activity.customer_name%> <%=activity.customer_surname%></td>
-          <td class="table-cell"><%=activity.customer_phone%> </td>
-          <td class="table-cell"><%=activity.customer_email%></td>
-          <td class="table-cell"><%=activity.quantity%> x <%=activity.item_price_description%></td>
-          <td class="table-cell"><%="%.2f" % activity.item_unit_cost%></td>
-          <td class="table-cell"><%="%.2f" % activity.item_cost%></td>
-        </tr>
-      <% last_date = activity.date %>
-      <% last_activity = activity.item_id %>
-      <% last_time = activity.time %>
-      <% last_activity_capacity = activity.capacity %>
-      <% paid += activity.item_cost %>
-      <% if summary.has_key?(activity.item_price_description)
-           summary[activity.item_price_description] += activity.quantity 
-         else 
-           summary.store(activity.item_price_description, activity.quantity)
-         end %>
-    <% end %>
-
-        <%= partial :booking_activities_summary_total, locals: {summary: summary, last_activity_capacity: last_activity_capacity, paid: paid} %>        
-        </tbody>
-      </table>
-  </div>  
+  <%= partial :booking_activities_detail %> 
 </div>

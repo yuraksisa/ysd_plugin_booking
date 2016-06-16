@@ -1,12 +1,7 @@
-<style>
-  body {
-    /*background-color: #DDD;*/
-  }
-</style>
 <div class="container_12">
   <h2><%=@activity.name%></h2>
   <div class="grid_10">
-    <div class="top-margin-1line bottom-margin-1line less_contrast_text">
+    <div class="bottom-margin-1line less_contrast_text">
       <%=@activity.short_description%>
     </div>
   </div>
@@ -28,7 +23,7 @@
   </div>
   <div class="grid_4">
   	<div class="left-margin" style="position:relative; top: -10px">
-      <div id="activity_reservation" class="highlight_block smaller_text">
+      <div id="activity_reservation" class="guiblock smaller_text">
       <% if @activity.occurence == :cyclic %>
          <%= partial :reservation_activity_cyclic %>
       <% elsif @activity.occurence == :one_time %>
@@ -36,8 +31,12 @@
       <% elsif @activity.occurence == :multiple_dates %>
          <%= partial :reservation_activity_multiple_dates %>
       <% end %>
-      <p class="smaller_text less_contrast_text">Plazas reservadas: <%= @occupation[:total_occupation].to_i%></p>
+      <% if @activity.notify_customer_if_empty and @occupation[:total_occupation].to_i == 0%>
+        <div id="notify_customer_empty" class="top-margin bottom-margin all-space highlight_block">
+          <span><%=t.new_reservation_activity.notify_customer_empty%></span>
+        </div>
       </div>
+      <% end %>
   	</div>
   </div>
 </div>

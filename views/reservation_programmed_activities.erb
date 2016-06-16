@@ -1,0 +1,78 @@
+<style>
+  body {
+    /*background-color: #DDD;*/
+  }
+  .activity_list_item {
+  	/*background-color: white;*/
+  	margin-bottom: 1em;
+  	margin-top: 1em;
+  	padding-bottom: 2em;
+  	padding-top: 1em;
+  	padding-right: 2em;
+  }
+</style>
+<h2><%=t.programmed_activities.title%></h2>
+<% if @activities.empty? %>
+<div class="container_12">
+  <div class="grid_12">
+    <div class="guiblock">
+      <%=t.programmed_activities.empty%>
+    </div>
+  </div>
+</div>
+<% else %>
+<div class="container_12">
+	<div class="grid_12">
+	  <% @activities.each do |p_activity| %>
+    <% activity = ::Yito::Model::Booking::Activity.first(code: p_activity.item_id) %>
+	  <div class="activity_list_item top-margin bottom-margin">
+	    <div class="container_12">
+          <div class="grid_1">
+              <div style="font-size:2em"><%=p_activity.date.strftime('%d')%></div>
+              <div style="font-size:1em; position:relative; left: 0.5em"><%=l(p_activity.date,'%b').capitalize%></div>
+              <div class="smaller_text top-margin"><%=p_activity.time%></div>
+          </div>
+          <div class="grid_4">
+            <div style="max-height:216px">
+              <% if activity.photo_url_medium.nil? or activity.photo_url_medium.empty?%> 
+                <div class="element-row-selector" style="max-width:288px; max-height: 216px" rel="<%%= index %>">
+                   <span class="centered_text" style="font-size:5em; display: block" data-icon="&#xe072;"></span> 
+                </div> 
+              <% else  %>
+                <img src="<%= activity.photo_url_medium %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto; width: 100%; max-height: 216px; max-width: 288px" rel="<%%= index %>"/>
+              <% end %>
+            </div>          	
+          </div>
+          <div class="grid_7">
+          	<div class="left-margin">
+              <div>
+                <div class="grid_9">
+                  <h4 style="margin-top: 0"><%=activity.name%></h4>
+          	      <div class="less_contrast_text"><%=activity.short_description%></div>
+                </div>
+                <div class="grid_3">
+                  <div style="float: right">
+                    <div class="right_text" style="font-size:0.5em">desde <span style="text-decoration:line-through;"><%= activity.from_price != activity.from_price_offer ? "%.2f €" % activity.from_price : "" %></span></div>
+                    <div style="font-size:1.5em" class="bigger_text right_text"><strong><%=activity.from_price != activity.from_price_offer ? "%.2f €" % activity.from_price_offer : "%.2f €" % activity.from_price%></strong></div>                   
+                    <div class="left-margin">
+                      <% if activity.occurence == :cyclic %>
+                        <form action="/p/activity/select-date" method="POST" class="top-margin">
+                          <input type="hidden" name="activity_id" value="<%=activity.id%>"/>
+                          <input type="hidden" name="date" value="<%=p_activity.date%>"/>
+                          <input type="hidden" name="turn" value="<%=p_activity.time%>"/>
+                          <input type="submit" class="form-button green-button" value="Seleccionar"/>
+                        </form>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+	  </div>
+    <hr class="top-margin bottom-margin-1line"/>
+    <% end %>
+  </div>
+</div>
+<% end %>

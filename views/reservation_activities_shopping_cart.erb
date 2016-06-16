@@ -22,7 +22,13 @@
     border-bottom: 1px solid black;
   }
 </style>
-<h2>Su compra</h2>
+<h2>Carrito de la compra</h2>
+
+<% if @shopping_cart.empty? %>
+  <div class="guiblock">
+    <%= t.shopping_cart.empty %>
+  </div>
+<% else %>
   <% @shopping_cart.shopping_cart_items_group_by_date_time_item_id.each do |idx,shopping_cart_items| %>
     <% first_shopping_cart_item = shopping_cart_items[:items].first %>
     <% activity = ::Yito::Model::Booking::Activity.first(code:first_shopping_cart_item.item_id) %>
@@ -98,3 +104,4 @@
       </div>
   </div>
   <% end %>
+<% end %>

@@ -388,6 +388,44 @@ module Sinatra
                            :relationships => {:booking_line_resources => {}})
 
         end
+        
+        #
+        # Planning summary
+        #
+        app.get '/api/booking/planning-summary', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          today = Date.today
+          @date_from = Date.civil(today.year, today.month, 1)
+          @date_to = Date.civil(today.year, today.month, -1)          
+
+          if params[:from]
+            begin
+              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:to]}")
+            end
+          end  
+          
+          @options = nil
+          if params[:reference]
+            @options = {mode: :stock, reference: params[:reference]}
+          elsif params[:product]
+            @options = {mode: :product, product: params[:product]}
+          end
+
+          result = BookingDataSystem::Booking.planning(@date_from, @date_to, @options)
+          
+          content_type :json
+          result.to_json
+        end  
 
         #
         # Get the confirmed bookings that have not been assigned
@@ -1334,19 +1372,6 @@ module Sinatra
         end
 
         #
-        # Delete booking line
-        #
-        app.delete '/api/booking/booking-line', :allowed_usergroups => ['booking_manager', 'staff'] do
-        
-        end
-
-        #
-        # Delete booking extra
-        #
-        app.delete '/api/booking/booking-extra', :allowed_usergroups => ['booking_manager', 'staff'] do
-        
-        end
-
         # Update booking resource
         #
         app.put '/api/booking-line-resource', :allowed_usergroups => ['booking_manager', 'staff'] do
@@ -1376,7 +1401,72 @@ module Sinatra
             status 404
           end
 
-        end         
+        end   
+
+        #
+        # Delete booking line
+        #
+        app.delete '/api/booking/booking-line', :allowed_usergroups => ['booking_manager', 'staff'] do
+        
+        end
+
+        #
+        # Delete a booking extra
+        #
+        app.delete '/api/booking/booking-extra', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if booking_extra = BookingDataSystem::BookingExtra.get(params[:id])
+            booking = booking_extra.booking
+            booking_extra.transaction do 
+              booking.extras_cost -= booking_extra.extra_cost
+              booking.total_cost -= booking_extra.extra_cost
+              if booking.total_pending < booking_extra.extra_cost
+                booking.total_pending = 0
+              else
+                booking.total_pending -= booking_extra.extra_cost
+              end
+              booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
+              booking.booking_amount -= (booking_extra.extra_cost * booking_deposit / 100).round unless booking_deposit == 0
+              booking.save
+              booking_extra.destroy 
+            end
+            booking.reload
+            content_type :json
+            booking.to_json
+          else
+            logger.error("Booking extra #{params[:id]} not found")
+            status 404
+          end
+
+        end
+
+        #
+        # Delete a booking charge
+        #
+        app.delete '/api/booking/booking-charge/?*', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          if booking_charge = BookingDataSystem::BookingCharge.first(:booking_id => params[:booking_id],
+                                                                     :charge_id => params[:charge_id])
+            booking = booking_charge.booking
+            charge = booking_charge.charge
+            booking_charge.transaction do
+              if charge.status == :done 
+                booking.total_paid -= charge.amount
+                booking.total_pending += charge.amount
+                booking.save
+              end
+              charge.destroy
+              booking_charge.destroy
+            end
+            booking.reload
+            content_type :json
+            booking.to_json
+          else
+            logger.error("Booking charge #{params[:charge_id]} for #{params[:booking_id]} not found")
+            status 404
+          end
+
+        end
 
         # ------------ Send the notification emails ----------------------
 
