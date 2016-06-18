@@ -83,7 +83,12 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
               if (bookingPlanningModel.planningData[item][resource].detail.length > 0) {
                 background = bookingPlanningModel.planningData[item][resource].detail[0].planning_color;
               }
-              $("tr#"+resource).append("<td class='data' style='background:" + background + "''>"+value+"</td>");	
+              var columnStyle = "class='data' style='background:" + background + "'";
+              var summary = bookingPlanningModel.planningData[item][resource].summary;
+              if (summary != null) {
+                columnStyle += " title='" + summary + "'";
+              }
+              $("tr#"+resource).append("<td " + columnStyle + ">"+value+"</td>");	
             }
   		  }
   		  
