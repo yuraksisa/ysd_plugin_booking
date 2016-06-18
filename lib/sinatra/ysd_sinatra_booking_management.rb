@@ -148,7 +148,35 @@ module Sinatra
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           load_page(:bookings_planning)
         end
+        
+        #
+        # Bookings planning V2
+        #
+        app.get '/admin/booking/planning2', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          today = Date.today
 
+          @date_from = Date.civil(today.year, today.month, 1)
+          @date_to = Date.civil(today.year, today.month, -1)          
+
+          if params[:from]
+            begin
+              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:to]}")
+            end
+          end  
+          load_page(:bookings_planning_v2)
+        end
+          
         #
         # Bookings scheduler
         #

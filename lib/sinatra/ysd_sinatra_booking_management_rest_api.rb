@@ -421,8 +421,10 @@ module Sinatra
             @options = {mode: :product, product: params[:product]}
           end
 
+          p "from: #{params[:from]} #{@date_from} to: #{params[:to]} #{@date_to}"
+
           result = BookingDataSystem::Booking.planning(@date_from, @date_to, @options)
-          
+
           content_type :json
           result.to_json
         end  
