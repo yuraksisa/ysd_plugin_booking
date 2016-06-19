@@ -9,6 +9,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     reference: null,
     references: null,
     planningData : null,
+    bookingLineResourceId: null,
     months: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],
     loadData: function() {
   	  if (this.dateFrom != null && this.dateTo != null) {
@@ -21,25 +22,51 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
   	    else if (this.reference != null) {
   	      url += '&reference='+reference;
   	    } 
- 	    $.ajax({
+ 	      $.ajax({
   	        type: 'GET',
   	   	    url : url,
   	   	    contentType: 'application/json; charset=utf-8',
-  		    dataType : 'json',
-  		    success: function(data, textStatus, jqXHR) {
+  		      dataType : 'json',
+  		      success: function(data, textStatus, jqXHR) {
                bookingPlanningModel.references = data.references;
                bookingPlanningModel.planningData = data.result;
                bookingPlanningView.update('data_available');
+            },
+            error: function(textStatus, jqXHR) {
+              alert('Error obteniendo datos del planning');
             }
           });  	 
- 	  }
+ 	    }
       else {
     	bookingPlanningView.update('not_enough_information');
       }
+    },
+    loadSelectedReservations: function(reference, date) {
+      $('#operation_area').load('/admin/booking/planning2-select?reference='+reference+'&date='+date+' #reservation_selector', null,
+        function(responseText, textStatus, jqXHR){
+          if (jqXHR.status == 200) {
+            if ($('form[name=reassign_form] input[name=id]').val() != 'undefined') {
+              bookingPlanningModel.bookingLineResourceId = $('form[name=reassign_form] input[name=id]').val();
+            }
+            else {
+              bookingPlanningModel.bookingLineResourceId = null;
+            }
+          }
+        });
     }
   }
 
   bookingPlanningController = {
+ 
+    dataFilledClick: function(reference, date) {
+      if (bookingPlanningModel.bookingLineResourceId == null) {
+        bookingPlanningModel.loadSelectedReservations(reference, date);
+      }
+      else {
+        alert('Desea asignar al recurso: ' + reference);
+      }
+    }
+
 
   }
 
@@ -62,9 +89,9 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
   		  if ($('#planning_table tbody').children().length == 0) {
   		  	$("#planning_table thead").append("<tr></tr>");
   		  	$("#planning_table thead tr:first").append("<th>"+'RECURSOS'+"</th>");
-  		  	for (var idx=0; idx<bookingPlanningModel.references.length;idx++) {
-  		  	  $("#planning_table tbody").append("<tr id='" + bookingPlanningModel.references[idx] + "'></tr>");
-  		  	  $("#planning_table tbody tr:eq("+idx+")").append("<td>"+bookingPlanningModel.references[idx]+"</td>");
+  		  	for (item in bookingPlanningModel.references) {
+  		  	  $("#planning_table tbody").append("<tr id='" + item + "' rel='" + bookingPlanningModel.references[item] + "'></tr>");
+  		  	  $("#planning_table tbody tr#"+item+"").append("<td>"+bookingPlanningModel.references[item] + ' - ' + item+"</td>");
   		  	}
   		  }
   		  for (item in bookingPlanningModel.planningData) {
@@ -83,17 +110,27 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
               if (bookingPlanningModel.planningData[item][resource].detail.length > 0) {
                 background = bookingPlanningModel.planningData[item][resource].detail[0].planning_color;
               }
-              var columnStyle = "class='data' style='background:" + background + "'";
+              var cellInformation = "style='background:" + background + "'";
+              cellInformation += " data-date='" + item + "' ";
+              if (value == '') {
+                cellInformation += " class='data' "; 
+              }
+              else {
+                cellInformation += " class='data filled' ";
+              }
               var summary = bookingPlanningModel.planningData[item][resource].summary;
               if (summary != null) {
-                columnStyle += " title='" + summary + "'";
+                cellInformation += " title='" + summary + "'";
               }
-              $("tr#"+resource).append("<td " + columnStyle + ">"+value+"</td>");	
+              $("tr#"+resource).append("<td " + cellInformation + ">"+value+"</td>");	
             }
   		  }
   		  
-          $("#planning_table").tableHeadFixer({"left" : 1});
-         		 
+        $("#planning_table").tableHeadFixer({"left" : 1});
+        $(".data").unbind('click');
+        $(".data.filled").bind('click', function(event) {
+          bookingPlanningController.dataFilledClick($(this).parent().attr('id'), $(this).attr('data-date'));
+        }); 		 
   		  break;
   		case 'not_enough_information':
   		  alert('No hay suficientes datos para obtener la información');

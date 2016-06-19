@@ -47,7 +47,7 @@ module Sinatra
       def self.registered(app) 
         
         #
-        # Load a content or view (by its alias)
+        # Load an activity (by its alias)
         #
         app.get /^[^.]*$/ do
           
@@ -58,6 +58,9 @@ module Sinatra
 
           # Query activity
           if @activity = ::Yito::Model::Booking::Activity.first(:alias => request.path_info)
+            session.delete(:activity_date_id)
+            session.delete(:date)
+            session.delete(:turn)
             load_activity        
           else
             pass
@@ -149,10 +152,14 @@ module Sinatra
               session[:shopping_cart_id] = @shopping_cart.id
             end
 
+            session.delete(:activity_date_id)
+            session.delete(:date)
+            session.delete(:turn)
+
             redirect "/p/activities/shopping-cart"
 
           else
-            redirect "/p/activity/#{activity_id}"
+            redirect activity.alias
           end 
 
         end       
@@ -234,7 +241,10 @@ module Sinatra
                 @order.notify_manager 
                 @order.notify_request_to_customer
               end
-              session.delete(:shopping_cart_id) 
+              session.delete(:shopping_cart_id)
+              session.delete(:activity_date_id)
+              session.delete(:date)
+              session.delete(:turn)               
               redirect "/p/myorder/#{@order.free_access_id}"
             else
               status 404

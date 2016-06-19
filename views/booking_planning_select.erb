@@ -1,0 +1,22 @@
+<div id="reservation_selector" class="container">
+  <div class="grid_12">
+  	<% if @bookings.size == 1 %>
+  	  <h3>Reserva seleccionada</h3>
+      <div class="guiblock">
+        <div><strong style="width: 80px; display:inline-block">Localizador:</strong> <%=@bookings.first.id%></div>
+        <div><strong style="width: 80px; display:inline-block">Cliente:</strong> <%=@bookings.first.customer_name%> <%=@bookings.first.customer_surname%></div>
+        <div><strong style="width: 80px; display:inline-block">Fecha inicio:</strong> <%=@bookings.first.date_from.strftime('%d-%m-%Y')%> <%=@bookings.first.time_from%></div>
+        <div><strong style="width: 80px; display:inline-block">Fecha fin:</strong> <%=@bookings.first.date_to.strftime('%d-%m-%Y')%> <%=@bookings.first.time_from%></div>
+        <div><strong style="width: 80px; display:inline-block">Recurso:</strong> <%=@bookings.first.booking_item_reference%></div>
+      </div>
+      <div class="highlight_block smaller_text">
+        <p>Por favor seleccione el recurso que desea reasignar la reserva</p>
+      </div>
+      <form name="reassign_form">
+      	<input type="hidden" name="id" value="<%=@bookings.first.id2%>"/>
+      </form>
+    <% else %>
+      <h3>Seleccionar la reserva</h3>
+    <% end %>
+  </div>
+</div>

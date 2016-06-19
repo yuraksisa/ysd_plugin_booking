@@ -176,7 +176,15 @@ module Sinatra
           end  
           load_page(:bookings_planning_v2)
         end
-          
+
+        #
+        # The user selects a cell in the planning
+        #
+        app.get '/admin/booking/planning2-select', :allowed_usergroups => ['booking_manager', 'staff'] do
+           @bookings = BookingDataSystem::Booking.resource_occupation_detail(params[:date], params[:reference])
+           load_page(:booking_planning_select, :layout => false)
+        end        
+                  
         #
         # Bookings scheduler
         #
