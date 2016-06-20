@@ -617,7 +617,10 @@ booking_management:
     booking_resources:
       title: Recursos
       item: Producto
-      user: Usuario
+      user: Nombre y apellidos
+      document_id: Documento
+      phone: Teléfono
+      email: Correo electrónico
       height: Altura
       weight: Peso
       resource: Recurso

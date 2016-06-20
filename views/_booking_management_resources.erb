@@ -1,21 +1,23 @@
      <div class="container_12">
-       <div class="grid_8">
+       <div class="grid_12">
              <div class="bottom-margin" style="border:1px solid #EEE">             
-                     <table class="table">
+                     <table class="table smaller_text">
                         <thead class="table-header">
                           <tr>
-                            <th class="table-cell left_text" scope="col" style="width:30%"><%=t.booking_management.form.booking_resources.item%></th>
+                            <th class="table-cell left_text" scope="col" style="width: 150px"><%=t.booking_management.form.booking_resources.item%></th>
                             <% if booking_item_family.named_resources %>
-                            <th class="table-cell left_text" scope="col" style="width:40%"><%=t.booking_management.form.booking_resources.user%></th>
+                            <th class="table-cell left_text" scope="col" style="width: 250px"><%=t.booking_management.form.booking_resources.user%></th>
+                            <th class="table-cell left_text" scope="col"><%=t.booking_management.form.booking_resources.document_id%></th>
+                            <th class="table-cell left_text" scope="col"><%=t.booking_management.form.booking_resources.phone%></th>
+                            <th class="table-cell left_text" scope="col"><%=t.booking_management.form.booking_resources.email%></th>            
                             <% end %>
                             <% if booking_item_family.height %>                            
-                            <th class="table-cell centered_text" scope="col" style="width:5%"><%=t.booking_management.form.booking_resources.height%></th>
+                            <th class="table-cell centered_text" scope="col"><%=t.booking_management.form.booking_resources.height%></th>
                             <% end %>    
                             <% if booking_item_family.weight %>                       
-                            <th class="table-cell centered_text" scope="col" style="width:5%"><%=t.booking_management.form.booking_resources.weight%></th>
+                            <th class="table-cell centered_text" scope="col"><%=t.booking_management.form.booking_resources.weight%></th>
                             <% end %>                            
-                            <th class="table-cell centered_text" scope="col" style="width:20%"><%=t.booking_management.form.booking_resources.resource%></th>
-                            <th class="table-cell" style="width:25%"></th>          
+                            <th class="table-cell centered_text" scope="col"><%=t.booking_management.form.booking_resources.resource%></th>     
                           </tr>
                         </thead>
                         <tbody class="table-tbody">
@@ -29,8 +31,26 @@
                                    <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>                                 
                                    <input class="fieldcontrol resource_user_name" type="text" maxlength="80" size="15" name="resource_user_name" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_name%>"/>
                                    <input class="fieldcontrol resource_user_surname" type="text" maxlength="80" size="15" name="resource_user_surname" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_surname %>"/>
-                                 </form>                                  
-                               </td>    
+                                 </form>   
+                               </td>
+                               <td class="table-cell left_text">
+                                 <form data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                   <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                   <input class="fieldcontrol resource_user_document_id" type="text" maxlength="50" size="15" name="resource_user_document_id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_document_id%>"/>
+                                 </form>                                                         
+                               </td>
+                               <td class="table-cell left_text">
+                                 <form data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                   <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                   <input class="fieldcontrol resource_user_phone" type="text" maxlength="15" size="15" name="resource_user_phone" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_phone%>"/>
+                                 </form>                                                     
+                               </td>
+                               <td class="table-cell left_text">
+                                 <form data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                   <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                   <input class="fieldcontrol resource_user_email" type="text" maxlength="40" size="15" name="resource_user_email" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_email%>"/>
+                                 </form>                                                           
+                               </td>                                                               
                                <% end %>            
                                <% if booking_item_family.height %>               
                                <td class="table-cell centered_text">
@@ -41,8 +61,8 @@
                                       <% booking_item_family.height_values.split(',').each do |height|%>
                                         <option value="<%=height%>" <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_height == '<%=height%>') { %>selected="selected"<%%}%>><%=height%></option>
                                       <% end %>
-                                   </select> 
-                                 </form>
+                                    </select> 
+                                  </form>
                                </td>
                                <% end %>
                                <% if booking_item_family.weight %>
@@ -55,7 +75,7 @@
                                         <option value="<%=weight%>" <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_weight == '<%=weight%>') { %>selected="selected"<%%}%>><%=weight%></option>
                                        <% end %>
                                     </select> 
-                                  </form>            
+                                  </form>                                           
                                </td>
                                <% end %>
                                <td class="table-cell centered_text">
@@ -65,9 +85,67 @@
                                     </select> 
                                 </form>  
                                </td>
-                               <td class="table-cell">
-                               </td>
                             </tr>
+                            <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].pax == 2) { %>
+                            <tr class="table-row">
+                               <td class="table-cell"></td>
+                               <% if booking_item_family.named_resources %>
+                               <td class="table-cell left_text">
+                                 <form class="top-margin" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                   <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>                                 
+                                   <input class="fieldcontrol resource_user_2_name" type="text" maxlength="80" size="15" name="resource_user_2_name" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_2_name%>"/>
+                                   <input class="fieldcontrol resource_user_2_surname" type="text" maxlength="80" size="15" name="resource_user_2_surname" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_2_surname %>"/>
+                                 </form>                                        
+                               </td>
+                               <td class="table-cell left_text">
+                                 <form class="top-margin" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                   <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                   <input class="fieldcontrol resource_user_2_document_id" type="text" maxlength="50" size="15" name="resource_user_2_document_id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_2_document_id%>"/>
+                                 </form>                                                        
+                               </td>
+                               <td class="table-cell left_text">
+                                 <form class="top-margin" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                   <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                   <input class="fieldcontrol resource_user_2_phone" type="text" maxlength="15" size="15" name="resource_user_2_phone" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_2_phone%>"/>
+                                 </form>                    
+                               </td>
+                               <td class="table-cell left_text">
+                                 <form class="top-margin" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                   <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                   <input class="fieldcontrol resource_user_2_email" type="text" maxlength="40" size="15" name="resource_user_2_email" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].resource_user_2_email%>"/>
+                                 </form>                                
+                               </td>                                                               
+                               <% end %>            
+                               <% if booking_item_family.height %>               
+                               <td class="table-cell centered_text">
+                                  <form class="top-margin" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                    <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                    <select name="customer_2_height" class="fieldcontrol customer_2_height" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                      <option value=""><%=t.booking_management.form.customer_height_placeholder%></option>
+                                      <% booking_item_family.height_values.split(',').each do |height|%>
+                                        <option value="<%=height%>" <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_2_height == '<%=height%>') { %>selected="selected"<%%}%>><%=height%></option>
+                                      <% end %>
+                                    </select> 
+                                  </form>
+                               </td>
+                               <% end %>
+                               <% if booking_item_family.weight %>
+                               <td class="table-cell centered_text">
+                                  <form class="top-margin" data-name="height" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                    <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                    <select name="customer_2_weight" class="fieldcontrol customer_2_weight" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                    <option value=""><%=t.booking_management.form.customer_weight_placeholder%></option>
+                                       <% booking_item_family.weight_values.split(',').each do |weight|%>
+                                        <option value="<%=weight%>" <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_2_weight == '<%=weight%>') { %>selected="selected"<%%}%>><%=weight%></option>
+                                       <% end %>
+                                    </select> 
+                                  </form>                                           
+                               </td>
+                               <% end %>
+                               <td class="table-cell"></td>
+                            </tr>
+                            <%% } %>
+
                             <%% } %>
                           <%% } %>
                         </tbody>
@@ -82,9 +160,13 @@
 
                   </div>
        </div>
-       <div class="grid_4">
 
-         <div class="left-margin bottom-margin all-space" style="border:1px solid #EEE">
+     </div>   
+     <div class="container_12">
+
+       <div class="grid_6">
+
+         <div class="bottom-margin all-space" style="border:1px solid #EEE">
             <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline"><%= t.booking_management.form.planning_color.title %></div>
             <form name="planning" class="overflow">
               <input type="hidden" name="id" value="<%%=entity.id%>"/> 
@@ -98,7 +180,9 @@
               </div> 
             </form>
           </div>
+      </div>
 
+      <div class="grid_6">
          <div class="left-margin all-space" style="border:1px solid #EEE">
             <form name="commercial_agent_form" class="overflow">
               <input type="hidden" name="id" value="<%%=entity.id%>"/> 
@@ -117,4 +201,5 @@
          </div>
 
        </div>
-     </div>                                        
+
+     </div>                                     
