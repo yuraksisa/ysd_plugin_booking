@@ -1785,14 +1785,15 @@
 
        load_resources_attributes: function() {
   
-         <% if booking_item_family.weight or booking_item_family.height %>
-         var resourcesHtml = tmpl('script_resources_attributes', {booking: bookingModel.booking});
+         <% if booking_item_family.named_resources %> 
+         var resourcesHtml = tmpl('script_resources_attributes', {booking: bookingModel.booking, bookingDataSystem: bookingDataSystem});
          $('#resources_attributes').html(resourcesHtml);
+
          $('.resource_user_name').bind('blur', function(event) {
            var family = $(this).attr('rel');
            var idx = $(this).attr('data-idx');
            if (!bookingModel.booking.booking_lines[family].resources[idx]) {
-            bookingModel.booking.booking_lines[family].resources[idx] = {};
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
            }  
            bookingModel.booking.booking_lines[family].resources[idx].resource_user_name = $(this).val();
          });
@@ -1800,15 +1801,82 @@
            var family = $(this).attr('rel');
            var idx = $(this).attr('data-idx');
            if (!bookingModel.booking.booking_lines[family].resources[idx]) {
-            bookingModel.booking.booking_lines[family].resources[idx] = {};
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
            }  
            bookingModel.booking.booking_lines[family].resources[idx].resource_user_surname = $(this).val();
          });
+         $('.resource_user_document_id').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_document_id = $(this).val();
+         });
+         $('.resource_user_phone').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_phone = $(this).val();
+         });
+         $('.resource_user_email').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_email = $(this).val();
+         });
+
+         $('.resource_user_2_name').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_2_name = $(this).val();
+         });
+         $('.resource_user_2_surname').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_2_surname = $(this).val();
+         });
+         $('.resource_user_2_document_id').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_2_document_id = $(this).val();
+         });
+         $('.resource_user_2_phone').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_2_phone = $(this).val();
+         });
+         $('.resource_user_2_email').bind('blur', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].resource_user_2_email = $(this).val();
+         });
+
+         <% if booking_item_family.weight or booking_item_family.height %>
          $('.weight').bind('change', function(event) {
            var family = $(this).attr('rel');
            var idx = $(this).attr('data-idx');
            if (!bookingModel.booking.booking_lines[family].resources[idx]) {
-            bookingModel.booking.booking_lines[family].resources[idx] = {};
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
            }  
            bookingModel.booking.booking_lines[family].resources[idx].customer_weight = $(this).val();
          });
@@ -1816,10 +1884,28 @@
            var family = $(this).attr('rel');
            var idx = $(this).attr('data-idx');
            if (!bookingModel.booking.booking_lines[family].resources[idx]) {
-            bookingModel.booking.booking_lines[family].resources[idx] = {};
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
            }  
            bookingModel.booking.booking_lines[family].resources[idx].customer_height = $(this).val();
-         });         
+         });   
+         $('.weight_2').bind('change', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].customer_weight_2 = $(this).val();
+         });
+         $('.heigh_2t').bind('change', function(event) {
+           var family = $(this).attr('rel');
+           var idx = $(this).attr('data-idx');
+           if (!bookingModel.booking.booking_lines[family].resources[idx]) {
+            bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
+           }  
+           bookingModel.booking.booking_lines[family].resources[idx].customer_height_2 = $(this).val();
+         });            
+         <% end %>
+
          <% end %>
 
 
