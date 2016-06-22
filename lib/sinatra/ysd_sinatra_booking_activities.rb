@@ -58,9 +58,6 @@ module Sinatra
 
           # Query activity
           if @activity = ::Yito::Model::Booking::Activity.first(:alias => request.path_info)
-            session.delete(:activity_date_id)
-            session.delete(:date)
-            session.delete(:turn)
             load_activity        
           else
             pass

@@ -91,7 +91,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
   		  	$("#planning_table thead tr:first").append("<th>"+'RECURSOS'+"</th>");
   		  	for (item in bookingPlanningModel.references) {
   		  	  $("#planning_table tbody").append("<tr id='" + item + "' rel='" + bookingPlanningModel.references[item] + "'></tr>");
-  		  	  $("#planning_table tbody tr#"+item+"").append("<td>"+bookingPlanningModel.references[item] + ' - ' + item+"</td>");
+  		  	  $("#planning_table tbody tr#"+item+"").append("<td>"+bookingPlanningModel.references[item] + '-' + item+"</td>");
   		  	}
   		  }
   		  for (item in bookingPlanningModel.planningData) {
