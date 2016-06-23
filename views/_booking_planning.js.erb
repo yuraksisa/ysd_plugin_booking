@@ -9,7 +9,9 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     reference: null,
     references: null,
     planningData : null,
+    selectedReservations: null,
     bookingLineResourceId: null,
+    mode: 'select-reservation',
     months: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],
     loadData: function() {
   	  if (this.dateFrom != null && this.dateTo != null) {
@@ -41,32 +43,92 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     	bookingPlanningView.update('not_enough_information');
       }
     },
-    loadSelectedReservations: function(reference, date) {
+
+    loadSelectedReservations: function(reference, date) { /* Load the selected reservation */
       $('#operation_area').load('/admin/booking/planning2-select?reference='+reference+'&date='+date+' #reservation_selector', null,
         function(responseText, textStatus, jqXHR){
           if (jqXHR.status == 200) {
+            bookingPlanningModel.prepare($('td[rel='+bookingPlanningModel.selectedReservations+']'));
+            //$('td[rel='+bookingPlanningModel.selectedReservations+']').addClass('selected');
             if ($('form[name=reassign_form] input[name=id]').val() != 'undefined') {
               bookingPlanningModel.bookingLineResourceId = $('form[name=reassign_form] input[name=id]').val();
             }
             else {
               bookingPlanningModel.bookingLineResourceId = null;
             }
+            $('#select_resource_button').unbind('click');
+            $('#select_resource_button').bind('click', function() {
+              bookingPlanningController.startResourceSelectionClick();
+            });
           }
         });
+    },
+
+    prepare: function(element) {
+    
+      var theBackground = element.css('background-color');
+      var lastStyleSheet = document.styleSheets[document.styleSheets.length - 1];
+      var rule = '@keyframes selected {\
+                  from { background-color:'+ theBackground +'; }\
+                  to { background-color: white; }\
+                  }';
+      lastStyleSheet.insertRule(rule, lastStyleSheet.cssRules.length);      
+      element.addClass('selected');
     }
+
   }
 
   bookingPlanningController = {
  
-    dataFilledClick: function(reference, date) {
-      if (bookingPlanningModel.bookingLineResourceId == null) {
+    dataFilledClick: function(reference, date, selectedReservations) {
+
+      if (bookingPlanningModel.mode == 'select-reservation') {
+        if (bookingPlanningModel.selectedReservations != null) {
+          $('td[rel='+bookingPlanningModel.selectedReservations+']').removeClass('selected');
+        }
+        bookingPlanningModel.selectedReservations = selectedReservations;
         bookingPlanningModel.loadSelectedReservations(reference, date);
       }
-      else {
-        alert('Desea asignar al recurso: ' + reference);
-      }
-    }
 
+    },
+
+    startResourceSelectionClick: function() { /* Start the resource selection */
+      bookingPlanningModel.mode= 'select-resource';
+      $('#select_resource_button').hide();
+      $('#cancel_select_resource_button').show();
+      $('#select_resource_help').show();
+      $('#cancel_select_resource_button').css('display', 'block');
+      $('#cancel_select_resource_button').unbind('click');
+      $('#cancel_select_resource_button').bind('click', function() {
+        bookingPlanningController.cancelResourceSelectionClick();
+      });
+      $(".data").unbind('click');
+      $(".data").bind('click', function() {
+        bookingPlanningController.selectResourceClick($(this).parent().attr('id'));
+      })
+    },
+
+    cancelResourceSelectionClick: function() { /* Cancel the resource selection */
+      bookingPlanningModel.mode = 'select-reservation';
+      $('#cancel_select_resource_button').hide();
+      $('#select_resource_help').hide();
+      $('#select_resource_button').show();
+      $(".data").unbind('click');
+      $(".data.filled").bind('click', function(event) {
+        bookingPlanningController.dataFilledClick($(this).parent().attr('id'), 
+                                                  $(this).attr('data-date'),
+                                                  $(this).attr('rel'));
+      });   
+      $('#resource').html('');
+      $('form[name=reassign_form] input[name=resource]').val('');
+      $('#reassign_resource').hide(); 
+    },
+
+    selectResourceClick: function(resource) { /* Select the resource */
+      $('#resource').html(resource);
+      $('form[name=reassign_form] input[name=resource]').val(resource);
+      $('#reassign_resource').show();
+    }
 
   }
 
@@ -88,7 +150,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
   		case 'data_available':
   		  if ($('#planning_table tbody').children().length == 0) {
   		  	$("#planning_table thead").append("<tr></tr>");
-  		  	$("#planning_table thead tr:first").append("<th>"+'RECURSOS'+"</th>");
+  		  	$("#planning_table thead tr:first").append("<th style='min-width:120px'>"+'RECURSOS'+"</th>");
   		  	for (item in bookingPlanningModel.references) {
   		  	  $("#planning_table tbody").append("<tr id='" + item + "' rel='" + bookingPlanningModel.references[item] + "'></tr>");
   		  	  $("#planning_table tbody tr#"+item+"").append("<td>"+bookingPlanningModel.references[item] + '-' + item+"</td>");
@@ -111,7 +173,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
                 background = bookingPlanningModel.planningData[item][resource].detail[0].planning_color;
               }
               var cellInformation = "style='background:" + background + "'";
-              cellInformation += " data-date='" + item + "' ";
+              cellInformation += " data-date='" + item + "' ";              
               if (value == '') {
                 cellInformation += " class='data' "; 
               }
@@ -121,6 +183,24 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
               var summary = bookingPlanningModel.planningData[item][resource].summary;
               if (summary != null) {
                 cellInformation += " title='" + summary + "'";
+              }              
+              var reservationIds = bookingPlanningModel.planningData[item][resource].reservation_ids;
+              var preReservationIds = bookingPlanningModel.planningData[item][resource].prereservation_ids;
+              var ids = null;
+              if (reservationIds != null) {
+                ids = reservationIds;
+              }
+              if (preReservationIds != null) {
+                if (ids == null) {
+                  ids = preReservationIds;
+                }
+                else {
+                  ids += ' ';
+                  ids += preReservationIds;
+                }
+              }
+              if (ids != null) {
+                cellInformation += " rel='" + ids + "'";
               }
               $("tr#"+resource).append("<td " + cellInformation + ">"+value+"</td>");	
             }
@@ -129,7 +209,9 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
         $("#planning_table").tableHeadFixer({"left" : 1});
         $(".data").unbind('click');
         $(".data.filled").bind('click', function(event) {
-          bookingPlanningController.dataFilledClick($(this).parent().attr('id'), $(this).attr('data-date'));
+          bookingPlanningController.dataFilledClick($(this).parent().attr('id'),
+                                                    $(this).attr('data-date'),
+                                                    $(this).attr('rel'));
         }); 		 
   		  break;
   		case 'not_enough_information':

@@ -4,7 +4,7 @@
   }
 			
   #planning_table {
-  	font-size: 0.75em;
+  	font-size: 0.7em;
 	  width: 1800px !important;
   }
 
@@ -31,6 +31,15 @@
   #planning_table .data {
   	text-align: center;
   }
+
+  @keyframes selected {
+    from { background-color: red; }
+    to { background-color: inherit; }
+  }
+
+  .selected {
+    animation: selected 1s infinite; /* IE 10+ */
+  }  
 
 </style>
 <div class="container_12">
