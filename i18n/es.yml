@@ -872,7 +872,7 @@ bookings_planning:
   prereservations: Prereservas (o bloqueos de stock)
   show_all: Mostrar todas
   prereservation:
-    create_title: Nueva prereserva
+    create_title: Nuevo bloqueo de stock
     update_title: Modificar prereserva
     from: Desde
     to: Hasta

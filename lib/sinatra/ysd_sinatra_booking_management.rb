@@ -181,7 +181,7 @@ module Sinatra
         end
         
         #
-        # Remove prereservation
+        # Planning: Remove prereservation
         #
         app.post '/admin/booking/planning-remove-prereservation', :allowed_usergroups => ['booking_manager', 'staff'] do
  
@@ -196,7 +196,7 @@ module Sinatra
         end
 
         #
-        # Planning : change color
+        # Planning : Change color
         #
         app.post '/admin/booking/planning-change-color', :allowed_usergroups => ['booking_manager', 'staff'] do
           id = params[:id]

@@ -10,13 +10,16 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     references: null,
     planningData : null,
     selectedReservations: null,
-    origin: null,
-    bookingLineResourceId: null,
+    selectedItemOrigin: null,
+    selectedItemOriginAbbr: null,
+    selectedItemId: null,
     currentReference: null,
     currentReferenceColor: null,
     newReference: null,
     scrollTop: null,
     scrollLeft: null,
+    prereservationCell: null,
+    prereservationReference: null,
     mode: 'select-reservation',
     months: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],
 
@@ -65,18 +68,25 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
             }
             else {
               if ($('form[name=reassign_form] input[name=id]').val() != 'undefined') {
-                bookingPlanningModel.bookingLineResourceId = $('form[name=reassign_form] input[name=id]').val();
+                bookingPlanningModel.selectedItemId = $('form[name=reassign_form] input[name=id]').val();
               }
               else {
-                bookingPlanningModel.bookingLineResourceId = null;
+                bookingPlanningModel.selectedItemId = null;
               }
               if ($('form[name=reassign_form] input[name=origin]').val() != 'undefined') {
-                bookingPlanningModel.origin = $('form[name=reassign_form] input[name=origin]').val();
+                bookingPlanningModel.selectedItemOrigin = $('form[name=reassign_form] input[name=origin]').val();
+                if (bookingPlanningModel.selectedItemOrigin == 'booking') {
+                  bookingPlanningModel.selectedItemOriginAbbr = 'R';
+                }
+                else if (bookingPlanningModel.selectedItemOrigin == 'prereservation') {
+                  bookingPlanningModel.selectedItemOriginAbbr = 'P';
+                }
               }
               else {
-                bookingPlanningModel.origin = null;
+                bookingPlanningModel.selectedItemOrigin = null;
               }
-              bookingPlanningView.selectReservation(bookingPlanningModel.selectedReservations);
+              bookingPlanningView.selectReservation(bookingPlanningModel.selectedReservations.substring(0,1),
+                                                    bookingPlanningModel.selectedReservations.substring(1));
             }
             $('.color').bind('change', function() {
                var id = $(this).parent().find('input[name=id]').val();
@@ -93,7 +103,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
 
     reassignResource: function() {
       var url = '/admin/booking/planning-reassign-reservation';
-      url+='?id='+this.bookingLineResourceId+'&resource='+this.newReference+'&type='+this.origin;
+      url+='?id='+this.selectedItemId+'&resource='+this.newReference+'&type='+this.selectedItemOrigin;
       $.ajax({
           type: 'POST',
           url : url,
@@ -108,6 +118,25 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
             alert('Error reasignando');
           }
       });    
+    },
+
+    createPrereservation: function() {
+        var formdata = $('form[name="element"]').formParams(true);
+        delete formdata.id;
+        var json_request = JSON.stringify(formdata);      
+        $.ajax({
+               type: 'POST',
+               data : json_request,
+               url : '/api/booking-prereservation',
+               success: function(data, textStatus, jqXHR) {
+                 bookingPlanningModel.prereservationCell = null;
+                 bookingPlanningModel.prereservationReference = null;
+                 bookingPlanningView.update('created_prereservation');
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error creando prereserva');
+               }
+           });       
     },
 
     destroyPrereservation: function(id) {
@@ -150,9 +179,23 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
  
     dataFilledClick: function(reference, date, selectedReservations) {
 
+      if ($('#preresevation_area:visible')) {
+        $('#prereservation_container').hide();
+        $('#operation_area').show();
+      }
+
+      if (bookingPlanningModel.prereservationCell != null) {
+        $(bookingPlanningModel.prereservationCell).css('background-color', 'white');
+        bookingPlanningModel.prereservationCell = null;
+      }
+      if (bookingPlanningModel.prereservationReference != null) {
+        $($('#'+bookingPlanningModel.prereservationReference).children()[0]).css('background-color','white');
+        bookingPlanningModel.prereservationReference = null;
+      }
+
       if (bookingPlanningModel.mode == 'select-reservation') {
-        if (bookingPlanningModel.bookingLineResourceId != null) {
-          var element = $("td[rel~="+"'"+bookingPlanningModel.bookingLineResourceId+"'"+"]");
+        if (bookingPlanningModel.selectedItemId != null) {
+          var element = $("td[rel~="+"'"+bookingPlanningModel.selectedItemOriginAbbr+bookingPlanningModel.selectedItemId+"'"+"]");
           element.removeClass('selected');
           $(element.parent().children()[0]).css('background-color','white');
         }
@@ -160,6 +203,75 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
         bookingPlanningModel.loadSelectedReservations(reference, date);
       }
 
+    },
+
+    dataEmptyClick: function(theElement, reference, date) { /* Click on an empty cell: New prereservation */
+
+      if (bookingPlanningModel.selectedItemId != null) {
+        var element = $("td[rel~="+"'"+bookingPlanningModel.selectedItemOriginAbbr+bookingPlanningModel.selectedItemId+"'"+"]");
+        element.removeClass('selected');
+        $(element.parent().children()[0]).css('background-color','white');        
+      }
+      
+      if (bookingPlanningModel.prereservationCell != null) {
+        $(bookingPlanningModel.prereservationCell).css('background-color', 'white');
+        bookingPlanningModel.prereservationCell = null;
+      }
+
+      if (bookingPlanningModel.prereservationReference != null) {
+        $($('#'+bookingPlanningModel.prereservationReference).children()[0]).css('background-color','white');
+      }
+
+      bookingPlanningModel.prereservationCell = theElement;
+      $(bookingPlanningModel.prereservationCell).css('background-color', 'yellow');
+      
+      bookingPlanningModel.prereservationReference = reference;
+      $($('#'+reference).children()[0]).css('background-color','yellow');
+
+      $('#prereservation_button').unbind('click');
+      $('#prereservation_button').bind('click', function(){
+        bookingPlanningController.prereservationButtonClick();
+      });
+
+      $('#cancel_prereservation_button').unbind('click');
+      $('#cancel_prereservation_button').bind('click', function(){
+        bookingPlanningController.cancelPrereservationButtonClick();
+      });
+
+      $('#booking_item_reference_value').html(reference);
+      $('form[name=element] input[name=booking_item_reference]').val(reference);
+      
+      // Setup the form
+      var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
+      $('#date_from').datepicker({
+            numberOfMonths:2}, 
+            locale);
+      $('#date_from').datepicker('setDate', new Date(date));
+      $('#date_to').datepicker({
+            numberOfMonths:2}, 
+            locale);
+
+      // Show prereservation form
+      $('#operation_area').hide();
+      $('#prereservation_container').show();
+    },
+
+    prereservationButtonClick: function() {
+       bookingPlanningModel.createPrereservation();
+    },
+
+    cancelPrereservationButtonClick: function() {
+      if (bookingPlanningModel.prereservationCell != null) {
+        $(bookingPlanningModel.prereservationCell).css('background-color', 'white');
+        bookingPlanningModel.prereservationCell = null;
+      }
+      if (bookingPlanningModel.prereservationReference != null) {
+        $($('#'+bookingPlanningModel.prereservationReference).children()[0]).css('background-color','white');
+        bookingPlanningModel.prereservationReference = null;
+      }      
+      $('#prereservation_container').hide();       
+      $('#operation_area').show();
+      $('form[name=element]')[0].reset();
     },
 
     destroyPrereservationClick: function(id) { /* Destroy preresevation */
@@ -176,15 +288,22 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
 
 
     candidateChange: function(id, origin) { /* Select candidate */
-      if (bookingPlanningModel.bookingLineResourceId != null) {
-        var element = $("td[rel~="+"'"+bookingPlanningModel.bookingLineResourceId+"'"+"]");
+      if (bookingPlanningModel.selectedItemId != null) {
+        var element = $("td[rel~="+"'"+bookingPlanningModel.selectedItemOriginAbbr+bookingPlanningModel.selectedItemId+"'"+"]");
         element.removeClass('selected');
         $(element.parent().children()[0]).css('background-color','white');        
       }
       setTimeout(function() {
-        bookingPlanningModel.bookingLineResourceId = id;
-        bookingPlanningModel.origin = origin;
-        bookingPlanningView.selectReservation(bookingPlanningModel.bookingLineResourceId);
+        bookingPlanningModel.selectedItemId = id;
+        bookingPlanningModel.selectedItemOrigin = origin;
+        if (bookingPlanningModel.selectedItemOrigin == 'booking') {
+          bookingPlanningModel.selectedItemOriginAbbr = 'R';
+        }
+        else if (bookingPlanningModel.selectedItemOrigin == 'prereservation') {
+          bookingPlanningModel.selectedItemOriginAbbr = 'P';
+        }        
+        bookingPlanningView.selectReservation(bookingPlanningModel.selectedItemOriginAbbr,
+                                              bookingPlanningModel.selectedItemId);
         $('#select_resource').show();
       }, 200);
     },
@@ -211,6 +330,12 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
       $('#select_resource_help').hide();
       $('#select_resource_button').show();
       $(".data").unbind('click');
+      $(".data.empty").bind('click', function(event) {
+        var theElement = $(this);
+        bookingPlanningController.dataEmptyClick(theElement,
+                                                 $(this).parent().attr('id'), 
+                                                 $(this).attr('data-date'));
+      });
       $(".data.filled").bind('click', function(event) {
         bookingPlanningController.dataFilledClick($(this).parent().attr('id'), 
                                                   $(this).attr('data-date'),
@@ -249,6 +374,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
   bookingPlanningView = {
 
     init: function() {
+      $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
       bookingPlanningModel.loadData();
       $('#parent').scroll(function (event) {
       	if ($(this).scrollLeft() == 0) {
@@ -290,7 +416,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
               var cellInformation = "style='background:" + background + "'";
               cellInformation += " data-date='" + item + "' ";              
               if (value == '') {
-                cellInformation += " class='data' "; 
+                cellInformation += " class='data empty' "; 
               }
               else {
                 cellInformation += " class='data filled' ";
@@ -301,6 +427,22 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
               }              
               var reservationIds = bookingPlanningModel.planningData[item][resource].reservation_ids;
               var preReservationIds = bookingPlanningModel.planningData[item][resource].prereservation_ids;
+              
+              if (reservationIds != null) {
+                var reservationsArray = reservationIds.split(' ');
+                for (var idx=0;idx<reservationsArray.length;idx++) {
+                  reservationsArray[idx] = 'R'+reservationsArray[idx];
+                }
+                reservationIds = reservationsArray.join(' ');
+              }
+              if (preReservationIds != null) {
+                var preReservationsArray = preReservationIds.split(' ');
+                for (var idx=0;idx<preReservationsArray.length;idx++) {
+                  preReservationsArray[idx] = 'P'+preReservationsArray[idx];
+                }
+                preReservationIds = preReservationsArray.join(' ');
+              }
+
               var ids = null;
               if (reservationIds != null) {
                 ids = reservationIds;
@@ -323,6 +465,12 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
   		  
         $("#planning_table").tableHeadFixer({"left" : 1});
         $(".data").unbind('click');
+        $(".data.empty").bind('click', function(event) {
+          var theElement = $(this);
+          bookingPlanningController.dataEmptyClick(theElement,
+                                                   $(this).parent().attr('id'), 
+                                                   $(this).attr('data-date'));
+        });        
         $(".data.filled").bind('click', function(event) {
           bookingPlanningController.dataFilledClick($(this).parent().attr('id'),
                                                     $(this).attr('data-date'),
@@ -339,30 +487,22 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
   		  break;
 
       case 'reassigned':
-        bookingPlanningModel.scrollLeft = $('#parent').scrollLeft();
-        bookingPlanningModel.scrollTop = $('#parent').scrollTop();
-        $('#planning_table thead').empty();
-        $('#planning_table tbody').empty();
-        $('#operation_area').empty();
-        bookingPlanningModel.loadData();
+        this.reload();
+        break;
+
+      case 'created_prereservation':
+        $('#prereservation_container').hide();
+        $('#operation_area').show();
+        $('form[name=element]')[0].reset();
+        this.reload();
         break;
 
       case 'destroyed_preservation':
-        bookingPlanningModel.scrollLeft = $('#parent').scrollLeft();
-        bookingPlanningModel.scrollTop = $('#parent').scrollTop();
-        $('#planning_table thead').empty();
-        $('#planning_table tbody').empty();
-        $('#operation_area').empty();
-        bookingPlanningModel.loadData();
+        this.reload();
         break;
 
       case 'changed_color':
-        bookingPlanningModel.scrollLeft = $('#parent').scrollLeft();
-        bookingPlanningModel.scrollTop = $('#parent').scrollTop();
-        $('#planning_table thead').empty();
-        $('#planning_table tbody').empty();
-        $('#operation_area').empty();
-        bookingPlanningModel.loadData();
+        this.reload();
         break;
 
   		case 'not_enough_information':
@@ -371,8 +511,17 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
   	  }
     },
 
-    selectReservation: function(id) {   
-      bookingPlanningView.selectCurrentResource( $("td[rel~="+"'"+id+"'"+"]"));
+    reload: function() { /* Reload the data */
+        bookingPlanningModel.scrollLeft = $('#parent').scrollLeft();
+        bookingPlanningModel.scrollTop = $('#parent').scrollTop();
+        $('#planning_table thead').empty();
+        $('#planning_table tbody').empty();
+        $('#operation_area').empty();
+        bookingPlanningModel.loadData();
+    },
+
+    selectReservation: function(origin, id) {   
+      bookingPlanningView.selectCurrentResource( $("td[rel~="+"'"+origin+id+"'"+"]"));
       $('#select_resource_button').unbind('click');
       $('#select_resource_button').bind('click', function() {
         bookingPlanningController.startResourceSelectionClick();
@@ -382,6 +531,10 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     selectCurrentResource: function(element) {
     
       bookingPlanningModel.currentReferenceColor = element.css('background-color');
+      if (bookingPlanningModel.currentReferenceColor == 'rgba(0, 0, 0, 0)' || 
+          bookingPlanningModel.currentReferenceColor == 'transparent') {
+        bookingPlanningModel.currentReferenceColor = '#EEEEEE';
+      }
       var lastStyleSheet = document.styleSheets[document.styleSheets.length - 1];
       var rule = '@keyframes selected {\
                   from { background-color:'+ bookingPlanningModel.currentReferenceColor +'; }\

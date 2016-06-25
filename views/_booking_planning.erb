@@ -1,6 +1,6 @@
 <style type="text/css">
   #parent, #operation_area {
-	height: 430px;
+	height: 500px;
   }
 			
   #planning_table {
@@ -56,6 +56,9 @@
   <div class="grid_3">
     <div id="operation_area" class="left-margin smaller_text">
     </div>
+    <div id="prereservation_container" class="left-margin smaller_text" style="display:none">
+      <%= partial :prereservation_form %> 
+    </div>    
   </div>
 </div>
 <div class="container_12">
