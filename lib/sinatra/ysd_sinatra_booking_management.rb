@@ -174,16 +174,116 @@ module Sinatra
               logger.error("date not valid #{params[:to]}")
             end
           end  
+
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))          
           load_page(:bookings_planning_v2)
+
+        end
+        
+        #
+        # Remove prereservation
+        #
+        app.post '/admin/booking/planning-remove-prereservation', :allowed_usergroups => ['booking_manager', 'staff'] do
+ 
+          id = params[:id]
+          if prereservation = BookingDataSystem::BookingPrereservation.get(id)
+            prereservation.destroy
+            status 200
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Planning : change color
+        #
+        app.post '/admin/booking/planning-change-color', :allowed_usergroups => ['booking_manager', 'staff'] do
+          id = params[:id]
+          type = params[:type]
+          color = params[:color]
+
+          if type == 'booking'
+            if booking = BookingDataSystem::Booking.get(id)
+              booking.planning_color = color
+              booking.save
+            else
+              status 404
+            end
+          elsif type="prereservation"
+            if prereservation = BookingDataSystem::BookingPrereservation.get(id)
+              prereservation.planning_color = color
+              prereservation.save
+            else
+              status 404
+            end
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Reassign reservation / prereservation
+        #
+        app.post '/admin/booking/planning-reassign-reservation', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          id = params[:id]
+          resource = params[:resource]
+          type = params[:type]
+
+          if type == 'booking'
+            if booking_line_resource = BookingDataSystem::BookingLineResource.get(id)
+              if booking_item = ::Yito::Model::Booking::BookingItem.get(resource)
+                booking_line_resource.booking_item_category = booking_item.category.code if booking_item.category
+                booking_line_resource.booking_item_reference = booking_item.reference
+                booking_line_resource.booking_item_stock_model = booking_item.stock_model
+                booking_line_resource.booking_item_stock_plate = booking_item.stock_plate
+                booking_line_resource.booking_item_characteristic_1 = booking_item.characteristic_1
+                booking_line_resource.booking_item_characteristic_2 = booking_item.characteristic_2
+                booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3
+                booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4              
+                booking_line_resource.save
+                status 200
+              else
+                status 404
+              end
+            else
+              status 404
+            end
+          elsif type == 'prereservation'
+            if prereservation = BookingDataSystem::BookingPrereservation.get(id)
+              if booking_item = ::Yito::Model::Booking::BookingItem.get(resource)
+                prereservation.booking_item_category = booking_item.category.code if booking_item.category
+                prereservation.booking_item_reference = booking_item.reference
+                prereservation.save
+              else
+                status 404
+              end
+            else
+              status 404
+            end
+          else
+            status 404
+          end
+
         end
 
         #
         # The user selects a cell in the planning
         #
         app.get '/admin/booking/planning2-select', :allowed_usergroups => ['booking_manager', 'staff'] do
+           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
            @bookings = BookingDataSystem::Booking.resource_occupation_detail(params[:date], params[:reference])
            load_page(:booking_planning_select, :layout => false)
         end        
+        
+        #
+        # The user 
+        #
+        app.get '/admin/booking/planning2-prereservation', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+        end
                   
         #
         # Bookings scheduler

@@ -10,9 +10,16 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     references: null,
     planningData : null,
     selectedReservations: null,
+    origin: null,
     bookingLineResourceId: null,
+    currentReference: null,
+    currentReferenceColor: null,
+    newReference: null,
+    scrollTop: null,
+    scrollLeft: null,
     mode: 'select-reservation',
     months: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],
+
     loadData: function() {
   	  if (this.dateFrom != null && this.dateTo != null) {
   	    var from = this.dateFrom.toString('yyyy-MM-dd');
@@ -45,35 +52,96 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     },
 
     loadSelectedReservations: function(reference, date) { /* Load the selected reservation */
+      bookingPlanningModel.currentReference = reference;
       $('#operation_area').load('/admin/booking/planning2-select?reference='+reference+'&date='+date+' #reservation_selector', null,
         function(responseText, textStatus, jqXHR){
           if (jqXHR.status == 200) {
-            bookingPlanningModel.prepare($('td[rel='+bookingPlanningModel.selectedReservations+']'));
-            //$('td[rel='+bookingPlanningModel.selectedReservations+']').addClass('selected');
-            if ($('form[name=reassign_form] input[name=id]').val() != 'undefined') {
-              bookingPlanningModel.bookingLineResourceId = $('form[name=reassign_form] input[name=id]').val();
+            if ($('form[name=select_booking]').length > 0) { // More than one candidate
+              $('#select_resource').hide();
+              $('form[name=select_booking] input[type=radio][name=id]').unbind('change');
+              $('form[name=select_booking] input[type=radio][name=id]').bind('change', function(){
+                 bookingPlanningController.candidateChange($(this).val(),$(this).attr('rel'));
+              });
             }
             else {
-              bookingPlanningModel.bookingLineResourceId = null;
+              if ($('form[name=reassign_form] input[name=id]').val() != 'undefined') {
+                bookingPlanningModel.bookingLineResourceId = $('form[name=reassign_form] input[name=id]').val();
+              }
+              else {
+                bookingPlanningModel.bookingLineResourceId = null;
+              }
+              if ($('form[name=reassign_form] input[name=origin]').val() != 'undefined') {
+                bookingPlanningModel.origin = $('form[name=reassign_form] input[name=origin]').val();
+              }
+              else {
+                bookingPlanningModel.origin = null;
+              }
+              bookingPlanningView.selectReservation(bookingPlanningModel.selectedReservations);
             }
-            $('#select_resource_button').unbind('click');
-            $('#select_resource_button').bind('click', function() {
-              bookingPlanningController.startResourceSelectionClick();
-            });
+            $('.color').bind('change', function() {
+               var id = $(this).parent().find('input[name=id]').val();
+               var type = $(this).parent().find('input[name=type]').val();
+               var color =$(this).val();
+               bookingPlanningController.changeColorChanged(id, type, color);
+            })
+            $('.destroy_prereservation_button').bind('click', function() {
+               bookingPlanningController.destroyPrereservationClick($(this).attr('rel'));
+            })
           }
         });
     },
 
-    prepare: function(element) {
-    
-      var theBackground = element.css('background-color');
-      var lastStyleSheet = document.styleSheets[document.styleSheets.length - 1];
-      var rule = '@keyframes selected {\
-                  from { background-color:'+ theBackground +'; }\
-                  to { background-color: white; }\
-                  }';
-      lastStyleSheet.insertRule(rule, lastStyleSheet.cssRules.length);      
-      element.addClass('selected');
+    reassignResource: function() {
+      var url = '/admin/booking/planning-reassign-reservation';
+      url+='?id='+this.bookingLineResourceId+'&resource='+this.newReference+'&type='+this.origin;
+      $.ajax({
+          type: 'POST',
+          url : url,
+          success: function(data, textStatus, jqXHR) {
+            bookingPlanningModel.currentReference = null;
+            bookingPlanningModel.currentReferenceColor = null;
+            bookingPlanningModel.newReference = null;
+            bookingPlanningModel.mode = 'select-reservation';
+            bookingPlanningView.update('reassigned');
+          },
+          error: function(textStatus, jqXHR) {
+            alert('Error reasignando');
+          }
+      });    
+    },
+
+    destroyPrereservation: function(id) {
+      var url = '/admin/booking/planning-remove-prereservation';
+      url+='?id='+id;
+      $.ajax({
+          type: 'POST',
+          url : url,
+          success: function(data, textStatus, jqXHR) {
+            bookingPlanningModel.currentReference = null;
+            bookingPlanningModel.currentReferenceColor = null;
+            bookingPlanningModel.newReference = null;
+            bookingPlanningModel.mode = 'select-reservation';
+            bookingPlanningView.update('destroyed_preservation');
+          },
+          error: function(textStatus, jqXHR) {
+            alert('Error eliminando prereserva');
+          }
+      });          
+    },
+
+    changeColor: function(id, type, color) {
+      var url = '/admin/booking/planning-change-color';
+      url+='?id='+id+'&type='+type+'&color='+escape(color);
+      $.ajax({
+          type: 'POST',
+          url : url,
+          success: function(data, textStatus, jqXHR) {
+            bookingPlanningView.update('changed_color');
+          },
+          error: function(textStatus, jqXHR) {
+            alert('Error eliminando prereserva');
+          }
+      });       
     }
 
   }
@@ -83,13 +151,42 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     dataFilledClick: function(reference, date, selectedReservations) {
 
       if (bookingPlanningModel.mode == 'select-reservation') {
-        if (bookingPlanningModel.selectedReservations != null) {
-          $('td[rel='+bookingPlanningModel.selectedReservations+']').removeClass('selected');
+        if (bookingPlanningModel.bookingLineResourceId != null) {
+          var element = $("td[rel~="+"'"+bookingPlanningModel.bookingLineResourceId+"'"+"]");
+          element.removeClass('selected');
+          $(element.parent().children()[0]).css('background-color','white');
         }
         bookingPlanningModel.selectedReservations = selectedReservations;
         bookingPlanningModel.loadSelectedReservations(reference, date);
       }
 
+    },
+
+    destroyPrereservationClick: function(id) { /* Destroy preresevation */
+      
+      bookingPlanningModel.destroyPrereservation(id);
+
+    },
+
+    changeColorChanged: function(id, type, color) { /* Change planning color */
+
+      bookingPlanningModel.changeColor(id, type, color);
+
+    },
+
+
+    candidateChange: function(id, origin) { /* Select candidate */
+      if (bookingPlanningModel.bookingLineResourceId != null) {
+        var element = $("td[rel~="+"'"+bookingPlanningModel.bookingLineResourceId+"'"+"]");
+        element.removeClass('selected');
+        $(element.parent().children()[0]).css('background-color','white');        
+      }
+      setTimeout(function() {
+        bookingPlanningModel.bookingLineResourceId = id;
+        bookingPlanningModel.origin = origin;
+        bookingPlanningView.selectReservation(bookingPlanningModel.bookingLineResourceId);
+        $('#select_resource').show();
+      }, 200);
     },
 
     startResourceSelectionClick: function() { /* Start the resource selection */
@@ -119,16 +216,33 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
                                                   $(this).attr('data-date'),
                                                   $(this).attr('rel'));
       });   
+      var resource = $('form[name=reassign_form] input[name=resource]').val();
+      $($('#'+resource).children()[0]).css('background-color','white');
       $('#resource').html('');
       $('form[name=reassign_form] input[name=resource]').val('');
       $('#reassign_resource').hide(); 
     },
 
     selectResourceClick: function(resource) { /* Select the resource */
+      if (bookingPlanningModel.newReference != null) {
+        $($('#'+bookingPlanningModel.newReference).children()[0]).css('background-color','white');
+      }
+      $('#original_resource').html(bookingPlanningModel.currentReference);
+      bookingPlanningModel.newReference = resource;
       $('#resource').html(resource);
       $('form[name=reassign_form] input[name=resource]').val(resource);
       $('#reassign_resource').show();
+      $($('#'+resource).children()[0]).css('background-color','yellow');
+      $('#reassign_button').unbind('click');
+      $('#reassign_button').bind('click', function(){
+        bookingPlanningController.reassignButtonClick();
+      });
+    },
+
+    reassignButtonClick: function() {
+      bookingPlanningModel.reassignResource();
     }
+
 
   }
 
@@ -168,6 +282,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
               else if (bookingPlanningModel.planningData[item][resource].total > 1) {
                 value = bookingPlanningModel.planningData[item][resource].total;
               }
+              
               var background = 'white';
               if (bookingPlanningModel.planningData[item][resource].detail.length > 0) {
                 background = bookingPlanningModel.planningData[item][resource].detail[0].planning_color;
@@ -213,12 +328,71 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
                                                     $(this).attr('data-date'),
                                                     $(this).attr('rel'));
         }); 		 
+        
+        if (bookingPlanningModel.scrollLeft != null) {
+          $('#parent').scrollLeft(bookingPlanningModel.scrollLeft);
+        }
+        if (bookingPlanningModel.scrollTop != null) {
+          $('#parent').scrollTop(bookingPlanningModel.scrollTop);
+        }
+
   		  break;
+
+      case 'reassigned':
+        bookingPlanningModel.scrollLeft = $('#parent').scrollLeft();
+        bookingPlanningModel.scrollTop = $('#parent').scrollTop();
+        $('#planning_table thead').empty();
+        $('#planning_table tbody').empty();
+        $('#operation_area').empty();
+        bookingPlanningModel.loadData();
+        break;
+
+      case 'destroyed_preservation':
+        bookingPlanningModel.scrollLeft = $('#parent').scrollLeft();
+        bookingPlanningModel.scrollTop = $('#parent').scrollTop();
+        $('#planning_table thead').empty();
+        $('#planning_table tbody').empty();
+        $('#operation_area').empty();
+        bookingPlanningModel.loadData();
+        break;
+
+      case 'changed_color':
+        bookingPlanningModel.scrollLeft = $('#parent').scrollLeft();
+        bookingPlanningModel.scrollTop = $('#parent').scrollTop();
+        $('#planning_table thead').empty();
+        $('#planning_table tbody').empty();
+        $('#operation_area').empty();
+        bookingPlanningModel.loadData();
+        break;
+
   		case 'not_enough_information':
   		  alert('No hay suficientes datos para obtener la información');
   		  break;
   	  }
+    },
+
+    selectReservation: function(id) {   
+      bookingPlanningView.selectCurrentResource( $("td[rel~="+"'"+id+"'"+"]"));
+      $('#select_resource_button').unbind('click');
+      $('#select_resource_button').bind('click', function() {
+        bookingPlanningController.startResourceSelectionClick();
+      });
+    },
+
+    selectCurrentResource: function(element) {
+    
+      bookingPlanningModel.currentReferenceColor = element.css('background-color');
+      var lastStyleSheet = document.styleSheets[document.styleSheets.length - 1];
+      var rule = '@keyframes selected {\
+                  from { background-color:'+ bookingPlanningModel.currentReferenceColor +'; }\
+                  to { background-color: white; }\
+                  }';
+      lastStyleSheet.insertRule(rule, lastStyleSheet.cssRules.length);      
+      element.addClass('selected');
+      $(element.parent().children()[0]).css('background-color', bookingPlanningModel.currentReferenceColor);
     }
+
+
   }
 
 });  
