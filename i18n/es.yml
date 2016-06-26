@@ -1047,6 +1047,8 @@ occupation_detail:
     1: Hay <strong>%1</strong> producto disponible
     n: Hay <strong>%1</strong> productos disponibles
 new_reservation_activity:
+  go_to_pay_line1: Pagar
+  go_to_pay_line2: (Confirmar el pedido)
   notify_customer_empty: Por favor, confirmar con el centro la fecha seleccionada 
 programmed_activities:
   title: Actividades programadas
