@@ -1,0 +1,79 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Listado de prereservas (bloqueo de stock)</h2>
+  <div class="form-button" style="float: right; display:none">
+     <a id="print_link" href="/admin/booking/reports/prereservations-pdf" target="_blank">Imprimir</a>
+  </div>  
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="report_reservations_form" action="/admin/booking/reports/prereservations" method="get">
+        <div class="formrow">
+          <div style="display: inline-block">
+            <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <% if @prereservations.empty? %>
+      <div class="all-border-solid-light top-margin-1line">
+         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+      </div>
+    <% else %>    
+      <% last_month = nil %>
+      <% @prereservations.each do |prereservation| %>  
+        <% if last_month != prereservation.date_from.month %>
+          <% unless last_month.nil? %>    
+              </tbody>
+            </table>
+          <% end %>     
+          <h3><%=t.months[prereservation.date_from.strftime('%B').downcase]%> <%=prereservation.date_from.year%></h3> 
+          <table id="table" class="table">
+            <thead class="table-header">
+              <tr>
+                <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
+                <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
+                <th class="table-cell" scope="col" style="width:1.5em">Localizador</th>
+                <th class="table-cell" scope="col" style="width:3em">Recurso</th>
+                <th class="table-cell" scope="col" style="width:4em">Titulo</th>
+                <th class="table-cell" scope="col" style="width:4.5em">Notas</th>    
+              </tr>
+            </thead>
+          <tbody>        
+        <% end %>              
+        <tr class="table-row">
+          <td class="table-cell"><%=prereservation.date_from.strftime('%Y-%m-%d')%> <%if @product_family.time_to_from%><%=prereservation.time_from%><%end%></td>
+          <td class="table-cell"><%=prereservation.date_to.strftime('%Y-%m-%d')%> <%if @product_family.time_to_from%><%=prereservation.time_to%><%end%></td>
+          <td class="table-cell"><%=prereservation.id%></td>
+          <td class="table-cell"><%=prereservation.booking_item_reference%></td>
+          <td class="table-cell"><%=prereservation.title%></td>
+          <td class="table-cell"><%=prereservation.notes%></td>
+        </tr>
+        <% last_month = prereservation.date_from.month %>
+      <% end %>
+      </tbody>
+    </table>
+    <% end %>
+  </div>
+</div>

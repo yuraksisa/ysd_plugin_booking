@@ -2,11 +2,11 @@ require(['jquery',
          'jquery.ui', 'jquery.ui.datepicker-es','datejs'], function($) {
 
 
-  reservationsModel = {
+  preReservationsModel = {
 
   };
 
-  reservationsController = {
+  preReservationsController = {
 
     searchButtonClick: function() {
       var date_from = $('#date_from').datepicker('getDate').toString('yyyy-MM-dd');
@@ -20,7 +20,7 @@ require(['jquery',
 
   };
 
-  reservationsView = {
+  preReservationsView = {
 
     getUrlVars : function() {
           var vars = [], hash;
@@ -38,7 +38,7 @@ require(['jquery',
          var url_vars = this.getUrlVars();
          var from = url_vars['from'] === undefined ? '<%=Date.civil(Date.today.year,1,1).strftime("%Y-%m-%d")%>' : decodeURIComponent(url_vars['from']);        
          var to = url_vars['to'] === undefined ? '<%=Date.civil(Date.today.year,12,31).strftime("%Y-%m-%d")%>' : decodeURIComponent(url_vars['to']);
-         $('#print_link').attr('href', '/admin/booking/reports/reservations-pdf?from='+from+'&to='+to);
+         $('#print_link').attr('href', '/admin/booking/reports/prereservations-pdf?from='+from+'&to='+to);
          var date_from = $.datepicker.parseDate("yy-mm-dd", from);
          var date_to = $.datepicker.parseDate("yy-mm-dd", to);
 
@@ -68,7 +68,8 @@ require(['jquery',
                   useLocalTimezone: true,
                   numberOfMonths:1, 
                   maxDate: new Date().add(365).days(),
-                  dateFormat: 'dd/mm/yy'},
+                  dateFormat: 'dd/mm/yy'
+                  },
                   locale
                   );         
          if (date_to != null) {
@@ -79,13 +80,13 @@ require(['jquery',
          }
 
          $('#search').bind('click', function() {
-           reservationsController.searchButtonClick();
+           preReservationsController.searchButtonClick();
          });
 
     }
 
   };
 
-  reservationsView.init();
+  preReservationsView.init();
 
 });

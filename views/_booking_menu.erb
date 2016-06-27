@@ -33,17 +33,20 @@
       </ul>    
    </li>    
    <% if booking_renting %>
-   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning','/admin/booking/planning2','/admin/booking/monthly-occupation', '/admin/booking/reports/pickup-return','/admin/booking/reports/reservations','/admin/booking/reports/pending-confirmation','/admin/booking/reports/customers','/admin/booking/resources-occupation','/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
+   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning','/admin/booking/planning2','/admin/booking/monthly-occupation', '/admin/booking/reports/pickup-return','/admin/booking/reports/reservations','/admin/booking/reports/prereservations','/admin/booking/reports/pending-confirmation',
+   '/admin/booking/reports/in-progress','/admin/booking/reports/customers','/admin/booking/resources-occupation','/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
       <ul>
         <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>           
         <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>
         <li><a href='/admin/booking/reports/pending-confirmation'><%=t.booking_console.report_pending_confirmation%></a></li>
+        <li><a href='/admin/booking/reports/in-progress'><%=t.booking_console.report_in_progress%></a></li>        
         <li><a href='/admin/booking/planning'><%=t.booking_console.planning%></a></li>    
         <li><a href='/admin/booking/planning2?from=2016-06-01&to=2016-12-31'><%=t.booking_console.planning%> NUEVO</a></li> 
         <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%></a></li>
         <li><a href='/admin/booking/resources-occupation'><%=t.booking_console.check_availability%></a></li>  
         <li><a href='/admin/booking/monthly-occupation'><%=t.booking_console.monthly_occupation%></a></li>
-        <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>     
+        <li><a href='/admin/booking/reports/prereservations'><%=t.booking_console.report_prereservations%></a></li>    
+        <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>   
         <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>                          
       </ul>    
    </li>   

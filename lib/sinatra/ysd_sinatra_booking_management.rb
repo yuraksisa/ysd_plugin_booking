@@ -656,6 +656,28 @@ module Sinatra
           load_page(:report_pending_confirmation, :locals => locals)
 
         end 
+        
+        #
+        # In progress
+        #
+        app.get '/admin/booking/reports/in-progress', :allowed_usergroups => ['booking_manager', 'staff'] do 
+
+          locals = {}
+          locals.store(:booking_reservation_starts_with,
+              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+
+          @today = Date.today.to_date
+
+          @reservations = BookingDataSystem::Booking.all(
+            :conditions => {:status => [:confirmed, :in_progress], 
+                            :date_from.lte => @today,
+                            :date_to.gte => @today},
+            :order => :date_from.asc)
+
+          load_page(:report_in_progress, :locals => locals)
+
+        end
 
         #
         # Pickup and return
@@ -781,6 +803,61 @@ module Sinatra
           load_page(:report_reservations, :locals => locals)
         end  
         
+
+        #
+        # Reservations report (html)
+        #
+        app.get '/admin/booking/reports/prereservations/?*', :allowed_usergroups => ['booking_manager'] do 
+          
+          year = Date.today.year
+
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+          
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("prereservation from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("prereservation from date not valid #{params[:to]}")
+            end
+          end
+
+          condition = Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new(:date_from,'$lte', date_from),
+                  Conditions::Comparison.new(:date_to,'$gte', date_from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', date_to),
+                  Conditions::Comparison.new(:date_to,'$gte', date_to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', date_from),
+                  Conditions::Comparison.new(:date_to,'$gte', date_to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from, '$gte', date_from),
+                  Conditions::Comparison.new(:date_to, '$lte', date_to)])               
+              ]
+            )
+
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          @prereservations = condition.build_datamapper(BookingDataSystem::BookingPrereservation).all(
+             :order => [:date_from, :time_from])
+          locals = {}
+          locals.store(:booking_reservation_starts_with,
+              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
+          load_page(:report_prereservations, :locals => locals)
+        end 
+
         #
         # Customers report (html)
         #

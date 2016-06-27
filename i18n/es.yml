@@ -168,7 +168,9 @@ booking_console:
   extras_billing: Facturación extras  
   information_requests: Solicitudes información
   report_reservations: Listado de reservas
+  report_prereservations: Listado de prereservas
   report_pending_confirmation: Pendientes confirmación
+  report_in_progress: En curso
   report_customers: Listado de clientes
   report_pickup_return: Entregas y recogidas
   report_stock: Listado de stock
@@ -1026,6 +1028,9 @@ report_stock:
 report_pending_confirmation:
   title: Reservas pendientes de confirmación
   summary: Hay <strong>%1</strong> reservas pendientes de confirmación
+report_in_progress:
+  title: Reservas en curso
+  summary: Hay <strong>%1</strong> reservas y <strong>%2</strong> recursos en curso
 period_occupation:
   title: Comprobar disponibilidad
   summary: Resumen

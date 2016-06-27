@@ -10,7 +10,7 @@
  }
 </style>
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.report_pending_confirmation.title%></h2>
+  <h2 class="entity-title"><%=t.report_in_progress.title%></h2>
 </div>
 <div class="admin_content_wrapper">
   <div>
@@ -18,7 +18,7 @@
     <div class="all-border-solid-light top-margin-1line">
          <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
     </div>
-    <% end %>    
+    <% else %>    
       <table id="table" class="table">
         <thead class="table-header">
           <tr>
@@ -28,31 +28,43 @@
             <th class="table-cell" scope="col" style="width:3.5em">Cliente</th>
             <th class="table-cell" scope="col" style="width:2em">Teléfono</th>
             <th class="table-cell" scope="col" style="width:4.5em">Email</th>
-            <th class="table-cell" scope="col" style="width:1em">Productos</th>
-            <th class="table-cell" scope="col" style="width:1em">Total</th>             
+            <th class="table-cell" scope="col" style="width:3em">Productos</th>          
           </tr>
         </thead>
         <tbody>      
+        <% stock_in_progress = 0%>
         <% @reservations.each do |reservation| %>  
-        <tr class="table-row">         
+        <tr class="table-row">
           <td class="table-cell right_text"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
-          <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_from%><% end %></td>
-          <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_to%><%end%></td>
+          <td class="table-cell"><%if reservation.date_from.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%><b><%end%><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if @product_family and @product_family.time_to_from%><%=reservation.time_from%><% end %><%if reservation.date_from.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%></b><%end%></td>
+          <td class="table-cell"><%if reservation.date_to.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%><b><%end%><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if @product_family and @product_family.time_to_from%><%=reservation.time_to%><%end%><%if reservation.date_to.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%></b><%end%></td>
           <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
           <td class="table-cell"><%=reservation.customer_phone%> <%=reservation.customer_mobile_phone%></td>
           <td class="table-cell"><%=reservation.customer_email%></td>
           <td class="table-cell">
             <% reservation.booking_lines.each do |booking_line| %>
-              <div><%= booking_line.item_id %><%if booking_reservation_starts_with == :shopcart%>: <%=booking_line.quantity%><%end%></div>
+              <div>
+                <div class="guiblock"><%= booking_line.item_id %>
+                  <%if booking_reservation_starts_with == :shopcart%>: <%=booking_line.quantity%><%end%>
+                </div>
+                <ul>
+                  <% booking_line.booking_line_resources.each do |blr| %>
+                     <% unless blr.booking_item_reference.nil? %>
+                       <li><%=blr.booking_item_category%> - <%=blr.booking_item_reference%></li>
+                       <% stock_in_progress += 1 %>
+                     <% end %>
+                  <% end %>
+                </ul>
+              </div>
             <% end %>
           </td>
-          <td class="table-cell right_text"><%="%.2f" % reservation.total_cost%></td>
         </tr>
         <% end %>
         </tbody>
       </table>
       <div class="all-space">
-        <p class="right_text"><%=t.report_pending_confirmation.summary(@reservations.size)%></p>
-      </div>
+        <p class="right_text"><%=t.report_in_progress.summary(@reservations.size,stock_in_progress)%></p>
+      </div>      
+    <% end %>
   </div>
 </div>

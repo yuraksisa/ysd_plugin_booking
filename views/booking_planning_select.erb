@@ -42,7 +42,7 @@
           <div><strong style="width: 80px; display:inline-block">Fecha inicio:</strong> <b><%=booking.date_from.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_from%><%end%></b></div>
           <div><strong style="width: 80px; display:inline-block">Fecha fin:</strong> <b><%=booking.date_to.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_to%><%end%></b></div>
           <div><strong style="width: 80px; display:inline-block">Recurso:</strong> <%=booking.booking_item_category%> - <b><%=booking.booking_item_reference%></b></div>      
-          <% if booking.origin = 'booking' %>
+          <% if booking.origin == 'booking' %>
             <% if @product_family.named_resources %>
               <hr style="margin: 0.2em 0;"/>
               <div><strong style="width: 80px; display:inline-block">U1:</strong> <%=booking.resource_1_name%></div>
