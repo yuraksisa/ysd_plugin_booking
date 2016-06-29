@@ -1,4 +1,4 @@
-require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 
+require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
          'jquery.ui.datepicker.validation','jquery.formparams', 'jquery.fixedtable', 'datejs'], 
         function($) {
 
@@ -230,7 +230,9 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
 
       $('#prereservation_button').unbind('click');
       $('#prereservation_button').bind('click', function(){
-        bookingPlanningController.prereservationButtonClick();
+        if ($('#prereservation_form').valid()) {
+          bookingPlanningController.prereservationButtonClick();
+        }
       });
 
       $('#cancel_prereservation_button').unbind('click');
@@ -244,12 +246,96 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
       // Setup the form
       var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
       $('#date_from').datepicker({
-            numberOfMonths:2}, 
+            numberOfMonths:1}, 
             locale);
-      $('#date_from').datepicker('setDate', new Date(date));
       $('#date_to').datepicker({
-            numberOfMonths:2}, 
+            numberOfMonths:1}, 
             locale);
+      $('#date_from').bind('change', function() {
+           var dateFrom = $('#date_from').datepicker('getDate'); 
+           var dateTo = $('#date_to').datepicker('getDate');
+           if (dateTo != null) {
+             dateTo.setDate(dateFrom.getDate() + <%=@product_family.cycle_of_24_hours ? 1 : 0%>);
+           }
+           $('#date_to').datepicker('setDate', dateTo );
+           $('#date_to').datepicker('option', 'minDate', dateFrom.add(<%=@product_family.cycle_of_24_hours ? 1 : 0%>).days());
+         });
+      $('#date_from').datepicker('setDate', new Date(date));
+      $('#date_from').trigger('change');
+
+      $.validator.addMethod("time24", function(value, element) {
+        if (!/^\d{2}:\d{2}:\d{2}$/.test(value)) {
+          return false;
+        } 
+        var parts = value.split(':');
+        if (parts[0] > 23 || parts[1] > 59 || parts[2] > 59) {
+          return false;
+        } 
+        return true;
+      }, "<%=t.validations.time_format_invalid%>");
+
+      $('#prereservation_form').validate({
+
+            submitHandler: function(form) 
+            {
+              return false;
+            },        
+
+            rules : {
+               'date_from': {
+                 required: true 
+               },
+             
+               'date_to': {
+                 required: true,
+                 dpCompareDate : { 'notLessThan' : '#date_from'} 
+               },
+
+               'title': {
+                 required: true
+               },
+
+               <% if @product_family.time_to_from %>
+               ,
+               'time_from': {
+                 required: true,
+                 time24: true
+               },
+               'time_to': {
+                 required: true,
+                 time24: true
+               }
+
+               <% end %>
+            
+            },
+            
+            messages : {
+              
+               'date_from': {
+                 required : '<%=t.bookings_planning.prereservation.validation.date_from_required%>'
+               }, 
+              
+               'date_to' : {
+                 required : '<%=t.bookings_planning.prereservation.validation.date_to_required%>',
+                 dpCompareDate : '<%=t.bookings_planning.prereservation.validation.date_to_greater_date_from%>'
+               },
+
+               'title': {
+                 required: '<%=t.bookings_planning.prereservation.validation.title_required%>'
+               }    
+               <% if @product_family.time_to_from %>
+               ,
+               'time_from': {
+                 required: '<%=t.bookings_planning.prereservation.validation.time_from_required%>'
+               },
+               'time_to': {
+                 required: '<%=t.bookings_planning.prereservation.validation.time_to_required%>'
+               }
+               <% end %>
+            }
+
+      });
 
       // Show prereservation form
       $('#operation_area').hide();

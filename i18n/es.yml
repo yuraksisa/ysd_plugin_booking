@@ -881,6 +881,13 @@ bookings_planning:
     resource: Recurso
     subject: Titulo
     notes: Notas
+    validation:
+      date_from_required: Fecha de inicio obligatoria
+      date_to_required: Fecha de fin obligatoria
+      date_to_greater_date_from: Fecha de fin debe ser igual o posterior a la fecha de inicio
+      time_from_required: Hora de inicio obligatoria
+      time_to_required: Hora de fin obligatoria
+      title_required: Título obligatorio
   prereservations_table:
     resource: Recurso
     date_from: Fecha inicio

@@ -22,6 +22,7 @@
       <table id="table" class="table">
         <thead class="table-header">
           <tr>
+            <th class="table-cell" scope="col" style="width:2em">Fecha recepción</th>
             <th class="table-cell" scope="col" style="width:1.2em">Localizador</th>
             <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
             <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
@@ -34,7 +35,8 @@
         </thead>
         <tbody>      
         <% @reservations.each do |reservation| %>  
-        <tr class="table-row">         
+        <tr class="table-row">
+          <td class="table-cell"><%=reservation.creation_date.strftime('%Y-%m-%d %H:%M')%></td>          
           <td class="table-cell right_text"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
           <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_from%><% end %></td>
           <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_to%><%end%></td>
