@@ -264,11 +264,11 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
       $('#date_from').trigger('change');
 
       $.validator.addMethod("time24", function(value, element) {
-        if (!/^\d{2}:\d{2}:\d{2}$/.test(value)) {
+        if (!/^\d{2}:\d{2}$/.test(value)) {
           return false;
         } 
         var parts = value.split(':');
-        if (parts[0] > 23 || parts[1] > 59 || parts[2] > 59) {
+        if (parseInt(parts[0]) > 23 || parseInt(parts[1]) > 59) {
           return false;
         } 
         return true;
@@ -293,7 +293,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
 
                'title': {
                  required: true
-               },
+               }
 
                <% if @product_family.time_to_from %>
                ,
