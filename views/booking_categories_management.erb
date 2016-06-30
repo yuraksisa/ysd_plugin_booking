@@ -272,9 +272,17 @@
         <div id="basic_data_tab" class="top-margin bottom-margin">
           <div class="container_12">
           <div class="grid_6">        
-          <h3>Nuevo producto</h3>
-          <p class="less_contrast_text">Introduzca los datos básicos de su nuevo producto.</p>
-          <form name="element" method="POST">
+            <h3>Nuevo producto</h3>
+            <p class="less_contrast_text">Introduzca los datos básicos de su nuevo producto.</p>
+            <form name="element" method="POST">
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_category_management.form.type.label %></label>
+                <select id="type" name="type" class="fieldcontrol">
+                   <% ::Yito::Model::Booking::BookingCategory.types.each do |item| %>
+                   <option value="item[:id]"  <%% if (entity && entity.type=='<%=item[:id]%>') {%> selected="selected" <%% } %>><%=item[:description]%></option>
+                   <% end %>
+                </select>
+              </div>
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.code.label %></label>
                 <input type="text" maxlength="20" id="code" name="code" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.code %>" <%% } %>/>
@@ -292,7 +300,7 @@
                   <input type="button" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
                 </div>
               </div>                                          
-          </form>
+            </form>
           </div>
           </div>
         </div>

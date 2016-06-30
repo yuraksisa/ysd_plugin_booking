@@ -272,7 +272,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
           return false;
         } 
         return true;
-      }, "<%=t.validations.time_format_invalid%>");
+      }, "Invalid time format. The format is hh:mm");
 
       $('#prereservation_form').validate({
 
@@ -327,10 +327,12 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
                <% if @product_family.time_to_from %>
                ,
                'time_from': {
-                 required: '<%=t.bookings_planning.prereservation.validation.time_from_required%>'
+                 required: '<%=t.bookings_planning.prereservation.validation.time_from_required%>',
+                 time24: '<%=t.validations.time_format_invalid%>'
                },
                'time_to': {
-                 required: '<%=t.bookings_planning.prereservation.validation.time_to_required%>'
+                 required: '<%=t.bookings_planning.prereservation.validation.time_to_required%>',
+                 time24: '<%=t.validations.time_format_invalid%>'
                }
                <% end %>
             }

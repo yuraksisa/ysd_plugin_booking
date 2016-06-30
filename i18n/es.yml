@@ -604,7 +604,7 @@ booking_management:
     unlink_booking_button_message: ¿Está seguro que desea desvincular la reserva?
     main_booking: Grupo de reservas
     main_booking_search: Buscar reserva principal
-    related_bookings: Res. relac.
+    related_bookings: Entrega/Recogida
     charges: Pagos recibidos
     no_charges: No se ha recibido ningún pago
     commercial_agent: Comercial
@@ -625,7 +625,7 @@ booking_management:
       email: Correo electrónico
       height: Altura
       weight: Peso
-      resource: Recurso
+      resource: Recurso asignado
     planning_color: 
       title: Color en el planning
     created_by_manager: Creada en el backend
@@ -691,6 +691,8 @@ booking_category_management:
     scheduler: Agenda
   form:
     title: Productos
+    type:
+      label: Tipo
     code:
       label: Código
     name:

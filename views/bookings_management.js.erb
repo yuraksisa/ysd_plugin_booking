@@ -1,5 +1,5 @@
 require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelector', 
-         'YSDForms', 'ysdtemplate', 'YSDGui',
+         'YSDForms', 'ysdtemplate', 'YSDGui', 'jquery.validate',
          'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation',
          'jquery.formparams', 'jquery.ui.timepicker','autonumeric' ],
     function($, EntityManagement, RemoteDataSource, SelectSelector, YSDForms, tmpl,
@@ -112,6 +112,35 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
            }
          }
        }
+
+       // Validation
+
+       $('form[name=real_pickup_return_form]').validate({
+
+            submitHandler: function(form) 
+            {
+              return false;
+            },   
+
+            rules : {        
+               'pickup_time': {
+                 time24: true
+               },
+               'return_time': {
+                 time24: true
+               }
+            },
+            
+            messages : {
+               'pickup_time': {
+                 time24: '<%=t.validations.time_format_invalid%>'
+               },
+               'return_time': {
+                 time24: '<%=t.validations.time_format_invalid%>'
+               }
+            }
+
+       });
 
               
        $.ajax({
@@ -349,6 +378,13 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         var value = $(this).attr('data-value');        
         self.prepareFormEditBookingExtraItemCost(id, value);
       });      
+
+      $('.booking_item_reference_detail').bind('click', function() {
+        var form = $(this)[0].form;
+        var lineIdx = $(form).attr('data-lineindex');
+        var resourceIdx = $(form).attr('data-resourceindex');
+        self.prepareFormEditBookingLineResource(lineIdx, resourceIdx);
+      });
 
     }
 
@@ -664,6 +700,42 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       });
 
       YSDGui.showElement(document.getElementById('dialogs_container'), true);
+    }
+
+    this.prepareFormEditBookingLineResource = function(lineIdx, resourceIdx) {
+
+      var booking = this.manager.model.currentEntity();
+      var bookingLineResource = booking.booking_lines[lineIdx].booking_line_resources[resourceIdx];
+
+      var html = tmpl('booking_line_resource_detail_script', {entity: bookingLineResource});
+      $("#dialogs_container").html(html);
+      
+      $('#update_booking_line_resource_button').unbind('click');
+      $('#update_booking_line_resource_button').bind('click', function(){
+        var formdata = $('form[name="update_booking_line_resource"]').formParams(true);
+        var json_request = JSON.stringify(formdata);       
+        $.ajax({
+               type: 'PUT',
+               data : json_request,
+               url : '/api/booking-line-resource',
+               success: function(data, textStatus, jqXHR) {
+                 for (attribute in formdata) {
+                   booking.booking_lines[lineIdx].booking_line_resources[resourceIdx][attribute] = formdata[attribute];
+                 }
+                 alert('Datos actualizados');
+                 YSDGui.hideElement(document.getElementById('dialogs_container'));                 
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error updating resource');
+               }
+           });
+
+      });
+
+
+
+      YSDGui.showElement(document.getElementById('dialogs_container'), true);
+
     }
 
     this.updateLineResource = function(control) {

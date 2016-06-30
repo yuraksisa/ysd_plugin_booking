@@ -4,7 +4,7 @@
                      <table class="table smaller_text">
                         <thead class="table-header">
                           <tr>
-                            <th class="table-cell left_text" scope="col" style="width: 150px"><%=t.booking_management.form.booking_resources.item%></th>
+                            <th class="table-cell left_text" scope="col" style="width: 180px"><%=t.booking_management.form.booking_resources.item%></th>
                             <% if booking_item_family.named_resources %>
                             <th class="table-cell left_text" scope="col" style="width: 250px"><%=t.booking_management.form.booking_resources.user%></th>
                             <th class="table-cell left_text" scope="col"><%=t.booking_management.form.booking_resources.document_id%></th>
@@ -79,11 +79,17 @@
                                </td>
                                <% end %>
                                <td class="table-cell centered_text">
-                                <form data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
-                                    <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
-                                    <select name="booking_item_reference" id="booking_item_reference_<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>" class="fieldcontrol booking_item_reference">
-                                    </select> 
-                                </form>  
+                                 <div style="position:relative; top: 10px">
+                                   <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].booking_item_reference == null) { %>
+                                     <div class="more_contrast_text" style="display:inline-block; position:relative; top: -10px">NO ASIGNADO</div>
+                                   <%% } else { %>
+                                     <div class="more_contrast_text highlight_block" style="display:inline-block; position:relative; top: -10px"><%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].booking_item_category%> - <%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].booking_item_reference%></div>
+                                   <%% } %>
+                                   <form data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>" style="display: inline-block">
+                                     <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>            
+                                     <button type="button" name="booking_item_reference_detail_button_<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>" class="form-button booking_item_reference_detail">...</button>
+                                   </form>  
+                                 </div>
                                </td>
                             </tr>
                             <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].pax == 2) { %>
@@ -202,4 +208,4 @@
 
        </div>
 
-     </div>                                     
+     </div>
