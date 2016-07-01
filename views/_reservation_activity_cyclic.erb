@@ -21,8 +21,8 @@
         <div id="datepicker"></div>
         <div id="turns" class="top-margin"></div>
       </form>
-      
-      <% if @activity.capacity > @occupation[:total_occupation].to_i %>
+      <% p "the occupation: #{@occupation.inspect}" %>
+      <% if @occupation[:occupation_capacity] > @occupation[:total_occupation].to_i %>
         <% if defined?@date and !@date.nil? and defined?@time and !@time.nil? %>
           <form name="activity_form" id="activity_form" <%if request.path.starts_with?('/admin')%>action="/admin/order/new-order-item-add-activity"<%else%>action="/p/activity/add-to-shopping-cart"<%end%> method="post">
             <% if request.path.starts_with?('/admin') %>

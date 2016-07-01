@@ -22,6 +22,7 @@ require 'sinatra/ysd_sinatra_booking_pickup_return_place_definitions_management_
 require 'sinatra/ysd_sinatra_booking_pickup_return_places_management'
 require 'sinatra/ysd_sinatra_booking_pickup_return_places_management_rest_api'
 require 'sinatra/ysd_sinatra_booking_prereservation_management_rest_api'
+require 'sinatra/ysd_sinatra_booking_planned_activities_management'
 require 'sinatra/ysd_sinatra_restaurant_booking'
 require 'sinatra/ysd_sinatra_restaurant_booking_management'
 require 'sinatra/ysd_sinatra_restaurant_booking_management_rest_api'

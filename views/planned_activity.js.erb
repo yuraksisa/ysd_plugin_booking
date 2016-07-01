@@ -1,0 +1,76 @@
+require(['YSDGui', 'jquery', 'jquery.formparams'], function(YSDGui, $) {
+
+  plannedActivityModel = {
+
+  };
+
+  plannedActivityController = {
+
+    createButtonClick: function() {
+
+      var formdata = $('#planned_activity_form').formParams(true);
+     
+      $.ajax({
+              type: 'POST',
+              data : formdata,
+              url : '/admin/booking/planned-activity',
+              success: function(data, textStatus, jqXHR) {
+                 alert('Operación realizada con éxito');
+                 var container = document.getElementById('dialog_container');
+                 if (container != null) {
+                   YSDGui.hideElement(container);
+                 }
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error realizando operación');
+               }
+           }); 
+
+    },
+
+    updateButtonClick: function() {
+
+      var formdata = $('#planned_activity_form').formParams(true);
+     
+      $.ajax({
+              type: 'PUT',
+              data : formdata,
+              url : '/admin/booking/planned-activity',
+              success: function(data, textStatus, jqXHR) {
+                 alert('Operación realizada con éxito');
+                 var container = document.getElementById('dialog_container');
+                 if (container != null) {
+                   YSDGui.hideElement(container);
+                 }
+
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error realizando operación');
+               }
+           });
+
+    }
+
+  };
+
+  plannedActivityView = {
+
+    init: function() {
+
+      <% if @planned_activity.new? %>
+      $('#planned_activity_button').bind('click', function(){
+        plannedActivityController.createButtonClick();
+      });
+      <% else %>
+      $('#planned_activity_button').bind('click', function(){
+        plannedActivityController.updateButtonClick();
+      });
+      <% end %>
+
+    }
+
+  };
+
+  plannedActivityView.init();
+
+});

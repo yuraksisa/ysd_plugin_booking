@@ -1,0 +1,49 @@
+<div id="planned_activity_selector"> 
+      <form id="planned_activity_form" name="element" class="form-element all-space" style="background: white">
+        <h3 class="guiblock">Detalle actividad</h3>
+        <div class="container_12">
+        <div class="grid_6">
+          <div class="formrow">
+            <label class="fieldtitle">Actividad</label>
+            <input type="text" name="activity_code" id="activity_code" class="fieldcontrol" size="15" maxlength="50" readonly="readonly" value="<%=@planned_activity.activity_code%>" style="background:#EEE"/>
+          </div>
+          <div class="formrow">
+            <label class="fieldtitle">Fecha</label>
+            <input type="text" name="date" id="date" class="fieldcontrol" size="15" maxlength="10" readonly="readonly" value="<%=@planned_activity.date.strftime('%Y-%m-%d') unless @planned_activity.date.nil?%>" style="background:#EEE"/>
+          </div>
+          <div class="formrow">
+            <label class="fieldtitle">Hora</label>
+            <input type="text" name="time" id="time" class="fieldcontrol" size="15" maxlength="5" readonly="readonly" value="<%=@planned_activity.time%>" style="background:#EEE"/>
+          </div>
+        </div>
+        <div class="grid_6">
+          <div class="left-margin">
+            <div class="formrow">
+              <label class="fieldtitle">Capacidad</label>
+              <input type="text" name="capacity" id="capacity" class="fieldcontrol" size="15" maxlength="10" value="<%=@planned_activity.capacity%>"/>
+            </div> 
+            <div class="formrow">
+              <label class="fieldtitle">Observaciones</label>
+              <textarea name="notes" id="notes" class="fieldcontrol" rows="4"><%=@planned_activity.notes%></textarea>
+            </div>                      
+          </div>
+        </div>
+        </div>
+        <div class="container_12">
+        <div class="navigation-bar bottom-margin">
+          <div class="navigation-bar-crud-buttons">
+            <% if @planned_activity.new? %>
+            <input id="planned_activity_button" type="button" class="form-button green-button" value="<%=t.entitymanagement.create%>"/>
+            <% else %>
+            <input id="planned_activity_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>            
+            <% end %>
+          </div>
+
+        </div>  
+        </div>
+
+      </form>
+</div>
+<script type="text/javascript">
+<%= include 'planned_activity.js'.to_sym %>
+</script>

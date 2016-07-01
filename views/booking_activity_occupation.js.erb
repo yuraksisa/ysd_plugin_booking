@@ -6,16 +6,38 @@ require(['YSDGui','jquery',
   };
 
   occupationController = {
+    occupationDetailClick: function(dataUrl) {
+      $('#occupation-detail').load(dataUrl + ' .admin_content_wrapper');
+      YSDGui.showElement(document.getElementById('occupation-detail'), true);
+    },
+    editIconClicked: function(date, time, activityCode) {
+      var url = '/admin/booking/planned-activity?date='+date+'&time='+time+'&activity_code='+activityCode;
+      //$('#dialog_container').load(url + '#planned_activity_selector');
+      //YSDGui.showElement(document.getElementById('dialog_container'), true);     
 
+      $.ajax({url: url, dataType: 'text'}).done(function(html) {
+        var dom = $('<html />').prop('innerHTML', html);
+        $('#dialog_container').html(dom.find('body #planned_activity_selector'));
+        $('head').append(dom.find('script:not([src])'));
+        YSDGui.showElement(document.getElementById('dialog_container'), true);
+      });
+
+    }
   };
 
   occupationView = {
 	init: function(){
          $('.occupation-detail').bind('click', function() {
            if ($(this).attr('data-url')) {
-             $('#occupation-detail').load($(this).attr('data-url') + ' .admin_content_wrapper');
-             YSDGui.showElement(document.getElementById('occupation-detail'), true);
+
            }
+         });
+         $('.edit-icon').bind('click', function(){
+           var date = $(this).attr('data-date');
+           var time = $(this).attr('data-time');
+           var activityCode = $(this).attr('data-activity-code');
+           occupationController.editIconClicked(date, time, activityCode);
+
          });		
 	}
   };

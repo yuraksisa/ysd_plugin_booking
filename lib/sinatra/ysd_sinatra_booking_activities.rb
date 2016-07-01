@@ -5,7 +5,8 @@ module Sinatra
 
       def load_activity
 
-          @occupation = {total_occupation: 0, occupation_detail: {}}
+          @occupation = {total_occupation: 0, occupation_detail: {}, occupation_capacity: @activity.capacity}
+          
           if session[:activity_date_id]
             @activity_date_id = session[:activity_date_id]
             if @activity_date = ::Yito::Model::Booking::ActivityDate.get(@activity_date_id)
@@ -313,7 +314,7 @@ module Sinatra
 
           if @activity = ::Yito::Model::Booking::Activity.get(params[:activity_id]) and @activity.active
             
-            @occupation = {total_occupation: 0, occupation_detail: {}}
+            @occupation = {total_occupation: 0, occupation_detail: {}, occupation_capacity: @activity.capacity}
             if params[:activity_date_id]
               @activity_date_id = params[:activity_date_id]
               if @activity_date = ::Yito::Model::Booking::ActivityDate.get(@activity_date_id)
