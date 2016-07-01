@@ -29,7 +29,7 @@ require(['YSDGui','jquery',
 	init: function(){
          $('.occupation-detail').bind('click', function() {
            if ($(this).attr('data-url')) {
-
+             occupationController.occupationDetailClick($(this).attr('data-url'));
            }
          });
          $('.edit-icon').bind('click', function(){
