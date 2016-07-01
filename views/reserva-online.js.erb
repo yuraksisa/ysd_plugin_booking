@@ -1894,15 +1894,15 @@
            if (!bookingModel.booking.booking_lines[family].resources[idx]) {
             bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
            }  
-           bookingModel.booking.booking_lines[family].resources[idx].customer_weight_2 = $(this).val();
+           bookingModel.booking.booking_lines[family].resources[idx].customer_2_weight = $(this).val();
          });
-         $('.heigh_2t').bind('change', function(event) {
+         $('.height_2').bind('change', function(event) {
            var family = $(this).attr('rel');
            var idx = $(this).attr('data-idx');
            if (!bookingModel.booking.booking_lines[family].resources[idx]) {
             bookingModel.booking.booking_lines[family].resources[idx] = {pax: bookingDataSystem.families[family].capacity};
            }  
-           bookingModel.booking.booking_lines[family].resources[idx].customer_height_2 = $(this).val();
+           bookingModel.booking.booking_lines[family].resources[idx].customer_2_height = $(this).val();
          });            
          <% end %>
 
