@@ -210,7 +210,7 @@ module Sinatra
             else
               status 404
             end
-          elsif type="prereservation"
+          elsif type=="prereservation"
             if prereservation = BookingDataSystem::BookingPrereservation.get(id)
               prereservation.planning_color = color
               prereservation.save
