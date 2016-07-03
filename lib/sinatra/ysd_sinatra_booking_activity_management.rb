@@ -66,9 +66,12 @@ module Sinatra
             
             begin
               date = DateTime.strptime(params[:date], '%Y-%m-%d')
+              p "llego 1"
               @activities = ::Yito::Model::Order::Order.activity_detail(date, params[:time], params[:item_id])
+              p "llego 2"
               load_page(:booking_activity_detail)
-            rescue
+            rescue Exception => e
+              p "error: #{e.message}"
               status 500
             end
 

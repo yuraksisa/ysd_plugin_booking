@@ -42,25 +42,25 @@
           <tbody>   
           <% summary.clear %>   
           <% paid = 0%>
-      <% end %>  
+      <% end %>       
         <tr class="table-row">
-          <td class="table-cell"><a href="/admin/orders/order/<%=activity.order_id%>"><%=activity.order_id%></a></td>
-          <td class="table-cell"><%=activity.customer_name%> <%=activity.customer_surname%></td>
-          <td class="table-cell"><%=activity.customer_phone%> </td>
-          <td class="table-cell"><%=activity.customer_email%></td>
-          <td class="table-cell"><%=activity.quantity%> x <%=activity.item_price_description%></td>
-          <td class="table-cell"><%="%.2f" % activity.item_unit_cost%></td>
-          <td class="table-cell"><%="%.2f" % activity.item_cost%></td>
+          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><a href="/admin/orders/order/<%=activity.order_id%>"><%=activity.order_id%></a></td>
+          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_name%> <%=activity.customer_surname%></td>
+          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_phone%> </td>
+          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_email%></td>
+          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.quantity%> x <%=activity.item_price_description%></td>
+          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%="%.2f" % activity.item_unit_cost%></td>
+          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%="%.2f" % activity.item_cost%></td>
         </tr>
       <% last_date = activity.date %>
       <% last_activity = activity.item_id %>
       <% last_time = activity.time %>
       <% last_activity_capacity = activity.capacity %>
-      <% paid += activity.item_cost %>
+      <% paid += activity.item_cost if activity.status.to_sym == :confirmed%>
       <% if summary.has_key?(activity.item_price_description)
-           summary[activity.item_price_description] += activity.quantity 
+           summary[activity.item_price_description] += activity.quantity if activity.status.to_sym == :confirmed
          else 
-           summary.store(activity.item_price_description, activity.quantity)
+           summary.store(activity.item_price_description, activity.quantity) if activity.status.to_sym == :confirmed
          end %>
     <% end %>
 
