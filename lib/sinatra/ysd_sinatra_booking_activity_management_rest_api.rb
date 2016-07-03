@@ -172,8 +172,9 @@ module Sinatra
           programmed_activities = ::Yito::Model::Order::Order.programmed_activities(from, to)
 
           booking_activities = programmed_activities.map do |item|
-            start_str = "#{item.date.strftime('%Y-%m-%d')}T#{item.time}:00"
-            end_str = "#{item.date.strftime('%Y-%m-%d')}T#{item.time}:00"
+            time = item.time == 'TARDE' ? "19:00" : (item.time.size == 4 ? "0#{item.time}" : item.time)
+            start_str = "#{item.date.strftime('%Y-%m-%d')}T#{time}:00"
+            end_str = "#{item.date.strftime('%Y-%m-%d')}T#{time}:00"
             end_date = DateTime.parse(end_str)
             time = Time.parse(item.duration_hours)
             end_date += item.duration_days + (time.hour / 24.0) + (time.min / (24.0 * 60.0))  
@@ -183,7 +184,7 @@ module Sinatra
              :title => "#{item.item_description} (#{t.booking_activities_scheduler.pax("%.0f" % item.occupation)})",
              :start => start_str,
              :end => end_str,
-             :allDay => false,
+             :allDay => item.duration_days > 0 ? true : false,
              :url => "/admin/booking/activity-detail?date=#{item.date.strftime('%Y-%m-%d')}&time=#{item.time}&item_id=#{item.item_id}",
              :editable => false,
              :backgroundColor => "#{item.schedule_color}",
