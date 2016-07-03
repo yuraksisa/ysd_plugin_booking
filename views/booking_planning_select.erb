@@ -27,6 +27,7 @@
             <input type="hidden" name="type" value="<%=@bookings.first.origin%>"/>
             <input type="color" name="planning_color" class="color" value="<%=@bookings.first.planning_color%>" style="width:97%; top-margin: 10px"/>
           </form>
+          <div><strong style="width: 80px; display:inline-block">Comentarios:</strong> <%=@bookings.first.comments%></div>
           <% if @bookings.first.origin == 'prereservation' %>
             <button type="button" class="destroy_prereservation_button form-button red-button" style="margin: 5px auto; width: 100%" rel="<%=@bookings.first.id%>">Eliminar prereserva</button>   
           <% end %>
@@ -54,6 +55,7 @@
               <hr style="margin: 0.2em 0;"/>
             <% end %>  
           <% end %>
+          <div><strong style="width: 80px; display:inline-block">Comentarios:</strong> <%=booking.comments%></div>          
           <% if booking.origin == 'prereservation' %>
             <button type="button" class="destroy_prereservation_button form-button red-button" style="margin: 5px auto; width: 100%" rel="<%=booking.id%>">Eliminar prereserva</button>
           <% end %>          

@@ -70,6 +70,9 @@
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="description_tab" href="#description_tab">Descripción</a>
           </li>
+          <li class="no-border no-background top-space" style="border:none; background:none">
+              <a name="characteristics_tab" href="#characteristics_tab">Características</a>
+          </li>
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="detail_tab" href="#detail_tab">Portada</a>
           </li>          
@@ -151,6 +154,32 @@
                 </div>
               </div>                
           </form>
+        </div>
+        <div id="characteristics_tab" class="top-margin bottom-margin">
+          <div class="container_12">
+            <div class="grid_6">
+              <form name="element" method="POST">
+                <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                <div class="formrow">
+                  <label class="fieldtitle">Color agenda</label>                
+                  <input type="color" name="schedule_color" value="<%%=entity.schedule_color%>"/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle">Duración días</label>
+                  <input type="text" maxlength="2" id="duration_days" name="duration_days" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_days%>" <%% } %>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle">Duración horas (hh:mm)</label>
+                  <input type="text" maxlength="5" id="duration_hours" name="duration_hours" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_hours%>" <%% } %>/>
+                </div>
+                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                  <div class="navigation-bar-crud-buttons">
+                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                  </div>
+                </div>                                 
+              </form>
+            </div>
+          </div>
         </div>
         <div id="detail_tab" class="top-margin bottom-margin">
           <div class="container_12">

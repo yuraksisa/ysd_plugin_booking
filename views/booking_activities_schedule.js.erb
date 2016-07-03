@@ -1,0 +1,59 @@
+require(["YSDGui","jquery", "jquery.calendar"],
+         function(YSDGui, $) {
+ 
+  activitiesScheduleModel = {
+
+  };
+
+  activitiesScheduleController = {
+
+  };
+
+  activitiesScheduleView = {
+
+    init: function() {
+
+      $('#calendar').fullCalendar({
+          header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+          },
+          year: <%=@year%>,
+          month: <%=@month%>,
+          editable: true,
+          eventLimit: true,
+          defaultView: 'agendaWeek',
+          lang: '<%=session[:locale]%>',
+          events: '/api/booking-activities/scheduler',
+          firstDay: 1,
+          monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+          monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+          dayNames: ['Domingo', 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+          dayNamesShort: ['Domingo', 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+          buttonText: {
+            today: 'hoy',
+            month: 'mes',
+            week: 'semana',
+            day: 'día'
+          },
+          timeFormat: 'H:mm{ - H:mm}',
+          minTime: '06:00:00',
+          maxTime: '22:00:00',               
+          eventClick: function(event) {
+            if (event.url) {
+              $('#dialog_container').load(event.url + ' .admin_content_wrapper');
+              YSDGui.showElement(document.getElementById('dialog_container'), true);
+              return false;
+            }
+          }
+      });
+
+    }
+
+  };
+
+  activitiesScheduleView.init();
+
+
+});

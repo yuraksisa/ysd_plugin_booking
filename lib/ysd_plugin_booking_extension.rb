@@ -135,7 +135,7 @@ module Huasi
         {:name => 'booking.activities'},
         {:value => 'false',
          :description => 'Allow activities integration'})
-
+      
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.page_title'},
         {:value => 'Bookings',

@@ -95,7 +95,8 @@ booking_settings:
     rent_group: Alquiler
     activities_group: Actividades 
     item_hold_time: Caducidad (en horas) de la reserva
-    payment_cadence: Cadencia de pago    
+    payment_cadence: Cadencia de pago
+    activities_request_reservation: Permitir solicitar reserva    
     activities_payment: Permitir pago online
     activities_deposit: "% depósito"
     activities_allow_deposit_payment: Permitir el pago del depósito
@@ -137,6 +138,10 @@ booking_console:
   bookings: Alquiler
   activity_bookings: Actividades/Tours
   orders: Pedidos
+  activities_occupation: Ocupación
+  activities_schedule: Agenda
+  activities_summary: Programadas
+  activities_report: Listado actividades
   crm: CRM
   finances: Finanzas
   statistics: Estadísticas
@@ -1064,8 +1069,15 @@ new_reservation_activity:
   go_to_pay_line1: Pagar
   go_to_pay_line2: (Confirmar el pedido)
   notify_customer_empty: Por favor, confirmar con el centro la fecha seleccionada 
+  payment_information: >
+                       <p>Para confirmar la reserva es necesario realizar el pago.</p>
+                       <p>Si sólo desea solicitar información, por favor póngase en contacto telefónico.</p>
 programmed_activities:
   title: Actividades programadas
   empty: Lo sentimos, pero en este momento no hay actividades programadas
 shopping_cart:
-  empty: El carrito de la compra está vacío  
+  empty: El carrito de la compra está vacío
+booking_activities_scheduler:
+  title: Agenda de actividades programadas
+  pax: >
+       %1 plazas 

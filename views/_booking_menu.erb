@@ -52,13 +52,14 @@
    </li>   
    <% end %>
    <% if booking_activities %>
-   <li class='<%if ['/admin/order/orders','/admin/booking/activities-occupation','/admin/booking/activities-summary','/admin/booking/programmed-activities',
+   <li class='<%if ['/admin/order/orders','/admin/booking/activities-occupation','/admin/booking/activities-schedule','/admin/booking/activities-summary','/admin/booking/programmed-activities',
    '/admin/booking/activity-detail'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.activity_bookings%></a>
       <ul>   
         <li><a href='/admin/order/orders'><%=t.booking_console.orders%></a></li>
-        <li><a href='/admin/booking/activities-occupation'>Ocupación</a></li>
-        <li><a href='/admin/booking/programmed-activities'>Resumen actividades</a></li>
-        <li><a href='/admin/booking/activities-summary'>Listado actividades</a></li>
+        <li><a href='/admin/booking/activities-occupation'><%=t.booking_console.activities_occupation%></a></li>
+        <li><a href='/admin/booking/activities-schedule'><%=t.booking_console.activities_schedule%></a></li>
+        <li><a href='/admin/booking/programmed-activities'><%=t.booking_console.activities_summary%></a></li>
+        <li><a href='/admin/booking/activities-summary'><%=t.booking_console.activities_report%></a></li>
       </ul>
    </li>   
    <% end %>

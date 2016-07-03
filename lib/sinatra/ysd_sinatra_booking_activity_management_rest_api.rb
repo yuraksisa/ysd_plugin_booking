@@ -161,6 +161,38 @@ module Sinatra
         
         end
 
+        #
+        # Booking activities scheduler
+        #
+        app.get '/api/booking-activities/scheduler', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          from = Time.at(params['start'].to_i)
+          to = Time.at(params['end'].to_i)
+
+          programmed_activities = ::Yito::Model::Order::Order.programmed_activities(from, to)
+
+          booking_activities = programmed_activities.map do |item|
+            start_str = "#{item.date.strftime('%Y-%m-%d')}T#{item.time}:00"
+            end_str = "#{item.date.strftime('%Y-%m-%d')}T#{item.time}:00"
+            end_date = DateTime.parse(end_str)
+            time = Time.parse(item.duration_hours)
+            end_date += item.duration_days + (time.hour / 24.0) + (time.min / (24.0 * 60.0))  
+            end_str = end_date.strftime('%Y-%m-%dT%H:%M:00')
+
+            {:id => "#{item.item_id}-#{item.date.strftime('%Y-%m-%d')}-#{item.time}:00",
+             :title => "#{item.item_description} (#{t.booking_activities_scheduler.pax("%.0f" % item.occupation)})",
+             :start => start_str,
+             :end => end_str,
+             :allDay => false,
+             :url => "/admin/booking/activity-detail?date=#{item.date.strftime('%Y-%m-%d')}&time=#{item.time}&item_id=#{item.item_id}",
+             :editable => false,
+             :backgroundColor => "#{item.schedule_color}",
+             :textColor => 'black'}
+          end
+
+          booking_activities.to_json
+
+        end
       end
     end
   end

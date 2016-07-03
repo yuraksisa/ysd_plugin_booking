@@ -197,6 +197,7 @@ module Sinatra
                            end
 
           @shopping_cart = ::Yito::Model::Order::ShoppingCart.new if @shopping_cart.nil?
+          @activities_request_information = SystemConfiguration::Variable.get_value('order.request_reservations','true').to_bool
 
           load_page(:reservation_activities_checkout,{cache: false})
         end

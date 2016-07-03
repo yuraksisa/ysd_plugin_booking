@@ -111,6 +111,19 @@ module Sinatra
         end 
 
         #
+        # Booking activities schedule
+        #
+        app.get '/admin/booking/activities-schedule/?*', :allowed_usergroups => ['booking_manager','staff'] do 
+
+          today = Date.today
+          @year = today.year
+          @month = today.month - 1
+
+          load_page(:booking_activities_schedule)
+
+        end  
+
+        #
         # Booking activities
         #
         app.get '/admin/booking/activities/?*', :allowed_usergroups => ['booking_manager','staff'] do 
