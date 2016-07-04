@@ -46,9 +46,7 @@ require(['jquery', 'ysdtemplate', 'datejs',
     dateFromChanged: function() {
 
       var dateFrom = $('#date_from').datepicker('getDate'); 
-      var dateTo = $('#date_to').datepicker('getDate');
-      dateTo.setDate(dateFrom.getDate());
-      $('#date_to').datepicker('setDate', dateTo );
+      $('#date_to').datepicker('setDate', dateFrom );
       $('#date_to').datepicker('option', 'minDate', dateFrom);
 
     },
@@ -98,7 +96,6 @@ require(['jquery', 'ysdtemplate', 'datejs',
                   showTimezone: false, 
                   useLocalTimezone: true, 
                   numberOfMonths:1, 
-                  minDate: new Date(),
                   maxDate: new Date().add(365).days(),
                   dateFormat: 'dd/mm/yy',
                   onSelect: function(dateText) {
@@ -112,7 +109,7 @@ require(['jquery', 'ysdtemplate', 'datejs',
            $('#date_from').datepicker('setDate', date_from);
          }
          else {
-           $('#date_from').datepicker('setDate', '+0');
+           $('#date_from').datepicker('setDate', new Date());
          }
 
          $('#date_to').datepicker(
@@ -120,7 +117,6 @@ require(['jquery', 'ysdtemplate', 'datejs',
                   showTimezone: false, 
                   useLocalTimezone: true,
                   numberOfMonths:1, 
-                  minDate: new Date(),
                   maxDate: new Date().add(365).days(),
                   dateFormat: 'dd/mm/yy',
                   onSelect: function(dateText) {
@@ -132,7 +128,7 @@ require(['jquery', 'ysdtemplate', 'datejs',
            $('#date_to').datepicker('setDate',date_to);
          }
          else {
-           $('#date_to').datepicker('setDate', '+0');
+           $('#date_to').datepicker('setDate', new Date());
          }
 
      },
