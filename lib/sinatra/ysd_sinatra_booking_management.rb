@@ -619,13 +619,16 @@ module Sinatra
           if @booking_line_resource = BookingDataSystem::BookingLineResource.get(params[:id])
             @booking = @booking_line_resource.booking_line.booking
             @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+            product_category = if @booking_line_resource.booking_item_category.empty? or 
+                                  @booking_line_resource.booking_item_category.nil?
+                                 @booking_line_resource.booking_line.item_id
+                               else
+                                 @booking_line_resource.booking_item_category
+                               end
             @data,@detail = BookingDataSystem::Booking.resources_occupation(
               @booking.date_from, @booking.date_to,
-              @booking_line_resource.booking_item_category || @booking_line_resource.booking_line.item_id)
-            p "category: #{@booking_line_resource.booking_item_category || @booking_line_resource.booking_line.item_id}"
-            p "c1: #{@booking_line_resource.booking_item_category} c2: #{@booking_line_resource.booking_line.item_id}"
-            p "data: #{@data.inspect}"
-            p "detail: #{@detail.inspect}"
+              product_category)
+
             @assigned = !@booking_line_resource.booking_item_reference.nil?
             load_page :booking_line_resource_assign_stock
           else
