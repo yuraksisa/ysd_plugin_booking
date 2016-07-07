@@ -1,0 +1,19 @@
+    <div id="select_resource">
+      <h3 class="highlight_block smaller_text uppercase_text">Reasignar recurso</h3>
+      <div class="top-margin bottom-margin">
+        <button type="button" id="select_resource_button" class="form-button green-button" style="margin: 0 auto; display: block; width: 100%">Selección nuevo recurso</button>
+        <div id="reassign_resource" style="display:none">
+          <div class="guiblock">
+            <div><strong style="width: 120px; display:inline-block">Recurso actual:</strong> <span id="original_resource"></span></div>
+            <div><strong style="width: 120px; display:inline-block">Recurso nuevo:</strong> <span id="resource"></span></div>
+          </div>
+          <form name="reassign_form" class="bottom-margin">
+            <input type="hidden" name="id" value="<%=booking.id2%>"/>
+            <input type="hidden" name="origin" value="<%=booking.origin%>">
+            <input type="hidden" name="resource"/>
+            <button id="reassign_button" type="button" class="form-button green-button centered_text" style="margin: 0 auto; display: block; width: 100%">Reasignar recurso</button>
+          </form>
+        </div>    
+        <button type="button" id="cancel_select_resource_button" class="top-margin form-button red-button" style="margin: 0 auto; display: none; width: 100%">Cancelar selección recurso</button>
+      </div>
+    </div>

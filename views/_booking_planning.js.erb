@@ -1,6 +1,6 @@
-require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
+require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
          'jquery.ui.datepicker.validation','jquery.formparams', 'jquery.fixedtable', 'datejs'], 
-        function($) {
+        function(YSDFormatter, $) {
 
   bookingPlanningModel = {
     dateFrom: null,
@@ -60,7 +60,13 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
         null,
         function(responseText, textStatus, jqXHR){
           if (jqXHR.status == 200) {
-            
+            $('.pending_assign_button').unbind('click');
+            $('.pending_assign_button').bind('click', function(){
+              var id = $(this).attr('data-id');
+              var dateFrom = $(this).attr('data-date-from');
+              var dateTo = $(this).attr('data-date-to');
+              bookingPlanningController.pendingAssignButtonClick(id, dateFrom, dateTo);
+            }); 
           }
           else {
             alert('Error cargando datos');
@@ -193,8 +199,35 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
 
   bookingPlanningController = {
  
-    loadPendingAssignationClick: function() {
+    loadPendingAssignationClick: function() { /* The user clicks on a see reservations not assigned */
        bookingPlanningModel.loadPendingAssignation();
+    },
+
+    pendingAssignButtonClick: function(id, dateFrom, dateTo) { /* The user clicks on assign button (reservations not assigned) */
+
+       $('.pending_assign_row').css('background-color', 'white');
+       $('.pending_assign_row[rel='+id+']').css('background-color', 'yellow');
+       bookingPlanningView.update('notification', 'Seleccionar el recurso a asignar');
+       bookingPlanningModel.selectedItemId = id;
+       bookingPlanningModel.selectedItemOrigin = 'booking';
+       bookingPlanningModel.selectedItemOriginAbbr = 'R';
+       $('#select_resource').show();
+       var date = new Date(dateFrom);
+       var dateTo = new Date(dateTo);
+       $('th.date_header').css('background','#EEE');
+       $('th.date_header').css('color','black');
+       while (date <= dateTo) {
+         var strDate = YSDFormatter.formatDate(date,'yyyy-MM-dd');
+         $('th.date_header[rel='+strDate+']').css('background','black');
+         $('th.date_header[rel='+strDate+']').css('color','white');
+         date.addDays(1);
+       }
+       var firstDay = YSDFormatter.formatDate(dateFrom,'yyyy-MM-dd');
+       $('#parent').animate({
+        scrollLeft: $('th.date_header[rel='+firstDay+']').position().left -
+                    $('#parent').offset().left
+       }, 2000);
+       bookingPlanningController.startResourceSelectionClick();
     },
 
     dataFilledClick: function(reference, date, selectedReservations) {
@@ -420,7 +453,6 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
       bookingPlanningModel.mode= 'select-resource';
       $('#select_resource_button').hide();
       $('#cancel_select_resource_button').show();
-      $('#select_resource_help').show();
       $('#cancel_select_resource_button').css('display', 'block');
       $('#cancel_select_resource_button').unbind('click');
       $('#cancel_select_resource_button').bind('click', function() {
@@ -435,7 +467,6 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
     cancelResourceSelectionClick: function() { /* Cancel the resource selection */
       bookingPlanningModel.mode = 'select-reservation';
       $('#cancel_select_resource_button').hide();
-      $('#select_resource_help').hide();
       $('#select_resource_button').show();
       $(".data").unbind('click');
       $(".data.empty").bind('click', function(event) {
@@ -496,7 +527,7 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
         bookingPlanningController.loadPendingAssignationClick();
       });
     },
-    update: function(event) {
+    update: function(event, value) {
   	  switch (event) {
   		case 'data_available':
   		  if ($('#planning_table tbody').children().length == 0) {
@@ -510,7 +541,8 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
   		  for (item in bookingPlanningModel.planningData) {
   		  	var date = new Date(item);
   		  	var title = date.getDate() + ' ' + bookingPlanningModel.months[date.getMonth()];
-            $("#planning_table thead tr:first").append("<th>"+title+"</th>");
+          var datestr = YSDFormatter.formatDate(date, 'yyyy-MM-dd');
+            $("#planning_table thead tr:first").append("<th class='date_header' rel='" + datestr + "'>"+title+"</th>");
             for (resource in bookingPlanningModel.planningData[item]) {
               var value = '';
               if (bookingPlanningModel.planningData[item][resource].total == 1) {
@@ -596,6 +628,16 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
         }
 
   		  break;
+
+      case 'notification':
+        $('#notification_container').html(value);
+        if (value == '') {
+          $('#notification_container').hide();
+        }
+        else {
+          $('#notification_container').show();
+        }
+        break;
 
       case 'reassigned':
         this.reload();

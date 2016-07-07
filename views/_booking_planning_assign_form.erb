@@ -1,0 +1,17 @@
+    <div id="select_resource" style="display: none">
+      <h3 class="highlight_block smaller_text uppercase_text">Asignar recurso</h3>
+      <div class="top-margin bottom-margin">
+        <button type="button" id="select_resource_button" class="form-button green-button" style="margin: 0 auto; display: block; width: 100%">Selección recurso</button>
+        <div id="reassign_resource" style="display:none">
+          <div class="guiblock">
+            <div><strong style="width: 120px; display:inline-block">Recurso:</strong> <span id="resource"></span></div>
+          </div>
+          <form name="assign_form" class="bottom-margin">
+            <input type="hidden" name="id"/>
+            <input type="hidden" name="resource"/>
+            <button id="reassign_button" type="button" class="form-button green-button centered_text" style="margin: 0 auto; display: block; width: 100%">Asignar recurso</button>
+          </form>
+        </div>    
+        <button type="button" id="cancel_select_resource_button" class="top-margin form-button red-button" style="margin: 0 auto; display: none; width: 100%">Cancelar selección recurso</button>
+      </div>
+    </div>

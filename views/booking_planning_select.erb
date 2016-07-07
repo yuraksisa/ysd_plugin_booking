@@ -1,8 +1,8 @@
-<div id="reservation_selector" class="container right-space">
+<div id="reservation_selector" class="container right-space working_area">
   <div class="grid_12">
   	<% if @bookings.size == 1 %>
       <div id="reservation_selected">
-  	    <h3 class="guiblock smaller_text" style="background-color: #DDD">Reserva (o bloqueo de stock) seleccionada</h3>
+  	    <h3 class="guiblock smaller_text uppercase_text" style="background-color: #DDD">Reserva (o bloqueo de stock) seleccionada</h3>
         <div class="guiblock">
           <div><strong style="width: 80px; display:inline-block">Localizador:</strong> <%if @bookings.first.origin == 'booking'%>R <a href="/admin/booking/bookings/<%=@bookings.first.id%>"><%=@bookings.first.id%></a><%else%>PR <%=@bookings.first.id%><%end%></div>
           <div><strong style="width: 80px; display:inline-block">Cliente:</strong> <%=@bookings.first.customer_name%> <%=@bookings.first.customer_surname%></div>
@@ -34,7 +34,7 @@
         </div>
       </div>
     <% else %>
-      <h3 class="guiblock smaller_text" style="background-color: #DDD">Reservas (o bloqueos de stock)</h3>
+      <h3 class="guiblock smaller_text uppercase_text" style="background-color: #DDD">Reservas (o bloqueos de stock)</h3>
       <form name="select_booking">
       <% @bookings.each do |booking| %>
         <div class="guiblock bottom-margin">
@@ -72,28 +72,8 @@
           </form>         
       <% end %>
     <% end %>
-    
-    <div id="select_resource">
-      <h3 class="highlight_block smaller_text">Reasignar recurso</h3>
-      <div id="select_resource_help" class="highlight_block smaller_text" style="display:none">
-        <p>Pulse sobre cualquier celda de la fila del recurso al que desea reasignar la reserva</p>
-      </div>
-      <div class="top-margin bottom-margin">
-        <button type="button" id="select_resource_button" class="form-button green-button" style="margin: 0 auto; display: block; width: 100%">Selección nuevo recurso</button>
-        <div id="reassign_resource" style="display:none">
-          <div class="guiblock">
-            <div><strong style="width: 120px; display:inline-block">Recurso actual:</strong> <span id="original_resource"></span></div>
-            <div><strong style="width: 120px; display:inline-block">Recurso nuevo:</strong> <span id="resource"></span></div>
-          </div>
-          <form name="reassign_form" class="bottom-margin">
-            <input type="hidden" name="id" value="<%=@bookings.first.id2%>"/>
-            <input type="hidden" name="origin" value="<%=@bookings.first.origin%>">
-            <input type="hidden" name="resource"/>
-            <button id="reassign_button" type="button" class="form-button green-button centered_text" style="margin: 0 auto; display: block; width: 100%">Reasignar recurso</button>
-          </form>
-        </div>    
-        <button type="button" id="cancel_select_resource_button" class="top-margin form-button red-button" style="margin: 0 auto; display: none; width: 100%">Cancelar selección recurso</button>
-      </div>
-    </div>
   </div>
+</div>
+<div>
+  <%= partial :booking_planning_reassign_form, locals: {booking: @bookings.first} %>
 </div>
