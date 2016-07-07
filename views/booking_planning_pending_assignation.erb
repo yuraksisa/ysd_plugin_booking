@@ -1,14 +1,16 @@
-<div id="pending_assignation_container" class="container">
+<div id="pending_assignation_container" class="container right-space">
   <div class="grid_12">
   	<% if @bookings.size == 0 %>
       <div class="guiblock">
   	    <p>No hay reservas pendientes de asignación</p>
   	  </div>
   	<% else %>
+        <h3 class="guiblock smaller_text" style="background-color: #DDD">Reservas pendientes de asignar</h3>
   	    <% last = nil %>
+        <% number_of_bookings = 0 %>
       	<% @bookings.each do |booking| %>
           <% if last != booking %>
-          <div class="pending_assignation_item">
+          <div class="pending_assignation_item guiblock bottom-margin">
             <div>
               <strong style="width: 80px; display:inline-block">Localizador:</strong> R <a href="/admin/booking/bookings/<%=@bookings.first.id%>"><%=booking.id%></a>
             </div>
@@ -20,18 +22,45 @@
             </div>
             <div>
                <strong style="width: 80px; display:inline-block">Fecha fin:</strong> <b><%=booking.date_to.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_to%><%end%></b>
-            </div>                                 
+            </div>     
+            <table class="pending-assignation-table table">
+              <thead class="table-header">
+                <tr>
+                  <th class="table-cell left_text" scope="col" style="width:55%">Producto</th>
+                  <th class="table-cell left_text" scope="col" style="width:45%">Acciones</th>      
+                </tr>
+              </thead>
+              <tbody class="table-tbody">
           <% booking.booking_lines.each do |booking_line| %>
             <% booking_line.booking_line_resources.each do |booking_line_resource| %>
               <% if booking_line_resource.booking_item_reference.nil? %>
-                 <li><%=booking.id%> - <%=booking_line.item_id%> - <%=booking_line_resource.id %></li>
+                <tr class="table-row">
+                  <td class="table-cell">
+                     <div><b><%=booking_line.item_id%></b>
+                     <% if @product_family.height or @product_family.weight %>
+                     <div><em>a:</em> <%=booking_line_resource.customer_height%> <em>p:</em> <%=booking_line_resource.customer_weight%>
+                     <% end %>
+                     </div>
+                  </td>
+                  <td class="table-cell">
+                    <form>
+                      <input type="button" class="form-button green-button" value="Asignar"/>
+                    </form>
+                  </td>
+                </tr>
               <% end %>
             <% end %> 
           <% end %> 
+              </tbody>
+            </table>  
           </div>
           <% end %>
-          <% last = booking if last != booking %>          
+          <% if last != booking %>
+            <% last = booking %>          
+            <% number_of_bookings += 1 %>
+          <% end %>
         <% end %>
+        <p>Hay <b><%=@bookings.size%></b> recursos (correspondientes a <b><%=number_of_bookings%></b> reservas) pendientes de asignar</p>        
   	<% end %>
   </div>
 </div>

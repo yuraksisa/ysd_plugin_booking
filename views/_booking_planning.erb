@@ -42,6 +42,19 @@
   }  
 
 </style>
+
+<style>
+.pending-assignation-table {
+  table-layout: fixed;
+  border: 1px solid #DDD;
+  background-color: #EEE;
+}
+.pending-assignation-table .table-cell {
+   border-right: 1px solid #DDD;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
 <div class="container_12">
   <div class="grid_9">
     <div id="parent" style="overflow: auto">
@@ -56,11 +69,6 @@
   <div class="grid_3">
     <div id="operation_container" class="left-margin smaller_text">
       <div id="operation_header">
-        <form name="assign_pending_search">
-          <div class="formrow">
-            <input type="button" id="assign_pending_button" value="reservas pendientes de asignar" class="form-button uppercase_text" style="width:100%"/>
-          </div>
-        </form>
         <form name="reservation_search">
           <div class="formrow">
             <input type="text" id="reservation_search_text" maxlength="40"
@@ -68,12 +76,18 @@
             <input type="button" id="reservation_search_button" class="form-button search-entity-button" value="Buscar"  style="width: 25%"/>
           </div>
         </form>
-        <hr/>
       </div>
-      <div id="operation_area">
+      <div id="operation_area" style="max-height: 390px; overflow-y: scroll">
+      </div>
+      <div id="operation_bottom">
+        <form name="assign_pending_search">
+          <div class="formrow">
+            <input type="button" id="assign_pending_button" value="ver reservas pendientes de asignar" class="form-button uppercase_text smaller_text" style="width:100%"/>
+          </div>
+        </form>
       </div>
     </div>
-    <div id="prereservation_container" class="left-margin smaller_text" style="display:none">
+    <div id="prereservation_container" class="left-margin smaller_text" style="display:none; max-height: 350px; overflow-y: scroll">
       <%= partial :prereservation_form %> 
     </div>    
   </div>

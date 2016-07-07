@@ -1,8 +1,8 @@
-<div id="reservation_selector" class="container">
+<div id="reservation_selector" class="container right-space">
   <div class="grid_12">
   	<% if @bookings.size == 1 %>
       <div id="reservation_selected">
-  	    <h3 class="bottom-border-solid">1. Reserva</h3>
+  	    <h3 class="guiblock smaller_text" style="background-color: #DDD">Reserva (o bloqueo de stock) seleccionada</h3>
         <div class="guiblock">
           <div><strong style="width: 80px; display:inline-block">Localizador:</strong> <%if @bookings.first.origin == 'booking'%>R <a href="/admin/booking/bookings/<%=@bookings.first.id%>"><%=@bookings.first.id%></a><%else%>PR <%=@bookings.first.id%><%end%></div>
           <div><strong style="width: 80px; display:inline-block">Cliente:</strong> <%=@bookings.first.customer_name%> <%=@bookings.first.customer_surname%></div>
@@ -34,7 +34,7 @@
         </div>
       </div>
     <% else %>
-      <h3>1. Seleccionar la reserva</h3>
+      <h3 class="guiblock smaller_text" style="background-color: #DDD">Reservas (o bloqueos de stock)</h3>
       <form name="select_booking">
       <% @bookings.each do |booking| %>
         <div class="guiblock bottom-margin">
@@ -63,7 +63,7 @@
       <% end %>
       </form>
       <% @bookings.each do |booking| %>
-          <h4>Colores</h4>
+          <h4 class="smaller_text">Colores</h4>
           <div><strong style="width: 80px; display:inline-block">Localizador:</strong> <%if booking.origin == 'booking'%>R <%=booking.id%><%else%>PR <%=booking.id%><%end%></div>
           <form name="color">
             <input type="hidden" name="id" value="<%=booking.id%>"/>
@@ -74,7 +74,7 @@
     <% end %>
     
     <div id="select_resource">
-      <h3 class="bottom-border-solid">2. Reasignar recurso</h3>
+      <h3 class="highlight_block smaller_text">Reasignar recurso</h3>
       <div id="select_resource_help" class="highlight_block smaller_text" style="display:none">
         <p>Pulse sobre cualquier celda de la fila del recurso al que desea reasignar la reserva</p>
       </div>
