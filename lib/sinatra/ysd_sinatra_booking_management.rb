@@ -279,6 +279,25 @@ module Sinatra
         end        
         
         #
+        # The user selects a reservation
+        #
+        app.get '/admin/booking/planning2-search', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+        end
+
+        #
+        # The user select the reservations not asigned
+        #
+        app.get '/admin/booking/planning2-pending-assignation', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))          
+
+          @bookings = BookingDataSystem::Booking.pending_of_assignation
+          load_page(:booking_planning_pending_assignation, :layout => false)
+
+        end
+
+        #
         # The user 
         #
         app.get '/admin/booking/planning2-prereservation', :allowed_usergroups => ['booking_manager', 'staff'] do
@@ -619,8 +638,8 @@ module Sinatra
           if @booking_line_resource = BookingDataSystem::BookingLineResource.get(params[:id])
             @booking = @booking_line_resource.booking_line.booking
             @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-            product_category = if @booking_line_resource.booking_item_category.empty? or 
-                                  @booking_line_resource.booking_item_category.nil?
+            product_category = if @booking_line_resource.booking_item_category.nil? or 
+                                  @booking_line_resource.booking_item_category.empty?
                                  @booking_line_resource.booking_line.item_id
                                else
                                  @booking_line_resource.booking_item_category

@@ -1,0 +1,37 @@
+<div id="pending_assignation_container" class="container">
+  <div class="grid_12">
+  	<% if @bookings.size == 0 %>
+      <div class="guiblock">
+  	    <p>No hay reservas pendientes de asignación</p>
+  	  </div>
+  	<% else %>
+  	    <% last = nil %>
+      	<% @bookings.each do |booking| %>
+          <% if last != booking %>
+          <div class="pending_assignation_item">
+            <div>
+              <strong style="width: 80px; display:inline-block">Localizador:</strong> R <a href="/admin/booking/bookings/<%=@bookings.first.id%>"><%=booking.id%></a>
+            </div>
+            <div>
+              <strong style="width: 80px; display:inline-block">Cliente:</strong> <%=booking.customer_name%> <%=booking.customer_surname%>
+            </div>
+            <div>
+              <strong style="width: 80px; display:inline-block">Fecha inicio:</strong> <b><%=booking.date_from.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_from%><%end%></b>
+            </div>
+            <div>
+               <strong style="width: 80px; display:inline-block">Fecha fin:</strong> <b><%=booking.date_to.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_to%><%end%></b>
+            </div>                                 
+          <% booking.booking_lines.each do |booking_line| %>
+            <% booking_line.booking_line_resources.each do |booking_line_resource| %>
+              <% if booking_line_resource.booking_item_reference.nil? %>
+                 <li><%=booking.id%> - <%=booking_line.item_id%> - <%=booking_line_resource.id %></li>
+              <% end %>
+            <% end %> 
+          <% end %> 
+          </div>
+          <% end %>
+          <% last = booking if last != booking %>          
+        <% end %>
+  	<% end %>
+  </div>
+</div>

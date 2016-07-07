@@ -54,6 +54,22 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
       }
     },
 
+    loadPendingAssignation: function() { /* Load the pending of assign */
+
+       $('#operation_area').load('/admin/booking/planning2-pending-assignation #pending_assignation_container',
+        null,
+        function(responseText, textStatus, jqXHR){
+          if (jqXHR.status == 200) {
+            
+          }
+          else {
+            alert('Error cargando datos');
+          }
+        });
+    
+
+    },
+
     loadSelectedReservations: function(reference, date) { /* Load the selected reservation */
       bookingPlanningModel.currentReference = reference;
       $('#operation_area').load('/admin/booking/planning2-select?reference='+reference+'&date='+date+' #reservation_selector', null,
@@ -177,6 +193,10 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
 
   bookingPlanningController = {
  
+    loadPendingAssignationClick: function() {
+       bookingPlanningModel.loadPendingAssignation();
+    },
+
     dataFilledClick: function(reference, date, selectedReservations) {
 
       if ($('#preresevation_area:visible')) {
@@ -471,6 +491,9 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.validate',
         if($(this).scrollLeft() + $(this).innerWidth() >= $(this)[0].scrollWidth) {
           // End reached (request for data)
         }
+      });
+      $('#assign_pending_button').bind('click', function(){
+        bookingPlanningController.loadPendingAssignationClick();
       });
     },
     update: function(event) {

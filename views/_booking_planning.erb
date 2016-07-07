@@ -54,7 +54,24 @@
     </div>
   </div>
   <div class="grid_3">
-    <div id="operation_area" class="left-margin smaller_text">
+    <div id="operation_container" class="left-margin smaller_text">
+      <div id="operation_header">
+        <form name="assign_pending_search">
+          <div class="formrow">
+            <input type="button" id="assign_pending_button" value="reservas pendientes de asignar" class="form-button uppercase_text" style="width:100%"/>
+          </div>
+        </form>
+        <form name="reservation_search">
+          <div class="formrow">
+            <input type="text" id="reservation_search_text" maxlength="40"
+              placeholder="buscar reserva" style="width: 60%"/>
+            <input type="button" id="reservation_search_button" class="form-button search-entity-button" value="Buscar"  style="width: 25%"/>
+          </div>
+        </form>
+        <hr/>
+      </div>
+      <div id="operation_area">
+      </div>
     </div>
     <div id="prereservation_container" class="left-margin smaller_text" style="display:none">
       <%= partial :prereservation_form %> 
