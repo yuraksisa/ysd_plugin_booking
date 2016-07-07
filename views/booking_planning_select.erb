@@ -1,4 +1,5 @@
-<div id="reservation_selector" class="container right-space working_area">
+<div id="reservation_selector" class="container right-space">
+<div id="reservation_holder" class="right-space working_area">
   <div class="grid_12">
   	<% if @bookings.size == 1 %>
       <div id="reservation_selected">
@@ -76,4 +77,5 @@
 </div>
 <div>
   <%= partial :booking_planning_reassign_form, locals: {booking: @bookings.first} %>
+</div>
 </div>
