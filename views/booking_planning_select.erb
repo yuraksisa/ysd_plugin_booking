@@ -3,7 +3,7 @@
   <div class="grid_12">
   	<% if @bookings.size == 1 %>
       <div id="reservation_selected">
-  	    <h3 class="guiblock smaller_text uppercase_text" style="background-color: #DDD">Reserva (o bloqueo de stock) seleccionada</h3>
+  	    <h3 class="guiblock smaller_text uppercase_text" style="background-color: #DDD">Reserva seleccionada</h3>
         <div class="guiblock">
           <div><strong style="width: 80px; display:inline-block">Localizador:</strong> <%if @bookings.first.origin == 'booking'%>R <a href="/admin/booking/bookings/<%=@bookings.first.id%>"><%=@bookings.first.id%></a><%else%>PR <%=@bookings.first.id%><%end%></div>
           <div><strong style="width: 80px; display:inline-block">Cliente:</strong> <%=@bookings.first.customer_name%> <%=@bookings.first.customer_surname%></div>
@@ -13,11 +13,13 @@
           <% if @bookings.first.origin == 'booking' %>
             <% if @product_family.named_resources %>
               <hr style="margin: 0.2em 0;"/>
-              <div><strong style="width: 80px; display:inline-block">U1:</strong> <%=@bookings.first.resource_1_name%></div>
-              <div><strong style="width: 80px; display:inline-block">Altura U1:</strong> <%=@bookings.first.customer_height%> <strong>Peso U1:</strong> <%= @bookings.first.customer_weight%></div>    
+              <div><strong>Nombre:</strong> <%=@bookings.first.resource_1_name%></div>
+              <div><strong>Altura:</strong> <%=@bookings.first.customer_height%></div>
+              <div><strong>Peso:</strong> <%= @bookings.first.customer_weight%></div>    
               <% if @bookings.first.pax == 2 %>
-                <div><strong style="width: 80px; display:inline-block">U2:</strong> <%=@bookings.first.resource_2_name%></div>
-                <div><strong style="width: 80px; display:inline-block">Altura U2:</strong> <%=@bookings.first.customer_2_height%> <strong>Peso U2:</strong> <%= @bookings.first.customer_2_weight%></div>            
+                <div><strong>Nombre(2):</strong> <%=@bookings.first.resource_2_name%></div>
+                <div><strong>Altura(2):</strong> <%=@bookings.first.customer_2_height%></div>
+                <div><strong>Peso(2):</strong> <%= @bookings.first.customer_2_weight%></div>            
               <% end %>   
               <hr style="margin: 0.2em 0;"/>
             <% end %>                    
@@ -26,7 +28,7 @@
           <form name="color">
             <input type="hidden" name="id" value="<%=@bookings.first.id%>"/>
             <input type="hidden" name="type" value="<%=@bookings.first.origin%>"/>
-            <input type="color" name="planning_color" class="color" value="<%=@bookings.first.planning_color%>" style="width:97%; top-margin: 10px"/>
+            <input type="color" name="planning_color" class="color" value="<%=@bookings.first.planning_color%>" style="width:95%; top-margin: 10px"/>
           </form>
           <div><strong style="width: 80px; display:inline-block">Comentarios:</strong> <%=@bookings.first.comments%></div>
           <% if @bookings.first.origin == 'prereservation' %>
@@ -35,11 +37,11 @@
         </div>
       </div>
     <% else %>
-      <h3 class="guiblock smaller_text uppercase_text" style="background-color: #DDD">Reservas (o bloqueos de stock)</h3>
+      <h3 class="guiblock smaller_text uppercase_text" style="background-color: #DDD">Seleccionar reserva</h3>
       <form name="select_booking">
       <% @bookings.each do |booking| %>
         <div class="guiblock bottom-margin">
-          <div><input type="radio" name="id" value="<%=booking.id2%>" rel="<%=booking.origin%>"></input><strong style="width: 80px; display:inline-block">Localizador:</strong> <%if booking.origin == 'booking'%>R <a href="/admin/booking/bookings/<%=booking.id%>"><%=booking.id%></a><%else%>PR <%=booking.id%><%end%></div>
+          <div><input type="radio" name="id" value="<%=booking.id2%>" rel="<%=booking.origin%>" data-date-from="<%=booking.date_from.strftime('%Y-%m-%d')%>" data-date-to="<%=booking.date_to.strftime('%Y-%m-%d')%>" data-planning-color="<%=booking.planning_color%>"></input><strong style="width: 80px; display:inline-block">Localizador:</strong> <%if booking.origin == 'booking'%>R <a href="/admin/booking/bookings/<%=booking.id%>"><%=booking.id%></a><%else%>PR <%=booking.id%><%end%></div>
           <div><strong style="width: 80px; display:inline-block">Cliente:</strong> <%=booking.customer_name%> <%=booking.customer_surname%></div>
           <div><strong style="width: 80px; display:inline-block">Fecha inicio:</strong> <b><%=booking.date_from.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_from%><%end%></b></div>
           <div><strong style="width: 80px; display:inline-block">Fecha fin:</strong> <b><%=booking.date_to.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_to%><%end%></b></div>
@@ -47,11 +49,13 @@
           <% if booking.origin == 'booking' %>
             <% if @product_family.named_resources %>
               <hr style="margin: 0.2em 0;"/>
-              <div><strong style="width: 80px; display:inline-block">U1:</strong> <%=booking.resource_1_name%></div>
-              <div><strong style="width: 80px; display:inline-block">Altura U1:</strong> <%=booking.customer_height%> <strong>Peso U1:</strong> <%= booking.customer_weight%></div>    
-              <% if booking.pax == 2 %>
-                <div><strong style="width: 80px; display:inline-block">U2:</strong> <%=booking.resource_2_name%></div>
-                <div><strong style="width: 80px; display:inline-block">Altura U2:</strong> <%=booking.customer_2_height%> <strong>Peso U2:</strong> <%= booking.customer_2_weight%></div>            
+              <div><strong>Nombre:</strong> <%=booking.resource_1_name%></div>
+              <div><strong>Altura:</strong> <%=booking.customer_height%></div>
+              <div><strong>Peso:</strong> <%= booking.customer_weight%></div>    
+              <% if @bookings.first.pax == 2 %>
+                <div><strong>Nombre(2):</strong> <%=booking.resource_2_name%></div>
+                <div><strong>Altura(2):</strong> <%=booking.customer_2_height%></div>
+                <div><strong>Peso(2):</strong> <%= booking.customer_2_weight%></div>       
               <% end %>   
               <hr style="margin: 0.2em 0;"/>
             <% end %>  
@@ -69,7 +73,7 @@
           <form name="color">
             <input type="hidden" name="id" value="<%=booking.id%>"/>
             <input type="hidden" name="type" value="<%=booking.origin%>"/>
-            <input type="color" name="planning_color" class="color" value="<%=booking.planning_color%>" style="width:97%; top-margin: 10px"/>
+            <input type="color" name="planning_color" class="color" value="<%=booking.planning_color%>" style="width:95%; top-margin: 10px"/>
           </form>         
       <% end %>
     <% end %>

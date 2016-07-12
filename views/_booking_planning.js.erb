@@ -13,6 +13,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     selectedItemOrigin: null,
     selectedItemOriginAbbr: null,
     selectedItemId: null,
+    selectedDateFrom: null,
+    selectedDateTo: null,
+    selectedPlanningColor: null,
     currentReference: null,
     currentReferenceColor: null,
     newReference: null,
@@ -60,6 +63,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         null,
         function(responseText, textStatus, jqXHR){
           if (jqXHR.status == 200) {
+            bookingPlanningView.update('notification', 'Reservas pendientes de asignar');
             $('.pending_assign_button').unbind('click');
             $('.pending_assign_button').bind('click', function(){
               var id = $(this).attr('data-id');
@@ -92,7 +96,11 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
               $('#select_resource').hide();
               $('form[name=select_booking] input[type=radio][name=id]').unbind('change');
               $('form[name=select_booking] input[type=radio][name=id]').bind('change', function(){
-                 bookingPlanningController.candidateChange($(this).val(),$(this).attr('rel'));
+                 bookingPlanningController.candidateChange($(this).val(),
+                                                           $(this).attr('rel'),
+                                                           $(this).attr('data-date-from'),
+                                                           $(this).attr('data-date-to'),
+                                                           $(this).attr('data-planning-color'));
               });
             }
             else {
@@ -102,6 +110,11 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
               else {
                 bookingPlanningModel.selectedItemId = null;
               }
+
+              bookingPlanningModel.selectedDateFrom = $('#select_resource').attr('data-date-from');
+              bookingPlanningModel.selectedDateTo = $('#select_resource').attr('data-date-to');
+              bookingPlanningModel.selectedPlanningColor = $('#select_resource').attr('data-planning-color');
+              
               if ($('form[name=reassign_form] input[name=origin]').val() != 'undefined') {
                 bookingPlanningModel.selectedItemOrigin = $('form[name=reassign_form] input[name=origin]').val();
                 if (bookingPlanningModel.selectedItemOrigin == 'booking') {
@@ -220,38 +233,15 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
        $('.pending_assign_row').css('background-color', 'white');
        $('.pending_assign_row[rel='+id+']').css('background-color', 'yellow');
-       bookingPlanningView.update('notification', 'Seleccionar el recurso a asignar');
        bookingPlanningModel.selectedItemId = id;
        bookingPlanningModel.selectedItemOrigin = 'booking';
        bookingPlanningModel.selectedItemOriginAbbr = 'R';
        bookingPlanningModel.currentReferenceColor = planningColor;
        $('#select_resource').show();
-       var date = new Date(dateFrom);
-       var dateTo = new Date(dateTo);
-       $('th.date_header').css('background','#EEE');
-       $('th.date_header').css('color','black');
-       var color = 'black';
-       if (planningColor == '') {
-         planningColor = 'black';
-         color = 'white';
-       }
-       while (date <= dateTo) {
-         var strDate = YSDFormatter.formatDate(date,'yyyy-MM-dd');
-         $('th.date_header[rel='+strDate+']').css('background',planningColor);
-         $('th.date_header[rel='+strDate+']').css('color',color);
-         date.addDays(1);
-       }
-       // Scrolls to the position
-       var firstDay = YSDFormatter.formatDate(dateFrom,'yyyy-MM-dd');
-       var scroll = $('th.date_header[rel='+firstDay+']').position().left > 0 ? 
-                    $('th.date_header[rel='+firstDay+']').position().left +
-                    $('#parent').scrollLeft() - 135 :
-                    $('#parent').scrollLeft() + $('th.date_header[rel='+firstDay+']').position().left - 135;
 
-       $('#parent').animate({
-        scrollLeft: scroll
-       }, 2000);
+       bookingPlanningView.highLightDate(dateFrom, dateTo);
        bookingPlanningController.startResourceSelectionClick();
+
     },
 
     dataFilledClick: function(reference, date, selectedReservations) {
@@ -279,6 +269,8 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         bookingPlanningModel.selectedReservations = selectedReservations;
         bookingPlanningModel.loadSelectedReservations(reference, date);
       }
+
+      this.startResourceSelectionClick(); // Experimental
 
     },
 
@@ -452,7 +444,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     },
 
 
-    candidateChange: function(id, origin) { /* Select candidate */
+    candidateChange: function(id, origin, dateFrom, dateTo, planningColor) { /* Select candidate */
       if (bookingPlanningModel.selectedItemId != null) {
         var element = $("td[rel~="+"'"+bookingPlanningModel.selectedItemOriginAbbr+bookingPlanningModel.selectedItemId+"'"+"]");
         element.removeClass('selected');
@@ -461,6 +453,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       setTimeout(function() {
         bookingPlanningModel.selectedItemId = id;
         bookingPlanningModel.selectedItemOrigin = origin;
+        bookingPlanningModel.selectedDateFrom = dateFrom;
+        bookingPlanningModel.selectedDateTo = dateTo;
+        bookingPlanningModel.selectedPlanningColor = planningColor;
         if (bookingPlanningModel.selectedItemOrigin == 'booking') {
           bookingPlanningModel.selectedItemOriginAbbr = 'R';
         }
@@ -473,25 +468,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       }, 200);
     },
 
-    startResourceSelectionClick: function() { /* Start the resource selection */
-      bookingPlanningModel.mode= 'select-resource';
-      $('#select_resource_button').hide();
-      $('#cancel_select_resource_button').show();
-      $('#cancel_select_resource_button').css('display', 'block');
-      $('#cancel_select_resource_button').unbind('click');
-      $('#cancel_select_resource_button').bind('click', function() {
-        bookingPlanningController.cancelResourceSelectionClick();
-      });
-      $(".data").unbind('click');
-      $(".data").bind('click', function() {
-        bookingPlanningController.selectResourceClick($(this).parent().attr('id'));
-      })
-    },
-
-    cancelResourceSelectionClick: function() { /* Cancel the resource selection */
+    cancelReservation: function() { /* Support method to cancel reservation */
       bookingPlanningModel.mode = 'select-reservation';
-      $('#cancel_select_resource_button').hide();
-      $('#select_resource_button').show();
+      $('#select_resource').hide();
       $(".data").unbind('click');
       $(".data.empty").bind('click', function(event) {
         var theElement = $(this);
@@ -503,13 +482,38 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         bookingPlanningController.dataFilledClick($(this).parent().attr('id'), 
                                                   $(this).attr('data-date'),
                                                   $(this).attr('rel'));
-      });   
+      });  
+      bookingPlanningView.unselectReservation(bookingPlanningModel.selectedItemOriginAbbr,
+                                              bookingPlanningModel.selectedItemId);
+      bookingPlanningModel.selectedItemId = null;
+      bookingPlanningModel.selectedItemOrigin = null;      
+      bookingPlanningModel.selectedItemOriginAbbr = null;
+      bookingPlanningModel.selectedDateFrom = null;
+      bookingPlanningModel.selectedDateTo = null;
+      bookingPlanningModel.selectedPlanningColor = null;
+    },
+
+    cancelResourceClick: function() { /* Cancel reservation selected */
+      this.cancelReservation();
+    },
+
+    startResourceSelectionClick: function() { /* Start the resource selection */
+      bookingPlanningModel.mode= 'select-resource';
+      $('#cancel_resource_button').hide();
+      $(".data").unbind('click');
+      $(".data").bind('click', function() {
+        bookingPlanningController.selectResourceClick($(this).parent().attr('id'));
+      });
+      $('#select_resource_help').show();
+      $('#cancel_resource_button').show(); 
+    },
+
+    cancelResourceSelectionClick: function() { /* Cancel the resource selection */
       var resource = $('form[name=reassign_form] input[name=resource]').val();
       $($('#'+resource).children()[0]).css('background-color','white');
       $('#resource').html('');
-      $('form[name=reassign_form] input[name=resource]').val('');
-      $('#reassign_resource').hide(); 
-      $('#select_resource_help').show();
+      $('form[name=reassign_form] input[name=resource]').val('');      
+      this.cancelReservation();
     },
 
     selectResourceClick: function(resource) { /* Select the resource */
@@ -520,13 +524,20 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       bookingPlanningModel.newReference = resource;
       $('#resource').html(resource);
       $('form[name=reassign_form] input[name=resource]').val(resource);
-      $('#select_resource_help').hide();
+      $('#select_resource_help').hide(); 
+      $('#cancel_resource_button').hide();
       $('#reassign_resource').show();
       $($('#'+resource).children()[0]).css('background-color','yellow');
+      // Reassign button
       $('#reassign_button').unbind('click');
       $('#reassign_button').bind('click', function(){
         bookingPlanningController.reassignButtonClick();
       });
+      // Cancel select resource
+      $('#cancel_select_resource_button').unbind('click');
+      $('#cancel_select_resource_button').bind('click', function() {
+        bookingPlanningController.cancelResourceSelectionClick();
+      });      
     },
 
     reassignButtonClick: function() {
@@ -700,10 +711,11 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     },
 
     selectReservation: function(origin, id) {   
+      bookingPlanningView.update('notification', 'Reasignación stock');
       bookingPlanningView.selectCurrentResource( $("td[rel~="+"'"+origin+id+"'"+"]"));
-      $('#select_resource_button').unbind('click');
-      $('#select_resource_button').bind('click', function() {
-        bookingPlanningController.startResourceSelectionClick();
+      $('#cancel_resource_button').unbind('click');
+      $('#cancel_resource_button').bind('click', function() {
+        bookingPlanningController.cancelResourceClick();
       });
     },
 
@@ -722,7 +734,55 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       lastStyleSheet.insertRule(rule, lastStyleSheet.cssRules.length);      
       element.addClass('selected');
       $(element.parent().children()[0]).css('background-color', bookingPlanningModel.currentReferenceColor);
-    }
+
+      this.highLightDate(bookingPlanningModel.selectedDateFrom, 
+                         bookingPlanningModel.selectedDateTo);
+      
+    },
+
+    unselectReservation: function(origin, id) {  
+      bookingPlanningView.update('notification', ''); 
+      bookingPlanningView.unSelectCurrentResource( $("td[rel~="+"'"+origin+id+"'"+"]"));
+      $('#operation_area').empty();
+      this.clearHighLightDate();
+    },
+
+    unSelectCurrentResource: function(element) {
+      element.removeClass('selected');
+      $(element.parent().children()[0]).css('background-color', 'white');      
+    },
+
+    highLightDate: function(dateFrom, dateTo) {
+
+       var date = new Date(dateFrom);
+       var dateTo = new Date(dateTo);
+       this.clearHighLightDate();
+       var planningColor = 'black';
+       var color = 'white';
+
+       while (date <= dateTo) {
+         var strDate = YSDFormatter.formatDate(date,'yyyy-MM-dd');
+         $('th.date_header[rel='+strDate+']').css('background',planningColor);
+         $('th.date_header[rel='+strDate+']').css('color',color);
+         date.addDays(1);
+       }
+       // Scrolls to the position
+       var firstDay = YSDFormatter.formatDate(dateFrom,'yyyy-MM-dd');
+       var scroll = $('th.date_header[rel='+firstDay+']').position().left > 0 ? 
+                    $('th.date_header[rel='+firstDay+']').position().left +
+                    $('#parent').scrollLeft() - 135 :
+                    $('#parent').scrollLeft() + $('th.date_header[rel='+firstDay+']').position().left - 135;
+
+       $('#parent').animate({
+        scrollLeft: scroll
+       }, 2000);
+
+    },
+    
+    clearHighLightDate: function() {
+       $('th.date_header').css('background','#EEE');
+       $('th.date_header').css('color','black');
+    }    
 
 
   }
