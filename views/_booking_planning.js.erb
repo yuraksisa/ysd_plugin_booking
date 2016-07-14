@@ -790,10 +790,11 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
        }
        // Scrolls to the position
        var today = new Date();
-       if (dateFrom < today) {
-         dateFrom = today;
+       var dateFromConverted = new Date(dateFrom);
+       if (dateFromConverted < today) {
+         dateFromConverted = today;
        }
-       var firstDay = YSDFormatter.formatDate(dateFrom,'yyyy-MM-dd');
+       var firstDay = YSDFormatter.formatDate(dateFromConverted,'yyyy-MM-dd');
        var scroll = $('th.date_header[rel='+firstDay+']').position().left > 0 ? 
                     $('th.date_header[rel='+firstDay+']').position().left +
                     $('#parent').scrollLeft() - 135 :
