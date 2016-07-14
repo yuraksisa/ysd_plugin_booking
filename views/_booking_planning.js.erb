@@ -9,16 +9,21 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     reference: null,
     references: null,
     planningData : null,
-    selectedReservations: null,
-    selectedItemOrigin: null,
-    selectedItemOriginAbbr: null,
-    selectedItemId: null,
-    selectedDateFrom: null,
-    selectedDateTo: null,
-    selectedPlanningColor: null,
-    currentReference: null,
-    currentReferenceColor: null,
-    newReference: null,
+
+    // Selected cell
+    selectedReservations: null,    /* Reservations of the selected cell */
+    selectedDate: null,            /* Date of the selected cell */
+    selectedReference: null,       /* Stock reference of the selected cell */
+
+    // Selected reservation (one cell can hold more than 1 reservation)
+    selectedItemOrigin: null,          /* Origin of the selected reservation or prereservation */
+    selectedItemOriginAbbr: null,      /* Origin abbreviature of the selected reservation or prereservation */
+    selectedItemId: null,              /* Id of the selected reservation or prereservation */
+    selectedItemDateFrom: null,        /* Date from of the selected reservation or prereservation */
+    selectedItemDateTo: null,          /* Date to of the selected reservation or prereservation */
+    selectedItemPlanningColor: null,   /* Planning color of the selected reservation or prereservation */
+
+    newReference: null,            /* New stock reference to assign or reassign */
     scrollTop: null,
     scrollLeft: null,
     prereservationCell: null,
@@ -26,7 +31,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     mode: 'select-reservation',
     months: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],
 
-    loadData: function() {
+    loadData: function() { /* Load planning data */
   	  if (this.dateFrom != null && this.dateTo != null) {
   	    var from = this.dateFrom.toString('yyyy-MM-dd');
   	    var to = this.dateTo.toString('yyyy-MM-dd');
@@ -57,7 +62,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       }
     },
 
-    loadPendingAssignation: function() { /* Load the pending of assign */
+    loadPendingAssignation: function() { /* Load not assigned reservations */
 
        $('#operation_area').load('/admin/booking/planning2-pending-assignation #pending_assignation_container',
         null,
@@ -76,7 +81,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                var id = $(this).parent().find('input[name=id]').val();
                var type = $(this).parent().find('input[name=type]').val();
                var color =$(this).val();
-               bookingPlanningController.changeColorChanged(id, type, color);
+               bookingPlanningController.colorChanged(id, type, color);
             })            
           }
           else {
@@ -88,15 +93,14 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     },
 
     loadSelectedReservations: function(reference, date) { /* Load the selected reservation */
-      bookingPlanningModel.currentReference = reference;
-      $('#operation_area').load('/admin/booking/planning2-select?reference='+reference+'&date='+date+' #reservation_selector', null,
+      $('#operation_area').load('/admin/booking/planning2-select?reference='+this.selectedReference+'&date='+this.selectedDate+' #reservation_selector', null,
         function(responseText, textStatus, jqXHR){
           if (jqXHR.status == 200) {
             if ($('form[name=select_booking]').length > 0) { // More than one candidate
               $('#select_resource').hide();
               $('form[name=select_booking] input[type=radio][name=id]').unbind('change');
               $('form[name=select_booking] input[type=radio][name=id]').bind('change', function(){
-                 bookingPlanningController.candidateChange($(this).val(),
+                 bookingPlanningController.candidateChanged($(this).val(),
                                                            $(this).attr('rel'),
                                                            $(this).attr('data-date-from'),
                                                            $(this).attr('data-date-to'),
@@ -111,9 +115,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                 bookingPlanningModel.selectedItemId = null;
               }
 
-              bookingPlanningModel.selectedDateFrom = $('#select_resource').attr('data-date-from');
-              bookingPlanningModel.selectedDateTo = $('#select_resource').attr('data-date-to');
-              bookingPlanningModel.selectedPlanningColor = $('#select_resource').attr('data-planning-color');
+              bookingPlanningModel.selectedItemDateFrom = $('#select_resource').attr('data-date-from');
+              bookingPlanningModel.selectedItemDateTo = $('#select_resource').attr('data-date-to');
+              bookingPlanningModel.selectedItemPlanningColor = $('#select_resource').attr('data-planning-color');
               
               if ($('form[name=reassign_form] input[name=origin]').val() != 'undefined') {
                 bookingPlanningModel.selectedItemOrigin = $('form[name=reassign_form] input[name=origin]').val();
@@ -134,7 +138,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                var id = $(this).parent().find('input[name=id]').val();
                var type = $(this).parent().find('input[name=type]').val();
                var color =$(this).val();
-               bookingPlanningController.changeColorChanged(id, type, color);
+               bookingPlanningController.colorChanged(id, type, color);
             })
             $('.destroy_prereservation_button').bind('click', function() {
                bookingPlanningController.destroyPrereservationClick($(this).attr('rel'));
@@ -143,17 +147,14 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         });
     },
 
-    reassignResource: function() {
+    reassignResource: function() { /* Reassign a resource */
       var url = '/admin/booking/planning-reassign-reservation';
       url+='?id='+this.selectedItemId+'&resource='+this.newReference+'&type='+this.selectedItemOrigin;
       $.ajax({
           type: 'POST',
           url : url,
           success: function(data, textStatus, jqXHR) {
-            bookingPlanningModel.currentReference = null;
-            bookingPlanningModel.currentReferenceColor = null;
-            bookingPlanningModel.newReference = null;
-            bookingPlanningModel.mode = 'select-reservation';
+            bookingPlanningModel.selectedReference = bookingPlanningModel.newReference;
             bookingPlanningView.update('reassigned');
           },
           error: function(textStatus, jqXHR) {
@@ -162,7 +163,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       });    
     },
 
-    createPrereservation: function() {
+    createPrereservation: function() { /** Create a new prereservation */
         var formdata = $('form[name="element"]').formParams(true);
         delete formdata.id;
         var json_request = JSON.stringify(formdata);      
@@ -188,8 +189,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
           type: 'POST',
           url : url,
           success: function(data, textStatus, jqXHR) {
-            bookingPlanningModel.currentReference = null;
-            bookingPlanningModel.currentReferenceColor = null;
+            bookingPlanningModel.selectedReference = null;
             bookingPlanningModel.newReference = null;
             bookingPlanningModel.mode = 'select-reservation';
             bookingPlanningView.update('destroyed_preservation');
@@ -236,7 +236,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
        bookingPlanningModel.selectedItemId = id;
        bookingPlanningModel.selectedItemOrigin = 'booking';
        bookingPlanningModel.selectedItemOriginAbbr = 'R';
-       bookingPlanningModel.currentReferenceColor = planningColor;
+       bookingPlanningModel.selectedItemPlanningColor = planningColor;
        $('#select_resource').show();
 
        bookingPlanningView.highLightDate(dateFrom, dateTo);
@@ -267,7 +267,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
           $(element.parent().children()[0]).css('background-color','white');
         }
         bookingPlanningModel.selectedReservations = selectedReservations;
-        bookingPlanningModel.loadSelectedReservations(reference, date);
+        bookingPlanningModel.selectedReference = reference;
+        bookingPlanningModel.selectedDate = date;
+        bookingPlanningModel.loadSelectedReservations();
       }
 
       this.startResourceSelectionClick(); // Experimental
@@ -437,14 +439,14 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
     },
 
-    changeColorChanged: function(id, type, color) { /* Change planning color */
+    colorChanged: function(id, type, color) { /* Change planning color */
 
       bookingPlanningModel.changeColor(id, type, color);
 
     },
 
 
-    candidateChange: function(id, origin, dateFrom, dateTo, planningColor) { /* Select candidate */
+    candidateChanged: function(id, origin, dateFrom, dateTo, planningColor) { /* Select candidate (if there are more than one in cell) */
       if (bookingPlanningModel.selectedItemId != null) {
         var element = $("td[rel~="+"'"+bookingPlanningModel.selectedItemOriginAbbr+bookingPlanningModel.selectedItemId+"'"+"]");
         element.removeClass('selected');
@@ -453,9 +455,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       setTimeout(function() {
         bookingPlanningModel.selectedItemId = id;
         bookingPlanningModel.selectedItemOrigin = origin;
-        bookingPlanningModel.selectedDateFrom = dateFrom;
-        bookingPlanningModel.selectedDateTo = dateTo;
-        bookingPlanningModel.selectedPlanningColor = planningColor;
+        bookingPlanningModel.selectedItemDateFrom = dateFrom;
+        bookingPlanningModel.selectedItemDateTo = dateTo;
+        bookingPlanningModel.selectedItemPlanningColor = planningColor;
         if (bookingPlanningModel.selectedItemOrigin == 'booking') {
           bookingPlanningModel.selectedItemOriginAbbr = 'R';
         }
@@ -488,9 +490,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       bookingPlanningModel.selectedItemId = null;
       bookingPlanningModel.selectedItemOrigin = null;      
       bookingPlanningModel.selectedItemOriginAbbr = null;
-      bookingPlanningModel.selectedDateFrom = null;
-      bookingPlanningModel.selectedDateTo = null;
-      bookingPlanningModel.selectedPlanningColor = null;
+      bookingPlanningModel.selectedItemDateFrom = null;
+      bookingPlanningModel.selectedItemDateTo = null;
+      bookingPlanningModel.selectedItemPlanningColor = null;
     },
 
     cancelResourceClick: function() { /* Cancel reservation selected */
@@ -520,7 +522,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       if (bookingPlanningModel.newReference != null) {
         $($('#'+bookingPlanningModel.newReference).children()[0]).css('background-color','white');
       }
-      $('#original_resource').html(bookingPlanningModel.currentReference);
+      $('#original_resource').html(bookingPlanningModel.selectedReference);
       bookingPlanningModel.newReference = resource;
       $('#resource').html(resource);
       $('form[name=reassign_form] input[name=resource]').val(resource);
@@ -678,6 +680,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
       case 'reassigned':
         this.reload();
+        bookingPlanningModel.loadSelectedReservations(); // Reload the selected reservation
         break;
 
       case 'created_prereservation':
@@ -688,11 +691,12 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         break;
 
       case 'destroyed_preservation':
-        this.reload();
+        this.reload(); // Reload the reservations
         break;
 
       case 'changed_color':
-        this.reload();
+        this.reload(); // Reload the reservations
+        bookingPlanningModel.loadSelectedReservations(); // Reload the selected reservation
         break;
 
   		case 'not_enough_information':
@@ -721,22 +725,22 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
     selectCurrentResource: function(element) {
     
-      bookingPlanningModel.currentReferenceColor = element.css('background-color');
-      if (bookingPlanningModel.currentReferenceColor == 'rgba(0, 0, 0, 0)' || 
-          bookingPlanningModel.currentReferenceColor == 'transparent') {
-        bookingPlanningModel.currentReferenceColor = '#EEEEEE';
+      bookingPlanningModel.selectedItemPlanningColor = element.css('background-color');
+      if (bookingPlanningModel.selectedItemPlanningColor == 'rgba(0, 0, 0, 0)' || 
+          bookingPlanningModel.selectedItemPlanningColor == 'transparent') {
+        bookingPlanningModel.selectedItemPlanningColor = '#EEEEEE';
       }
       var lastStyleSheet = document.styleSheets[document.styleSheets.length - 1];
       var rule = '@keyframes selected {\
-                  from { background-color:'+ bookingPlanningModel.currentReferenceColor +'; }\
+                  from { background-color:'+ bookingPlanningModel.selectedItemPlanningColor +'; }\
                   to { background-color: white; }\
                   }';
       lastStyleSheet.insertRule(rule, lastStyleSheet.cssRules.length);      
       element.addClass('selected');
-      $(element.parent().children()[0]).css('background-color', bookingPlanningModel.currentReferenceColor);
+      $(element.parent().children()[0]).css('background-color', bookingPlanningModel.selectedItemPlanningColor);
 
-      this.highLightDate(bookingPlanningModel.selectedDateFrom, 
-                         bookingPlanningModel.selectedDateTo);
+      this.highLightDate(bookingPlanningModel.selectedItemDateFrom, 
+                         bookingPlanningModel.selectedItemDateTo);
       
     },
 
