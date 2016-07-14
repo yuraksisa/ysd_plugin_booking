@@ -31,7 +31,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     mode: 'select-reservation',
     months: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],
 
-    loadData: function() { /* Load planning data */
+    loadData: function(reloadSelectedReservation) { /* Load planning data */
   	  if (this.dateFrom != null && this.dateTo != null) {
   	    var from = this.dateFrom.toString('yyyy-MM-dd');
   	    var to = this.dateTo.toString('yyyy-MM-dd');
@@ -51,6 +51,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                bookingPlanningModel.references = data.references;
                bookingPlanningModel.planningData = data.result;
                bookingPlanningView.update('data_available');
+               if (reloadSelectedReservation) {
+                 bookingPlanningModel.loadSelectedReservations(); // Reload the selected reservation
+               }
             },
             error: function(textStatus, jqXHR) {
               alert('Error obteniendo datos del planning');
@@ -553,7 +556,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
     init: function() {
       $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
-      bookingPlanningModel.loadData();
+      bookingPlanningModel.loadData(false);
       $('#parent').scroll(function (event) {
       	if ($(this).scrollLeft() == 0) {
       	  // Start reached (request for data)
@@ -679,24 +682,22 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         break;
 
       case 'reassigned':
-        this.reload();
-        bookingPlanningModel.loadSelectedReservations(); // Reload the selected reservation
+        this.reload(true);
         break;
 
       case 'created_prereservation':
         $('#prereservation_container').hide();
         $('#operation_area').show();
         $('form[name=element]')[0].reset();
-        this.reload();
+        this.reload(false);
         break;
 
       case 'destroyed_preservation':
-        this.reload(); // Reload the reservations
+        this.reload(false); // Reload the reservations
         break;
 
       case 'changed_color':
-        this.reload(); // Reload the reservations
-        bookingPlanningModel.loadSelectedReservations(); // Reload the selected reservation
+        this.reload(true); // Reload the reservations
         break;
 
   		case 'not_enough_information':
@@ -705,13 +706,13 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
   	  }
     },
 
-    reload: function() { /* Reload the data */
+    reload: function(reloadSelectedReservation) { /* Reload the data */
         bookingPlanningModel.scrollLeft = $('#parent').scrollLeft();
         bookingPlanningModel.scrollTop = $('#parent').scrollTop();
         $('#planning_table thead').empty();
         $('#planning_table tbody').empty();
         $('#operation_area').empty();
-        bookingPlanningModel.loadData();
+        bookingPlanningModel.loadData(reloadSelectedReservation);
     },
 
     selectReservation: function(origin, id) {   
