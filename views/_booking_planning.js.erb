@@ -52,7 +52,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                bookingPlanningModel.planningData = data.result;
                bookingPlanningView.update('data_available');
                if (reloadSelectedReservation) {
-                 bookingPlanningModel.loadSelectedReservations(); // Reload the selected reservation
+                 bookingPlanningModel.loadSelectedReservations(true); // Reload the selected reservation
                }
             },
             error: function(textStatus, jqXHR) {
@@ -95,7 +95,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
     },
 
-    loadSelectedReservations: function(reference, date) { /* Load the selected reservation */
+    loadSelectedReservations: function(startResourceSelection) { /* Load the selected reservation */
       $('#operation_area').load('/admin/booking/planning2-select?reference='+this.selectedReference+'&date='+this.selectedDate+' #reservation_selector', null,
         function(responseText, textStatus, jqXHR){
           if (jqXHR.status == 200) {
@@ -136,6 +136,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
               }
               bookingPlanningView.selectReservation(bookingPlanningModel.selectedReservations.substring(0,1),
                                                     bookingPlanningModel.selectedReservations.substring(1));
+            }
+            if (startResourceSelection) {
+              bookingPlanningController.startResourceSelectionClick(); // Experimental
             }
             $('.color').bind('change', function() {
                var id = $(this).parent().find('input[name=id]').val();
@@ -272,7 +275,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         bookingPlanningModel.selectedReservations = selectedReservations;
         bookingPlanningModel.selectedReference = reference;
         bookingPlanningModel.selectedDate = date;
-        bookingPlanningModel.loadSelectedReservations();
+        bookingPlanningModel.loadSelectedReservations(false);
       }
 
       this.startResourceSelectionClick(); // Experimental
