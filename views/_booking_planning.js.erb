@@ -31,6 +31,17 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     mode: 'select-reservation',
     months: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],
 
+    isMultipleReservations: function() { /* Check if there are multiple reservations */
+
+      if (this.selectedReservations != null && this.selectedReservations != '') {
+        return this.selectedReservations.split(' ').length > 1;
+      }
+      else {
+        return false;
+      }
+
+    },
+
     loadData: function(reloadSelectedReservation) { /* Load planning data */
   	  if (this.dateFrom != null && this.dateTo != null) {
   	    var from = this.dateFrom.toString('yyyy-MM-dd');
@@ -278,7 +289,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         bookingPlanningModel.loadSelectedReservations(false);
       }
 
-      this.startResourceSelectionClick(); // Experimental
+      if (!bookingPlanningModel.isMultipleReservations()) {
+        this.startResourceSelectionClick(); // Experimental
+      }
 
     },
 
@@ -473,6 +486,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         bookingPlanningView.selectReservation(bookingPlanningModel.selectedItemOriginAbbr,
                                               bookingPlanningModel.selectedItemId);
         $('#select_resource').show();
+        bookingPlanningController.startResourceSelectionClick(); // Experimental
       }, 200);
     },
 
