@@ -789,6 +789,10 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
          date.addDays(1);
        }
        // Scrolls to the position
+       var today = new Date();
+       if (dateFrom < today) {
+         dateFrom = today;
+       }
        var firstDay = YSDFormatter.formatDate(dateFrom,'yyyy-MM-dd');
        var scroll = $('th.date_header[rel='+firstDay+']').position().left > 0 ? 
                     $('th.date_header[rel='+firstDay+']').position().left +
