@@ -208,6 +208,36 @@ module Sinatra
           cats.to_json
 
         end
+        
+        #
+        # Check resources available for a period
+        #
+        app.get '/api/booking/available-resources', :allowed_usergroups => ['booking_manager', 'staff']  do 
+
+          if params[:from]
+            begin
+              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:from]}")
+            end
+
+            if params[:to]
+              begin
+                @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+              rescue
+                logger.error("date not valid #{params[:to]}")
+              end
+              data, detail = BookingDataSystem::Booking.resources_occupation(@date_from, @date_to)
+              status 200
+              detail.to_json
+            else
+              status 500
+            end 
+          else
+            status 500
+          end
+
+        end
 
         #
         # Check the categories that have payment enabled

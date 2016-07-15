@@ -11,9 +11,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     planningData : null,
 
     // Selected cell
-    selectedReservations: null,    /* Reservations of the selected cell */
-    selectedDate: null,            /* Date of the selected cell */
-    selectedReference: null,       /* Stock reference of the selected cell */
+    selectedReservations: null,        /* Reservations of the selected cell */
+    selectedDate: null,                /* Date of the selected cell */
+    selectedReference: null,           /* Stock reference of the selected cell */
 
     // Selected reservation (one cell can hold more than 1 reservation)
     selectedItemOrigin: null,          /* Origin of the selected reservation or prereservation */
@@ -23,7 +23,13 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     selectedItemDateTo: null,          /* Date to of the selected reservation or prereservation */
     selectedItemPlanningColor: null,   /* Planning color of the selected reservation or prereservation */
 
-    newReference: null,            /* New stock reference to assign or reassign */
+    newReference: null,                /* New stock reference to assign or reassign */
+
+    available_resources: null,           /* Available resources (for selectedItem) */
+    category_available_resources: null,  /* Category available resources (for selectedItem) */
+    total_available_resources: 0,      
+    total_category_available_resources: 0,
+
     scrollTop: null,
     scrollLeft: null,
     prereservationCell: null,
@@ -39,6 +45,42 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       else {
         return false;
       }
+
+    },
+
+    availableResources: function() { /* Check available resource candidates */ 
+ 
+      var from = this.selectedItemDateFrom.toString('yyyy-MM-dd');
+      var to = this.selectedItemDateTo.toString('yyyy-MM-dd');
+      var url = '/api/booking/available-resources?from='+from+'&to='+to;
+
+      $.ajax({
+        type: 'GET',
+        url : url,
+        contentType: 'application/json; charset=utf-8',
+        dataType : 'json',
+          success: function(data, textStatus, jqXHR) {
+            bookingPlanningModel.available_resources = [];
+            bookingPlanningModel.category_available_resources = [];
+            bookingPlanningModel.total_available_resources = 0;
+            bookingPlanningModel.total_category_available_resources = 0;
+
+            for (product_category in data) {
+              var availableStock = data[product_category].available_stock;
+              for (var idx=0;idx<availableStock.length;idx++) {
+                bookingPlanningModel.available_resources.push(availableStock[idx]);
+                bookingPlanningModel.category_available_resources.push(availableStock[idx]);
+              }
+              bookingPlanningModel.total_available_resources += availableStock.length;
+              bookingPlanningModel.total_category_available_resources += availableStock.length;
+            }
+
+            bookingPlanningView.update('available_resources');
+          },
+          error: function(textStatus, jqXHR) {
+            alert('Error comprobando recursos disponibles');
+          }
+        }); 
 
     },
 
@@ -148,6 +190,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
               bookingPlanningView.selectReservation(bookingPlanningModel.selectedReservations.substring(0,1),
                                                     bookingPlanningModel.selectedReservations.substring(1));
             }
+            bookingPlanningModel.availableResources(); // Load the available resources
             if (startResourceSelection) {
               bookingPlanningController.startResourceSelectionClick(); // Experimental
             }
@@ -253,11 +296,16 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
        bookingPlanningModel.selectedItemId = id;
        bookingPlanningModel.selectedItemOrigin = 'booking';
        bookingPlanningModel.selectedItemOriginAbbr = 'R';
+       bookingPlanningModel.selectedItemDateFrom = dateFrom;
+       bookingPlanningModel.selectedItemDateTo = dateTo;
        bookingPlanningModel.selectedItemPlanningColor = planningColor;
        $('#select_resource').show();
+       $('#select_resource_detail').empty();
 
        bookingPlanningView.highLightDate(dateFrom, dateTo);
        bookingPlanningController.startResourceSelectionClick();
+
+       bookingPlanningModel.availableResources();
 
     },
 
@@ -486,6 +534,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         bookingPlanningView.selectReservation(bookingPlanningModel.selectedItemOriginAbbr,
                                               bookingPlanningModel.selectedItemId);
         $('#select_resource').show();
+        bookingPlanningModel.availableResources(); // Load the available resources
         bookingPlanningController.startResourceSelectionClick(); // Experimental
       }, 200);
     },
@@ -513,6 +562,8 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
       bookingPlanningModel.selectedItemDateFrom = null;
       bookingPlanningModel.selectedItemDateTo = null;
       bookingPlanningModel.selectedItemPlanningColor = null;
+      $('td.reference').removeClass('available');
+      $('td.reference').removeClass('unavailable');
     },
 
     cancelResourceClick: function() { /* Cancel reservation selected */
@@ -589,12 +640,13 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     update: function(event, value) {
   	  switch (event) {
   		case 'data_available':
+
   		  if ($('#planning_table tbody').children().length == 0) {
   		  	$("#planning_table thead").append("<tr></tr>");
   		  	$("#planning_table thead tr:first").append("<th style='min-width:120px'>"+'RECURSOS'+"</th>");
   		  	for (item in bookingPlanningModel.references) {
   		  	  $("#planning_table tbody").append("<tr id='" + item + "' rel='" + bookingPlanningModel.references[item] + "'></tr>");
-  		  	  $("#planning_table tbody tr#"+item+"").append("<td>"+bookingPlanningModel.references[item] + '-' + item+"</td>");
+  		  	  $("#planning_table tbody tr#"+item+"").append("<td class='reference' data-reference='"+item+"'>"+bookingPlanningModel.references[item] + '-' + item+"</td>");
   		  	}
   		  }
   		  for (item in bookingPlanningModel.planningData) {
@@ -697,6 +749,32 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
           $('#notification_container').show();
         }
         break;
+
+      case 'available_resources':
+        // Build resources detail
+        $('td.reference').removeClass('available');
+        $('td.reference').removeClass('unavailable');
+        $('td.reference').addClass('unavailable');
+        if (bookingPlanningModel.total_available_resources > 0 ) {
+          var resources_html = '<div class="container_12">';
+          for (var idx=0; idx<bookingPlanningModel.available_resources.length; idx++) {
+            resources_html += '<div class="grid_6"><div class="guiblock">'+ 
+                            bookingPlanningModel.available_resources[idx] + 
+                            '</div></div>';
+            $('td.reference[data-reference='+bookingPlanningModel.available_resources[idx]+']').addClass('available');            
+            $('td.reference[data-reference='+bookingPlanningModel.available_resources[idx]+']').removeClass('unavailable');            
+          }
+          resources_html += '</div>';
+
+          $('#select_resource_detail').html('<hr/><p>Hay ' +
+            bookingPlanningModel.total_available_resources +
+            ' recursos disponibles ( ' + bookingPlanningModel.total_category_available_resources  + ' de la misma categoría). Los verá de color verde</p>'+
+            resources_html);
+        }
+        else {
+          $('#select_resource_detail').html('<hr/><p>No hay recursos disponibles</p>');
+        }
+        break;  
 
       case 'reassigned':
         this.reload(true);
