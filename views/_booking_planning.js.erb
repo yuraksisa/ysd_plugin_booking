@@ -3,6 +3,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         function(YSDFormatter, $) {
 
   bookingPlanningModel = {
+    view: 'home',                     /* The current view */
     dateFrom: null,
     dateTo: null,
     product: null,
@@ -615,6 +616,29 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
     reassignButtonClick: function() {
       bookingPlanningModel.reassignResource();
+    },
+
+    planningViewsChanged: function(view) {
+      bookingPlanningModel.view = view;     
+      if (view == 'assign_pending') {
+        this.cancelReservation();
+        this.loadPendingAssignationClick();
+      }
+      else if (view == 'prereservations') {
+
+      }
+      else if (view == 'home') {
+        $('#pending_assignation_container').hide();
+        this.cancelReservation();
+      }
+    },
+
+    availableResourceClick: function(resource) {
+
+      var scrollTop = $('tr#'+resource).position().top;
+      
+      $('#parent').scrollTop(scrollTop);
+
     }
 
 
@@ -633,9 +657,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
           // End reached (request for data)
         }
       });
-      $('#assign_pending_button').bind('click', function(){
-        bookingPlanningController.loadPendingAssignationClick();
-      });
+      $('#planning_views').bind('change', function() {
+        bookingPlanningController.planningViewsChanged($(this).val());
+      });     
     },
     update: function(event, value) {
   	  switch (event) {
@@ -758,7 +782,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         if (bookingPlanningModel.total_available_resources > 0 ) {
           var resources_html = '<div class="container_12">';
           for (var idx=0; idx<bookingPlanningModel.available_resources.length; idx++) {
-            resources_html += '<div class="grid_6"><div class="guiblock">'+ 
+            resources_html += '<div class="grid_6"><div class="guiblock available_resource" style="cursor:hand;cursor:pointer" rel="'+bookingPlanningModel.available_resources[idx]+'">'+ 
                             bookingPlanningModel.available_resources[idx] + 
                             '</div></div>';
             $('td.reference[data-reference='+bookingPlanningModel.available_resources[idx]+']').addClass('available');            
@@ -774,24 +798,34 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         else {
           $('#select_resource_detail').html('<hr/><p>No hay recursos disponibles</p>');
         }
+        $('.available_resource').bind('click', function() {
+          bookingPlanningController.availableResourceClick($(this).attr('rel'));
+        });
         break;  
 
       case 'reassigned':
-        this.reload(true);
+        alert('Reserva asignada/reasignada');
+        this.reload(bookingPlanningModel.view == 'home');
+        if (bookingPlanningModel.view == 'assign_pending') {
+          bookingPlanningController.loadPendingAssignationClick();
+        }
         break;
 
       case 'created_prereservation':
         $('#prereservation_container').hide();
         $('#operation_area').show();
         $('form[name=element]')[0].reset();
+        alert('Prereserva creada');
         this.reload(false);
         break;
 
       case 'destroyed_preservation':
+        alert('Reserva eliminada');
         this.reload(false); // Reload the reservations
         break;
 
       case 'changed_color':
+        alert('Color cambiado');
         this.reload(true); // Reload the reservations
         break;
 

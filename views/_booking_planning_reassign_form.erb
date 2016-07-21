@@ -1,6 +1,5 @@
     <div id="select_resource" class="highlight_block" data-date-from="<%=booking.date_from.strftime('%Y-%m-%d')%>" data-date-to="<%=booking.date_to.strftime('%Y-%m-%d')%>" data-planning-color="<%=booking.planning_color%>">
       <p id="select_resource_help" class="smaller_text bottom-margin">Seleccione el recurso al que desea reasignar la reserva pulsando sobre cualquier celda de la fila del recurso</p>
-      <div id="select_resource_detail" class="smaller_text"></div>      
       <div>
         <button type="button" id="cancel_resource_button" class="form-button red-button"
         style="margin: 0 auto; display: block; width: 100%">Cancelar selección reserva</button>
@@ -18,4 +17,5 @@
           <button type="button" id="cancel_select_resource_button" class="top-margin form-button red-button" style="margin: 0 auto; width: 100%">Cancelar reasignar recurso</button>
         </div>    
       </div>
+      <div id="select_resource_detail" class="smaller_text"></div>  
     </div>
