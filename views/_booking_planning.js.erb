@@ -35,6 +35,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     scrollLeft: null,
     prereservationCell: null,
     prereservationReference: null,
+    selectedReservationsScrollTop: null,
+    pendingReservationsScrollTop: null,
+
     mode: 'select-reservation',
     months: ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],
 
@@ -139,7 +142,10 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                var type = $(this).parent().find('input[name=type]').val();
                var color =$(this).val();
                bookingPlanningController.colorChanged(id, type, color);
-            })            
+            });
+            if (bookingPlanningModel.pendingReservationsScrollTop != null) {
+              $('#pending_assignation_holder').scrollTop(bookingPlanningModel.pendingReservationsScrollTop);
+            }
           }
           else {
             alert('Error cargando datos');
@@ -190,11 +196,16 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
               }
               bookingPlanningView.selectReservation(bookingPlanningModel.selectedReservations.substring(0,1),
                                                     bookingPlanningModel.selectedReservations.substring(1));
+              bookingPlanningModel.availableResources(); // Load the available resources
             }
-            bookingPlanningModel.availableResources(); // Load the available resources
+            
             if (startResourceSelection) {
               bookingPlanningController.startResourceSelectionClick(); // Experimental
             }
+            if (bookingPlanningModel.selectedReservationsScrollTop != null) {
+              $('#reservation_holder').scrollTop(bookingPlanningModel.selectedReservationsScrollTop);
+            }
+
             $('.color').bind('change', function() {
                var id = $(this).parent().find('input[name=id]').val();
                var type = $(this).parent().find('input[name=type]').val();
@@ -311,6 +322,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     },
 
     dataFilledClick: function(reference, date, selectedReservations) {
+
+      bookingPlanningModel.view = 'home';
+      $('#planning_views').val(bookingPlanningModel.view);
 
       if ($('#preresevation_area:visible')) {
         $('#prereservation_container').hide();
@@ -825,8 +839,17 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         break;
 
       case 'changed_color':
+        if (bookingPlanningModel.view == 'assign_pending') {
+          bookingPlanningModel.pendingReservationsScrollTop = $('#pending_assignation_holder').scrollTop();
+        }
+        else if (bookingPlanningModel.view = 'home') {
+          bookingPlanningModel.selectedReservationsScrollTop = $('#reservation_holder').scrollTop();
+        }
         alert('Color cambiado');
-        this.reload(true); // Reload the reservations
+        this.reload(bookingPlanningModel.view == 'home'); // Reload the reservations
+        if (bookingPlanningModel.view == 'assign_pending') {
+          bookingPlanningController.loadPendingAssignationClick();
+        }        
         break;
 
   		case 'not_enough_information':
