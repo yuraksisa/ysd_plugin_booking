@@ -12,9 +12,6 @@ require(['YSDGui','jquery',
     },
     editIconClicked: function(date, time, activityCode) {
       var url = '/admin/booking/planned-activity?date='+date+'&time='+time+'&activity_code='+activityCode;
-      //$('#dialog_container').load(url + '#planned_activity_selector');
-      //YSDGui.showElement(document.getElementById('dialog_container'), true);     
-
       $.ajax({url: url, dataType: 'text'}).done(function(html) {
         var dom = $('<html />').prop('innerHTML', html);
         $('#dialog_container').html(dom.find('body #planned_activity_selector'));

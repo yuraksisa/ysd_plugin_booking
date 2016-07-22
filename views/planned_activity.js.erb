@@ -20,6 +20,7 @@ require(['YSDGui', 'jquery', 'jquery.formparams'], function(YSDGui, $) {
                  if (container != null) {
                    YSDGui.hideElement(container);
                  }
+                 window.location.reload();
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error realizando operación');
@@ -42,7 +43,7 @@ require(['YSDGui', 'jquery', 'jquery.formparams'], function(YSDGui, $) {
                  if (container != null) {
                    YSDGui.hideElement(container);
                  }
-
+                 window.location.reload();
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error realizando operación');
