@@ -155,6 +155,26 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
     },
 
+    loadPrereservations: function() { /* Load prereservations */
+
+      if (this.dateFrom != null && this.dateTo != null) {
+        var from = this.dateFrom.toString('yyyy-MM-dd');
+        var to = this.dateTo.toString('yyyy-MM-dd');
+        var url = '/admin/booking/planning2-prereservations?from='+from+'&to='+to;
+        $('#operation_area').load(url + ' #prereservations_container',
+          function(responseText, textStatus, jqXHR){
+            if (jqXHR.status == 200) {
+              bookingPlanningView.update('notification', 'Prereservas (bloqueos stock)');
+            }
+          });    
+      }
+      else {
+        bookingPlanningView.update('not_enough_information');
+      }
+
+
+    },
+
     loadSelectedReservations: function(startResourceSelection) { /* Load the selected reservation */
       $('#operation_area').load('/admin/booking/planning2-select?reference='+this.selectedReference+'&date='+this.selectedDate+' #reservation_selector', null,
         function(responseText, textStatus, jqXHR){
@@ -293,12 +313,15 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
  
     loadPendingAssignationClick: function() { /* The user clicks on a see reservations not assigned */
        
-       if (bookingPlanningModel.selectedItemId != null) { // delete the selected reservation
-         var element = $("td[rel~="+"'"+bookingPlanningModel.selectedItemOriginAbbr+bookingPlanningModel.selectedItemId+"'"+"]");
-         element.removeClass('selected');
-         $(element.parent().children()[0]).css('background-color','white');
-       }       
+       bookingPlanningView.update('cancel_current_selection');
        bookingPlanningModel.loadPendingAssignation();
+    },
+
+    loadPreservationsClick: function() { /* The user selects show prereservations */ 
+
+       bookingPlanningView.update('cancel_current_selection');
+       bookingPlanningModel.loadPrereservations();
+
     },
 
     pendingAssignButtonClick: function(id, dateFrom, dateTo, planningColor) { /* The user clicks on assign button (reservations not assigned) */
@@ -639,7 +662,8 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         this.loadPendingAssignationClick();
       }
       else if (view == 'prereservations') {
-
+        this.cancelReservation();
+        this.loadPreservationsClick();
       }
       else if (view == 'home') {
         $('#pending_assignation_container').hide();
@@ -675,6 +699,16 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         bookingPlanningController.planningViewsChanged($(this).val());
       });     
     },
+
+    storeScrollTop: function() {
+      if (bookingPlanningModel.view == 'assign_pending') {
+        bookingPlanningModel.pendingReservationsScrollTop = $('#pending_assignation_holder').scrollTop();
+      }
+      else if (bookingPlanningModel.view = 'home') {
+        bookingPlanningModel.selectedReservationsScrollTop = $('#reservation_holder').scrollTop();
+      } 
+    },
+
     update: function(event, value) {
   	  switch (event) {
   		case 'data_available':
@@ -788,6 +822,14 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         }
         break;
 
+      case 'cancel_current_selection': 
+        if (bookingPlanningModel.selectedItemId != null) { // delete the selected reservation
+          var element = $("td[rel~="+"'"+bookingPlanningModel.selectedItemOriginAbbr+bookingPlanningModel.selectedItemId+"'"+"]");
+          element.removeClass('selected');
+          $(element.parent().children()[0]).css('background-color','white');
+        }       
+        break;
+
       case 'available_resources':
         // Build resources detail
         $('td.reference').removeClass('available');
@@ -818,9 +860,11 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         break;  
 
       case 'reassigned':
+        this.storeScrollTop();     
         alert('Reserva asignada/reasignada');
         this.reload(bookingPlanningModel.view == 'home');
         if (bookingPlanningModel.view == 'assign_pending') {
+          bookingPlanningController.cancelReservation();
           bookingPlanningController.loadPendingAssignationClick();
         }
         break;
@@ -839,12 +883,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         break;
 
       case 'changed_color':
-        if (bookingPlanningModel.view == 'assign_pending') {
-          bookingPlanningModel.pendingReservationsScrollTop = $('#pending_assignation_holder').scrollTop();
-        }
-        else if (bookingPlanningModel.view = 'home') {
-          bookingPlanningModel.selectedReservationsScrollTop = $('#reservation_holder').scrollTop();
-        }
+        this.storeScrollTop();
         alert('Color cambiado');
         this.reload(bookingPlanningModel.view == 'home'); // Reload the reservations
         if (bookingPlanningModel.view == 'assign_pending') {

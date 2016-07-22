@@ -1,0 +1,32 @@
+<div id="prereservations_container" class="container right-space">
+  <div id="prereservations_holder" class="right-space working_area">
+    <div class="grid_12">
+      <% if @prereservations.size == 0 %>
+        <div class="guiblock">
+          <p>No hay preservas (bloqueos de stock)</p>
+        </div>
+      <% else %>
+        <h3 class="guiblock smaller_text uppercase_text" style="background-color: #DDD">Prereservas (bloqueos de stock)</h3>
+        <p class="smaller_text">Hay <b><%=@prereservations.size%></b> prereservas</p>
+        <% @prereservations.each do |prereservation| %>
+        <div class="guiblock bottom-margin">
+          <div><strong style="width: 80px; display:inline-block">Localizador:</strong> PR <%=prereservation.id%></div>
+          <div><strong style="width: 80px; display:inline-block">Título:</strong> <%=prereservation.title%></div>
+          <div><strong style="width: 80px; display:inline-block">Fecha inicio:</strong> <%=prereservation.date_from.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=prereservation.time_from%><%end%></div>
+          <div><strong style="width: 80px; display:inline-block">Fecha fin:</strong> <%=prereservation.date_to.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=prereservation.time_to%><%end%></div>
+          <div><strong style="width: 80px; display:inline-block">Recurso:</strong> <%=prereservation.booking_item_category%> - <%=prereservation.booking_item_reference%></div>
+          <div><strong style="width: 80px; display:inline-block">Color:</strong></div>
+          <form name="color">
+            <input type="hidden" name="id" value="<%=prereservation.id%>"/>
+            <input type="hidden" name="type" value="prereservation"/>
+            <input type="color" name="planning_color" class="color" value="<%=prereservation.planning_color%>" style="width:95%; top-margin: 10px"/>
+          </form>
+          <div><strong style="width: 80px; display:inline-block">Comentarios:</strong> <%=prereservation.notes%></div>
+          <button type="button" class="destroy_prereservation_button form-button red-button" style="margin: 5px auto; width: 100%" rel="<%=prereservation.id%>">Eliminar prereserva</button>    
+          <button type="button" class="select_prereservation_button form-button blue-button" style="margin: 5px auto; width: 100%" rel="<%=prereservation.id%>">Ver en el planning</button>              
+        </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

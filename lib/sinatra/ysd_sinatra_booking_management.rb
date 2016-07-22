@@ -298,9 +298,55 @@ module Sinatra
         end
 
         #
-        # The user 
+        # The user selects prereservations
         #
-        app.get '/admin/booking/planning2-prereservation', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/planning2-prereservations', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          year = Date.today.year
+
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+          
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("prereservation from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("prereservation from date not valid #{params[:to]}")
+            end
+          end
+
+          condition = Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new(:date_from,'$lte', date_from),
+                  Conditions::Comparison.new(:date_to,'$gte', date_from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', date_to),
+                  Conditions::Comparison.new(:date_to,'$gte', date_to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', date_from),
+                  Conditions::Comparison.new(:date_to,'$gte', date_to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from, '$gte', date_from),
+                  Conditions::Comparison.new(:date_to, '$lte', date_to)])               
+              ]
+            )
+
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          @prereservations = condition.build_datamapper(BookingDataSystem::BookingPrereservation).all(
+             :order => [:date_from, :time_from])
+
+          load_page(:booking_planning_prereservations, :layout => false)
 
         end
                   
@@ -600,9 +646,6 @@ module Sinatra
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           @data,@detail = BookingDataSystem::Booking.resources_occupation(@date_from, @date_to)
           
-          p "data: #{@data.inspect}"
-          p "detail: #{@detail.inspect}"
-
           load_page :resources_occupation
 
         end
@@ -873,7 +916,7 @@ module Sinatra
 
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           @prereservations = condition.build_datamapper(BookingDataSystem::BookingPrereservation).all(
-             :order => [:date_from, :time_from])
+             :order => [:date_to, :time_to])
           locals = {}
           locals.store(:booking_reservation_starts_with,
               SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
