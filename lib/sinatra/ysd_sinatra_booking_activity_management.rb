@@ -26,13 +26,34 @@ module Sinatra
         end
 
         #
+        # Get the activities for a date
+        #
+        app.get '/admin/booking/day-activities/?', :allowed_usergroups => ['booking_manager','staff'] do 
+
+          @date = Date.today
+
+          if params[:date]
+            begin
+              @date = DateTime.strptime(params[:date], '%Y-%m-%d')
+            rescue
+              logger.error("activities date not valid #{params[:date]}")
+            end
+          end
+
+          @activities = ::Yito::Model::Order::Order.activities(@date)
+
+          load_page(:booking_activities)
+
+        end  
+
+        #
         # Booking activities summary
         #
         app.get '/admin/booking/activities-summary/?', :allowed_usergroups => ['booking_manager','staff'] do 
 
           year = Date.today.year
 
-          date_from = Date.civil(year,1,1)
+          date_from = Date.today
           date_to = Date.civil(year,12,31)
           
           if params[:from]
@@ -66,9 +87,7 @@ module Sinatra
             
             begin
               date = DateTime.strptime(params[:date], '%Y-%m-%d')
-              p "llego 1"
               @activities = ::Yito::Model::Order::Order.activity_detail(date, params[:time], params[:item_id])
-              p "llego 2"
               load_page(:booking_activity_detail)
             rescue Exception => e
               p "error: #{e.message}"
@@ -88,7 +107,7 @@ module Sinatra
 
           year = Date.today.year
 
-          date_from = Date.civil(year,1,1)
+          date_from = Date.today
           date_to = Date.civil(year,12,31)
           
           if params[:from]
@@ -125,6 +144,17 @@ module Sinatra
           load_page(:booking_activities_schedule)
 
         end  
+
+        #
+        # Pending of confirmation activities
+        #
+        app.get '/admin/booking/reports/pending-confirmation-activities', :allowed_usergroups => ['booking_manager', 'staff'] do
+         
+          @orders = ::Yito::Model::Order::Order.pending_of_confirmation
+          load_page(:report_pending_confirmation_activities)
+
+        end 
+
 
         #
         # Booking activities

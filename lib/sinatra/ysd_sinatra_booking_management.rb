@@ -19,18 +19,35 @@ module Sinatra
         # Booking dashboard
         #
         app.get '/admin/booking/dashboard', :allowed_usergroups => ['booking_manager', 'staff'] do
+          
+          @booking_activities = SystemConfiguration::Variable.get_value('booking.activities','false').to_bool
+          @booking_renting = SystemConfiguration::Variable.get_value('booking.renting','false').to_bool
           @today = Date.today
           @year = DateTime.now.year
+  
+          # Today summary       
+          @pickup_today = BookingDataSystem::Booking.count_pickup(@today)
+          @transit_today = BookingDataSystem::Booking.count_transit(@today)
+          @delivery_today = BookingDataSystem::Booking.count_delivery(@today)
+          if @booking_activities
+            @today_start_activities = ::Yito::Model::Order::Order.count_start(@today)
+          end
+  
+          # Current year summary
           @received_reservations = BookingDataSystem::Booking.count_received_reservations(@year)
           @pending_confirmation_reservations = BookingDataSystem::Booking.count_pending_confirmation_reservations(@year)
           @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
+          if @booking_activities
+            @received_orders = ::Yito::Model::Order::Order.count_received_orders(@year)
+            @pending_confirmation_orders = ::Yito::Model::Order::Order.count_pending_confirmation_orders(@year)
+            @confirmed_orders = ::Yito::Model::Order::Order.count_confirmed_orders(@year)
+          end
+
           @reservations_by_weekday = BookingDataSystem::Booking.reservations_by_weekday(@year)
           @reservations_by_category = BookingDataSystem::Booking.reservations_by_category(@year)
           @reservations_by_status = BookingDataSystem::Booking.reservations_by_status(@year)
           @last_30_days_reservations = BookingDataSystem::Booking.last_30_days_reservations
-          @pickup_today = BookingDataSystem::Booking.count_pickup(@today)
-          @transit_today = BookingDataSystem::Booking.count_transit(@today)
-          @delivery_today = BookingDataSystem::Booking.count_delivery(@today)
+  
           @product_total_billing = BookingDataSystem::Booking.products_billing_total(@year) || 0
           @extras_total_billing = BookingDataSystem::Booking.extras_billing_total(@year) || 0
           @product_total_cost = BookingDataSystem::Booking.stock_cost_total || 0

@@ -1,0 +1,57 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.report_pending_confirmation_activities.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <div>
+    <% if @orders.empty? %>
+    <div class="all-border-solid-light top-margin-1line">
+         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+    </div>
+    <% else %>
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:2em">Fecha recepción</th>
+            <th class="table-cell" scope="col" style="width:1.2em">Localizador</th>
+            <th class="table-cell" scope="col" style="width:3.5em">Cliente</th>
+            <th class="table-cell" scope="col" style="width:2em">Teléfono</th>
+            <th class="table-cell" scope="col" style="width:4em">Email</th>
+            <th class="table-cell" scope="col" style="width:6em">Productos</th>
+            <th class="table-cell" scope="col" style="width:1em">Total</th>             
+          </tr>
+        </thead>
+        <tbody>      
+        <% @orders.each do |order| %>  
+        <tr class="table-row">
+          <td class="table-cell"><%=order.creation_date.strftime('%Y-%m-%d %H:%M')%></td>          
+          <td class="table-cell right_text"><a href="/admin/order/orders/<%=order.id%>"><%=order.id%></a></td>
+          <td class="table-cell"><%=order.customer_name%> <%=order.customer_surname%></td>
+          <td class="table-cell"><%=order.customer_phone%> <%=order.customer_mobile_phone%></td>
+          <td class="table-cell"><%=order.customer_email%></td>
+          <td class="table-cell">
+            <% order.order_items.each do |order_item| %>
+              <div class="smaller_text"><%=order_item.date.strftime('%d-%m-%Y')%> <%=order_item.time%> - <%=order_item.item_id %> <%if !order_item.item_price_description.nil? and !order_item.item_price_description.empty?%>(<%=order_item.item_price_description%>)<%end%> : <b><%= order_item.quantity %> pax</b></div>
+            <% end %>
+          </td>
+          <td class="table-cell right_text"><%="%.2f" % order.total_cost%></td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <div class="all-space">
+        <p class="right_text"><%=t.report_pending_confirmation_activities.summary(@orders.size)%></p>
+      </div>
+    <% end %>          
+  </div>
+</div>

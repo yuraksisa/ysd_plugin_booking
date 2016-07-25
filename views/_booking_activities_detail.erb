@@ -1,10 +1,9 @@
-  <div>
-    <% if @activities.empty? %>
+<div>
+  <% if @activities.empty? %>
     <div class="all-border-solid-light top-margin-1line">
          <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
     </div>
-    <% end %> 
-
+  <% else %>
     <% last_date = nil %>
     <% last_activity = nil %>
     <% last_activity_capacity = nil %>
@@ -21,10 +20,10 @@
           </table>
         <% end %>
         <% if last_date != activity.date %>     
-        <h3 class="guiblock"><%=activity.date.strftime('%d-%m-%Y')%></h3>
+          <h3 class="guiblock"><%=activity.date.strftime('%d-%m-%Y')%></h3>
         <% end %> 
         <% if last_date != activity.date or last_activity != activity.item_id %>
-        <h4 class="bottom-border-solid"><%=activity.item_description%> <span class="less_contrast_text smaller_text">(<%=activity.item_id%>)</span></h4>
+          <h4 class="bottom-border-solid"><%=activity.item_description%> <span class="less_contrast_text smaller_text">(<%=activity.item_id%>)</span></h4>
         <% end %>
         <h5 class="top-margin-1line bottom-margin-1line less_contrast_text highlight_block" style="font-size:1em">Horario: <%=activity.time%></h5>
         <table id="table" class="table">
@@ -43,15 +42,15 @@
           <% summary.clear %>   
           <% paid = 0%>
       <% end %>       
-        <tr class="table-row">
-          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><a href="/admin/orders/order/<%=activity.order_id%>"><%=activity.order_id%></a></td>
-          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_name%> <%=activity.customer_surname%></td>
-          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_phone%> </td>
-          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_email%></td>
-          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.quantity%> x <%=activity.item_price_description%></td>
-          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%="%.2f" % activity.item_unit_cost%></td>
-          <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%="%.2f" % activity.item_cost%></td>
-        </tr>
+      <tr class="table-row">
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><a href="/admin/orders/order/<%=activity.order_id%>"><%=activity.order_id%></a></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_name%> <%=activity.customer_surname%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_phone%> </td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_email%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.quantity%> x <%=activity.item_price_description%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%="%.2f" % activity.item_unit_cost%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%="%.2f" % activity.item_cost%></td>
+      </tr>
       <% last_date = activity.date %>
       <% last_activity = activity.item_id %>
       <% last_time = activity.time %>
@@ -64,7 +63,8 @@
          end %>
     <% end %>
 
-        <%= partial :booking_activities_summary_total, locals: {summary: summary, last_activity_capacity: last_activity_capacity, paid: paid} %>        
-        </tbody>
-      </table>
-  </div> 
+    <%= partial :booking_activities_summary_total, locals: {summary: summary, last_activity_capacity: last_activity_capacity, paid: paid} %>        
+          </tbody>
+        </table>
+  <% end %> 
+</div> 

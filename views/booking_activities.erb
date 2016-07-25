@@ -1,0 +1,24 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Listado actividades</h2>
+  <div class="form-button" style="float: right; display:none">
+     <a id="print_link" href="/admin/booking/reports/activities-summary-pdf" target="_blank">Imprimir</a>
+  </div>  
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="report_reservations_form" action="/admin/booking/activities" method="get">
+        <div class="formrow">
+          <div style="display: inline-block">
+            <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="hidden" name="date" id="date"/>
+            <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <%= partial :booking_activities_detail %> 
+</div>

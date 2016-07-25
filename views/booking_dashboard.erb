@@ -20,18 +20,24 @@
     <div class="grid_12">
       <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.day_work%></div> 
     </div>
-    <div class="grid_4" style="min-height: 7.5em">
+    <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pickup-return"><%=@pickup_today%></a></div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.delivery%></div>
     </div>
-    <div class="grid_4" style="min-height: 7.5em">
+    <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/in-progress"><%=@transit_today%></a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.transit%></div>      
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.transit%></div>  
     </div>  
-    <div class="grid_4" style="min-height: 7.5em">
+    <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pickup-return"><%=@delivery_today%></a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.return%></div>     
-    </div>          
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.return%></div>    
+    </div>
+    <% if @booking_activities %>           
+    <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/day-activities"><%=@today_start_activities%></a></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.activities_today%></div>    
+    </div>
+    <% end %>
   </div>  
   <div class="container_12">
   	<div class="grid_12">
@@ -48,7 +54,21 @@
     <div class="grid_4" style="min-height: 7.5em">
     	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@confirmed_reservations%></div>
     	<div class="centered_text smaller_text"><%=t.booking_dashboard.confirmed_reservations%></div>    	
-    </div>	        	
+    </div>
+    <% if @booking_activities %>
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@received_orders%></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.received_orders%></div>
+    </div>        
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pending-confirmation-activities"><%=@pending_confirmation_orders%></a></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.pending_confirmation_orders%></div>
+    </div>
+    <div class="grid_4" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@confirmed_orders%></div>
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.confirmed_orders%></div>     
+    </div>    
+    <% end %>	        	
   </div> 
   <div class="container_12">
     <div class="grid_6">

@@ -455,13 +455,24 @@ module Huasi
         when 'booking_selector_inline'         
           app.partial(:booking_selector_inline, :locals => locals)
         when 'booking_admin_menu'
+          today = Date.today
+          year = today.year
           booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
+          booking_renting = SystemConfiguration::Variable.get_value('booking.renting','false').to_bool
+          booking_activities = SystemConfiguration::Variable.get_value('booking.activities','false').to_bool
           if booking_mode == 'rent'
             menu_locals = {}
-            menu_locals.store(:booking_activities, 
-              SystemConfiguration::Variable.get_value('booking.activities','false').to_bool) 
-            menu_locals.store(:booking_renting, 
-              SystemConfiguration::Variable.get_value('booking.renting','false').to_bool)
+            menu_locals.store(:booking_activities, booking_activities) 
+            menu_locals.store(:booking_renting, booking_renting)
+            if booking_renting
+              menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
+              menu_locals.store(:today_pickup, BookingDataSystem::Booking.count_pickup(today))
+              menu_locals.store(:today_return, BookingDataSystem::Booking.count_delivery(today))
+            end
+            if booking_activities
+              menu_locals.store(:pending_confirmation_activities, ::Yito::Model::Order::Order.count_pending_confirmation_orders(year))
+              menu_locals.store(:today_start_activities, ::Yito::Model::Order::Order.count_start(today))
+            end
             app.partial(:booking_menu, :locals => menu_locals)
           elsif booking_mode == 'restaurant'
             app.partial(:booking_menu_restaurant)

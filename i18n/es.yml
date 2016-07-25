@@ -139,8 +139,10 @@ booking_console:
   activity_bookings: Actividades/Tours
   orders: Pedidos
   activities_occupation: Ocupación
-  activities_schedule: Agenda
+  activities_schedule: Planning
   activities_summary: Programadas
+  pending_confirmation_activities: Pendientes confirmación
+  today_activities: En curso (previstas hoy)
   activities_report: Listado actividades
   crm: CRM
   finances: Finanzas
@@ -945,6 +947,9 @@ booking_dashboard:
   received_reservations: Reservas recibidas
   pending_confirmation_reservations: Reservas pendientes de confirmación
   confirmed_reservations: Reservas confirmadas
+  received_orders: Pedidos actividades recibidos
+  pending_confirmation_orders: Pedidos actividades pendientes de confirmación
+  confirmed_orders: Pedidos actividades confirmados  
   new_request: Nuevas solicitudes
   reservations_by_day: Reservas por día
   reservations_by_category: Reservas por categoría
@@ -954,6 +959,7 @@ booking_dashboard:
   delivery: Entregas del día
   transit: En curso
   return: Devoluciones del día
+  activities_today: Actividades del día
   billing: Facturación
   products_billing: Facturación productos
   extras_billing: Facturación extras
@@ -976,9 +982,10 @@ booking_activity_management:
     duration_days: Duración en días
     duration_hours: Duración en horas
     occurrence: Frecuencia
-    occurrence_one_time: Una vez
-    occurrence_multiple_dates: Múltiples fechas
-    occurrence_cyclic: Cíclica
+    occurrence_one_time: Una vez (determinada por la empresa)
+    occurrence_multiple_dates: Múltiples fechas (determinadas por la empresa)
+    occurrence_cyclic: Cíclica (determinadas por la empresa)
+    occurrence_customizable: El cliente elige la fecha
     mode: Forma de compra
     mode_full: El cliente contrata la actividad completa
     mode_partial: El cliente compra tickets por plazas
@@ -997,6 +1004,7 @@ booking_activity_management:
                          <li>Se lleva a cabo una única vez</li>
                          <li>Se lleva a cabo varias veces en fechas determinadas</li>
                          <li>Se lleva a cabo de forma recurrente (días de la semana y horarios)</li>
+                         <li>El cliente determina la fecha (personalizable)</li>
                        </ul>
     mode_detail: >
                  <h4>Forma de compra</h4>
@@ -1042,6 +1050,9 @@ report_stock:
 report_pending_confirmation:
   title: Reservas pendientes de confirmación
   summary: Hay <strong>%1</strong> reservas pendientes de confirmación
+report_pending_confirmation_activities:
+  title: Pedidos pendientes de confirmación
+  summary: Hay <strong>%1</strong> pedidos pendientes de confirmación
 report_in_progress:
   title: Reservas en curso
   summary: Hay <strong>%1</strong> reservas y <strong>%2</strong> recursos en curso
