@@ -279,7 +279,7 @@
                 <label class="fieldtitle"><%= t.booking_category_management.form.type.label %></label>
                 <select id="type" name="type" class="fieldcontrol">
                    <% ::Yito::Model::Booking::BookingCategory.types.each do |item| %>
-                   <option value="item[:id]"  <%% if (entity && entity.type=='<%=item[:id]%>') {%> selected="selected" <%% } %>><%=item[:description]%></option>
+                   <option value="<%=item[:id]%>"  <%% if (entity && entity.type=='<%=item[:id]%>') {%> selected="selected" <%% } %>><%=item[:description]%></option>
                    <% end %>
                 </select>
               </div>
