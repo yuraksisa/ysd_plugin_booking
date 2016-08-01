@@ -137,13 +137,13 @@ booking_console:
   rates: Tarifas
   bookings: Alquiler
   activity_bookings: Actividades/Tours
+  new_order: Nuevo pedido
   orders: Pedidos
   activities_occupation: Ocupación
-  activities_schedule: Planning
+  activities_schedule: Agenda
   activities_summary: Programadas
-  pending_confirmation_activities: Pendientes confirmación
+  pending_confirmation_activities: Pendientes conf.
   today_activities: En curso (previstas hoy)
-  activities_report: Listado actividades
   crm: CRM
   finances: Finanzas
   statistics: Estadísticas
@@ -174,13 +174,14 @@ booking_console:
   products_billing: Facturación stock
   extras_billing: Facturación extras  
   information_requests: Solicitudes información
-  report_reservations: Listado de reservas
-  report_prereservations: Listado de prereservas
-  report_pending_confirmation: Pendientes confirmación
+  report_pending_confirmation: Pendientes conf.
   report_in_progress: En curso
-  report_customers: Listado de clientes
   report_pickup_return: Entregas y recogidas
-  report_stock: Listado de stock
+  report_stock: Stock
+  report_reservations: Reservas
+  report_prereservations: Prereservas
+  activities_report: Actividades  
+  report_customers: Clientes
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas
@@ -943,30 +944,49 @@ booking_customers:
     number_of_reservations: Reservas
 booking_dashboard:
   title: Panel de control
+  not_enough_data: No hay datos suficientes  
   summary: Resumen
-  received_reservations: Reservas recibidas
-  pending_confirmation_reservations: Reservas pendientes de confirmación
-  confirmed_reservations: Reservas confirmadas
-  received_orders: Pedidos actividades recibidos
-  pending_confirmation_orders: Pedidos actividades pendientes de confirmación
-  confirmed_orders: Pedidos actividades confirmados  
+  renting: Alquiler
+  activities: Actividades
+  received_reservations: Recibidas
+  pending_confirmation_reservations: Pendientes de confirmación
+  confirmed_reservations: Confirmadas
+  received_orders: Recibidos
+  pending_confirmation_orders: Pendientes de confirmación
+  confirmed_orders: Confirmados  
   new_request: Nuevas solicitudes
-  reservations_by_day: Reservas por día
-  reservations_by_category: Reservas por categoría
-  reservations_by_state: Reservas por estado
-  last_30_days_reservations: Reservas recibidas los últimos 30 días
+  reservations_by_day: Recibidas por día de la semana
+  reservations_by_category: Por categoría
+  reservations_by_state: Por estado
+  last_30_days_reservations: Recibidas últimos 30 días
+  activities_by_day: Recibidas por día de la semana
+  activities_by_category: Por producto
+  activities_by_state: Por estado
+  last_30_days_activities: Recibidas últimos 30 días
   day_work: Entregas/Devoluciones del día
-  delivery: Entregas del día
+  delivery: Entregas
   transit: En curso
-  return: Devoluciones del día
-  activities_today: Actividades del día
+  return: Devoluciones
+  activities_today: Actividades
   billing: Facturación
-  products_billing: Facturación productos
-  extras_billing: Facturación extras
+  products_billing: Productos alquiler
+  extras_billing: Extras alquiler
+  activities_billing: Actividades
+  total_billing: Total
   stock_cost: Valor stock
-  products_billing_vs_total: Facturación productos vs Facturación total
-  extras_billing_vs_total: Facturación extras vs Facturación total
+  renting_products_billing_vs_total: del alquiler
+  renting_extras_billing_vs_total: del alquiler
+  products_billing_vs_total: del total 
+  extras_billing_vs_total: del total
+  activities_billing_vs_total: del total   
   amortization: Amortización
+  stock_amortization: Stock y amortización
+  charges: Cobros
+  total: Total
+  total_charged_reservations: Total cobrado
+  forecast_charged_reservations: Previsión cobros
+  total_charged_activities: Total cobrado
+  forecast_charged_activities: Previsión cobros  
 booking_activity_management:
   title: Actividades 
   form:

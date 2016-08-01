@@ -2,6 +2,37 @@ require(['jquery','charts'], function($, Chart) {
 
   dashboardModel = {
 
+  <% if @booking_renting %>
+
+    <% if !@reservations_by_category.nil? and !@reservations_by_category.empty? %>
+
+    reservationsByCategoryData : [
+      <% @reservations_by_category.each do |key, value| %>
+      {
+        value: <%=value[:value]%>,
+        color: '<%=value[:color]%>',
+        hightlight: '<%=value[:highlight]%>',
+        label: '<%=value[:label]%>'
+      },
+      <% end %>
+    ],
+
+    <% end %>
+
+    <% if !@reservations_by_status.nil? and !@reservations_by_status.empty? %>
+    reservationsByStateData : [
+      <% @reservations_by_status.each do |key, value| %>
+      {
+        value: <%=value[:value]%>,
+        color: '<%=value[:color]%>',
+        hightlight: '<%=value[:highlight]%>',
+        label: '<%=value[:label]%>'
+      },
+      <% end %>
+    ],
+    <% end %>
+
+    <% if !@reservations_by_weekday.nil? and !@reservations_by_weekday.empty? %>
     reservationsByDayData : {
       labels: ["L", "M", "X", "J", "V", "S", "D"],
         datasets: [
@@ -15,31 +46,13 @@ require(['jquery','charts'], function($, Chart) {
           }
         ]
     },
+    <% end %>
 
-    reservationsByCategoryData : [
-      <% @reservations_by_category.each do |key, value| %>
-      {
-        value: <%=value[:value]%>,
-        color: '<%=value[:color]%>',
-        hightlight: '<%=value[:highlight]%>',
-        label: '<%=value[:label]%>'
-      },
-      <% end %>
-    ],
-    reservationsByStateData : [
-      <% @reservations_by_status.each do |key, value| %>
-      {
-        value: <%=value[:value]%>,
-        color: '<%=value[:color]%>',
-        hightlight: '<%=value[:highlight]%>',
-        label: '<%=value[:label]%>'
-      },
-      <% end %>
-    ],
-
-   last30DaysReservationsData : {
-     labels: [<% @last_30_days_reservations.each do |key, value|%>'<%=key%>',<%end%>],
-     datasets: [
+    <% if !@last_30_days_reservations.nil? and !@last_30_days_reservations.empty? and 
+          !(@last_30_days_reservations.select {|k,v| v > 0}).empty?%>
+    last30DaysReservationsData : {
+      labels: [<% @last_30_days_reservations.each do |key, value|%>'<%=key%>',<%end%>],
+      datasets: [
         {
             label: "Last 30 days reservations",
             fillColor: "rgba(220,220,220,0.2)",
@@ -51,30 +64,163 @@ require(['jquery','charts'], function($, Chart) {
             data: [<% @last_30_days_reservations.each do |key, value| %><%=value%>,<%end%>
                    ]
         }
-     ]
-    }
+      ]
+    },   
+    <% end %> 
+
+    <% if !@total_charged_reservations.nil? and !@total_charged_reservations.empty? and 
+           @total_charged_reservations[:total] > 0%>
+      reservationsTotalChargedData : [
+        <% @total_charged_reservations[:detail].each do |key, value| %>
+        {
+          value: <%=value[:value]%>,
+          color: '<%=value[:color]%>',
+          hightlight: '<%=value[:highlight]%>',
+          label: '<%=value[:label]%>'
+        },
+        <% end %>
+      ],
+    <% end %>
+
+    <% if !@forecast_charged_reservations.nil? and !@forecast_charged_reservations.empty? and
+          @forecast_charged_reservations[:total] > 0%>
+      reservationsForecastChargedData : {
+      labels: [<% @forecast_charged_reservations[:detail].each do |key, value|%>'<%=key%>',<%end%>],
+      datasets: [
+        {
+            label: "Forecast charged",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: [<% @forecast_charged_reservations[:detail].each do |key, value| %><%=value%>,<%end%>
+                   ]
+        }
+      ]
+    },
+    <% end %>
+
+  <% end %>
+
+  <% if @booking_activities %>
+
+    <% if !@activities_by_category.nil? and !@activities_by_category.empty? %>
+    activitiesByCategoryData : [
+      <% @activities_by_category.each do |key, value| %>
+      {
+        value: <%=value[:value]%>,
+        color: '<%=value[:color]%>',
+        hightlight: '<%=value[:highlight]%>',
+        label: '<%=value[:label]%>'
+      },
+      <% end %>
+    ],
+     <% end %>
+
+     <% if !@activities_by_status.nil? and !@activities_by_status.empty? %>
+     activitiesByStateData: [
+       <% @activities_by_status.each do |key, value| %>
+       {
+         value: <%=value[:value]%>,
+         color: '<%=value[:color]%>',
+         hightlight: '<%=value[:highlight]%>',
+         label: '<%=value[:label]%>'
+       },
+       <% end %>
+     ],
+     <% end %>
+
+     <% if !@activities_by_weekday.nil? and !@activities_by_weekday.empty? %>
+     activitiesByDayData : {
+       labels: ["L", "M", "X", "J", "V", "S", "D"],
+         datasets: [
+           {
+             label: "Reservations by day",
+             fillColor: "rgba(220,220,220,0.5)",
+             strokeColor: "rgba(220,220,220,0.8)",
+             highlightFill: "rgba(220,220,220,0.75)",
+             highlightStroke: "rgba(220,220,220,1)",
+             data: [ <% @activities_by_weekday.each do |key,value| %><%=value%>,<%end%>]                  
+           }
+         ]
+     },
+     <% end %>
+
+     <% if !@last_30_days_activities.nil? and !@last_30_days_activities.empty? and
+           !(@last_30_days_activities.select {|k,v| v > 0}).empty? %>
+
+     last30DaysActivitiesData : {
+       labels: [<% @last_30_days_activities.each do |key, value|%>'<%=key%>',<%end%>],
+       datasets: [
+         {
+            label: "Last 30 days activities",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: [<% @last_30_days_activities.each do |key, value| %><%=value%>,<%end%>
+                   ]
+         }
+       ]
+     },
+
+     <% end %>
+
+    <% if !@total_charged_activities.nil? and !@total_charged_activities.empty? and 
+           @total_charged_activities[:total] > 0%>
+      activitiesTotalChargedData : [
+        <% @total_charged_activities[:detail].each do |key, value| %>
+        {
+          value: <%=value[:value]%>,
+          color: '<%=value[:color]%>',
+          hightlight: '<%=value[:highlight]%>',
+          label: '<%=value[:label]%>'
+        },
+        <% end %>
+      ],
+    <% end %>
+
+    <% if !@forecast_charged_activities.nil? and !@forecast_charged_activities.empty? and
+          @forecast_charged_activities[:total] > 0%>
+      activitiesForecastChargedData : {
+      labels: [<% @forecast_charged_activities[:detail].each do |key, value|%>'<%=key%>',<%end%>],
+      datasets: [
+        {
+            label: "Forecast charged",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: [<% @forecast_charged_activities[:detail].each do |key, value| %><%=value%>,<%end%>
+                   ]
+        }
+      ]
+    },
+    <% end %>
+
+  <% end %>
 
   }
 
   dashboardView = {
 
     init: function() {
-      // Reservations by Day
+
       var helpers = Chart.helpers;
 
-  	  var reservationsByDayCtx = document.getElementById("reservations_by_day_graphic").getContext("2d");
-      var scaleStepWidth = Math.ceil(Math.max.apply(null, dashboardModel.reservationsByDayData.datasets[0].data)/10);
-      console.log(scaleStepWidth);
-      var reservationsByDayOptions = { //String - A legend template
-        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>",
-        scaleOverride: true, scaleStartValue: 0, scaleStepWidth: scaleStepWidth, scaleSteps: 10, scaleIntegersOnly: true
-      };
-      var reservationsByDayChart = new Chart(reservationsByDayCtx).Bar(dashboardModel.reservationsByDayData,reservationsByDayOptions);
+      // -------------- Renting ----------------------------------
       
-
       // Reservations by category
+      <% if !@reservations_by_category.nil? and !@reservations_by_category.empty? %>
+
       var reservationsByCategoryCanvas = document.getElementById("reservations_by_category_graphic");
-  	  var reservationsByCategoryCtx = document.getElementById("reservations_by_category_graphic").getContext("2d");
+      var reservationsByCategoryCtx = document.getElementById("reservations_by_category_graphic").getContext("2d");
       var reservationsByCategoryOptions = { //String - A legend template
         legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
       };
@@ -82,7 +228,7 @@ require(['jquery','charts'], function($, Chart) {
 
       var reservationsByCategoryHolder = document.createElement('div');
       reservationsByCategoryHolder.innerHTML = reservationsByCategoryChart.generateLegend();
-      // Include a html legend template after the module doughnut itself
+      // Include a html legend template after the module doughnut itself      
       helpers.each(reservationsByCategoryHolder.firstChild.childNodes, function(legendNode, index){
         helpers.addEvent(legendNode, 'mouseover', function(){
           var activeSegment = reservationsByCategoryChart.segments[index];
@@ -95,9 +241,11 @@ require(['jquery','charts'], function($, Chart) {
       helpers.addEvent(reservationsByCategoryHolder.firstChild, 'mouseout', function(){
         reservationsByCategoryChart.draw();
       });
-      reservationsByCategoryCanvas.parentNode.appendChild(reservationsByCategoryHolder.firstChild);
+      reservationsByCategoryCanvas.parentNode.appendChild(reservationsByCategoryHolder.firstChild);      
+      <% end %>
 
       // Reservations by state
+      <% if !@reservations_by_status.nil? and !@reservations_by_status.empty? %>
       var reservationsByStateCanvas = document.getElementById("reservations_by_state_graphic");      
   	  var reservationsByStateCtx = document.getElementById("reservations_by_state_graphic").getContext("2d");
       var reservationsByStateOptions = { //String - A legend template
@@ -121,9 +269,23 @@ require(['jquery','charts'], function($, Chart) {
         reservationsByStateChart.draw();
       });
       reservationsByStateCanvas.parentNode.appendChild(reservationsByStateHolder.firstChild);
+      <% end %>
 
+      // Reservations by Day
+      <% if !@reservations_by_weekday.nil? and !@reservations_by_weekday.empty? %>
+      var reservationsByDayCtx = document.getElementById("reservations_by_day_graphic").getContext("2d");
+      var scaleStepWidth = Math.ceil(Math.max.apply(null, dashboardModel.reservationsByDayData.datasets[0].data)/10);
+      console.log(scaleStepWidth);
+      var reservationsByDayOptions = { //String - A legend template
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>",
+        scaleOverride: true, scaleStartValue: 0, scaleStepWidth: scaleStepWidth, scaleSteps: 10, scaleIntegersOnly: true
+      };
+      var reservationsByDayChart = new Chart(reservationsByDayCtx).Bar(dashboardModel.reservationsByDayData,reservationsByDayOptions);
+      <% end %>
 
-      // Last 30 days reservations 
+      // Last 30 days reservations
+      <% if !@last_30_days_reservations.nil? and !@last_30_days_reservations.empty? and
+            !(@last_30_days_reservations.select {|k,v| v > 0}).empty? %>
   	  var last30DaysReservationsCtx = document.getElementById("last_30_days_reservations_graphic").getContext("2d");
       var scaleStepWidth = Math.ceil(Math.max.apply(null, dashboardModel.last30DaysReservationsData.datasets[0].data)/10);
       var last30DaysReservationsOptions = { //String - A legend template
@@ -131,7 +293,176 @@ require(['jquery','charts'], function($, Chart) {
         scaleOverride: true, scaleStartValue: 0, scaleStepWidth: scaleStepWidth, scaleSteps: 10, scaleIntegersOnly: true
       };
       var last30DaysReservationsChart = new Chart(last30DaysReservationsCtx).Line(dashboardModel.last30DaysReservationsData,last30DaysReservationsOptions);
+      <% end %>
 
+      // Total charged reservations
+      <% if !@total_charged_reservations.nil? and !@total_charged_reservations.empty? and 
+             @total_charged_reservations[:total] > 0%>
+        var reservationsTotalChargedCanvas = document.getElementById("reservations_total_charged_graphic");      
+        var reservationsTotalChargedCtx = document.getElementById("reservations_total_charged_graphic").getContext("2d");
+        var reservationsTotalChargedOptions = { //String - A legend template
+          legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
+        };
+        var reservationsTotalChargedChart = new Chart(reservationsTotalChargedCtx).Doughnut(dashboardModel.reservationsTotalChargedData,reservationsTotalChargedOptions);
+
+        var reservationsTotalChargedHolder = document.createElement('div');
+        reservationsTotalChargedHolder.innerHTML = reservationsTotalChargedChart.generateLegend();
+        // Include a html legend template after the module doughnut itself
+        helpers.each(reservationsTotalChargedHolder.firstChild.childNodes, function(legendNode, index){
+          helpers.addEvent(legendNode, 'mouseover', function(){
+            var activeSegment = reservationsTotalChargedChart.segments[index];
+            activeSegment.save();
+            activeSegment.fillColor = activeSegment.highlightColor;
+            reservationsTotalChargedChart.showTooltip([activeSegment]);
+            activeSegment.restore();
+          });
+        });
+        helpers.addEvent(reservationsTotalChargedHolder.firstChild, 'mouseout', function(){
+          reservationsTotalChargedChart.draw();
+        });
+        reservationsTotalChargedCanvas.parentNode.appendChild(reservationsTotalChargedHolder.firstChild);
+
+      <% end %>  
+
+      // Forecast charged reservations
+      <% if !@forecast_charged_reservations.nil? and !@forecast_charged_reservations.empty? and
+            @forecast_charged_reservations[:total] > 0 %>
+      var reservationsForecastChargedCtx = document.getElementById("reservations_forecast_charged_graphic").getContext("2d");
+      var scaleStepWidth = Math.ceil(Math.max.apply(null, dashboardModel.reservationsForecastChargedData.datasets[0].data)/10);
+      console.log(scaleStepWidth);
+      var reservationsForecastChargedOptions = { //String - A legend template
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>",
+        scaleOverride: true, scaleStartValue: 0, scaleStepWidth: scaleStepWidth, scaleSteps: 10, scaleIntegersOnly: true
+      };
+      var reservationsForecastChargedChart = new Chart(reservationsForecastChargedCtx).Bar(dashboardModel.reservationsForecastChargedData,reservationsForecastChargedOptions);
+      <% end %>          
+
+      // ------------- Activities --------------------------
+
+      <% if @booking_activities %>
+
+      // Activities by category
+      <% if !@activities_by_category.nil? and !@activities_by_category.empty? %>      
+      var activitiesByCategoryCanvas = document.getElementById("activities_by_category_graphic");
+      var activitiesByCategoryCtx = document.getElementById("activities_by_category_graphic").getContext("2d");
+      var activitiesByCategoryOptions = { //String - A legend template
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
+      };
+      var activitiesByCategoryChart = new Chart(activitiesByCategoryCtx).Doughnut(dashboardModel.activitiesByCategoryData, activitiesByCategoryOptions);
+
+      var activitiesByCategoryHolder = document.createElement('div');
+      activitiesByCategoryHolder.innerHTML = activitiesByCategoryChart.generateLegend();
+      // Include a html legend template after the module doughnut itself
+      helpers.each(activitiesByCategoryHolder.firstChild.childNodes, function(legendNode, index){
+        helpers.addEvent(legendNode, 'mouseover', function(){
+          var activeSegment = activitiesByCategoryChart.segments[index];
+          activeSegment.save();
+          activeSegment.fillColor = activeSegment.highlightColor;
+          activitiesByCategoryChart.showTooltip([activeSegment]);
+          activeSegment.restore();
+        });
+      });
+      helpers.addEvent(activitiesByCategoryHolder.firstChild, 'mouseout', function(){
+        activitiesByCategoryChart.draw();
+      });
+      activitiesByCategoryCanvas.parentNode.appendChild(activitiesByCategoryHolder.firstChild);
+      <% end %>
+
+      // Activities by status
+      <% if !@activities_by_status.nil? and !@activities_by_status.empty? %>      
+      var activitiesByStateCanvas = document.getElementById("activities_by_state_graphic");      
+      var activitiesByStateCtx = document.getElementById("activities_by_state_graphic").getContext("2d");
+      var activitiesByStateOptions = { //String - A legend template
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
+      };
+      var activitiesByStateChart = new Chart(activitiesByStateCtx).Doughnut(dashboardModel.activitiesByStateData,activitiesByStateOptions);
+
+      var activitiesByStateHolder = document.createElement('div');
+      activitiesByStateHolder.innerHTML = activitiesByStateChart.generateLegend();
+      // Include a html legend template after the module doughnut itself
+      helpers.each(activitiesByStateHolder.firstChild.childNodes, function(legendNode, index){
+        helpers.addEvent(legendNode, 'mouseover', function(){
+          var activeSegment = activitiesByStateChart.segments[index];
+          activeSegment.save();
+          activeSegment.fillColor = activeSegment.highlightColor;
+          activitiesByStateChart.showTooltip([activeSegment]);
+          activeSegment.restore();
+        });
+      });
+      helpers.addEvent(activitiesByStateHolder.firstChild, 'mouseout', function(){
+        activitiesByStateChart.draw();
+      });
+      activitiesByStateCanvas.parentNode.appendChild(activitiesByStateHolder.firstChild);
+      <% end %>
+
+      // Activities by Day
+      <% if !@activities_by_weekday.nil? and !@activities_by_weekday.empty? %>      
+      var helpers = Chart.helpers;
+      var activitiesByDayCtx = document.getElementById("activities_by_day_graphic").getContext("2d");
+      var scaleStepWidth = Math.ceil(Math.max.apply(null, dashboardModel.activitiesByDayData.datasets[0].data)/10);
+      console.log(scaleStepWidth);
+      var activitiesByDayOptions = { //String - A legend template
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>",
+        scaleOverride: true, scaleStartValue: 0, scaleStepWidth: scaleStepWidth, scaleSteps: 10, scaleIntegersOnly: true
+      };
+      var activitiesByDayChart = new Chart(activitiesByDayCtx).Bar(dashboardModel.activitiesByDayData, activitiesByDayOptions);
+      <% end %>
+
+      // Last 30 days activities 
+      <% if !@last_30_days_activities.nil? and !@last_30_days_activities.empty? and 
+            !(@last_30_days_activities.select {|k,v| v > 0}).empty? %>
+      var last30DaysActivitiesCtx = document.getElementById("last_30_days_activities_graphic").getContext("2d");
+      var scaleStepWidth = Math.ceil(Math.max.apply(null, dashboardModel.last30DaysActivitiesData.datasets[0].data)/10);
+      var last30DaysActivitiesOptions = { //String - A legend template
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>",
+        scaleOverride: true, scaleStartValue: 0, scaleStepWidth: scaleStepWidth, scaleSteps: 10, scaleIntegersOnly: true
+      };
+      var last30DaysActivitiesChart = new Chart(last30DaysActivitiesCtx).Line(dashboardModel.last30DaysActivitiesData,last30DaysActivitiesOptions);
+      <% end %>
+
+      // Total charged activities
+      <% if !@total_charged_activities.nil? and !@total_charged_activities.empty? and 
+             @total_charged_activities[:total] > 0%>
+        var activitiesTotalChargedCanvas = document.getElementById("activities_total_charged_graphic");      
+        var activitiesTotalChargedCtx = document.getElementById("activities_total_charged_graphic").getContext("2d");
+        var activitiesTotalChargedOptions = { //String - A legend template
+          legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>"
+        };
+        var activitiesTotalChargedChart = new Chart(activitiesTotalChargedCtx).Doughnut(dashboardModel.activitiesTotalChargedData,activitiesTotalChargedOptions);
+
+        var activitiesTotalChargedHolder = document.createElement('div');
+        activitiesTotalChargedHolder.innerHTML = activitiesTotalChargedChart.generateLegend();
+        // Include a html legend template after the module doughnut itself
+        helpers.each(activitiesTotalChargedHolder.firstChild.childNodes, function(legendNode, index){
+          helpers.addEvent(legendNode, 'mouseover', function(){
+            var activeSegment = activitiesTotalChargedChart.segments[index];
+            activeSegment.save();
+            activeSegment.fillColor = activeSegment.highlightColor;
+            activitiesTotalChargedChart.showTooltip([activeSegment]);
+            activeSegment.restore();
+          });
+        });
+        helpers.addEvent(activitiesTotalChargedHolder.firstChild, 'mouseout', function(){
+          activitiesTotalChargedChart.draw();
+        });
+        activitiesTotalChargedCanvas.parentNode.appendChild(activitiesTotalChargedHolder.firstChild);
+
+      <% end %>  
+
+      // Forecast charged activities
+      <% if !@forecast_charged_activities.nil? and !@forecast_charged_activities.empty? and
+            @forecast_charged_activities[:total] > 0 %>
+      var activitiesForecastChargedCtx = document.getElementById("activities_forecast_charged_graphic").getContext("2d");
+      var scaleStepWidth = Math.ceil(Math.max.apply(null, dashboardModel.activitiesForecastChargedData.datasets[0].data)/10);
+      console.log(scaleStepWidth);
+      var activitiesForecastChargedOptions = { //String - A legend template
+        legendTemplate : "<ul class=\"<%%=name.toLowerCase()%>-legend\"><%% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%%=segments[i].fillColor%>\"></span><%%if(segments[i].label){%><%%=segments[i].label%><%%}%></li><%%}%></ul>",
+        scaleOverride: true, scaleStartValue: 0, scaleStepWidth: scaleStepWidth, scaleSteps: 10, scaleIntegersOnly: true
+      };
+      var activitiesForecastChargedChart = new Chart(activitiesForecastChargedCtx).Bar(dashboardModel.activitiesForecastChargedData,activitiesForecastChargedOptions);
+      <% end %>  
+
+      <% end %>
 
     }
 

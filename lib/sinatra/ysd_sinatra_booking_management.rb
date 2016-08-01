@@ -24,33 +24,53 @@ module Sinatra
           @booking_renting = SystemConfiguration::Variable.get_value('booking.renting','false').to_bool
           @today = Date.today
           @year = DateTime.now.year
-  
-          # Today summary       
-          @pickup_today = BookingDataSystem::Booking.count_pickup(@today)
-          @transit_today = BookingDataSystem::Booking.count_transit(@today)
-          @delivery_today = BookingDataSystem::Booking.count_delivery(@today)
+          @total_billing = 0
+          @first_day_today_month = Date.civil(@today.year, @today.month, 1)
+          @first_day_next_year = Date.civil(@today.year + 1, @today.month, 1)  
+    
+          if @booking_renting 
+            @pickup_today = BookingDataSystem::Booking.count_pickup(@today)
+            @transit_today = BookingDataSystem::Booking.count_transit(@today)
+            @delivery_today = BookingDataSystem::Booking.count_delivery(@today)
+            @received_reservations = BookingDataSystem::Booking.count_received_reservations(@year)
+            @pending_confirmation_reservations = BookingDataSystem::Booking.count_pending_confirmation_reservations(@year)
+            @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
+            @reservations_by_category = BookingDataSystem::Booking.reservations_by_category(@year)
+            @reservations_by_status = BookingDataSystem::Booking.reservations_by_status(@year)
+            @reservations_by_weekday = BookingDataSystem::Booking.reservations_by_weekday(@year)
+            @last_30_days_reservations = BookingDataSystem::Booking.last_30_days_reservations
+            @product_total_billing = BookingDataSystem::Booking.products_billing_total(@year) || 0
+            @extras_total_billing = BookingDataSystem::Booking.extras_billing_total(@year) || 0
+            @total_billing += @product_total_billing
+            @total_billing += @extras_total_billing
+            @total_charged_reservations = BookingDataSystem::Booking.total_charged(@year)
+            @total_should_charged_reservations = BookingDataSystem::Booking.total_should_charged(
+                                      Date.civil(@year, 1, 1),
+                                      @today)
+            @forecast_charged_reservations = BookingDataSystem::Booking.forecast_charged(@first_day_today_month, @first_day_next_year)
+          end
+
           if @booking_activities
             @today_start_activities = ::Yito::Model::Order::Order.count_start(@today)
-          end
-  
-          # Current year summary
-          @received_reservations = BookingDataSystem::Booking.count_received_reservations(@year)
-          @pending_confirmation_reservations = BookingDataSystem::Booking.count_pending_confirmation_reservations(@year)
-          @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
-          if @booking_activities
             @received_orders = ::Yito::Model::Order::Order.count_received_orders(@year)
             @pending_confirmation_orders = ::Yito::Model::Order::Order.count_pending_confirmation_orders(@year)
             @confirmed_orders = ::Yito::Model::Order::Order.count_confirmed_orders(@year)
+            @activities_by_category = ::Yito::Model::Order::Order.activities_by_category(@year)
+            @activities_by_status = ::Yito::Model::Order::Order.activities_by_status(@year)
+            @activities_by_weekday = ::Yito::Model::Order::Order.activities_by_weekday(@year)
+            @last_30_days_activities = ::Yito::Model::Order::Order.last_30_days_activities
+            @activities_total_billing = ::Yito::Model::Order::Order.activities_billing_total(@year) || 0
+            @total_billing += @activities_total_billing
+            @total_charged_activities = ::Yito::Model::Order::Order.total_charged(@year)
+            @total_should_charged_activities = ::Yito::Model::Order::Order.total_should_charged(
+                                      Date.civil(@year, 1, 1),
+                                      @today)
+            @forecast_charged_activities = ::Yito::Model::Order::Order.forecast_charged(@first_day_today_month, @first_day_next_year)
+
           end
 
-          @reservations_by_weekday = BookingDataSystem::Booking.reservations_by_weekday(@year)
-          @reservations_by_category = BookingDataSystem::Booking.reservations_by_category(@year)
-          @reservations_by_status = BookingDataSystem::Booking.reservations_by_status(@year)
-          @last_30_days_reservations = BookingDataSystem::Booking.last_30_days_reservations
-  
-          @product_total_billing = BookingDataSystem::Booking.products_billing_total(@year) || 0
-          @extras_total_billing = BookingDataSystem::Booking.extras_billing_total(@year) || 0
           @product_total_cost = BookingDataSystem::Booking.stock_cost_total || 0
+
           load_page(:booking_dashboard)
         end
 
@@ -755,7 +775,7 @@ module Sinatra
             :conditions => {:status => [:confirmed, :in_progress], 
                             :date_from.lte => @today,
                             :date_to.gte => @today},
-            :order => :date_from.asc)
+            :order => :date_to.asc)
 
           load_page(:report_in_progress, :locals => locals)
 

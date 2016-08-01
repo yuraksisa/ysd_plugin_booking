@@ -16,7 +16,7 @@
 
 <div id="cssmenu" class="booking_menu admin_menu smaller_text all-space">
   <ul style="font-size: 0.92em">
-   <li class='<%if ['/admin/booking/catalog','/admin/booking/booking-categories','/admin/booking/booking-items','/admin/booking/booking-extras', '/admin/rates/adjust-prices','/admin/booking/activities','/admin/booking/reports/stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.products%></a>
+   <li class='<%if ['/admin/booking/catalog','/admin/booking/booking-categories','/admin/booking/booking-items','/admin/booking/booking-extras','/admin/booking/activities'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.products%></a>
       <ul>
         <% if booking_renting %>
         <li><a href='/admin/booking/booking-categories'><%=t.booking_console.categories%></a></li>
@@ -26,42 +26,35 @@
         <% if booking_activities %>
         <li><a href='/admin/booking/activities'><%=t.booking_console.activities%></a></li>                                
         <% end %>
-        <% if booking_renting %>       
-        <li><a href='/admin/rates/adjust-prices'><%=t.booking_console.adjust_prices%></a></li>
-        <li><a href='/admin/booking/reports/stock'><%=t.booking_console.report_stock%></a></li>
-        <% end %>
       </ul>    
    </li>    
    <% if booking_renting %>
-   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning','/admin/booking/planning2','/admin/booking/monthly-occupation', '/admin/booking/reports/pickup-return','/admin/booking/reports/reservations','/admin/booking/reports/prereservations','/admin/booking/reports/pending-confirmation',
-   '/admin/booking/reports/in-progress','/admin/booking/reports/customers','/admin/booking/resources-occupation','/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
+   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning','/admin/booking/planning2','/admin/booking/monthly-occupation', '/admin/booking/reports/pickup-return','/admin/booking/reports/pending-confirmation',
+   '/admin/booking/reports/in-progress','/admin/booking/resources-occupation','/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
       <ul>
-        <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>           
+        <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>
         <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>
-        <li><a href='/admin/booking/reports/pending-confirmation'><%=t.booking_console.report_pending_confirmation%><%if pending_confirmation>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation%></span><%end%></a></li>
+        <li><a href="/admin/booking/planning2?from=<%=Date.today.strftime('%Y-%m-%d')%>&to=<%=(Date.today + 180).strftime('%Y-%m-%d')%>"><%=t.booking_console.planning%> NUEVO</a></li> 
+        <li><a href='/admin/booking/monthly-occupation'><%=t.booking_console.monthly_occupation%></a></li>        
+        <li><a href='/admin/booking/resources-occupation'><%=t.booking_console.check_availability%></a></li>  
+        <li style="border-top: 1px dotted; border-color: #EEE"><a href='/admin/booking/reports/pending-confirmation'><%=t.booking_console.report_pending_confirmation%><%if pending_confirmation>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation%></span><%end%></a></li>
+        <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%><%if today_pickup>0 || today_return>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_pickup%>/<%=today_return%></span><%end%></a></li>
         <li><a href='/admin/booking/reports/in-progress'><%=t.booking_console.report_in_progress%></a></li>        
         <li><a href='/admin/booking/planning'><%=t.booking_console.planning%></a></li>    
-        <li><a href="/admin/booking/planning2?from=<%=Date.today.strftime('%Y-%m-%d')%>&to=<%=(Date.today + 180).strftime('%Y-%m-%d')%>"><%=t.booking_console.planning%> NUEVO</a></li> 
-        <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%><%if today_pickup>0 || today_return>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_pickup%>/<%=today_return%></span><%end%></a></li>
-        <li><a href='/admin/booking/resources-occupation'><%=t.booking_console.check_availability%></a></li>  
-        <li><a href='/admin/booking/monthly-occupation'><%=t.booking_console.monthly_occupation%></a></li>
-        <li><a href='/admin/booking/reports/prereservations'><%=t.booking_console.report_prereservations%></a></li>    
-        <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>   
-        <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>                          
       </ul>    
    </li>   
    <% end %>
    <% if booking_activities %>
-   <li class='<%if ['/admin/order/orders','/admin/booking/reports/pending-confirmation-activities','/admin/booking/activities-occupation','/admin/booking/activities-schedule','/admin/booking/activities-summary','/admin/booking/programmed-activities','/admin/booking/day-activities',
+   <li class='<%if ['/admin/order/orders/new','/admin/order/orders','/admin/booking/reports/pending-confirmation-activities','/admin/booking/activities-occupation','/admin/booking/activities-schedule','/admin/booking/programmed-activities','/admin/booking/day-activities',
    '/admin/booking/activity-detail'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.activity_bookings%></a>
-      <ul>   
+      <ul>
+        <li><a href='/admin/order/orders/new'><%=t.booking_console.new_order%></a></li>   
         <li><a href='/admin/order/orders'><%=t.booking_console.orders%></a></li>
-        <li><a href='/admin/booking/reports/pending-confirmation-activities'><%=t.booking_console.pending_confirmation_activities%><%if pending_confirmation_activities>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation_activities%></span><%end%></a></li>
-        <li><a href='/admin/booking/day-activities'><%=t.booking_console.today_activities%><%if today_start_activities>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_start_activities%></span><%end%></a></li>
-        <li><a href='/admin/booking/programmed-activities'><%=t.booking_console.activities_summary%></a></li>
         <li><a href='/admin/booking/activities-schedule'><%=t.booking_console.activities_schedule%></a></li>
         <li><a href='/admin/booking/activities-occupation'><%=t.booking_console.activities_occupation%></a></li>
-        <li><a href='/admin/booking/activities-summary'><%=t.booking_console.activities_report%></a></li>
+        <li style="border-top: 1px dotted; border-color: #EEE"><a href='/admin/booking/reports/pending-confirmation-activities'><%=t.booking_console.pending_confirmation_activities%><%if pending_confirmation_activities>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation_activities%></span><%end%></a></li>
+        <li><a href='/admin/booking/day-activities'><%=t.booking_console.today_activities%><%if today_start_activities>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_start_activities%></span><%end%></a></li>
+        <li><a href='/admin/booking/programmed-activities'><%=t.booking_console.activities_summary%></a></li>
       </ul>
    </li>   
    <% end %>
@@ -78,10 +71,26 @@
         <li><a href='/admin/booking/extras-billing'><%=t.booking_console.extras_billing%></a></li>
         <li><a href='/admin/booking/summary'><%=t.booking_console.summary%></a></li>           
       </ul>    
-   </li>          
-   <li class='<%if ['/admin/booking/create-rates'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.utils%></a>
+   </li>     
+   <li class='<%if ['/admin/booking/reports/reservations',
+     '/admin/booking/reports/prereservations',
+     '/admin/booking/activities-summary',
+     '/admin/booking/reports/customers',
+     '/admin/booking/reports/stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.listing%></a>
+     <ul>
+        <li><a href='/admin/booking/reports/stock'><%=t.booking_console.report_stock%></a></li>
+        <li><a href='/admin/booking/reports/prereservations'><%=t.booking_console.report_prereservations%></a></li>    
+        <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>
+        <li><a href='/admin/booking/activities-summary'><%=t.booking_console.activities_report%></a></li>           
+        <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>   
+     </ul>     
+   </li>        
+   <li class='<%if ['/admin/booking/create-rates', '/admin/rates/adjust-prices'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.utils%></a>
       <ul>
         <li><a href='/admin/booking/create-rates'><%=t.booking_console_configuration.create_rates%></a></li>           
+        <% if booking_renting %>       
+        <li><a href='/admin/rates/adjust-prices'><%=t.booking_console.adjust_prices%></a></li>
+        <% end %>   
       </ul>    
    </li>    
    <li class='<%if ['/admin/booking/config/general',

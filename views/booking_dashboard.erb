@@ -14,117 +14,316 @@
     top: 5px;
     margin-right: 10px;
 }
+a.warning, a:hover.warning {
+  color: red;
+}
+
 </style>
 <div class="admin_content_wrapper">
+  <!-- Daily work -->
   <div class="container_12">
     <div class="grid_12">
       <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.day_work%></div> 
     </div>
+    <% if @booking_renting %>
     <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pickup-return"><%=@pickup_today%></a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.delivery%></div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a <%if @pickup_today >0%>class="warning"<%end%> href="/admin/booking/reports/pickup-return"><%=@pickup_today%></a></div>
+      <div class="centered_text smaller_text all-space"<%if @pickup_today >0%>style="background-color: rgba(238, 238, 238, 0.39)"<%end%>><%=t.booking_dashboard.delivery%></div>
     </div>
     <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/in-progress"><%=@transit_today%></a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.transit%></div>  
+      <div class="centered_text smaller_text all-space left-margin"><%=t.booking_dashboard.transit%></div>  
     </div>  
     <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pickup-return"><%=@delivery_today%></a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.return%></div>    
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a <%if @delivery_today >0%>class="warning"<%end%> href="/admin/booking/reports/pickup-return"><%=@delivery_today%></a></div>
+      <div class="centered_text smaller_text all-space left-margin" <%if @delivery_today >0%>style="background-color: rgba(238, 238, 238, 0.39)"<%end%>><%=t.booking_dashboard.return%></div>    
     </div>
+    <% end %>
     <% if @booking_activities %>           
-    <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/day-activities"><%=@today_start_activities%></a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.activities_today%></div>    
+    <div class="<%if @booking_renting%>grid_3<%else%>prefix_4 grid_4 suffix_4<%end%>" style="min-height: 7.5em">
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a <%if @today_start_activities >0%>class="warning"<%end%> href="/admin/booking/day-activities"><%=@today_start_activities%></a></div>
+      <div class="centered_text smaller_text all-space left-margin" <%if @today_start_activities >0%>style="background-color: rgba(238, 238, 238, 0.39)"<%end%>><%=t.booking_dashboard.activities_today%></div>    
     </div>
     <% end %>
   </div>  
+  <!-- Summary -->
   <div class="container_12">
   	<div class="grid_12">
     	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.summary%> <%=@year%></div> 
   	</div>  
+      
+    <% if @booking_renting and @booking_activities %>
+    <div class="grid_12">
+      <div class="centered_text less_contrast_text all-border-solid top-margin bottom-margin" style="color: #AAA; padding: 3px"><%=t.booking_dashboard.renting%></div>
+    </div>
+    <% end %>
+    
+    <!-- Renting summary -->
+    <% if @booking_renting %>
     <div class="grid_4" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><%=@received_reservations%></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.received_reservations%></div>
+      <div class="centered_text smaller_text all-space"><%=t.booking_dashboard.received_reservations%></div>
     </div>      	
     <div class="grid_4" style="min-height: 7.5em">
-    	<div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pending-confirmation"><%=@pending_confirmation_reservations%></a></div>
-    	<div class="centered_text smaller_text"><%=t.booking_dashboard.pending_confirmation_reservations%></div>
+    	<div class="centered_text more_contrast_text" style="font-size:3em"><a <%if @pending_confirmation_reservations >0%>class="warning"<%end%> href="/admin/booking/reports/pending-confirmation"><%=@pending_confirmation_reservations%></a></div>
+    	<div class="centered_text smaller_text all-space left-margin" <%if @pending_confirmation_reservations >0%>style="background-color: rgba(238, 238, 238, 0.39)"<%end%>><%=t.booking_dashboard.pending_confirmation_reservations%></div>
     </div>
     <div class="grid_4" style="min-height: 7.5em">
     	<div class="centered_text more_contrast_text" style="font-size:3em"><%=@confirmed_reservations%></div>
-    	<div class="centered_text smaller_text"><%=t.booking_dashboard.confirmed_reservations%></div>    	
+    	<div class="centered_text smaller_text all-space left-margin"><%=t.booking_dashboard.confirmed_reservations%></div>    	
     </div>
+
+    <div class="container_12">
+      <div class="grid_6">
+        <div class="centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.reservations_by_category%></div>
+        <div>         
+          <% if !@reservations_by_category.nil? and !@reservations_by_category.empty? %>          
+            <canvas id="reservations_by_category_graphic" width="320" height="300" style="display:inline-block"></canvas>
+          <% else %>
+            <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+          <% end %>               
+        </div>
+      </div>  
+      <div class="grid_6">
+        <div class="left-margin centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.reservations_by_state%></div>
+        <div>
+          <% if !@reservations_by_status.nil? and !@reservations_by_status.empty? %>           
+            <canvas id="reservations_by_state_graphic" width="320" height="300"></canvas>
+          <% else %>
+            <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+          <% end %>             
+        </div>
+      </div>            
+    </div>
+    <!-- Reservations: by day and last 30 days -->
+    <div class="container_12">
+      <div class="grid_4">
+        <div class="centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.reservations_by_day%>
+        </div>    
+        <div>
+        <% if !@reservations_by_weekday.nil? and !@reservations_by_weekday.empty? %>
+            <canvas id="reservations_by_day_graphic" width="320" height="240"></canvas>
+          <% else %>
+            <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+          <% end %>             
+        </div>
+      </div>
+      <div class="grid_8">
+        <div class="left-margin centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.last_30_days_reservations%></div>
+        <div>
+          <% if !@last_30_days_reservations.nil? and !@last_30_days_reservations.empty? and 
+                !(@last_30_days_reservations.select {|k,v| v > 0}).empty? %>                   
+            <canvas id="last_30_days_reservations_graphic" width="640" height="240"></canvas>
+          <% else %>
+            <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+          <% end %> 
+        </div>
+      </div>
+    </div>  
+
+    <!-- Reservations: charges -->
+    <div class="container_12">
+      <div class="grid_6">
+        <div class="centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.total_charged_reservations%>
+        </div>    
+        <div>
+        <% if !@total_charged_reservations.nil? and !@total_charged_reservations.empty? and @total_charged_reservations[:total] > 0%>
+            <div>
+              <canvas id="reservations_total_charged_graphic" width="320" height="240"></canvas>
+            </div>
+            <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @total_charged_reservations[:total]).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€ <span class="less_contrast_text" style="font-size: 0.3em"></span></div>
+            <div class="centered_text"><%=t.booking_dashboard.total%></div>
+          <% else %>
+            <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+          <% end %>             
+        </div>
+      </div>
+      <div class="grid_6">
+        <div class="left-margin centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.forecast_charged_reservations%>
+        </div>    
+        <div>
+        <% if !@forecast_charged_reservations.nil? and !@forecast_charged_reservations.empty? and @forecast_charged_reservations[:total] > 0%>
+            <div>
+              <canvas id="reservations_forecast_charged_graphic" width="480" height="240"></canvas>
+            </div>
+            <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @forecast_charged_reservations[:total]).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</div>
+            <div class="centered_text smaller_text"><%=t.booking_dashboard.total%></div>
+        <% else %>
+            <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+        <% end %>             
+        </div>
+      </div>      
+    </div>
+
+    <% end %>    
+
+    <% if @booking_renting and @booking_activities %>
+    <div class="grid_12">
+      <div class="centered_text less_contrast_text all-border-solid top-margin bottom-margin" style="color: #AAA; padding: 3px"><%=t.booking_dashboard.activities%></div>
+    </div>
+    <% end %>    
+
+    <!-- Activities summary -->
     <% if @booking_activities %>
     <div class="grid_4" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><%=@received_orders%></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.received_orders%></div>
+      <div class="centered_text smaller_text all-space"><%=t.booking_dashboard.received_orders%></div>
     </div>        
     <div class="grid_4" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/reports/pending-confirmation-activities"><%=@pending_confirmation_orders%></a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.pending_confirmation_orders%></div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><a <%if @pending_confirmation_orders >0%>class="warning"<%end%> href="/admin/booking/reports/pending-confirmation-activities"><%=@pending_confirmation_orders%></a></div>
+      <div class="centered_text smaller_text all-space left-margin" <%if @pending_confirmation_orders >0%>style="background-color: rgba(238, 238, 238, 0.39)"<%end%>><%=t.booking_dashboard.pending_confirmation_orders%></div>
     </div>
     <div class="grid_4" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%=@confirmed_orders%></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.confirmed_orders%></div>     
+      <div class="centered_text more_contrast_text left-margin" style="font-size:3em"><%=@confirmed_orders%></div>
+      <div class="centered_text smaller_text all-space"><%=t.booking_dashboard.confirmed_orders%></div>     
     </div>    
     <% end %>	        	
   </div> 
+
+  <% if @booking_activities %>
   <div class="container_12">
     <div class="grid_6">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_category%> <%=@year%></div>
-        <div>        	
-          <canvas id="reservations_by_category_graphic" width="320" height="240" style="display:inline-block"></canvas>
-        </div>
-    </div>	
+      <div class="centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.activities_by_category%></div>
+      <div>         
+        <% if !@activities_by_category.nil? and !@activities_by_category.empty? %>
+          <canvas id="activities_by_category_graphic" width="320" height="350" style="display:inline-block"></canvas>
+        <% else %>
+          <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+        <% end %>
+      </div>
+    </div>  
     <div class="grid_6">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_state%> <%=@year%></div>  
-        <canvas id="reservations_by_state_graphic" width="320" height="240"></canvas>
-
-    </div>	        	
+      <div class="left-margin centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.activities_by_state%></div>  
+      <div>
+        <% if !@activities_by_status.nil? and !@activities_by_status.empty? %>        
+          <canvas id="activities_by_state_graphic" width="320" height="350"></canvas>
+        <% else %>
+          <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+        <% end %>        
+      </div>
+    </div>            
   </div>
+
   <div class="container_12">
     <div class="grid_4">
-      <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.reservations_by_day%> <%=@year%>
-      </div>      
-        <canvas id="reservations_by_day_graphic" width="320" height="240"></canvas>
+      <div class="centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.activities_by_day%>
+      </div>
+      <div>
+        <% if !@activities_by_weekday.nil? and !@activities_by_weekday.empty? %>
+          <canvas id="activities_by_day_graphic" width="320" height="240"></canvas>
+        <% else %>
+          <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+        <% end %>           
+      </div>
     </div>
     <div class="grid_8">
-    	<div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.last_30_days_reservations%></div>         	
-        <canvas id="last_30_days_reservations_graphic" width="640" height="240"></canvas>
-
+      <div class="left-margin centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.last_30_days_activities%></div>
+      <div>
+        <% if !@last_30_days_activities.nil? and !@last_30_days_activities.empty? and
+              !(@last_30_days_activities.select {|k,v| v > 0}).empty? %>
+          <canvas id="last_30_days_activities_graphic" width="640" height="240"></canvas>
+        <% else %>
+          <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+        <% end %>         
+      </div>
     </div>
-  </div>  
+  </div> 
+
+    <!-- Activities: charges -->
+    <div class="container_12">
+      <div class="grid_6">
+        <div class="centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.total_charged_activities%>
+        </div>    
+        <div>
+        <% if !@total_charged_activities.nil? and !@total_charged_activities.empty? and @total_charged_activities[:total] > 0%>
+            <div>
+              <canvas id="activities_total_charged_graphic" width="320" height="240"></canvas>
+            </div>
+            <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @total_charged_activities[:total]).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€ <span class="less_contrast_text" style="font-size: 0.3em"></span></div>
+            <div class="centered_text"><%=t.booking_dashboard.total%></div>
+          <% else %>
+            <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+          <% end %>             
+        </div>
+      </div>
+      <div class="grid_6">
+        <div class="left-margin centered_text more_contrast_text all-border-dashed top-margin bottom-margin" style="color: #BBB; padding: 3px"><%=t.booking_dashboard.forecast_charged_activities%>
+        </div>    
+        <div>
+        <% if !@forecast_charged_activities.nil? and !@forecast_charged_activities.empty? and @forecast_charged_activities[:total] > 0%>
+            <div>
+              <canvas id="activities_forecast_charged_graphic" width="480" height="240"></canvas>
+            </div>
+            <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @forecast_charged_activities[:total]).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</div>
+            <div class="centered_text smaller_text"><%=t.booking_dashboard.total%></div>
+        <% else %>
+            <p class="centered_text all-space"><%=t.booking_dashboard.not_enough_data%></p>
+        <% end %>             
+        </div>
+      </div>      
+    </div>
+
+  <% end %>  
+
+  <!-- Billing -->
+
   <div class="container_12">
     <div class="grid_12">
-      <div class="guiblock centered_text more_contrast_text"><%=t.booking_dashboard.billing%> <%=@year%></div> 
+      <div class="centered_text less_contrast_text all-border-solid top-margin bottom-margin" style="color: #AAA; padding: 3px"><%=t.booking_dashboard.billing%></div>
     </div>
-    <div class="grid_4" style="min-height: 7.5em">
+  </div>
+
+  <div class="container_12">
+    <% if @booking_renting %>
+    <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 5.5em">
+      <div class="top-margin all-border-solid centered_text smaller_text" style="border-color: #DDD; padding: 2px; background-color: #EEE"><%=t.booking_dashboard.products_billing%></div>      
       <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/product-billing"><%=("%.f" % @product_total_billing).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.products_billing%></div>
+      <% if @product_total_billing > 0 %>
+      <div class="centered_text less_contrast_text"><%if @product_total_billing > 0 or @total_billing > 0%><%="%.f%" % (@product_total_billing / @total_billing * 100) %><%else%>-<%end%> <%=t.booking_dashboard.products_billing_vs_total%> <span><% if @booking_activities%>(<%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@product_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%> <%=t.booking_dashboard.renting_products_billing_vs_total%>)</span><%end%></div>
+      <% end %>  
     </div>
-    <div class="grid_4" style="min-height: 7.5em">
+    <div class="<%if @booking_activities%>grid_3<%else%>grid_4<%end%>" style="min-height: 5.5em">
+      <div class="top-margin left-margin all-border-solid centered_text smaller_text" style="border-color: #DDD; padding: 2px; background-color: #EEE"><%=t.booking_dashboard.extras_billing%></div> 
       <div class="centered_text more_contrast_text" style="font-size:3em"><a href="/admin/booking/extras-billing"><%=("%.f" % @extras_total_billing).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</a></div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.extras_billing%></div>      
+      <% if @extras_total_billing > 0%>
+      <div class="centered_text less_contrast_text"><%if @extras_total_billing > 0 or @total_billing > 0%><%="%.f%" % (@extras_total_billing / @total_billing * 100) %><%else%>-<%end%> <%=t.booking_dashboard.extras_billing_vs_total%> <span><% if @booking_activities%>(<%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@extras_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%> <%=t.booking_dashboard.renting_extras_billing_vs_total%>)</span><%end%></div>
+      <% end %>
     </div>  
-    <div class="grid_4" style="min-height: 7.5em">
+    <% end %>
+    <% if @booking_activities %>
+    <div class="<%if @booking_renting%>grid_3<%else%>grid_6<%end%>" style="min-height: 5.5em">
+      <div class="top-margin left-margin all-border-solid centered_text smaller_text" style="border-color: #DDD; padding: 2px; background-color: #EEE"><%=t.booking_dashboard.activities_billing%></div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @activities_total_billing).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</div>
+      <% if @activities_total_billing > 0 %>
+      <div class="centered_text less_contrast_text"><%if @activities_total_billing > 0 or @total_billing > 0%><%="%.f%" % (@activities_total_billing / @total_billing * 100) %><%else%>-<%end%> <%=t.booking_dashboard.activities_billing_vs_total%></div>
+      <% end %>
+    </div>
+    <% end %>
+    <div class="<%if @booking_activities%><%if @booking_renting%>grid_3<%else%>grid_6<%end%><%else%>grid_4<%end%>" style="min-height: 5.5em">
+      <div class="top-margin left-margin all-border-solid centered_text smaller_text" style="border-color: #DDD; padding: 2px; background-color: #EEE"><%=t.booking_dashboard.total_billing%></div>
+      <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @total_billing).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</div>
+    </div>
+  </div>
+  
+
+  <!-- Stock -->
+  <% if @booking_renting and @product_total_cost > 0%> 
+  <div class="container_12 top-margin-1line">
+    <div class="grid_12">
+      <div class="centered_text less_contrast_text all-border-solid top-margin bottom-margin" style="color: #AAA; padding: 3px"><%=t.booking_dashboard.stock_amortization%></div>
+    </div>
+  </div>
+  <div class="container_12">
+    <div class="grid_3">
       <div class="centered_text more_contrast_text" style="font-size:3em"><%=("%.f" % @product_total_cost).chars.to_a.reverse.each_slice(3).map(&:join).join(".").reverse%>€</div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.stock_cost%></div>     
+      <div class="centered_text smaller_text"><%=t.booking_dashboard.stock_cost%></div>
     </div>          
-    <div class="grid_4" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@product_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%></div>
-      <div class="centered_text smaller_text"><%="%.f" % @product_total_billing%>€/<%="%.f" % (@product_total_billing + @extras_total_billing)%>€</div>
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.products_billing_vs_total%></div>      
-    </div>  
-    <div class="grid_4" style="min-height: 7.5em">
-      <div class="centered_text more_contrast_text" style="font-size:3em"><%if @product_total_billing > 0 or @extras_total_billing > 0%><%="%.f%" % (@extras_total_billing / (@product_total_billing + @extras_total_billing) * 100) %><%else%>-<%end%></div>
-      <div class="centered_text smaller_text"><%="%.f" % @extras_total_billing%>€/<%="%.f" % (@product_total_billing + @extras_total_billing)%>€</div>     
-      <div class="centered_text smaller_text"><%=t.booking_dashboard.extras_billing_vs_total%></div>     
-    </div>              
-    <div class="grid_4" style="min-height: 7.5em">
+    <div class="grid_3" style="min-height: 7.5em">
       <div class="centered_text more_contrast_text" style="font-size:3em"><%=@product_total_cost == 0 ? "-" : "%.f%" % (@product_total_billing / @product_total_cost * 100) %></div>
       <div class="centered_text smaller_text"><%="%.f" % @product_total_billing%>€/<%="%.f" % @product_total_cost%>€</div>
       <div class="centered_text smaller_text"><%=t.booking_dashboard.amortization%></div>
     </div>
-  </div>   
+  </div>
+  <% end %>
+  
 </div>

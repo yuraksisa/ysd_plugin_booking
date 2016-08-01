@@ -22,9 +22,9 @@
       <table id="table" class="table">
         <thead class="table-header">
           <tr>
-            <th class="table-cell" scope="col" style="width:1.2em">Localizador</th>
-            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
             <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
+            <th class="table-cell" scope="col" style="width:1.2em">Localizador</th>
             <th class="table-cell" scope="col" style="width:3.5em">Cliente</th>
             <th class="table-cell" scope="col" style="width:2em">Teléfono</th>
             <th class="table-cell" scope="col" style="width:4.5em">Email</th>
@@ -35,9 +35,9 @@
         <% stock_in_progress = 0%>
         <% @reservations.each do |reservation| %>  
         <tr class="table-row">
-          <td class="table-cell right_text"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
-          <td class="table-cell"><%if reservation.date_from.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%><b><%end%><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if @product_family and @product_family.time_to_from%><%=reservation.time_from%><% end %><%if reservation.date_from.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%></b><%end%></td>
           <td class="table-cell"><%if reservation.date_to.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%><b><%end%><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if @product_family and @product_family.time_to_from%><%=reservation.time_to%><%end%><%if reservation.date_to.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%></b><%end%></td>
+          <td class="table-cell"><%if reservation.date_from.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%><b><%end%><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if @product_family and @product_family.time_to_from%><%=reservation.time_from%><% end %><%if reservation.date_from.strftime('%Y-%m-%d') == @today.strftime('%Y-%m-%d')%></b><%end%></td>
+          <td class="table-cell right_text"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
           <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
           <td class="table-cell"><%=reservation.customer_phone%> <%=reservation.customer_mobile_phone%></td>
           <td class="table-cell"><%=reservation.customer_email%></td>
