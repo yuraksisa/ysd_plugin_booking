@@ -698,6 +698,21 @@ booking_category_management:
     prices: Precios  
     scheduler: Agenda
   form:
+    new_product_detail: >
+                        <h3>Nuevo producto</h3>
+                        <p>Está creando un nuevo producto que ofrecerá en alquiler a sus clientes.
+                        </p>
+                        <p>Al crear un nuevo producto debe indicar el tipo de producto.</p>
+                        <ul>
+                          <li>Categoría de recursos en alquiler</li>
+                          <li>Recurso en alquiler</li>
+                        </ul> 
+                        <p>Una <em>categoría de recursos en alquiler</em> dispondrá de un
+                        conjunto de referencias que se engloban en la categoría. Ejemplos de
+                        este tipo de producto son coches, motocicletas, bicicletas, kayaks.</p>
+                        <p>Un <em>recurso en alquiler</em> suele refererirse a solo bien, normalmente
+                        con unas características que le hacen único. Un sala de ensayo, una sala de
+                        conciertos, una casa suelen ser casos de recursos en alquiler.</p>
     title: Productos
     type:
       label: Tipo

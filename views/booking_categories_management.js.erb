@@ -52,13 +52,16 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
 
     configForm: function(entity) {
       $('#calendar_container').empty();
+      $('#calendar_element_template_form').remove();
       $("#content > div").hide(); // Initially hide all content
       $("#content_tabs li:first").attr("id","current"); // Activate first tab
       $("#content > div:first").fadeIn(); // Show first tab content
       $('#content_tabs a').click(function(e) {
         e.preventDefault();
         if ($(this).attr("name")=='calendar_tab') {
-          if ($('#calendar_container').is(':empty')) {
+          $('#calendar_container').empty();
+          $('#calendar_element_template_form').remove();
+          if (entity && entity.calendar_id) {
             $.ajax({url: '/admin/calendar/events/'+entity.calendar_id, dataType: 'text'}).done(function(html) {
               var dom = $('<html />').prop('innerHTML', html);
               $('#calendar_container').html(dom.find('body #page_wrapper'));
@@ -66,9 +69,6 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
               $('#calendar').fullCalendar('render');
             });
           }
-        }
-        if ($(this).attr("name") == 'preview') {
-          ($('#home_frame')[0]).contentWindow.location.reload();
         }
         if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
          return;       
