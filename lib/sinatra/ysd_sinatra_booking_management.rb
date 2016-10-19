@@ -849,6 +849,35 @@ module Sinatra
         end  
 
         #
+        # Customer Reservations report (pdf)
+        #
+        app.get '/admin/booking/reports/customer-reservations-pdf/?*', :allowed_usergroups => ['booking_manager'] do 
+          
+          year = Date.today.year
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:to]}")
+            end
+          end
+
+          content_type 'application/pdf'
+          pdf = ::Yito::Model::Booking::Pdf::CustomerReservations.new(date_from, date_to).build.render          
+        end
+
+        #
         # Reservations report (html)
         #
         app.get '/admin/booking/reports/reservations/?*', :allowed_usergroups => ['booking_manager'] do 
@@ -905,6 +934,63 @@ module Sinatra
           load_page(:report_reservations, :locals => locals)
         end  
         
+        #
+        # Reservations report (html)
+        #
+        app.get '/admin/booking/reports/customer-reservations/?*', :allowed_usergroups => ['booking_manager'] do 
+          
+          year = Date.today.year
+
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+          
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:to]}")
+            end
+          end
+
+          condition = Conditions::JoinComparison.new('$and',
+           [Conditions::Comparison.new(:status, '$ne', [:cancelled, :pending_confirmation]),
+            Conditions::JoinComparison.new('$or', 
+              [Conditions::JoinComparison.new('$and', 
+                 [Conditions::Comparison.new(:date_from,'$lte', date_from),
+                  Conditions::Comparison.new(:date_to,'$gte', date_from)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', date_to),
+                  Conditions::Comparison.new(:date_to,'$gte', date_to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from,'$lte', date_from),
+                  Conditions::Comparison.new(:date_to,'$gte', date_to)
+                  ]),
+               Conditions::JoinComparison.new('$and',
+                 [Conditions::Comparison.new(:date_from, '$gte', date_from),
+                  Conditions::Comparison.new(:date_to, '$lte', date_to)])               
+              ]
+            ),
+            ]
+          )
+
+          @reservations = condition.build_datamapper(BookingDataSystem::Booking).all(
+             :order => [:date_from, :time_from])
+          locals = {}
+          locals.store(:booking_reservation_starts_with,
+              SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
+          load_page(:report_customer_reservations, :locals => locals)
+        end  
+
 
         #
         # Reservations report (html)

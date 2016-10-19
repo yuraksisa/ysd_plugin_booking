@@ -179,6 +179,7 @@ booking_console:
   report_pickup_return: Entregas y recogidas
   report_stock: Stock
   report_reservations: Reservas
+  report_customer_reservations: Reservas (cliente)
   report_prereservations: Prereservas
   activities_report: Actividades  
   report_customers: Clientes

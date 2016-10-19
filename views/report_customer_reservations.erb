@@ -1,0 +1,74 @@
+<style>
+#table {
+  table-layout: fixed;
+  border: 1px solid #EEE;
+}
+ #table .table-cell {
+   border-right: 1px solid #EEE;
+   width: 1.6em;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Listado de reservas</h2>
+  <div class="form-button" style="float: right">
+     <a id="print_link" href="/admin/booking/reports/reservations-pdf" target="_blank">Imprimir</a>
+  </div>  
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="report_reservations_form" action="/admin/booking/reports/customer-reservations" method="get">
+        <div class="formrow">
+          <div style="display: inline-block">
+            <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <% if @reservations.empty? %>
+    <div class="all-border-solid-light top-margin-1line">
+         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+    </div>
+    <% end %>    
+    <% last_month = nil %>
+    <% @reservations.each do |reservation| %>  
+      <% if last_month != reservation.date_from.month %>
+      <% unless last_month.nil? %>    
+        </tbody>
+      </table>
+      <% end %>     
+      <h3><%=t.months[reservation.date_from.strftime('%B').downcase]%> <%=reservation.date_from.year%></h3> 
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
+            <th class="table-cell" scope="col" style="width:5em">Cliente</th>
+            <th class="table-cell" scope="col" style="width:4.5em">Documento</th>
+          </tr>
+        </thead>
+        <tbody>      
+      <% end %>  
+        <tr class="table-row">
+          <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <%=reservation.time_from%></td>
+          <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <%=reservation.time_to%></td>
+          <td class="table-cell"><%=reservation.driver_name%> <%=reservation.driver_surname%></td>
+          <td class="table-cell"><%=reservation.driver_document_id%></td>
+        </tr>
+    <% last_month = reservation.date_from.month %>
+    <% end %>
+        </tbody>
+      </table>
+  </div>
+</div>
