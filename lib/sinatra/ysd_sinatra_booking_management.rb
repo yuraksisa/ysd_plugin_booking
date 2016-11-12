@@ -995,6 +995,53 @@ module Sinatra
         #
         # Reservations report (html)
         #
+        app.get '/admin/booking/reports/resource-reservations/?*', :allowed_usergroups => ['booking_manager'] do 
+          
+          year = Date.today.year
+
+          date_from = Date.civil(year,1,1)
+          date_to = Date.civil(year,12,31)
+          
+          if params[:from]
+            begin
+              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("reservation from date not valid #{params[:to]}")
+            end
+          end
+
+          if params[:stock_plate] 
+            @stock_plate = params[:stock_plate]
+            if @stock_plate.empty?
+              @reservations = []
+            else
+              @reservations = BookingDataSystem::Booking.resource_reservations(
+                 date_from, date_to, @stock_plate)
+            end
+          else
+            @stock_plate = nil
+            @reservations = []
+          end
+
+          locals = {}
+          locals.store(:booking_reservation_starts_with,
+               SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)          
+          load_page(:report_resource_reservations, :locals => locals)
+
+
+        end  
+
+        #
+        # Prereservations report (html)
+        #
         app.get '/admin/booking/reports/prereservations/?*', :allowed_usergroups => ['booking_manager'] do 
           
           year = Date.today.year
