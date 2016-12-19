@@ -341,6 +341,20 @@ module Huasi
       Users::Group.first_or_create({:group => 'booking_manager'},
           {:name => 'Booking manager', :description => 'Booking manager'})
 
+      SystemConfiguration::Variable.first_or_create({:name => 'site.booking_manager_front_page'},
+                                                    {:value => '', 
+                                                     :description => 'Booking manager front page (dashboard)', 
+                                                     :module => :booking})
+
+      Users::Group.first_or_create({:group => 'booking_operator'},
+          {:name => 'Booking operator', :description => 'Booking operator'})
+
+      SystemConfiguration::Variable.first_or_create({:name => 'site.booking_operator_front_page'},
+                                                    {:value => '', 
+                                                     :description => 'Booking operator front page (dashboard)', 
+                                                     :module => :booking})
+
+
       ContentManagerSystem::Template.first_or_create({:name => 'booking_manager_notification'},
           {:description=>'Mensaje que se envía al gestor de reservas al recibir una nueva solicitud',
            :text => BookingDataSystem::Booking.manager_notification_template})
