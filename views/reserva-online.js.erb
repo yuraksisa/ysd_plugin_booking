@@ -2172,13 +2172,11 @@
           
            case 'booking_data' :
              var date_time_from = new Date(bookingModel.booking.date_from).toString( "dddd, d MMMM yyyy");
-             if (bookingDataSystem.configuration.show_time) {
-               date_time_from += ' ' +bookingModel.booking.time_from; 
-             }
              var date_time_to = new Date(bookingModel.booking.date_to).toString( "dddd, d MMMM yyyy");
-             if (bookingDataSystem.configuration.show_time) {
-               date_time_to +=  ' ' +bookingModel.booking.time_to;
-             }
+             <% if booking_item_family.time_to_from %>
+             date_time_from += ' ' +bookingModel.booking.time_from; 
+             date_time_to +=  ' ' +bookingModel.booking.time_to;
+             <% end %>
              $('#date_from_extended').val( date_time_from );  
              $('#date_to_extended').val( date_time_to );
              $('#pickup_place_extended').html( bookingModel.booking.pickup_place );
