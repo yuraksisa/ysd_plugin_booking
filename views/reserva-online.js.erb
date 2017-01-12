@@ -1026,11 +1026,11 @@
                      
          var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
 
-         $('#datefrom').datepicker({numberOfMonths:2, minDate:bookingDataSystem.configuration.min_date, 
+         $('#datefrom').datepicker({numberOfMonths:1, minDate:bookingDataSystem.configuration.min_date, 
           maxDate: new Date(bookingDataSystem.configuration.max_date).add(-1).days(), dateFormat: 'dd/mm/yy'}, locale);
          $('#datefrom').datepicker('setDate', '+0'); 
 
-         $('#dateto').datepicker({numberOfMonths:2, minDate:new Date(bookingDataSystem.configuration.min_date).
+         $('#dateto').datepicker({numberOfMonths:1, minDate:new Date(bookingDataSystem.configuration.min_date).
             add(<%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>).days(),
             maxDate: bookingDataSystem.configuration.max_date , dateFormat: 'dd/mm/yy'}, locale);
          $('#dateto').datepicker('setDate', '+<%=booking_item_family.cycle_of_24_hours ? booking_min_days : booking_min_days - 1%>');
