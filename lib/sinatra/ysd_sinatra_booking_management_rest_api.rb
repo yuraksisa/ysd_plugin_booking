@@ -568,8 +568,12 @@ module Sinatra
                               request.body.read
                             end
               total, data = BookingDataSystem::Booking.text_search(search_text,offset_order_query)
+            elsif request.media_type == "application/json"
+              request.body.rewind
+              search_text = request.body.read
+              total, data = BookingDataSystem::Booking.text_search(search_text,offset_order_query)
             else
-              data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
+                data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
             end
 
             content_type :json

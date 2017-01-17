@@ -29,7 +29,7 @@
       </ul>    
    </li>    
    <% if booking_renting %>
-   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning','/admin/booking/planning2','/admin/booking/monthly-occupation', '/admin/booking/reports/pickup-return','/admin/booking/reports/pending-confirmation',
+   <li class='<%if ['/admin/booking/new','/admin/booking/customers', '/admin/booking/bookings','/admin/booking/planning2','/admin/booking/monthly-occupation', '/admin/booking/reports/pickup-return','/admin/booking/reports/pending-confirmation',
    '/admin/booking/reports/in-progress','/admin/booking/resources-occupation','/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
       <ul>
         <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>
@@ -40,7 +40,6 @@
         <li style="border-top: 1px dotted; border-color: #EEE"><a href='/admin/booking/reports/pending-confirmation'><%=t.booking_console.report_pending_confirmation%><%if pending_confirmation>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation%></span><%end%></a></li>
         <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%><%if today_pickup>0 || today_return>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_pickup%>/<%=today_return%></span><%end%></a></li>
         <li><a href='/admin/booking/reports/in-progress'><%=t.booking_console.report_in_progress%></a></li>        
-        <li><a href='/admin/booking/planning'><%=t.booking_console.planning%></a></li>    
       </ul>    
    </li>   
    <% end %>
