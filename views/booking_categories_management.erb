@@ -14,6 +14,20 @@
 <script type="text/tmpl" id="elements_description">
 </script>
 
+<!-- Renders the search -->
+<script type="text/tmpl" id="elements_search">
+  <form name="contents_search" id="contents_search" style="overflow:visible">
+     <div class="form-row">
+       <input type="text" name="search" class="search-entity-input"
+              maxlength="60" size="20" placeholder="<%=t.entitymanagement.search%>"/>
+       <select name="active" class="search-entity-control">
+         <option value="only"><%=t.booking_category_management.form.active_filter.only%></option>
+         <option value="all"><%=t.booking_category_management.form.active_filter.all%></option>
+       </select>
+     </div>
+  </form>
+</script>
+
 <!-- Renders the elements container -->
 <script type="text/tmpl" id="elements_container_template">
   <div id="elements_tbody" class="entity-blocks-container">

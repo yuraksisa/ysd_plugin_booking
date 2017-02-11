@@ -11,24 +11,26 @@ module Sinatra
           
           app.post path do
 
-            conditions = {}         
-            
-            if request.media_type == "application/x-www-form-urlencoded" # Just the text
+            page = [params[:page].to_i, 1].max
+            page_size = 20
+            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:code.asc]}
+
+            if request.media_type == "application/json"
               request.body.rewind
-              search = JSON.parse(URI.unescape(request.body.read))
-              if search.is_a?(Hash)
-                search.each do |property, value| 
-                end
-              end
+              search_request = JSON.parse(URI.unescape(request.body.read))
+              search_text = search_request['search']
+              conditions = Conditions::JoinComparison.new('$or',
+                                                          [Conditions::Comparison.new(:code, '$like', "%#{search_text}%"),
+                                                           Conditions::Comparison.new(:description, '$like', "%#{search_text}%")
+                                                          ])
+
+              total = conditions.build_datamapper(::Yito::Model::Booking::BookingCatalog).all.count
+              data = conditions.build_datamapper(::Yito::Model::Booking::BookingCatalog).all(offset_order_query)
+
+            else
+              data,total  = ::Yito::Model::Booking::BookingCatalog.all_and_count(offset_order_query)
             end
 
-            page = params[:page].to_i || 1
-            limit = 20
-            offset = (page-1) * 20
-            
-            data  = ::Yito::Model::Booking::BookingCatalog.all(:conditions => conditions, :limit => limit, :offset => offset)
-            total = ::Yito::Model::Booking::BookingCatalog.count(conditions)
-          
             content_type :json
             {:data => data, :summary => {:total => total}}.to_json
           

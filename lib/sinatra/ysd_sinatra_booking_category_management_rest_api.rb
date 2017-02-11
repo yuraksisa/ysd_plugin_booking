@@ -15,18 +15,22 @@ module Sinatra
             page_size = 20
             offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:code.asc]} 
             
-            if request.media_type == "application/x-www-form-urlencoded"
-              search_text = if params[:search]
-                              params[:search]
-                            else
-                              request.body.rewind
-                              request.body.read
-                            end
-              conditions = Conditions::Comparison.new(:code, '$eq', search_text)
-            
-              total = conditions.build_datamapper(::Yito::Model::Booking::BookingCategory).all.count 
-              data = conditions.build_datamapper(::Yito::Model::Booking::BookingCategory).all(offset_order_query) 
+            if request.media_type == "application/json"
+              request.body.rewind
+              search_request = JSON.parse(URI.unescape(request.body.read))
+              search_text = search_request['search']
+              conditions = Conditions::JoinComparison.new('$or',
+                                                          [Conditions::Comparison.new(:code, '$like', "%#{search_text}%"),
+                                                           Conditions::Comparison.new(:name, '$like', "%#{search_text}%")
+                                                          ])
+              if search_request['active'] == 'only'
+                conditions = Conditions::JoinComparison.new('$and',
+                                                            [conditions,
+                                                             Conditions::Comparison.new(:active, '$eq', true)])
+              end
 
+              total = conditions.build_datamapper(::Yito::Model::Booking::BookingCategory).all.count
+              data = conditions.build_datamapper(::Yito::Model::Booking::BookingCategory).all(offset_order_query)
             else
               data,total  = ::Yito::Model::Booking::BookingCategory.all_and_count(offset_order_query)
             end

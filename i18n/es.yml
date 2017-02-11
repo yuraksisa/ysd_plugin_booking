@@ -760,6 +760,9 @@ booking_category_management:
                    <p class="less_contrast_text">Asociando un calendario a una categoría puede configurar
                    si desea impedir realizar reservas, habilitar los pagos, ...
                    en fechas determinadas</p>
+    active_filter:
+      only: Sólo activos
+      all: Todos
 booking_extra_management:
   title: Extras
   description: Gestión de extras
@@ -817,7 +820,10 @@ booking_item_management:
     planning_order:
       label: Orden en el planning      
     cost: 
-      label: Coste         
+      label: Coste
+    active_filter:
+      only: Sólo activos
+      all: Todos
 booking_places_definition_management:
   title: Lugares entrega y recogida
   table:
@@ -1059,6 +1065,9 @@ booking_activity_management:
     alias: Alias
     activity_date:
       done: Creada fecha de la actividad
+    active_filter:
+      only: Sólo activos
+      all: Todos
 activity:
   reservation: Reservar
   mornings: Mañanas

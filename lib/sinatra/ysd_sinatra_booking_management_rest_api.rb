@@ -560,18 +560,14 @@ module Sinatra
             page_size = 20
             offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]} 
 
-            if request.media_type == "application/x-www-form-urlencoded"
-              search_text = if params[:search]
-                              params[:search]
-                            else
-                              request.body.rewind
-                              request.body.read
-                            end
-              total, data = BookingDataSystem::Booking.text_search(search_text,offset_order_query)
-            elsif request.media_type == "application/json"
+            if request.media_type == "application/json"
               request.body.rewind
-              search_text = request.body.read
-              total, data = BookingDataSystem::Booking.text_search(search_text,offset_order_query)
+              search_request = JSON.parse(URI.unescape(request.body.read))
+              if search_request.has_key?('search')
+                total, data = BookingDataSystem::Booking.text_search(search_request['search'],offset_order_query)
+              else
+                data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
+              end
             else
                 data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
             end

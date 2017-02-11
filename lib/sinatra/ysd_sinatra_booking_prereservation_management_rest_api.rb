@@ -60,20 +60,16 @@ module Sinatra
 
             page = [params[:page].to_i, 1].max  
             page_size = 20
-            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:code.asc]} 
+            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:date_from.desc]}
             
-            if request.media_type == "application/x-www-form-urlencoded"
-              search_text = if params[:search]
-                              params[:search]
-                            else
-                              request.body.rewind
-                              request.body.read
-                            end
-              conditions = Conditions::Comparison.new(:code, '$eq', search_text)
-            
-              total = conditions.build_datamapper(BookingDataSystem::BookingPrereservation).all.count 
-              data = conditions.build_datamapper(BookingDataSystem::BookingPrereservation).all(offset_order_query) 
+            if request.media_type == "application/json"
+              request.body.rewind
+              search_request = JSON.parse(URI.unescape(request.body.read))
+              search_text = search_request['search']
+              conditions = Conditions::Comparison.new(:title, '$like', "%#{search_text}%")
 
+              total = conditions.build_datamapper(BookingDataSystem::BookingPrereservation).all.count
+              data = conditions.build_datamapper(BookingDataSystem::BookingPrereservation).all(offset_order_query)
             else
               data,total  = BookingDataSystem::BookingPrereservation.all_and_count(offset_order_query)
             end
