@@ -8,6 +8,8 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
 
     month: new Date().getMonth()+1,
     year: new Date().getFullYear(),
+    reference: null,
+    product: null,
 
     init: function() {
       <% if @date_from and @date_to %>
@@ -16,6 +18,11 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
       <% else %>
       this.dateFrom = new Date(this.year, this.month-1, 1);
       this.dateTo = new Date(this.year, this.month, 0);
+      <% end %>
+      <% if @mode == :stock and @reference %>
+      this.reference = <%=@reference%>;
+      <% elsif @mode == :product and @product %>
+      this.product = '<%=@product%>';
       <% end %>
     } 
   }
@@ -29,6 +36,8 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
     init: function() {
       bookingPlanningModel.dateFrom = planningModel.dateFrom;
       bookingPlanningModel.dateTo = planningModel.dateTo;
+      bookingPlanningModel.reference = planningModel.reference;
+      bookingPlanningModel.product = planningModel.product;
   	  bookingPlanningView.init();
     }
 

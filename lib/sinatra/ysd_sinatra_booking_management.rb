@@ -212,6 +212,18 @@ module Sinatra
             end
           end  
 
+          if params[:mode] and ['stock','product'].include?(params[:mode])
+            @mode = params[:mode].to_sym
+          end
+
+          if params[:product]
+            @product = params[:product]
+          end
+
+          if params[:reference]
+            @reference = params[:reference]
+          end
+
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))          
           load_page(:bookings_planning_v2)
 

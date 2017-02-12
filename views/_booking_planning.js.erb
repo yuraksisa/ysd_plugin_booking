@@ -94,10 +94,10 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
   	    var to = this.dateTo.toString('yyyy-MM-dd');
   	    var url = '/api/booking/planning-summary?from='+from+'&to='+to;
   	    if (this.product != null) {
-  	      url += '&product='+product;
+  	      url += '&product='+this.product;
         }
   	    else if (this.reference != null) {
-  	      url += '&reference='+reference;
+  	      url += '&reference='+this.reference;
   	    } 
  	      $.ajax({
   	        type: 'GET',
@@ -713,6 +713,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
   	  switch (event) {
   		case 'data_available':
 
+  		  // Create the column for the references
   		  if ($('#planning_table tbody').children().length == 0) {
   		  	$("#planning_table thead").append("<tr></tr>");
   		  	$("#planning_table thead tr:first").append("<th style='min-width:120px'>"+'RECURSOS'+"</th>");
@@ -721,12 +722,30 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
   		  	  $("#planning_table tbody tr#"+item+"").append("<td class='reference' data-reference='"+item+"'>"+bookingPlanningModel.references[item] + '-' + item+"</td>");
   		  	}
   		  }
+
   		  for (item in bookingPlanningModel.planningData) {
-  		  	var date = new Date(item);
-  		  	var title = date.getDate() + ' ' + bookingPlanningModel.months[date.getMonth()];
+          var date = new Date(item);
+          var title = date.getDate() + ' ' + bookingPlanningModel.months[date.getMonth()];
           var datestr = YSDFormatter.formatDate(date, 'yyyy-MM-dd');
-            $("#planning_table thead tr:first").append("<th class='date_header' rel='" + datestr + "'>"+title+"</th>");
-            for (resource in bookingPlanningModel.planningData[item]) {
+          var firstMonthDay = date.getDate() == 1 ? true : false;
+          var oddMonth = (date.getMonth()+1) % 2 == 0;
+          var oddMonthHeaderClass = oddMonth ? 'odd-month-header' : '';
+          var firstMonthDayColumnClass = firstMonthDay ? 'first-month-day' : '';
+
+          // Create the header row (with dates)
+          var headerClass = 'date_hader';
+          if (oddMonth) {
+              headerClass += ' ';
+              headerClass += oddMonthHeaderClass;
+          }
+          if (firstMonthDay && date.getTime() != bookingPlanningModel.dateFrom.getTime()) {
+              headerClass += ' ';
+              headerClass += firstMonthDayColumnClass;
+          }
+          $("#planning_table thead tr:first").append("<th class='" + headerClass + "' rel='" + datestr + "'>"+title+"</th>");
+
+          // fill the data
+          for (resource in bookingPlanningModel.planningData[item]) {
               var value = '';
               if (bookingPlanningModel.planningData[item][resource].total == 1) {
                 value = 'X';
@@ -741,12 +760,23 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
               }
               var cellInformation = "style='background:" + background + "'";
               cellInformation += " data-date='" + item + "' ";              
+
+              var cellClasses = 'data';
+
               if (value == '') {
-                cellInformation += " class='data empty' "; 
+                cellClasses += ' empty';
               }
               else {
-                cellInformation += " class='data filled' ";
+                cellClasses += ' filled';
               }
+
+              if (firstMonthDay && date.getTime() != bookingPlanningModel.dateFrom.getTime()) {
+                cellClasses += ' ';
+                cellClasses += firstMonthDayColumnClass;
+              }
+
+              cellInformation += "class='"+cellClasses+"'";
+
               var summary = bookingPlanningModel.planningData[item][resource].summary;
               if (summary != null) {
                 cellInformation += " title='" + summary + "'";
@@ -786,10 +816,14 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                 cellInformation += " rel='" + ids + "'";
               }
               $("tr#"+resource).append("<td " + cellInformation + ">"+value+"</td>");	
-            }
+          }
+
   		  }
   		  
         $("#planning_table").tableHeadFixer({"left" : 1});
+        $(".odd-month-header").css("background-color", "#CCC");
+        $(".odd-month-header").css("color", "black");
+        $('.first-month-day').css("border-left", "1px double black");
         $(".data").unbind('click');
         $(".data.empty").bind('click', function(event) {
           var theElement = $(this);
