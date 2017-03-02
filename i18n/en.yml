@@ -603,4 +603,13 @@ not_assigned_bookings:
     reassign: Reassign  
     all_resources: Show all resources
 hourly_occupation:
-  title: Hourly occupation    
+  title: Hourly occupation
+front_end_reservation:
+  search_title: Search
+  search_button: Search  
+  pickup_place: Picking Up Location
+  date_from: Picking Up Date   
+  time_from: Picking Up Hour
+  return_place: Dropping Off Location
+  date_to: Dropping Off Date
+  time_to: Dropping Off Time       

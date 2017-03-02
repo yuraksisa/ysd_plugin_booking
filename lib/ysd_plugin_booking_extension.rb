@@ -77,6 +77,18 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.hours_cadence'},
+          {:value => '2',
+           :description => 'Cadence in hours to apply one more day',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.notify_confirmation'},
+          {:value => 'true',
+           :description => 'Notify confirmation',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.reservation_starts_with'},
         {:value => 'dates',
          :description => 'Reservation start with: dates or category',
@@ -424,6 +436,9 @@ module Huasi
         :theme => Themes::ThemeManager.instance.selected_theme.name},
        {:name => 'booking_activities_shopping_cart',
         :module_name => :booking,
+        :theme => Themes::ThemeManager.instance.selected_theme.name},
+       {:name => 'booking_selector_full_v2',
+        :module_name => :booking,
         :theme => Themes::ThemeManager.instance.selected_theme.name}        
       ]
         
@@ -468,6 +483,9 @@ module Huasi
           app.partial(:booking_selector, :locals => locals)
         when 'booking_selector_inline'         
           app.partial(:booking_selector_inline, :locals => locals)
+        when 'booking_selector_full_v2'
+          result = app.partial(:rent_search_form_full_v2, :locals => locals)
+          result << app.partial(:rent_search_form_full_v2_js, :locals => locals)
         when 'booking_admin_menu'
           today = Date.today
           year = today.year
@@ -520,7 +538,7 @@ module Huasi
     # @return [Array]
     #   An array which contains the css resources used by the module
     #
-    def page_script(context={})
+    def page_script(context={}, page)
 
       ['/booking_js.js']
 

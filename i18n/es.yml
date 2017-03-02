@@ -856,7 +856,7 @@ booking:
   days: !!pl
     1: 1 día
     n: "%1 días"
-  title: Reserva %1
+  title: su reserva está %1
   expired: Excedido el tiempo para realizar depósito/pago
   id: Su identificador de reserva es <strong>%1</strong>. <span class="less_contrast_text smaller_text">Use su identificador de reserva en todas las comunicaciones.</span>
   arrival: Entrada
@@ -1137,4 +1137,13 @@ shopping_cart:
 booking_activities_scheduler:
   title: Agenda de actividades programadas
   pax: >
-       %1 plazas 
+       %1 plazas
+front_end_reservation:
+  search_title: Buscar 
+  search_button: Buscar  
+  pickup_place: Lugar de entrega
+  date_from: Fecha de entrega   
+  time_from: Hora de entrega
+  return_place: Lugar de devolución
+  date_to: Fecha de devolución
+  time_to: Hora de devolución        

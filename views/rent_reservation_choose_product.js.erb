@@ -1,0 +1,192 @@
+require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
+        'ysdtemplate',
+	     'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es', 
+	     'jquery.ui.datepicker.validation', 'datejs',
+	     'bootstrap', 'bootstrap.select'], 
+	     function($, RemoteDataSource, SelectSelector, tmpl) {
+
+  model = {
+
+    data : null,
+    shopping_cart: null,
+    products: null,
+
+
+    loadShoppingCart: function() {
+
+       $.ajax({
+               type: 'GET',
+               url : '/api/booking/frontend/shopping-cart',
+               success: function(data, textStatus, jqXHR) {
+                 
+                 model.shopping_cart = data.shopping_cart;
+                 model.products = data.products;
+
+                 view.showShoppingCart();
+
+               },
+               error: function(data, textStatus, jqXHR) {
+
+                 alert('Error obteniendo la información');
+
+               }
+          });
+
+
+    },
+
+    selectProduct: function(productCode) {
+
+       $.ajax({
+               type: 'POST',
+               url : '/api/booking/frontend/set-product?product='+productCode,
+               success: function(data, textStatus, jqXHR) {
+                 
+                 model.shopping_cart = data.shopping_cart;
+                 window.location.href= '<%=format_url_with_language("/reserva/completar")%>';
+
+               },
+               error: function(data, textStatus, jqXHR) {
+                  // TODO 
+                  alert('Error seleccionando producto');
+               }
+          });
+
+    }
+
+  };
+
+  controller = {
+
+    selectProductBtnClick: function(productCode) {
+
+      model.selectProduct(productCode);
+
+    },
+
+    dateFromChanged: function() {
+
+      var dateFrom = $('#date_from').datepicker('getDate');
+      var dateTo = $('#date_from').datepicker('getDate');
+      dateTo.setDate(dateTo.getDate() + <%=booking_min_days%>)
+      $('#date_to').datepicker('setDate', dateTo );
+      $('#date_to').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+
+    }
+
+  };
+
+  view = {
+
+  	init: function() {
+      
+      // Load the frontend controls
+      this.setupDateControls();
+      this.loadPickupReturnPlaces();
+
+  	},
+
+
+    setupDateControls: function() {
+      $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+      
+      var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
+
+      $('#date_from').datepicker({numberOfMonths:1, 
+          minDate: new Date(), 
+          maxDate: new Date().add(365).days(), 
+          dateFormat: 'dd/mm/yy',
+          firstDay: 1}, 
+          locale);
+      $('#date_from').datepicker('setDate', '+0'); 
+
+      $('#date_to').datepicker({numberOfMonths:1, 
+          minDate: new Date().add(<%=booking_min_days%>).days(),
+            maxDate: new Date().add(365).days(), 
+            dateFormat: 'dd/mm/yy'}, locale);
+      $('#date_to').datepicker('setDate', '+<%=booking_min_days%>');
+
+      $('#date_from').bind('change', function() {
+           controller.dateFromChanged();
+         });
+    },
+
+    loadPickupReturnPlaces: function() {
+
+        var dataSourcePickupPlaces = new RemoteDataSource('/api/booking/frontend/pickup-places',{'id':'name','description':'name'});
+        var pickupPlace = new SelectSelector('pickup_place', 
+            dataSourcePickupPlaces, null, false, '',
+                function() { 
+                  $('#pickup_place').selectpicker();
+                  view.loadPickupReturnTime(); 
+                } );             
+
+        var dataSourceReturnPlaces = new RemoteDataSource('/api/booking/frontend/return-places',{'id':'name','description':'name'});
+        var returnPlace = new SelectSelector('return_place', 
+            dataSourcePickupPlaces, null, false, '',
+                function() { 
+                  $('#return_place').selectpicker(); 
+                } );          
+
+    },
+
+    loadPickupReturnTime: function() {
+
+        var dataSourcePickupReturnTime = new RemoteDataSource('/api/booking/frontend/pickup-return-times', {
+            id: function(data){return data;}, 
+            description: function(data){return data;} });
+
+        var pickupTime = new SelectSelector('time_from', 
+            dataSourcePickupReturnTime, '10:00', false, '',
+                function() { 
+                  $('#time_from').selectpicker();
+                  $('#time_from').val('10:00');
+                  $('#time_from').selectpicker('refresh');
+                } );   
+
+        var returnTime = new SelectSelector('time_to', 
+            dataSourcePickupReturnTime, '10:00', false, '',
+                function() { 
+                  $('#time_to').selectpicker();
+                  $('#time_to').val('10:00');
+                  $('#time_to').selectpicker('refresh');
+                  model.loadShoppingCart();                   
+                } );  
+
+    },
+
+
+    showShoppingCart: function() {
+
+        $('#pickup_place').val(model.shopping_cart.pickup_place.replace(/\+/g, ' '));         
+        $('#pickup_place').selectpicker('refresh');
+        $('#return_place').val(model.shopping_cart.return_place.replace(/\+/g, ' '));         
+        $('#return_place').selectpicker('refresh');
+
+        $('#date_from').datepicker("setDate", model.shopping_cart.date_from);        
+        $('#time_from').val(model.shopping_cart.time_from);
+        $('#time_from').selectpicker('refresh');
+        
+        $('#date_to').datepicker("setDate", model.shopping_cart.date_to); 
+        $('#time_to').val(model.shopping_cart.time_to);
+        $('#time_to').selectpicker('refresh');    
+
+        // Show the products
+        var result = '';
+        for (var idx=0;idx<model.products.length;idx++) {
+          result += tmpl('script_detailed_product')({product:model.products[idx]});
+        }
+        $('#product_listing').html(result);
+
+        // Prepare onclick event to select the product
+        $('.btn-choose-product').bind('click', function() {
+          controller.selectProductBtnClick($(this).attr('data-product'));
+        });
+
+    }
+
+  };
+
+  view.init();
+
+});

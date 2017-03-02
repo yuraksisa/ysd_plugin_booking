@@ -1,0 +1,379 @@
+require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
+        'ysdtemplate',
+	     'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es', 
+	     'jquery.ui.datepicker.validation', 'datejs',
+	     'bootstrap', 'bootstrap.select'], 
+	     function($, RemoteDataSource, SelectSelector, tmpl) {
+
+  model = { // THE MODEL
+
+    shopping_cart: null,
+    products: null,
+    extras: null,
+
+    getProduct: function() { /** Get a product **/
+
+    	if (this.shopping_cart && this.shopping_cart.items.length > 0)
+    	{	
+    	    var productCode = this.shopping_cart.items[0].item_id;
+    		if (this.products == null) {
+    			return null;
+    		}
+    		for (var idx=0;idx<=this.products.length;idx++) {
+    			if (this.products[idx].code == productCode) {
+    				return this.products[idx];
+    			}
+    		}
+		}
+
+    	return null;
+
+    },
+
+    getShoppingCartExtras: function() { /** Get an object representation of extras **/
+
+      var shoppingCartExtras = {};
+
+      if (this.shopping_cart != null) {
+          for (var idx=0;idx<this.shopping_cart.extras.length;idx++) {
+              shoppingCartExtras[this.shopping_cart.extras[idx].extra_id] = this.shopping_cart.extras[idx].quantity;
+          }
+      }
+
+      return shoppingCartExtras;
+
+
+    },
+
+    loadShoppingCart: function() { /** Load the shopping cart **/
+
+       $.ajax({
+               type: 'GET',
+               url : '/api/booking/frontend/shopping-cart',
+               success: function(data, textStatus, jqXHR) {
+                 
+                 model.shopping_cart = data.shopping_cart;
+                 model.products = data.products;
+                 model.extras = data.extras;
+
+                 view.updateShoppingCart();
+
+               },
+               error: function(data, textStatus, jqXHR) {
+
+                 alert('Error cargando carrito');
+
+               }
+          });
+
+    },
+
+    setExtra: function(extraCode, quantity) { /** Sets an extra **/
+
+      $.ajax({
+        type: 'POST',
+        url : '/api/booking/frontend/set-extra?extra='+extraCode+'&quantity='+quantity,
+        success: function(data, textStatus, jqXHR) {
+
+            model.shopping_cart = data.shopping_cart;
+            model.products = data.products;
+            model.extras = data.extras;
+
+            view.updateShoppingCartSummary();
+
+        },
+        error: function(data, textStatus, jqXHR) {
+
+            alert('Error actualizando extra');
+
+        }
+      });
+
+
+    },
+
+    deleteExtra: function(extraCode) { /** Remove an extra **/
+
+      $.ajax({
+        type: 'POST',
+        url : '/api/booking/frontend/remove-extra?extra='+extraCode,
+        success: function(data, textStatus, jqXHR) {
+
+            model.shopping_cart = data.shopping_cart;
+            model.products = data.products;
+            model.extras = data.extras;
+
+            view.updateShoppingCartSummary();
+
+        },
+        error: function(data, textStatus, jqXHR) {
+
+            alert('Error eliminando extra');
+
+        }
+      });
+
+    },
+
+    sendBookingRequest: function() { /** Send a booking request **/
+
+      var reservation = $('form[name=reservation_form]').formParams(false);
+      reservation.comments = $('#comments').val();
+      reservation.payment = $('#accordion a[aria-expanded=true]').attr('data-payment-method');
+
+      var reservationJSON = JSON.stringify(reservation);
+
+      $.ajax({
+            type: 'POST',
+            data : reservationJSON,
+            url : '/api/booking/frontend/checkout',
+            success: function(data, textStatus, jqXHR) {
+                var payNow = data.pay_now;
+                var bookingId = data.free_access_id;
+                if (payNow) {
+                    $.form('/reserva/pagar',{id: bookingId,
+                        payment: 'deposit', payment_method_id: 'paypal_standard'},'POST').submit();
+                }
+                else {
+                    window.location.href = '/reserva/' + bookingId;
+                }
+            },
+            error: function(data, textStatus, jqXHR) {
+                alert('Lo sentimos. Se ha producido un error registrando la reserva');
+            }
+        });
+
+    }
+
+  };
+
+  controller = { // THE CONTROLLER
+
+      extraChecked: function(extraCode) {
+          model.setExtra(extraCode, 1);
+      },
+
+      extraUnchecked: function(extraCode) {
+          model.deleteExtra(extraCode);
+      },
+
+      extraQuantityChanged: function(extraCode, newQuantity) {
+          model.setExtra(extraCode, newQuantity);
+      },
+
+      sendReservationButtonClick: function() {
+          model.sendBookingRequest();
+      }
+
+  };
+
+  view = { // THE VIEW
+
+  	init: function() {
+  	  this.setupEvents();
+  	  this.setupValidation();
+  	  model.loadShoppingCart();
+  	},
+
+    setupEvents: function() {
+
+        $('#btn_reservation').bind('click', function() {
+           $('form[name=reservation_form]').submit();
+        });
+
+    },
+
+    setupValidation: function() {
+
+  	  this.setupReservationFormValidation();
+
+    },
+
+    setupReservationFormValidation: function() {
+
+        $('form[name=reservation_form]').validate(
+            {
+
+                submitHandler: function(form) {
+                    $('#reservation_error').hide();
+                    $('#reservation_error').html('');
+                    // Difference between reservation vs confirm
+                    controller.sendReservationButtonClick();
+                    return false;
+                },
+
+                invalidHandler : function (form, validator) {
+                    $('#reservation_error').html('<%=t.new_booking.form_errors.description%>');
+                    $('#reservation_error').show();
+                },
+
+                rules : {
+
+                    'customer_name': 'required',
+                    'customer_surname' : 'required',
+                    'customer_email' : {
+                        required: true,
+                        email: true
+                    },
+                    'customer_email_confirmation': {
+                        required: true,
+                        email: true,
+                        equalTo : 'customer_email'
+                    },
+                    'customer_phone': {
+                        required: true,
+                        minlength: 9
+                    },
+                    'driver_date_of_birth': {
+                        required: "#fs_driver:visible"
+                    },
+                    'conditions_read' :  {
+                        required: '#conditions_read:visible'
+                    }
+                },
+
+                messages : {
+
+                    'customer_name': '<%=t.new_booking.customer_name.required%>',
+                    'customer_surname' : '<%=t.new_booking.customer_surname.required%>',
+                    'customer_email]' : {
+                        required: '<%=t.new_booking.customer_email.required%>',
+                        email: '<%=t.new_booking.customer_email.format%>'
+                    },
+                    'customer_email_confirmation': {
+                        'required': '<%=t.new_booking.customer_email_confirmation.required%>',
+                        email: '<%=t.new_booking.customer_email_confirmation.format%>',
+                        'equalTo': '<%=t.new_booking.customer_email_confirmation.equal_to%>'
+                    },
+                    'customer_phone': {
+                        'required': '<%=t.new_booking.customer_phone.required%>',
+                        'minlength': '<%=t.new_booking.customer_phone.min_length%>'
+                    },
+                    'driver_date_of_birth': {
+                        'required': '<%=t.new_driving_booking.driver_date_of_birth.required%>'
+                    },
+                    'conditions_read': '<%=t.new_booking.conditions.required%>'
+
+                },
+
+                errorPlacement: function (error, element) {
+
+                    if (element.attr('name') == 'conditions_read')
+                    {
+                        error.insertAfter(element.parent());
+                    }
+                    else
+                    {
+                        error.insertAfter(element);
+                    }
+
+                },
+
+                errorClass : 'form-reservation-error'
+
+            }
+        );
+
+    },
+
+    updateShoppingCart: function() { // Updates the shopping cart
+    	
+    	// Show the product information
+	  	var productInfo = tmpl('script_product_detail')({product: model.getProduct(),
+										 shopping_cart: model.shopping_cart});
+		  $('#selected_product').html(productInfo);
+
+      // Update the summary
+      this.updateShoppingCartSummary();
+
+    },
+
+    updateShoppingCartSummary: function() { // Updates the shopping cart summary (total)
+
+       var reservationDetail = tmpl('script_reservation_summary')({shopping_cart: model.shopping_cart});
+       $('#reservation_detail').html(reservationDetail);
+       this.updateExtras();
+
+    },
+
+    updateExtras: function() { // Updates the extras (included the selected by the transaction)
+
+        // Show the extras
+        var result = '';
+        for (var idx=0;idx<model.extras.length;idx++) {
+            result += tmpl('script_detailed_extra')({extra:model.extras[idx],
+                extrasInShoppingCart: model.getShoppingCartExtras()});
+        }
+        $('#extras_listing').html(result);
+
+        // Setup events
+        $('.extra-select').selectpicker();
+        $('.extra-checkbox').bind('change', function() {
+            var extraCode = $(this).attr('data-value');
+            var checked = $(this).is(':checked');
+            if (checked) {
+                controller.extraChecked(extraCode);
+            }
+            else {
+                controller.extraUnchecked(extraCode);
+            }
+        });
+        $('.extra-select').bind('change', function() {
+            var extraCode = $(this).attr('data-value');
+            var extraQuantity = $(this).val();
+            controller.extraQuantityChanged(extraCode, extraQuantity);
+        });
+
+    }
+
+  };
+
+  view.init();
+
+           jQuery(function($) {
+             $.extend({
+               form: function(url, data, method) {
+                   if (method == null) method = 'POST';
+                   if (data == null) data = {};
+
+                   var form = $('<form>').attr({
+                       method: method,
+                       action: url
+                   }).css({
+                       display: 'none'
+                   });
+
+                   var addData = function(name, data) {
+                       if ($.isArray(data)) {
+                           for (var i = 0; i < data.length; i++) {
+                               var value = data[i];
+                               addData(name + '[]', value);
+                           }
+                       } else if (typeof data === 'object') {
+                           for (var key in data) {
+                               if (data.hasOwnProperty(key)) {
+                                   addData(name + '[' + key + ']', data[key]);
+                               }
+                           }
+                       } else if (data != null) {
+                           form.append($('<input>').attr({
+                               type: 'hidden',
+                               name: String(name),
+                               value: String(data)
+                           }));
+                       }
+                   };
+
+                   for (var key in data) {
+                       if (data.hasOwnProperty(key)) {
+                           addData(key, data[key]);
+                       }
+                   }
+
+                   return form.appendTo('body');
+               }
+             });
+           });
+
+
+});
