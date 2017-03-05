@@ -574,18 +574,22 @@ define(function() {
   /* 
       @param [String] The extra id
       @param [String] The extra name
+      @param [String] The extra description
       @param [Numeric] Max extra quantity
       @param [Array] The optional that doesn't use the extra
       @param [Boolean] detailed price
+      @param [Object] translations
    */
-  rates.Extra = function(id, the_name, max_quantity, notAcceptedOptionals, detailedPrice) {
+  rates.Extra = function(id, the_name, description, max_quantity, notAcceptedOptionals, detailedPrice, translations) {
   	
     this.id = id;
     this.the_name = the_name;
+    this.description = description;
     this.max_quantity = max_quantity;
     this.notAcceptedOptionals = notAcceptedOptionals || [];
     this.detailedPrice = detailedPrice;
-    
+    this.translations = translations;
+
     this.optionalAccepted = function(optional) {
       if (Array.prototype.indexOf) {
         return this.notAcceptedOptionals.indexOf(optional) == -1;
