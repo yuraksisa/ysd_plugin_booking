@@ -1,0 +1,138 @@
+require(['jquery','ysdhtmleditor','ysdtemplate','YSDGui',
+        'YSDRemoteDataSource', 'YSDSelectSelector','jquery.formparams'],
+    function($,htmlEditor, tmpl, YSDGui, RemoteDataSource, SelectSelector) {
+
+
+        bookingExtraTranslationModel = { /** The model **/
+
+        language: '<%=language%>',
+            extraId: '<%=extra_id%>',
+            firstLoad: true,
+            data: null,
+
+            loadTranslation: function (language) {
+                if (language) {
+                    this.language = language;
+                }
+                var self = this;
+                if (YSDGui.lockBackground) {
+                    YSDGui.lockBackground("#000000", false);
+                }
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/translation/' + this.language + '/booking/extra/' + this.extraId,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data, textStatus, jqXHR) {
+                        self.data = data;
+                        bookingExtraTranslationView.updateData('loaded');
+                    },
+                    error: function (data, textStatus, jqXHR) {
+                        alert('Error cargando traducción');
+                    },
+                    complete: function (jqXHR, textStatus) {
+                        if (YSDGui.unLockBackground) {
+                            YSDGui.unLockBackground();
+                        }
+                    }
+                });
+            },
+
+            updateTranslation: function (data) {
+
+                var self = this;
+                var the_data = encodeURIComponent(JSON.stringify(data));
+                if (YSDGui.lockBackground) {
+                    YSDGui.lockBackground("#000000", false);
+                }
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/translation/booking/extra',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: the_data,
+                    success: function (data, textStatus, jqXHR) {
+                        self.data = data;
+                        bookingExtraTranslationView.updateData('updated');
+                    },
+                    error: function (data, textStatus, jqXHR) {
+                        alert('Error actualizando traducción');
+                    },
+                    complete: function (jqXHR, textStatus) {
+                        if (YSDGui.unLockBackground) {
+                            YSDGui.unLockBackground();
+                        }
+                    }
+                });
+
+            }
+
+        };
+
+        bookingExtraTranslationController = { /** The controller **/
+
+        languageChanged: function (language) {
+            bookingExtraTranslationModel.loadTranslation(language);
+        },
+
+            updateTranslationClick: function () {
+                var data = $('#booking_extra_translation').formParams(true);
+                bookingExtraTranslationModel.updateTranslation(data);
+            }
+
+        };
+
+        bookingExtraTranslationView = { /** The view **/
+
+        dataSource: null,
+
+            init: function () {
+                this.dataSource = new RemoteDataSource('/api/translationlanguages', {
+                    id: 'code', description: 'description' });
+                bookingExtraTranslationModel.loadTranslation();
+            },
+
+            updateData: function (event) {
+
+                switch (event) {
+                    case 'loaded':
+                        $('#language').unbind('change');
+                        var html = tmpl('booking_extra_translation_template_form',
+                            {
+                                entity: bookingExtraTranslationModel.data,
+                                extraId: bookingExtraTranslationModel.extraId,
+                                language: bookingExtraTranslationModel.language
+                            });
+                        $('#booking_extra').html(html);
+                        this.setupForm();
+                        break;
+                    case 'updated':
+                        break;
+                }
+
+            },
+
+            setupForm: function() {
+
+                htmlEditor('.texteditor'); // HTML editor
+
+                var selector = new SelectSelector('language', this.dataSource,
+                    bookingExtraTranslationModel.language);
+
+                $('#language').change(function (event) {
+                    if ($(this).val() != bookingExtraTranslationModel.language) {
+                        bookingExtraTranslationController.languageChanged($(this).val());
+                    }
+                });
+
+                $('#update_button').bind('click', function () {
+                    bookingExtraTranslationController.updateTranslationClick();
+                });
+
+            }
+
+        };
+
+        bookingExtraTranslationView.init();
+    }
+);

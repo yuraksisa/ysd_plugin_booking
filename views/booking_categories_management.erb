@@ -93,7 +93,12 @@
           </li>          
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
               <a name="calendar_tab" href="#calendar_tab">Calendario</a>
-          </li>                      
+          </li>
+          <% if @show_translations %>
+          <li class="no-border no-background top-space" style="border:none; backgrond:none">
+              <a name="translation_tab" href="#translation_tab">Traducciones</a>
+          </li>
+          <% end %>
       </ul>
      <div id="content">
         <div id="basic_data_tab" class="top-margin bottom-margin">
@@ -274,11 +279,15 @@
             </div>
           </div>
           <%% } %> 
-
-
           <div id="calendar_container">
           </div>
         </div>
+        <% if @show_translations %>
+        <div id="translation_tab">
+          <div id="translation_container">
+          </div>
+        </div>
+        <% end %>
       </div>      
     </div>   
     <%% } else { %>

@@ -76,10 +76,14 @@
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="photos_tab" href="#photos_tab">Fotos</a>
           </li>
-        
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
               <a name="prices_tab" href="#prices_tab">Tarifas</a>
           </li>
+          <% if @show_translations %>
+          <li class="no-border no-background top-space" style="border:none; backgrond:none">
+              <a name="translation_tab" href="#translation_tab">Traducciones</a>
+          </li>
+          <% end %>
       </ul>
       <div id="content">
         <div id="basic_data_tab" class="top-margin bottom-margin">
@@ -184,7 +188,13 @@
           <%% } %> 
           <div id="prices_container">
           </div>
-        </div>  
+        </div>
+        <% if @show_translations %>
+        <div id="translation_tab">
+          <div id="translation_container">
+          </div>
+        </div>
+        <% end %>
       </div>
     </div> 
   <%% } else { %>
