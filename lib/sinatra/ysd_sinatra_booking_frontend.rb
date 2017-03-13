@@ -26,20 +26,20 @@ module Sinatra
       	  	return_place = params[:return_place]
 
       	  	# Retrieve or create a new shopping cart
-      	  	shopping_cart = nil
+      	  	@shopping_cart = nil
       	  	if session.has_key?(:shopping_cart_renting_id)
-      	  	  if shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-      	  	    shopping_cart.update(date_from: date_from, time_from: time_from,
+      	  	  if @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+      	  	    @shopping_cart.update(date_from: date_from, time_from: time_from,
                                      date_to: date_to, time_to: time_to,
                                      pickup_place: pickup_place, return_place: return_place)
 							end
 						end
-						if shopping_cart.nil?
-      	  	  shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.create(
+						if @shopping_cart.nil?
+      	  	  @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.create(
       	  	  					date_from: date_from, time_from: time_from,
       	  	  					date_to: date_to, time_to: time_to,
       	  	  					pickup_place: pickup_place, return_place: return_place)
-      	  	  session[:shopping_cart_renting_id] = shopping_cart.id
+      	  	  session[:shopping_cart_renting_id] = @shopping_cart.id
       	  	end	
 
 						# Prepare response

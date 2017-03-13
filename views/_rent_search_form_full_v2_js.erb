@@ -8,9 +8,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
   selectorModel = {
 
+
   };
 
   selectorController = {
+
+      dateFromChanged: function() {
+
+          var dateFrom = $('#date_from').datepicker('getDate');
+          var dateTo = $('#date_from').datepicker('getDate');
+          dateTo.setDate(dateTo.getDate() + <%=booking_min_days%>)
+          $('#date_to').datepicker('setDate', dateTo );
+          $('#date_to').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+
+      }
+
 
   };
 
@@ -25,8 +37,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
   	},
 
   	setupDateControls: function() {
+
   	  $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
-      
       var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
 
       $('#date_from').datepicker({numberOfMonths:1, 
@@ -43,39 +55,40 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             dateFormat: 'dd/mm/yy'}, locale);
       $('#date_to').datepicker('setDate', '+<%=booking_min_days%>');
 
-
       $('#date_from').bind('change', function() {
-           var dateFrom = $('#date_from').datepicker('getDate');
-           var dateTo = $('#date_from').datepicker('getDate');
-           dateTo.setDate(dateTo.getDate() + <%=booking_min_days%>)
-           $('#dateto').datepicker('setDate', dateTo );
-           $('#dateto').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
-         });
+          selectorController.dateFromChanged();
+      });
   	},
 
   	loadPickupReturnPlaces: function() {
 
-        var dataSourcePickupPlaces = new RemoteDataSource('/api/booking/frontend/pickup-places',{'id':'name','description':'name'});
+        var dataSourcePickupPlaces = new RemoteDataSource('/api/booking/frontend/pickup-places',
+																													{'id':'name','description':'name'});
         var pickupPlace = new SelectSelector('pickup_place', 
         		dataSourcePickupPlaces, null, false, '',
                 function() { 
-                	$('#pickup_place').selectpicker(); 
+                	$('#pickup_place').selectpicker();
+                  $('#pickup_place').selectpicker('refresh');
                 } );             
 
-        var dataSourceReturnPlaces = new RemoteDataSource('/api/booking/frontend/return-places',{'id':'name','description':'name'});
+        var dataSourceReturnPlaces = new RemoteDataSource('/api/booking/frontend/return-places',
+																													{'id':'name','description':'name'});
         var returnPlace = new SelectSelector('return_place', 
         		dataSourcePickupPlaces, null, false, '',
                 function() { 
-                	$('#return_place').selectpicker(); 
+                	$('#return_place').selectpicker();
+                	$('#return_place').selectpicker('refresh');
                 } );          
 
   	},
 
   	loadPickupReturnTime: function() {
 
-        var dataSourcePickupReturnTime = new RemoteDataSource('/api/booking/frontend/pickup-return-times', {
-        	  id: function(data){return data;}, 
-        	  description: function(data){return data;} });
+        var dataSourcePickupReturnTime = new RemoteDataSource('/api/booking/frontend/pickup-return-times',
+																						{
+        	  																	id: function(data){return data;},
+																							description: function(data){return data;}
+																						});
 
         var pickupTime = new SelectSelector('time_from', 
         		dataSourcePickupReturnTime, '10:00', false, '',

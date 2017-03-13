@@ -72,7 +72,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       $.ajax({
         type: 'POST',
-        url : '/api/booking/frontend/set-extra?extra='+extraCode+'&quantity='+quantity,
+        url : '/api/booking/frontend/shopping-cart/set-extra?extra='+extraCode+'&quantity='+quantity,
         success: function(data, textStatus, jqXHR) {
 
             model.shopping_cart = data.shopping_cart;
@@ -96,7 +96,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       $.ajax({
         type: 'POST',
-        url : '/api/booking/frontend/remove-extra?extra='+extraCode,
+        url : '/api/booking/frontend/shopping-cart/remove-extra?extra='+extraCode,
         success: function(data, textStatus, jqXHR) {
 
             model.shopping_cart = data.shopping_cart;
@@ -126,7 +126,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       $.ajax({
             type: 'POST',
             data : reservationJSON,
-            url : '/api/booking/frontend/checkout',
+            url : '/api/booking/frontend/shopping-cart/checkout',
             success: function(data, textStatus, jqXHR) {
                 var payNow = data.pay_now;
                 var bookingId = data.free_access_id;

@@ -9,9 +9,9 @@ module Sinatra
       def shopping_cart_to_json(shopping_cart)
       
         # Prepare the shopping cart
-        only = [:date_from, :time_from, :date_to, :time_to, :pickup_place, :return_place, :days,
-                :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_cost, :booking_amount,
-                :pickup_place_cost, :return_place_cost,
+        only = [:free_access_id, :date_from, :time_from, :date_to, :time_to, :pickup_place, :return_place, :days,
+                :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_cost,
+                :booking_amount, :pickup_place_cost, :return_place_cost,
                 :customer_name, :customer_surname, :customer_email, :customer_phone, :customer_mobile_phone, :customer_document_id,
                 :promotion_code, :comments ]
         relationships = {}
@@ -67,98 +67,66 @@ module Sinatra
 
       	end
 
-        #
-        # Get the products for the shopping cart dates
-        #
-        app.get '/api/booking/frontend/products' do 
-
-          content_type 'json'
-
-          if session.has_key?(:shopping_cart_renting_id)
-            if shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-              result = ::Yito::Model::Booking::RentingSearch.search(shopping_cart.date_from,
-               shopping_cart.date_to, shopping_cart.days)
-              result.to_json
-            else
-              [].to_json
-            end
-          else
-            [].to_json
-          end
-
-        end
-
-        #
-        # Get the extras for the shopping cart dates
-        #
-        app.get '/api/booking/frontend/extras' do 
-
-          content_type 'json'
-
-          if session.has_key?(:shopping_cart_renting_id)
-            if shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-              result = ::Yito::Model::Booking::RentingExtrasSearch.search(shopping_cart.date_from,
-               shopping_cart.date_to, shopping_cart.days)
-              result.to_json
-            else
-              [].to_json
-            end
-          else
-            [].to_json
-          end
-
-        end        
-
       	#
       	# Get the renting shopping cart
       	#
-      	app.get '/api/booking/frontend/shopping-cart' do 
-          
-          content_type :json
+        app.route :get, ['/api/booking/frontend/shopping-cart',
+                         '/api/booking/frontend/shopping-cart/:free_access_id'
+                         ] do
 
-          if session.has_key?(:shopping_cart_renting_id)
-            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+          # Retrieve the shopping cart
+          shopping_cart = if params[:free_access_id]
+                            ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
+                          elsif session.has_key?(:shopping_cart_renting_id)
+                            ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+                          elsif params[:date_from] && params[:date_to]
+                            date_from = params[:date_from]
+                            time_from = params[:time_from]
+                            date_to = params[:date_to]
+                            time_to = params[:time_to]
+                            pickup_place = params[:pickup_place]
+                            return_place = params[:return_place]
+                            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.create(
+                                date_from: date_from, time_from: time_from,
+                                date_to: date_to, time_to: time_to,
+                                pickup_place: pickup_place, return_place: return_place)
+                            session[:shopping_cart_renting_id] = shopping_cart.id
+                          end
+
+          # Return the shopping cart
+          if shopping_cart
+            content_type 'json'
             shopping_cart_to_json(shopping_cart)
           else
-            if params[:date_from] && params[:date_to]
-              # Retrive the parameters from the request
-              date_from = params[:date_from]
-              time_from = params[:time_from]
-              date_to = params[:date_to]
-              time_to = params[:time_to]
-              pickup_place = params[:pickup_place]
-              return_place = params[:return_place]
-              # Create a new shopping cart instance
-              logger.info "Creating a new shopping cart"
-              shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.create(
-                  date_from: date_from, time_from: time_from,
-                  date_to: date_to, time_to: time_to,
-                  pickup_place: pickup_place, return_place: return_place)
-              session[:shopping_cart_renting_id] = shopping_cart.id
-              shopping_cart_to_json(shopping_cart)
-            else
-              logger.error "There is not renting shopping cart in session"
-              status 404
-            end
-    	    end
+            logger.error "No shopping cart"
+            status 404
+          end
 
       	end
 
         #
         # Set the renting product
         #
-        app.post '/api/booking/frontend/set-product' do
+        app.route :post, ['/api/booking/frontend/shopping-cart/set-product',
+                          '/api/booking/frontend/shopping-cart/:free_access_id/set-product'] do
 
-          logger.info "Setting up booking product"
+          # Request data
+          product_code = params[:product]
 
-          content_type :json
+          # Retrieve the shopping cart
+          shopping_cart = if params[:free_access_id]
+                            ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
+                          elsif session.has_key?(:shopping_cart_renting_id)
+                            ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+                          end
 
-          if session.has_key?(:shopping_cart_renting_id)
-            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-            shopping_cart.set_item(params[:product])
+          # Do the process
+          if shopping_cart
+            shopping_cart.set_item(product_code)
+            content_type 'json'
             shopping_cart_to_json(shopping_cart)
           else
-            logger.error "There is not renting shopping cart in session"
+            logger.error "No shopping cart"
             status 404
           end
 
@@ -167,16 +135,27 @@ module Sinatra
         #
         # Set an extra
         #
-        app.post '/api/booking/frontend/set-extra' do
+        app.route :post, ['/api/booking/frontend/shopping-cart/set-extra',
+                          '/api/booking/frontend/shopping-cart/:free_access_id/set-extra'] do
 
-          content_type :json
+          # Request data
+          extra_code = params[:extra]
+          extra_quantity = params[:quantity].to_i || 1
 
-          if session.has_key?(:shopping_cart_renting_id)
-            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-            shopping_cart.set_extra(params[:extra], params[:quantity].to_i || 1)
+          # Retrieve the shopping cart
+          shopping_cart = if params[:free_access_id]
+                            ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
+                          elsif session.has_key?(:shopping_cart_renting_id)
+                            ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+                          end
+
+          # Do the process
+          if shopping_cart
+            shopping_cart.set_extra(extra_code, extra_quantity)
+            content_type :json
             shopping_cart_to_json(shopping_cart)
           else
-            logger.error "There is not renting shopping cart in session"
+            logger.error "No shopping cart"
             status 404
           end
 
@@ -185,16 +164,26 @@ module Sinatra
         #
         # Remove extra
         #
-        app.post '/api/booking/frontend/remove-extra' do
+        app.route :post, ['/api/booking/frontend/shopping-cart/remove-extra',
+                          '/api/booking/frontend/shopping-cart/:free_access_id/remove-extra'] do
 
-          content_type :json
+          # Request data
+          extra_code = params[:extra]
 
-          if session.has_key?(:shopping_cart_renting_id)
-            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-            shopping_cart.remove_extra(params[:extra])
+          # Retrieve the shopping cart
+          shopping_cart = if params[:free_access_id]
+                            ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
+                          elsif session.has_key?(:shopping_cart_renting_id)
+                            ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+                          end
+
+          # Do the process
+          if shopping_cart
+            shopping_cart.remove_extra(extra_code)
+            content_type :json
             shopping_cart_to_json(shopping_cart)
           else
-            logger.error "There is not renting shopping cart in session"
+            logger.error "No shopping cart"
             status 404
           end
 
@@ -203,43 +192,47 @@ module Sinatra
         #
         # Confirm reservation
         #
-        app.post '/api/booking/frontend/checkout' do
+        app.route :post, ['/api/booking/frontend/shopping-cart/checkout',
+                          '/api/booking/frontend/shopping-cart/:free_access_id/checkout'] do
 
+          # Request data
           request.body.rewind
           request_data = JSON.parse(URI.unescape(request.body.read))
 
-          content_type :json
+          # Retrieve the shopping cart
+          shopping_cart = if params[:free_access_id]
+                            ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
+                          elsif session.has_key?(:shopping_cart_renting_id)
+                            ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+                          end
 
-          if session.has_key?(:shopping_cart_renting_id)
-            if shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-              logger.debug "Updating shopping cart"
-              # Updates the shopping cart
-              pay_now = request_data['payment'] != 'none'
-              payment_method_id = request_data['payment'] != 'none' ? request_data['payment'] : nil
-              shopping_cart.update(customer_name: request_data['customer_name'],
-                                   customer_surname: request_data['customer_surname'],
-                                   customer_email: request_data['customer_email'],
-                                   customer_phone: request_data['customer_phone'],
-                                   customer_mobile_phone: request_data['customer_mobile_phone'],
-                                   comments: request_data['comments'],
-                                   pay_now: pay_now,
-                                   payment_method_id: payment_method_id
-              )
-              logger.debug "Updated shopping cart"
-              # Creates the booking
-              booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart)
-              logger.debug "Created booking"
-              # Remove the shopping_cart_renting_id from the session
-              session.delete(:shopping_cart_renting_id)
-              # Add the booking_id to the session
-              session[:booking_id] = booking.id
-              booking.to_json(only: [:free_access_id, :pay_now, :payment, :payment_method_id])
-            else
-              logger.error "Renting shopping cart #{id} not found"
-              status 404
-            end
+          # Do the process
+          if shopping_cart
+            # Updates the shopping cart
+            pay_now = request_data['payment'] != 'none'
+            payment_method_id = request_data['payment'] != 'none' ? request_data['payment'] : nil
+            shopping_cart.update(customer_name: request_data['customer_name'],
+                                 customer_surname: request_data['customer_surname'],
+                                 customer_email: request_data['customer_email'],
+                                 customer_phone: request_data['customer_phone'],
+                                 customer_mobile_phone: request_data['customer_mobile_phone'],
+                                 comments: request_data['comments'],
+                                 pay_now: pay_now,
+                                 payment_method_id: payment_method_id
+            )
+            logger.debug "Updated shopping cart"
+            # Creates the booking
+            booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart)
+            logger.debug "Created booking"
+            # Remove the shopping_cart_renting_id from the session
+            session.delete(:shopping_cart_renting_id)
+            # Add the booking_id to the session
+            session[:booking_id] = booking.id
+            # Prepare response
+            content_type :json
+            booking.to_json(only: [:free_access_id, :pay_now, :payment, :payment_method_id])
           else
-            logger.error "There is not renting shopping cart in session"
+            logger.error "No shopping cart"
             status 404
           end
 
@@ -248,10 +241,12 @@ module Sinatra
         #
         # Get the reservation
         #
-        app.post '/api/booking/frontend/booking/:id' do
+        app.post '/api/booking/frontend/booking/:free_access_id' do
 
-          booking = BookingDataSystem::Booking.get_by_free_access_id(params[:id])
+          booking = BookingDataSystem::Booking.get_by_free_access_id(params[:free_access_id])
+
           if booking
+            content :json
             booking.to_json
           else
             logger.error "Booking not found #{params[:id]}"
