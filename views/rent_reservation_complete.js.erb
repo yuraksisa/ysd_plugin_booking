@@ -11,7 +11,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     products: null,
     extras: null,
 
-    getProduct: function() { /** Get a product **/
+    // ------------ Product information detail ------------------------
+
+    getShoppingCartProduct: function() { /** Get a product **/
 
     	if (this.shopping_cart && this.shopping_cart.items.length > 0)
     	{	
@@ -24,11 +26,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     				return this.products[idx];
     			}
     		}
-		}
+		  }
 
     	return null;
 
     },
+
+    // ------------ Extras information detail ------------------------
 
     getShoppingCartExtras: function() { /** Get an object representation of extras **/
 
@@ -42,8 +46,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       return shoppingCartExtras;
 
-
     },
+
+    // ------------------ Shopping cart -------------------------------
 
     loadShoppingCart: function() { /** Load the shopping cart **/
 
@@ -68,11 +73,29 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     },
 
+    // -------------- Extras management --------------------------
+
+    buildSetExtraDataParams: function(extraCode, quantity) {
+
+      var data = {
+           extra: extraCode,
+           quantity: quantity
+      };
+
+      var jsonData = encodeURIComponent(JSON.stringify(data));
+
+      return jsonData;
+
+    },
+
     setExtra: function(extraCode, quantity) { /** Sets an extra **/
 
       $.ajax({
         type: 'POST',
-        url : '/api/booking/frontend/shopping-cart/set-extra?extra='+extraCode+'&quantity='+quantity,
+        url : '/api/booking/frontend/shopping-cart/set-extra',
+        data: this.buildSetExtraDataParams(extraCode, quantity),
+        dataType : 'json',
+        contentType : 'application/json; charset=utf-8',
         success: function(data, textStatus, jqXHR) {
 
             model.shopping_cart = data.shopping_cart;
@@ -92,11 +115,27 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     },
 
+    buildDeleteExtraDataParams: function(extraCode) {
+
+       var data = {
+          extra: extraCode
+       };
+
+       var jsonData = encodeURIComponent(JSON.stringify(data));
+
+       return jsonData;
+
+    },
+
     deleteExtra: function(extraCode) { /** Remove an extra **/
 
       $.ajax({
         type: 'POST',
-        url : '/api/booking/frontend/shopping-cart/remove-extra?extra='+extraCode,
+        url : '/api/booking/frontend/shopping-cart/remove-extra',
+        data: this.buildDeleteExtraDataParams(extraCode),
+        dataType : 'json',
+        contentType : 'application/json; charset=utf-8',
+
         success: function(data, textStatus, jqXHR) {
 
             model.shopping_cart = data.shopping_cart;
@@ -115,18 +154,28 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     },
 
+    // -------------- Checkout : Confirm reservation ----------------------
+
+    buildCheckoutDataParams: function() {
+
+        var reservation = $('form[name=reservation_form]').formParams(false);
+        reservation.comments = $('#comments').val();
+        reservation.payment = $('#accordion a[aria-expanded=true]').attr('data-payment-method');
+
+        var reservationJSON = JSON.stringify(reservation);
+
+        return reservationJSON;
+    },
+
+
     sendBookingRequest: function() { /** Send a booking request **/
-
-      var reservation = $('form[name=reservation_form]').formParams(false);
-      reservation.comments = $('#comments').val();
-      reservation.payment = $('#accordion a[aria-expanded=true]').attr('data-payment-method');
-
-      var reservationJSON = JSON.stringify(reservation);
 
       $.ajax({
             type: 'POST',
-            data : reservationJSON,
             url : '/api/booking/frontend/shopping-cart/checkout',
+            data : this.buildCheckoutDataParams(),
+            dataType : 'json',
+            contentType : 'application/json; charset=utf-8',
             success: function(data, textStatus, jqXHR) {
                 var payNow = data.pay_now;
                 var bookingId = data.free_access_id;
@@ -279,7 +328,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     updateShoppingCart: function() { // Updates the shopping cart
     	
     	// Show the product information
-	  	var productInfo = tmpl('script_product_detail')({product: model.getProduct(),
+	  	var productInfo = tmpl('script_product_detail')({product: model.getShoppingCartProduct(),
 										 shopping_cart: model.shopping_cart});
 		  $('#selected_product').html(productInfo);
 

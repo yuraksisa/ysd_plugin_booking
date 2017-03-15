@@ -26,6 +26,8 @@ module Sinatra
       	  	  time_to = params[:time_to]
       	  	  pickup_place = params[:pickup_place]
       	  	  return_place = params[:return_place]
+							number_of_adults = params[:number_of_adults]
+							number_of_children = params[:number_of_children]
 							booking_parameters = true
 						end
 
@@ -38,7 +40,8 @@ module Sinatra
       	  	    @shopping_cart.change_selection_data(
 										                 date_from, time_from,
                                      date_to, time_to,
-                                     pickup_place, return_place)
+                                     pickup_place, return_place,
+																		 number_of_adults, number_of_children)
 							end
 						end
 
@@ -47,7 +50,8 @@ module Sinatra
       	  	    @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.create(
       	  	  					date_from: date_from, time_from: time_from,
       	  	  					date_to: date_to, time_to: time_to,
-      	  	  					pickup_place: pickup_place, return_place: return_place)
+      	  	  					pickup_place: pickup_place, return_place: return_place,
+								        number_of_adults: number_of_adults, number_of_children: number_of_children)
 							else
 								# TODO create default values or redirect home?
 							end

@@ -22,17 +22,17 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     loadedPickupTimes: false,
     loadedReturnTimes: false,
 
-    checkLoading: function() { // check loading process
+    // -------------- Extract data -----------------------------
 
-          if (this.loadedPickupPlaces &&
-              this.loadedReturnPlaces &&
-              this.loadedPickupTimes &&
-              this.loadedReturnTimes &&
-              this.loading) {
-              this.loading = false;
-              this.loadShoppingCart();
-          }
-
+    getUrlVars : function() {
+       var vars = [], hash;
+       var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+       for (var i = 0; i < hashes.length; i++) {
+           hash = hashes[i].split('=');
+           vars.push(hash[0]);
+           vars[hash[0]] = hash[1];
+       }
+       return vars;
     },
 
     extractVariables: function() { // Load variables from the request
@@ -65,50 +65,117 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
           }
     },
 
-    loadShoppingCart: function() { // Load the shopping cart
+    // --------------- Miscelanea -------------------------------------
 
-        var url = '/api/booking/frontend/shopping-cart';
-        if (this.date_from != 'undefined' && this.time_from != 'undefined' &&
-            this.date_to != 'undefined' && this.time_to != 'undefined' &&
-            this.pickup_place != 'undefined' && this.return_place != 'undefined') {
-            url += ('?date_from=' + encodeURIComponent(this.date_from) +
-            '&time_from='+ encodeURIComponent(this.time_from) +
-            '&date_to=' + encodeURIComponent(this.date_to) +
-            '&time_to=' + encodeURIComponent(this.time_to) +
-            '&pickup_place=' + encodeURIComponent(this.pickup_place) +
-            '&return_place=' + encodeURIComponent(this.return_place));
-        }
+    checkLoading: function() { // check loading process
 
-        $.ajax({
-            type: 'GET',
-            url : url,
-            xhrFields: {
-                withCredentials: true
-            },
-            crossDomain: true,
-            success: function(data, textStatus, jqXHR) {
-
-                model.shopping_cart = data.shopping_cart;
-                model.products = data.products;
-
-                view.showShoppingCart();
-
-            },
-            error: function(data, textStatus, jqXHR) {
-
-                alert('Error obteniendo la información');
-
-            }
-        });
-
+          if (this.loadedPickupPlaces &&
+              this.loadedReturnPlaces &&
+              this.loadedPickupTimes &&
+              this.loadedReturnTimes &&
+              this.loading) {
+              this.loading = false;
+              this.loadShoppingCart();
+          }
 
     },
 
-    selectProduct: function(productCode) {
+    // -------------- Shopping cart ----------------------------
+
+    isShoppingCartData: function() {
+
+        return (this.date_from != 'undefined' && this.date_from != '' &&
+                this.time_from != 'undefined' && this.time_from != '' &&
+                this.date_to != 'undefined' && this.date_to != '' &&
+                this.time_to != 'undefined' && this.time_to != '' &&
+                this.pickup_place != 'undefined' && this.pickup_place != '' &&
+                this.return_place != 'undefined' && this.return_place != '');
+
+    },
+
+    buildLoadShoppingCartDataParams: function() { /* Build create/update shopping cart data */
+
+        var data = {
+           date_from : this.date_from,
+           time_from : this.time_from,
+           date_to : this.date_to,
+           time_to : this.time_to,
+           pickup_place: this.pickup_place,
+           return_place: this.return_place
+        };
+
+        var jsonData = encodeURIComponent(JSON.stringify(data));
+
+        return jsonData;
+
+    },
+
+    loadShoppingCart: function() { // Load the shopping cart
+
+        var url = '/api/booking/frontend/shopping-cart';
+
+        if (this.isShoppingCartData()) { // create or update shopping cart
+            $.ajax({
+                type: 'POST',
+                url : url,
+                data: model.buildLoadShoppingCartDataParams(),
+                dataType : 'json',
+                contentType : 'application/json; charset=utf-8',
+                crossDomain: true,
+                success: function(data, textStatus, jqXHR) {
+                    model.shoppingCartResultProcess(data, textStatus, jqXHR);
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('Error obteniendo la información');
+                }
+            });
+        }
+        else { // retrieve the shopping cart
+            $.ajax({
+                type: 'GET',
+                url : url,
+                dataType : 'json',
+                contentType : 'application/json; charset=utf-8',
+                crossDomain: true,
+                success: function(data, textStatus, jqXHR) {
+                    model.shoppingCartResultProcess(data, textStatus, jqXHR);
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('Error obteniendo la información');
+                }
+            });
+        }
+
+    },
+
+    shoppingCartResultProcess: function(data, textStatus, jqXHR) {
+        model.shopping_cart = data.shopping_cart;
+        model.products = data.products;
+        view.showShoppingCart();
+    },
+
+    // -------------- Select product ----------------------------
+
+    buildSelectProductDataParams: function(productCode) {
+
+        var data = {
+            product: productCode
+        };
+
+        var jsonData = encodeURIComponent(JSON.stringify(data));
+
+        return jsonData;
+
+    },
+
+    selectProduct: function(productCode) { /* Set the product */
 
        $.ajax({
                type: 'POST',
-               url : '/api/booking/frontend/shopping-cart/set-product?product='+productCode,
+               url : '/api/booking/frontend/shopping-cart/set-product',
+               data: this.buildSelectProductDataParams(productCode),
+               dataType : 'json',
+               contentType : 'application/json; charset=utf-8',
                success: function(data, textStatus, jqXHR) {
                  
                  model.shopping_cart = data.shopping_cart;
@@ -116,22 +183,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
                },
                error: function(data, textStatus, jqXHR) {
-                  // TODO 
+
                   alert('Error seleccionando producto');
                }
           });
 
-    },
-
-    getUrlVars : function() {
-          var vars = [], hash;
-          var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-          for(var i = 0; i < hashes.length; i++) {
-              hash = hashes[i].split('=');
-              vars.push(hash[0]);
-              vars[hash[0]] = hash[1];
-          }
-          return vars;
     }
 
   };
