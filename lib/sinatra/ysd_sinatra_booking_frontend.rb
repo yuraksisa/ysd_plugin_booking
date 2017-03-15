@@ -18,27 +18,39 @@ module Sinatra
       	app.route :get, :post, ['/reserva/producto', '/book/product'] do
 
       	  	# Retrive the parameters from the request
-      	  	date_from = params[:date_from]
-      	  	time_from = params[:time_from]
-      	  	date_to = params[:date_to]
-      	  	time_to = params[:time_to]
-      	  	pickup_place = params[:pickup_place]
-      	  	return_place = params[:return_place]
+					  booking_parameters = false
+					  if params[:date_from] && params[:date_to]
+      	  	  date_from = DateTime .strptime(params[:date_from],"%d/%m/%Y")
+      	  	  time_from = params[:time_from]
+      	  	  date_to = DateTime.strptime(params[:date_to],"%d/%m/%Y")
+      	  	  time_to = params[:time_to]
+      	  	  pickup_place = params[:pickup_place]
+      	  	  return_place = params[:return_place]
+							booking_parameters = true
+						end
 
       	  	# Retrieve or create a new shopping cart
       	  	@shopping_cart = nil
-      	  	if session.has_key?(:shopping_cart_renting_id)
-      	  	  if @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-      	  	    @shopping_cart.update(date_from: date_from, time_from: time_from,
-                                     date_to: date_to, time_to: time_to,
-                                     pickup_place: pickup_place, return_place: return_place)
+
+						if session.has_key?(:shopping_cart_renting_id)
+      	  	  @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+      	  	  if booking_parameters
+      	  	    @shopping_cart.change_selection_data(
+										                 date_from, time_from,
+                                     date_to, time_to,
+                                     pickup_place, return_place)
 							end
 						end
+
 						if @shopping_cart.nil?
-      	  	  @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.create(
+							if booking_parameters
+      	  	    @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.create(
       	  	  					date_from: date_from, time_from: time_from,
       	  	  					date_to: date_to, time_to: time_to,
       	  	  					pickup_place: pickup_place, return_place: return_place)
+							else
+								# TODO create default values or redirect home?
+							end
       	  	  session[:shopping_cart_renting_id] = @shopping_cart.id
       	  	end	
 

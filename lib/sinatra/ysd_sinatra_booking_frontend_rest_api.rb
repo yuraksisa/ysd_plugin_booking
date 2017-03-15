@@ -67,51 +67,17 @@ module Sinatra
 
       	end
 
-      	#
-      	# Get the renting shopping cart
-      	#
-        app.route :get, ['/api/booking/frontend/shopping-cart',
-                         '/api/booking/frontend/shopping-cart/:free_access_id'
-                         ] do
-
-          # Retrieve the shopping cart
-          shopping_cart = if params[:free_access_id]
-                            ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
-                          elsif session.has_key?(:shopping_cart_renting_id)
-                            ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
-                          elsif params[:date_from] && params[:date_to]
-                            date_from = params[:date_from]
-                            time_from = params[:time_from]
-                            date_to = params[:date_to]
-                            time_to = params[:time_to]
-                            pickup_place = params[:pickup_place]
-                            return_place = params[:return_place]
-                            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.create(
-                                date_from: date_from, time_from: time_from,
-                                date_to: date_to, time_to: time_to,
-                                pickup_place: pickup_place, return_place: return_place)
-                            session[:shopping_cart_renting_id] = shopping_cart.id
-                          end
-
-          # Return the shopping cart
-          if shopping_cart
-            content_type 'json'
-            shopping_cart_to_json(shopping_cart)
-          else
-            logger.error "No shopping cart"
-            status 404
-          end
-
-      	end
+        # -------------------------------------------------------------------------
 
         #
-        # Set the renting product
+        # Set the product
         #
         app.route :post, ['/api/booking/frontend/shopping-cart/set-product',
                           '/api/booking/frontend/shopping-cart/:free_access_id/set-product'] do
 
           # Request data
           product_code = params[:product]
+          quantity = params[:quantity] || 1
 
           # Retrieve the shopping cart
           shopping_cart = if params[:free_access_id]
@@ -122,7 +88,7 @@ module Sinatra
 
           # Do the process
           if shopping_cart
-            shopping_cart.set_item(product_code)
+            shopping_cart.set_item(product_code, quantity)
             content_type 'json'
             shopping_cart_to_json(shopping_cart)
           else
@@ -231,6 +197,87 @@ module Sinatra
             # Prepare response
             content_type :json
             booking.to_json(only: [:free_access_id, :pay_now, :payment, :payment_method_id])
+          else
+            logger.error "No shopping cart"
+            status 404
+          end
+
+        end
+
+        # -------------------------------------------------------------------------
+
+        #
+        # Get the renting shopping cart
+        #
+        app.route :get, ['/api/booking/frontend/shopping-cart',
+                         '/api/booking/frontend/shopping-cart/:free_access_id'
+        ] do
+          content_type 'json'
+          shopping_cart = nil
+
+          # Retrieve the shopping cart
+          if params[:free_access_id]
+            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
+          elsif session.has_key?(:shopping_cart_renting_id)
+            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+          end
+
+          # Return the shopping cart
+          if shopping_cart
+            shopping_cart_to_json(shopping_cart)
+          else
+            logger.error "No shopping cart"
+            status 404
+          end
+
+        end
+
+        #
+        # Create/Update the renting shopping cart
+        #
+        app.route :post, ['/api/booking/frontend/shopping-cart',
+                          '/api/booking/frontend/shopping-cart/:free_access_id'] do
+
+          shopping_cart = nil
+          date_from = time_from = date_to = time_to = pickup_place = return_place = nil
+
+          if params[:date_from] && params[:date_to]
+            date_from = DateTime.strptime(params[:date_from],"%d/%m/%Y")
+            time_from = params[:time_from]
+            date_to = DateTime.strptime(params[:date_to],"%d/%m/%Y")
+            time_to = params[:time_to]
+            pickup_place = params[:pickup_place]
+            return_place = params[:return_place]
+          else
+            # ERROR not enough information
+          end
+
+          # Retrieve the shopping cart
+          if params[:free_access_id]
+            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
+          elsif session.has_key?(:shopping_cart_renting_id)
+            shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
+          end
+
+          # Update the shopping cart with the new dates or do create a new one if it does not exist
+          if date_from && date_to
+            if shopping_cart.nil?
+              shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.create(
+                  date_from: date_from, time_from: time_from,
+                  date_to: date_to, time_to: time_to,
+                  pickup_place: pickup_place, return_place: return_place)
+              session[:shopping_cart_renting_id] = shopping_cart.id
+            else
+              shopping_cart.change_selection_data(date_from, time_from,
+                                                  date_to, time_to,
+                                                  pickup_place, return_place)
+            end
+          end
+
+          # Return the shopping cart
+          if shopping_cart
+            content_type 'json'
+            shopping_cart_to_json(shopping_cart)
           else
             logger.error "No shopping cart"
             status 404
