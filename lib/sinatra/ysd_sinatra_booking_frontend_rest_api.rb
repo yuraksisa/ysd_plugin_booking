@@ -34,6 +34,28 @@ module Sinatra
 
       end
 
+      #
+      # Build the booking (with products and extras) to be served
+      #
+      def booking_to_json(booking)
+
+        # Prepare the booking
+        b_json = booking.to_json
+
+        # Prepare the products
+        p_json = ::Yito::Model::Booking::RentingSearch.search(booking.date_from,
+                                                              booking.date_to, booking.days).to_json
+
+        # Prepare the extras
+        e_json = ::Yito::Model::Booking::RentingExtraSearch.search(booking.date_from,
+                                                                   booking.date_to, booking.days).to_json
+
+        # Join all the data togheter
+        "{\"booking\": #{b_json}, \"products\": #{p_json}, \"extras\": #{e_json} }"
+
+
+      end
+
     end
 
     module BookingFrontendRESTApi
@@ -355,16 +377,18 @@ module Sinatra
 
         end
 
+        # ----------------------------- Reservation -----------------------------------------
+
         #
         # Get the reservation
         #
-        app.post '/api/booking/frontend/booking/:free_access_id' do
+        app.get '/api/booking/frontend/booking/:free_access_id' do
 
           booking = BookingDataSystem::Booking.get_by_free_access_id(params[:free_access_id])
 
           if booking
-            content :json
-            booking.to_json
+            content_type 'json'
+            booking_to_json(booking)
           else
             logger.error "Booking not found #{params[:id]}"
             content_type 'json'
