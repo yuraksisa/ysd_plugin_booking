@@ -3,6 +3,7 @@ mybooking_bottom:
   link: myBooking motor de reservas
 booking_pages:
   new_booking: Nueva reserva
+  summary: Resumen de la reserva
 system_admin_menu:
   apps:
     bookings_menu:
@@ -316,7 +317,7 @@ new_booking:
     title: Error en solicitud de reserva
     description: Error en el proceso
   confirm_message: Para confirmar la reserva debe hacer un abono de <span class="highlighted_text"><%= booking.booking_amount %>€</span>
-  summary_message: >   
+  summary_message: >
                    <h2>Reserva pendiente de confirmación </h2>
                    <p class="bf-title">Estimado Sr/Sra. <%= booking.customer_name %> <%= booking.customer_surname %>: </p>
                    <p class="bf-message">Queremos agradecerle su confianza en <strong><%= bookingConfiguration.company %></strong> para el alquiler de su <%= bookingConfiguration.item_type %>.</p>
@@ -330,6 +331,14 @@ new_booking:
   promotion_code_min_length: Tamaño mínimo 9 caracteres
   invalid_promotion_code: Código de promoción no válido
   promotion_code_applied: Código de promoción aplicado
+  resources: Recursos
+  resource: Producto
+  resource_name_surname: Nombre completo
+  resource_document_id: DNI / Pasaporte
+  resource_phone_number: Teléfono
+  resource_email: Correo electrónico
+  resource_height: Altura
+  resource_weight: Peso
   height:
     label: Altura
     placeholder: Su altura
@@ -861,6 +870,7 @@ booking:
   id: Su identificador de reserva es <strong>%1</strong>. <span class="less_contrast_text smaller_text">Use su identificador de reserva en todas las comunicaciones.</span>
   arrival: Entrada
   departure: Salida
+  customer: Cliente
   customer_notified: Notificado por correo electrónico 
   concept: Concepto
   amount: Cantidad
@@ -895,6 +905,13 @@ booking:
     in_progress: En progreso
     done: Finalizada
     cancelled: Cancelada
+booking_status:
+    pending_confirmation: Su petición está pendiente de confirmación
+    confirming: Su petición está siendo confirmada
+    confirmed: Su petición se ha confirmado
+    in_progress: Su reserva está en curso
+    done: Su reserva está finalizada
+    cancelled: Su reserva ha sido cancelada
 restaurant_booking:
   number_of_people: !!pl
     1: 1 persona

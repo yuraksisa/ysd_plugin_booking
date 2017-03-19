@@ -1594,18 +1594,24 @@ module Sinatra
           booking.save
 
           session[:booking_id] = booking.id
-          
+
+          if settings.multilanguage_site and settings.default_locale != (session[:locale] || 'es')
+            language_prefix = "/#{session[:locale]}"
+          else
+            language_prefix = ""
+          end
+
           # Pay booking
           response = if booking.pay_now
                        <<-HTML
                          <script type="text/javascript">
-                         window.location.href= "/p/mybooking/#{booking.free_access_id}"
+                         window.location.href= "#{language_prefix}/p/mybooking/#{booking.free_access_id}"
                          </script>
                        HTML
                      else
                        <<-HTML
                          <script type="text/javascript">
-                         window.location.href= "/p/booking/summary"
+                         window.location.href= "#{language_prefix}/p/booking/summary"
                          </script>
                        HTML
                      end

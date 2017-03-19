@@ -126,7 +126,8 @@ module Sinatra
             locals = {:booking => booking}
             if summary_message=ContentManagerSystem::Template.find_by_name('booking_summary_message') and
               not summary_message.text.empty?
-              template = ERB.new summary_message.text     
+              summary_message = summary_message.translate(session[:locale])
+              template = ERB.new summary_message.text
               message = template.result(binding)
               locals.store(:booking_summary_message, message)
             else

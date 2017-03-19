@@ -10,7 +10,13 @@
            'json2', 'jquery.validate', 
            'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es', 
            'jquery.ui.datepicker.validation',
-           'jquery.tools', 'jquery.formparams', 'datejs', 'http://www.googleadservices.com/pagead/conversion_async.js'], 
+           'jquery.tools', 'jquery.formparams',
+           <% if 'en' == session[:locale]%>
+           '/assets/js/date-en.js',
+           <% else %>
+           'datejs',
+           <% end %>
+          'http://www.googleadservices.com/pagead/conversion_async.js'],
            function($, YSDForms, DateControl, tmpl, bookingDataSystem,  
            ListSelector, MemoryDataSource, RemoteDataSource, SelectSelector, YSDGui) {  
 
@@ -260,8 +266,7 @@
           addCost : function (value) { /* Add cost */
              this.total_cost += value;
              this.total_cost = new Number(this.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0)).valueOf();
-             this.booking_amount = new Number(this.total_cost * 
-              <%=booking_deposit%> / 100).toFixed(0).valueOf();
+             this.booking_amount = new Number(this.total_cost * <%=booking_deposit%> / 100).toFixed(0).valueOf();
           },   
 
           apply_promotion_code: function(promotion_code, value, discount_type) {
@@ -793,8 +798,34 @@
          if (typeof(conv_handler) == 'function') {
            conv_handler(opt);
          }
+       },
+
+       translate_family: function(family_code) {
+
+           var families = bookingDataSystem.families;
+
+           result = {
+               family: families[family_code].family,
+               description: families[family_code].translations["<%=session[:locale] || 'es'%>"].description,
+               fullDescription: families[family_code].translations["<%=session[:locale] || 'es'%>"].fullDescription,
+               cars: families[family_code].translations["<%=session[:locale] || 'es'%>"].cars,
+               photo: families[family_code].photo,
+               capacity: families[family_code].capacity,
+               detailedPrice: families[family_code].detailedPrice,
+               deposit: families[family_code].deposit
+           }
+
+           return result;
+
+       },
+
+       translate_extra: function(extra_code) {
+
+           var extras = bookingDataSystem.extras;
+
        }
-       
+
+
     };
     
     /* ---------------------------------------- */
@@ -1231,16 +1262,7 @@
          
          for (family in families) {
            familiesHtml += tmpl('script_families', {
-              category: {
-                   family: families[family].family,
-                   description: families[family].translations["<%=session[:locale] || 'es'%>"].description,
-                   fullDescription: families[family].translations["<%=session[:locale] || 'es'%>"].fullDescription,
-                   cars: families[family].translations["<%=session[:locale] || 'es'%>"].cars,
-                   photo: families[family].photo,
-                   capacity: families[family].capacity,
-                   detailedPrice: families[family].detailedPrice,
-                   deposit: families[family].deposit
-              },
+              category: bookingModel.translate_family(family),
               total: total, 
               totalRows : Math.ceil(total / 3),
               currentRow: Math.floor(current / 3),
@@ -1305,16 +1327,7 @@
 
          for (family in families) {
            familiesHtml += tmpl('script_shopping_cart', {
-              category: {
-                  family: families[family].family,
-                  description: families[family].translations["<%=session[:locale] || 'es'%>"].description,
-                  fullDescription: families[family].translations["<%=session[:locale] || 'es'%>"].fullDescription,
-                  cars: families[family].translations["<%=session[:locale] || 'es'%>"].cars,
-                  photo: families[family].photo,
-                  capacity: families[family].capacity,
-                  detailedPrice: families[family].detailedPrice,
-                  deposit: families[family].deposit
-              },
+              category: bookingModel.translate_family(family),
               total: total,
               totalCols : numberOfColumns,
               totalRows : Math.ceil(total / numberOfColumns),
@@ -1726,7 +1739,8 @@
               tmpl('script_detailed_price', {
                             booking: bookingModel.booking,
                             all_prices_base: bookingModel.all_prices_base, 
-                            bookingDataSystem: bookingDataSystem}) );
+                            bookingDataSystem: bookingDataSystem,
+                            bookingModel: bookingModel}) );
              $('#family-selection').show();
          }
          else {
@@ -1808,7 +1822,10 @@
        load_resources_attributes: function() {
   
          <% if booking_item_family.named_resources %> 
-         var resourcesHtml = tmpl('script_resources_attributes', {booking: bookingModel.booking, bookingDataSystem: bookingDataSystem});
+         var resourcesHtml = tmpl('script_resources_attributes', {
+               booking: bookingModel.booking,
+               bookingDataSystem: bookingDataSystem,
+               bookingModel: bookingModel});
          $('#resources_attributes').html(resourcesHtml);
 
          $('.resource_user_name').bind('blur', function(event) {
@@ -1942,7 +1959,9 @@
 
          var extrasCount = 0;         
          for (extra in extras) {
-           extrasHtml += tmpl('script_extras', {extra: extras[extra], optional: bookingModel.booking.optional});
+           extrasHtml += tmpl('script_extras', {
+                                    extra: extras[extra],
+                                    optional: bookingModel.booking.optional});
            extrasCount++;
          }  
 
@@ -2223,13 +2242,15 @@
               tmpl('script_detailed_price', {
                             booking: bookingModel.booking,
                             all_prices_base: bookingModel.all_prices_base, 
-                            bookingDataSystem: bookingDataSystem}) );
+                            bookingDataSystem: bookingDataSystem,
+                            bookingModel: bookingModel}) );
              $('#total_cost').val( bookingModel.booking.total_cost.toFixed(bookingDataSystem.configuration.roundDecimals || 0) + '€' );
              $('#detailed_summary').html( 
               tmpl('script_detailed_price', {
                             booking: bookingModel.booking, 
                             all_prices_base: bookingModel.all_prices_base, 
-                            bookingDataSystem: bookingDataSystem}) );
+                            bookingDataSystem: bookingDataSystem,
+                            bookingModel: bookingModel}) );
              $('#button_calcular_tarifas').val('<%=t.new_booking.update%>')
              break;
            

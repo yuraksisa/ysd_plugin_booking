@@ -505,6 +505,7 @@ module Huasi
 
       pages = {}
       pages.store(t.booking_pages.new_booking, '/p/booking/start')
+      pages.store(t.booking_pages.booking_summary, '/p/booking/summary')
 
       return pages
 
