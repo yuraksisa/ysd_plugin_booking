@@ -449,7 +449,8 @@ module Sinatra
         #
         # Create new booking (administation)
         #
-        app.route :get, :post, ['/admin/booking/new/:booking_catalog_code', '/admin/booking/new'], :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.route :get, :post, ['/admin/booking/new/:booking_catalog_code',
+                                '/admin/booking/new'], :allowed_usergroups => ['booking_manager', 'staff'] do
 
             catalog = request_catalog
 

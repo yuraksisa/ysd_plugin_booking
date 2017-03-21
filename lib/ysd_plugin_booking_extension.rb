@@ -492,8 +492,18 @@ module Huasi
           booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
           booking_renting = SystemConfiguration::Variable.get_value('booking.renting','false').to_bool
           booking_activities = SystemConfiguration::Variable.get_value('booking.activities','false').to_bool
+
+          # Complete with a request to the add-ons
+          addon_crm = false
+          addon_finances = false
+          addon_massive_price_adjust = false
+          addon_offer_promotion_code = false
+
           if booking_mode == 'rent'
-            menu_locals = {}
+            menu_locals = {addon_crm: addon_crm,
+                           addon_finances: addon_finances,
+                           addon_massive_price_adjust: addon_massive_price_adjust,
+                           addon_offer_promotion_code: addon_offer_promotion_code}
             menu_locals.store(:booking_activities, booking_activities) 
             menu_locals.store(:booking_renting, booking_renting)
             if booking_renting
