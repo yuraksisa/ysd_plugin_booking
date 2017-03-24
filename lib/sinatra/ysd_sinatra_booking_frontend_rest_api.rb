@@ -251,9 +251,11 @@ module Sinatra
                                  customer_email: request_data['customer_email'],
                                  customer_phone: request_data['customer_phone'],
                                  customer_mobile_phone: request_data['customer_mobile_phone'],
+                                 driver_name: request_data['driver_name'],
+                                 driver_surname: request_data['driver_surname'],
                                  comments: request_data['comments'],
                                  pay_now: pay_now,
-                                 payment_method_id: payment_method_id
+                                 payment_method_id: payment_method_id,
             )
             logger.debug "Updated shopping cart"
             # Creates the booking
