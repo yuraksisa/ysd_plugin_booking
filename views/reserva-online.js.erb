@@ -130,6 +130,7 @@
           booking_amount: 0, /* The amount to pay to confirm the booking */
           pay_now: false, /* The user will pay  */
           promotion_code: null, /* The promotion code */
+          customer_language: '<%= session[:locale] || "es" %>', /* Customer language */
           
           add_booking_line : function(item_id, quantity) { /** Adds a new item **/
 

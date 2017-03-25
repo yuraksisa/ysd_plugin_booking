@@ -1,5 +1,5 @@
       <% if booking.expired? %>
-      <h2><%=t.booking.expired%></h2>      
+      <h2><%=t.booking.expired%></h2>
       <% else %>
       <h2><%=t[:booking_status][booking.status.to_sym]%></h2>
       <% end %>
