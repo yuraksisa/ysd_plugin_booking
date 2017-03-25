@@ -269,10 +269,10 @@
                for (family in bookingModel.all_prices) {                 
                  if (value > 0) {
                    if (discount_type == 'percentage') {
-                     bookingModel.all_prices[family] = new Number(bookingModel.all_prices[family] * (100 - value) / 100).toFixed(0).valueOf();
+                     bookingModel.all_prices[family] = new Number(new Number(bookingModel.all_prices[family] * (100 - value) / 100).toFixed(0));
                    }
                    else {
-                     bookingModel.all_prices[family] = new Number(bookingModel.all_prices[family] - value).toFixed(0).valueOf();
+                     bookingModel.all_prices[family] = new Number(new Number(bookingModel.all_prices[family] - value).toFixed(0));
                    }
                  }
                }
@@ -589,10 +589,10 @@
          for (category in this.all_prices_base) {
            if (this.discount.value > 0) {
              if (this.discount.type == 'percentage') {
-               this.all_prices[category] = new Number(this.all_prices_base[category] * (100 - this.discount.value) / 100).toFixed(0).valueOf();
+               this.all_prices[category] = new Number(new Number(this.all_prices_base[category] * (100 - this.discount.value) / 100).toFixed(0));
              }
              else {
-               this.all_prices[category] = new Number(this.all_prices_base[category] - this.discount.value).toFixed(0).valueOf();
+               this.all_prices[category] = new Number(new Number(this.all_prices_base[category] - this.discount.value).toFixed(0));
              }
            }
            else {
