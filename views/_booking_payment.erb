@@ -61,11 +61,11 @@ require (['jquery','YSDListSelector', 'YSDRemoteDataSource', 'jquery.validate',
 
        configurePaymentMethods: function() {
           
-          var paymentMethodsDS = new RemoteDataSource('/paymethods/online', 
+          var paymentMethodsDS = new RemoteDataSource("<%=format_url_with_language('/paymethods/online')%>",
           	{id:'id', description: function(data){
           	  var img = (data.icon && data.icon.length > 0)?'<img src="'+ data.icon + '"/>':'';	
-          	  img += '<span class="highlighted_text">' + 
-          	    data.title +'</span><div class="lighter_text">' + data.description + '</div>';
+          	  img += '<span class="left-margin highlighted_text">' +
+          	    data.title +'</span><br/><div class="lighter_text">' + data.description + '</div><br/>';
           	  return img;} 
           	});
           

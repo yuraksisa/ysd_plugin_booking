@@ -33,7 +33,10 @@
              <% booking.booking_lines.each do |booking_line| %>
              <div class="item_properties_attribute bottom-margin">
                <span class="item_properties_attribute_name left_text">
-                 <%= booking_line.item_description %> X <%= booking_line.quantity %>
+                 <% booking_category = ::Yito::Model::Booking::BookingCategory.get(booking_line.item_id) %>
+                 <% booking_category = booking_category.translate(session[:locale]) if booking_category %>
+                 <% description = booking_category ? booking_category.short_description : booking_line.item_description %>
+                 <%= description %> X <%= booking_line.quantity %>
                </span>
                <span class="item_properties_attribute_value right_text">
                  <%= "%.2f" % booking_line.item_cost %> €

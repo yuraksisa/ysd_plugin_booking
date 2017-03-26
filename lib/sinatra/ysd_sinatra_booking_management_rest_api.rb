@@ -1588,24 +1588,32 @@ module Sinatra
           unless booking_data.has_key?(:customer_language)
             booking_data[:customer_language] = session[:locale] || 'es'
           end
+
+          session[:locale] = booking_data[:customer_language] || settings.default_locale
           
           booking = BookingDataSystem::Booking.new(booking_data)
           booking.init_user_agent_data(request.env["HTTP_USER_AGENT"])
           booking.save
 
           session[:booking_id] = booking.id
-          
+
+          pay_now_url = "/p/mybooking/#{booking.free_access_id}"
+          summary_url = '/p/booking/summary'
+
+          #pay_now_url = format_url_with_language("/p/mybooking/#{booking.free_access_id}")
+          #summary_url = format_url_with_language('/p/booking/summary')
+
           # Pay booking
           response = if booking.pay_now
                        <<-HTML
                          <script type="text/javascript">
-                         window.location.href= "/p/mybooking/#{booking.free_access_id}"
+                         window.location.href= "#{pay_now_url}"
                          </script>
                        HTML
                      else
                        <<-HTML
                          <script type="text/javascript">
-                         window.location.href= "/p/booking/summary"
+                         window.location.href= "#{summary_url}"
                          </script>
                        HTML
                      end

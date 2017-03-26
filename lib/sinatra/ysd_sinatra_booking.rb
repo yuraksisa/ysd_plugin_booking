@@ -32,10 +32,87 @@ module Sinatra
         end
 
         #
+        # It starts a booking process
+        #
+        ['/p/booking/start/:booking_catalog_code','/p/booking/start/?*'].each do |path|
+          app.get path  do
+
+            catalog = request_catalog
+            options = {}
+
+            options.store(:page_title,
+                          SystemConfiguration::Variable.get_value('booking.page_title'))
+            options.store(:page_description,
+                          SystemConfiguration::Variable.get_value('booking.page_description'))
+            options.store(:page_language, session[:locale])
+            options.store(:page_keywords,
+                          SystemConfiguration::Variable.get_value('booking.page_keywords'))
+
+            options.store(:layout, params['layout']=='false'? false : params['layout']) if params.has_key?('layout')
+
+            locals = {}
+
+            locals.store(:admin_mode, false)
+            locals.store(:confirm_booking_url, '/api/booking')
+            locals.store(:booking_reservation_starts_with,
+                         catalog ? catalog.selector.to_sym : SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
+            locals.store(:booking_item_family,
+                         catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+            locals.store(:booking_item_type,
+                         SystemConfiguration::Variable.get_value('booking.item_type'))
+            locals.store(:booking_payment,
+                         SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
+            locals.store(:booking_deposit,
+                         SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
+            locals.store(:booking_min_days,
+                         SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
+            locals.store(:booking_payment_cadence,
+                         SystemConfiguration::Variable.get_value('booking.payment_cadence', '0').to_i)
+            locals.store(:booking_allow_custom_pickup_return_place,
+                         SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+            # Adwords integration
+            locals.store(:booking_adwords_active,
+                         SystemConfiguration::Variable.get_value('booking.adwords_active', 'false').to_bool)
+            locals.store(:booking_adwords_booking_request_conversion_id,
+                         SystemConfiguration::Variable.get_value('booking.adwords_booking_request_conversion_id', '0').to_i)
+            locals.store(:booking_adwords_booking_request_conversion_label,
+                         SystemConfiguration::Variable.get_value('booking.adwords_booking_request_conversion_label', '0'))
+            locals.store(:booking_adwords_booking_pay_now_conversion_id,
+                         SystemConfiguration::Variable.get_value('booking.adwords_booking_pay_now_conversion_id', '0').to_i)
+            locals.store(:booking_adwords_booking_pay_now_conversion_label,
+                         SystemConfiguration::Variable.get_value('booking.adwords_booking_pay_now_conversion_label', '0'))
+
+            locals.store(:booking, nil)
+            locals.store(:promotion_codes_active, ::Yito::Model::Rates::PromotionCode.active?(Date.today))
+            locals.store(:offer_discount, ::Yito::Model::Rates::Discount.active(Date.today).first)
+
+            #booking_js = catalog_template(catalog)
+            #
+            #if booking_js and not booking_js.text.empty?
+            #  locals.store(:booking_js, booking_js.text)
+            #end
+            locals.store(:booking_js, '')
+
+            load_page('reserva-online'.to_sym, options.merge(:locals => locals))
+
+          end
+        end
+
+        #
+        # Set up the session locale from the booking customer language
+        #
+        app.before '/p/mybooking/:id' do
+          if @booking = BookingDataSystem::Booking.get_by_free_access_id(params[:id])
+            session[:locale] = @booking.customer_language || settings.default_locale
+          end
+        end
+
+        #
         # Shows a booking: To be managed by the customer
         #   
         app.get '/p/mybooking/:id/?*' do
-          if booking = BookingDataSystem::Booking.get_by_free_access_id(params[:id])
+          if @booking
+            booking = @booking
             locals = {:booking => booking}
             locals.store(:booking_deposit,
               SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i) 
@@ -50,91 +127,39 @@ module Sinatra
         end
 
         #
-        # It starts a booking process
+        # Set up the session locale from the booking customer language
         #
-        ['/p/booking/start/:booking_catalog_code','/p/booking/start/?*'].each do |path|
-          app.get path  do          
-          
-            catalog = request_catalog
-            options = {}
-
-            options.store(:page_title,
-              SystemConfiguration::Variable.get_value('booking.page_title'))
-            options.store(:page_description,
-              SystemConfiguration::Variable.get_value('booking.page_description'))
-            options.store(:page_language, session[:locale])
-            options.store(:page_keywords,
-              SystemConfiguration::Variable.get_value('booking.page_keywords'))          
-
-            options.store(:layout, params['layout']=='false'? false : params['layout']) if params.has_key?('layout')
-
-            locals = {}
-
-            locals.store(:admin_mode, false)
-            locals.store(:confirm_booking_url, '/api/booking')
-            locals.store(:booking_reservation_starts_with,
-              catalog ? catalog.selector.to_sym : SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
-            locals.store(:booking_item_family, 
-              catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
-            locals.store(:booking_item_type,
-              SystemConfiguration::Variable.get_value('booking.item_type'))
-            locals.store(:booking_payment,
-              SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
-            locals.store(:booking_deposit,
-              SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
-            locals.store(:booking_min_days,
-              SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
-            locals.store(:booking_payment_cadence,
-              SystemConfiguration::Variable.get_value('booking.payment_cadence', '0').to_i)
-            locals.store(:booking_allow_custom_pickup_return_place,
-              SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
-            # Adwords integration
-            locals.store(:booking_adwords_active,
-              SystemConfiguration::Variable.get_value('booking.adwords_active', 'false').to_bool)
-            locals.store(:booking_adwords_booking_request_conversion_id,
-              SystemConfiguration::Variable.get_value('booking.adwords_booking_request_conversion_id', '0').to_i)            
-            locals.store(:booking_adwords_booking_request_conversion_label,
-              SystemConfiguration::Variable.get_value('booking.adwords_booking_request_conversion_label', '0'))            
-            locals.store(:booking_adwords_booking_pay_now_conversion_id,
-              SystemConfiguration::Variable.get_value('booking.adwords_booking_pay_now_conversion_id', '0').to_i)            
-            locals.store(:booking_adwords_booking_pay_now_conversion_label,
-              SystemConfiguration::Variable.get_value('booking.adwords_booking_pay_now_conversion_label', '0'))            
-
-            locals.store(:booking, nil)
-            locals.store(:promotion_codes_active, ::Yito::Model::Rates::PromotionCode.active?(Date.today))
-            locals.store(:offer_discount, ::Yito::Model::Rates::Discount.active(Date.today).first)
-
-            #booking_js = catalog_template(catalog)
-            #
-            #if booking_js and not booking_js.text.empty?
-            #  locals.store(:booking_js, booking_js.text) 
-            #end
-            locals.store(:booking_js, '') 
-                 
-            load_page('reserva-online'.to_sym, options.merge(:locals => locals))
-          
+        app.before '/p/booking/summary' do
+          if session[:booking_id]
+            if @booking = BookingDataSystem::Booking.get(session[:booking_id])
+              session[:locale] = @booking.customer_language || settings.default_locale
+            end
           end
         end
-        
+
         #
         # Booking summary (booking request)
         #
         app.get '/p/booking/summary/?*' do
-
           if session[:booking_id]
-            booking = BookingDataSystem::Booking.get(session[:booking_id])
-            locals = {:booking => booking}
-            if summary_message=ContentManagerSystem::Template.find_by_name('booking_summary_message') and
-              not summary_message.text.empty?
-              template = ERB.new summary_message.text     
-              message = template.result(binding)
-              locals.store(:booking_summary_message, message)
+            if @booking
+              booking = @booking
+              locals = {:booking => booking}
+              if summary_message=ContentManagerSystem::Template.find_by_name('booking_summary_message') and
+                not summary_message.text.empty?
+                summary_message = summary_message.translate(session[:locale])
+                template = ERB.new summary_message.text
+                message = template.result(binding)
+                locals.store(:booking_summary_message, message)
+              else
+                template = ERB.new t.new_booking.summary_message
+                message = template.result(binding)
+                locals.store(:booking_summary_message, message)
+              end
+              load_page :reserva_request, :locals => locals
             else
-              template = ERB.new t.new_booking.summary_message
-              message = template.result(binding)
-              locals.store(:booking_summary_message, message)
+              status 404
             end
-            load_page :reserva_request, :locals => locals
           else
              status 404
           end
@@ -149,28 +174,45 @@ module Sinatra
                 "REQUEST_METHOD" => 'GET')
         end
 
+        # ------------------------ Payment Gateway Return -----------------------------------------------------
+
+        # ----- Request to the payment gateway
+
         #
-        # Register a deposit payment on the booking 
+        # Connect to the payment gateway
         #
-        app.post '/p/booking/pay/?*', 
+        app.post '/p/booking/pay/?*',
           :allowed_origin => lambda { SystemConfiguration::Variable.get_value('site.domain') } do
-          
+
           if booking = BookingDataSystem::Booking.get(params[:id].to_i)
             payment = params[:payment]
             payment_method = params[:payment_method_id]
             if charge = booking.create_online_charge!(payment, payment_method)
               session[:booking_id] = booking.id
               session[:charge_id] = charge.id
-              status, header, body = call! env.merge("PATH_INFO" => "/charge", 
+              status, header, body = call! env.merge("PATH_INFO" => "/charge",
                 "REQUEST_METHOD" => 'GET')
             else
               redirect "/p/order/#{booking.free_access_id}"
-            end            
+            end
           else
             status 404
-          end 
+          end
 
         end
+
+        # ----- Response from the payment gateway
+
+        #
+        # Set up the session locale from the booking customer language
+        #
+        app.before /\/p\/booking\/payment-gateway-return\/(ok|cancel|nok)/ do
+          if session[:charge_id]
+            @booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
+            session[:locale] = @booking.customer_language || settings.default_locale
+          end
+        end
+
 
         #
         # It returns from the payment gateway when the payment has been done
@@ -179,8 +221,8 @@ module Sinatra
         #   
         app.get '/p/booking/payment-gateway-return/ok' do
 
-          if session[:charge_id]
-            booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
+          if @booking
+            booking = @booking
             locals = {}
             locals.store(:booking, booking)
             locals.store(:booking_deposit, SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
@@ -200,8 +242,8 @@ module Sinatra
         #
         app.get '/p/booking/payment-gateway-return/cancel' do
 
-          if session[:charge_id]
-             booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
+          if @booking
+             booking = @booking
              locals = {:booking => booking}
              locals.store(:booking_deposit, 
                  SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
@@ -222,8 +264,8 @@ module Sinatra
         # Shows the reservation payment denied
         #
         app.get '/p/booking/payment-gateway-return/nok' do
-          if session[:charge_id]
-            booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
+          if @booking
+            booking = @booking
             locals = {}
             locals.store(:booking, booking)
             locals.store(:booking_deposit, SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
@@ -235,15 +277,19 @@ module Sinatra
             status 404
           end
         end
-                
+
+        # ------------------------------------------------------------------------------------------------
+
         #
         # It starts a booking process (with a customer template)
         #
-        app.get '/p/booking/:customer' do 
+        app.get '/p/booking/:customer' do
           pass unless get_path("#{params[:customer]}-layout}")
           load_page('reserva-online'.to_sym, :layout => "#{params[:customer]}-layout".to_sym)
-        end   
-         
+        end
+
+        # --------------------------------------------------------------------------------------------
+
         #
         # Serves static content
         #

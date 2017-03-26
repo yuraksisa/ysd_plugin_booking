@@ -15,11 +15,21 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $('#code').attr('code', true);
       $('#name').focus();
       this.configForm(entity);
+      // Embed prices
       $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_id, dataType: 'text'}).done(function(html) {
         var dom = $('<html />').prop('innerHTML', html);
         $('#prices_container').html(dom.find('body #page_wrapper'));
         $('head').append(dom.find('script'));
-      });      
+      });
+      // Embed translations
+      <% if @show_translations %>
+        $.ajax({url: '/admin/booking/translate/extra/'+ entity.code, dataType: 'text'}).done(function(html) {
+            var dom = $('<html />').prop('innerHTML', html);
+            $('#translation_container').html(dom.find('body #page_wrapper'));
+            $('head').append(dom.find('script:not([src])'));
+        });
+      <% end %>
+
     },
   
     onNew : function() {

@@ -84,7 +84,7 @@
 	          <div class="container_12">
               <div class="grid_12">
 	              <fieldset id="fs_resources_attributes">
-	                <legend id="lg_summary_extras" class="legend-first-level">Recursos</legend>	
+	                <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.resources%></legend>
                   <div id="resources_attributes" class="smaller_text">
 	                </div>
 	              </fieldset>
@@ -247,7 +247,7 @@
 	               <input type="checkbox" name="extras[<%%=extra.id%>[extra_id]]" id="extras[<%%=extra.id%>[extra_id]]" value="<%%=extra.id%>" rel="extras[<%%=extra.id%>[quantity]]" class="extra"/>
 	            </td>
 	            <td>   
-	               <label id="label_extra_<%%=extra.id%>"><%%=extra.the_name%></label>
+	               <label id="label_extra_<%%=extra.id%>"><%%=extra.translations['<%=session[:locale]||"es"%>'].name%></label>
 	            </td>
 	            <td>
 	               <%% if (extra.max_quantity > 1) { %>
@@ -268,17 +268,17 @@
        <thead class="table-header">
          <tr>
            <% if booking_item_family.named_resources %>
-           <th class="table-header-title">Recurso</th>
-           <th class="table-header-title" style="width: 250px">Nombre y apellidos</th>
-           <th class="table-header-title">DNI / Pasaporte</th>
-           <th class="table-header-title">Teléfono</th>
-           <th class="table-header-title">Email</th>           
+           <th class="table-header-title"><%=t.new_booking.resource%></th>
+           <th class="table-header-title" style="width: 250px"><%=t.new_booking.resource_name_surname%></th>
+           <th class="table-header-title"><%=t.new_booking.resource_document_id%></th>
+           <th class="table-header-title"><%=t.new_booking.resource_phone_number%></th>
+           <th class="table-header-title"><%=t.new_booking.resource_email%></th>
            <% end %>
            <% if booking_item_family.height %>
-           <th class="table-header-title">Altura</th>
+           <th class="table-header-title"><%=t.new_booking.resource_height%></th>
            <% end %>
            <% if booking_item_family.weight %>
-           <th class="table-header-title">Peso</th>
+           <th class="table-header-title"><%=t.new_booking.resource_weight%></th>
            <% end %>
          </tr>
        </thead>
@@ -286,7 +286,7 @@
           <%% for (item in booking.booking_lines) { %>
              <%% for (var idx=0;idx< booking.booking_lines[item].quantity;idx++) { %>
                 <tr class="table-row"> 
-                  <td class="table-cell"><%%=booking.booking_lines[item].item_description%> <%%=idx+1%></td>
+                  <td class="table-cell"><%%=bookingModel.translate_family(booking.booking_lines[item].item_id).description%> <%%=idx+1%></td>
                   <% if booking_item_family.named_resources %>
                   <td class="table-cell">
                      <input class="resource_user_name" type="text" maxlength="80" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
@@ -385,7 +385,7 @@
         <tbody>
           <%% for (item in booking.booking_lines) { %>
           <tr>
-            <td class="first_column"><%%= bookingDataSystem.families[item].cars %></td>
+            <td class="first_column"><%%= bookingModel.translate_family(item).cars %></td>
             <td class="quantity_column"><%%= booking.days %> </td>
             <td class="quantity_column"><%%if (all_prices_base[item]!=booking.booking_lines[item].item_unit_cost){%><span class="car_price_total_base"><%%=all_prices_base[item]%>€ </span><span class="car_price_total_base_offer"><%=t.new_booking.offer_budget%> </span><%%}%><%%= booking.booking_lines[item].item_unit_cost %>€ </td>
             <td class="quantity_column"><%%= booking.booking_lines[item].quantity %> </td>

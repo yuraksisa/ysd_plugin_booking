@@ -2,7 +2,8 @@ mybooking_bottom:
   text: Reservations managed by
   link: myBooking booking engine
 booking_pages:
-  new_booking: Start booking
+  new_booking: New reservation
+  summary: Reservation summary
 confirm_line1system_admin_menu:
   apps:
     bookings_menu:
@@ -152,6 +153,8 @@ new_booking:
   return: Return
   place: Place
   other: Other
+  date: Date
+  budget: Budget
   pickup_place: Pickup place
   pickup_place_required: Pickup place is required
   return_place: Return place
@@ -205,6 +208,20 @@ new_booking:
                    <p class="bf-message">Remember that you have a maximum of 72 hours to make payment and thus confirm your reservation.</p>
                    <p class="bf-footer">attentively, </p>
                    <p class="bf-footer">The <%= bookingConfiguration.company%> team</p>
+  promotion_code: Promotion code
+  check_promotion_code: Send
+  promotion_code_required: The promotion code is mandatory
+  promotion_code_min_length: Minimum length is 9 characters
+  invalid_promotion_code: Promotion code is not valid
+  promotion_code_applied: Promotion code has been applied
+  resources: Resources
+  resource: Product
+  resource_name_surname: Full name
+  resource_document_id: Passport or ID
+  resource_phone_number: Phone number
+  resource_email: Email
+  resource_height: Height
+  resource_weight: Weight
   height:
     label: Height
     placeholder: your height
@@ -545,12 +562,13 @@ booking_places_management:
 booking:
   days: !!pl
     1: 1 day
-    n: \%1 days
-  title: \%1 booking
+    n: "%1 days"
+  title: "%1 booking"
   expired: Expired time to deposit  
-  id: Your booking id is <strong>%1</strong>. <span class="smaller_text less_contrast_text">Use the above booking id in all your communications.</span>
+  id: Your request id is <strong>%1</strong>. <span class="smaller_text less_contrast_text">Use the request id in all your communications.</span>
   arrival: Arrival
-  departure: Departure 
+  departure: Departure
+  customer: Customer
   customer_notified: Notified by email
   concept: Concept
   amount: Amount
@@ -585,6 +603,13 @@ booking:
     in_progress: In progress
     done: Done
     cancelled: Cancelled
+booking_status:
+    pending_confirmation: Your request is pending of confirmation
+    confirming: Your request is being confirmed
+    confirmed: Your request has been confirmed
+    in_progress: Your reservation is in progress
+    done: Your reservations is done
+    cancelled: Your reservation has been canceled
 bookings_planning:
   title: Planning    
 bookings_scheduler:

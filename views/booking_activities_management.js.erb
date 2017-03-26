@@ -44,7 +44,16 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           $('head').append(dom.find('script:not([src])'));
         });
       }
-      
+
+      // Embed translations
+      <% if @show_translations %>
+      $.ajax({url: '/admin/booking/translate/activity/'+ entity.id, dataType: 'text'}).done(function(html) {
+            var dom = $('<html />').prop('innerHTML', html);
+            $('#translation_container').html(dom.find('body #page_wrapper'));
+            $('head').append(dom.find('script:not([src])'));
+      });
+      <% end %>
+
       $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
       $('#date_from').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
       $('#date_from').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingActivitiesManager.view.formatDate(entity.date_from, 'dd/MM/yyyy')));
