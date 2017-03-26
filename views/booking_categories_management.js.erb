@@ -18,11 +18,22 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $('#type').prop('disabled', 'true');
       this.configForm(entity);
 
+      // Embed prices
       $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_id, dataType: 'text'}).done(function(html) {
         var dom = $('<html />').prop('innerHTML', html);
         $('#prices_container').html(dom.find('body #page_wrapper'));
         $('head').append(dom.find('script:not([src])'));
       });
+
+      // Embed translations
+      <% if @show_translations %>
+      $.ajax({url: '/admin/booking/translate/category/'+ entity.code, dataType: 'text'}).done(function(html) {
+          var dom = $('<html />').prop('innerHTML', html);
+          $('#translation_container').html(dom.find('body #page_wrapper'));
+          $('head').append(dom.find('script:not([src])'));
+      });
+      <% end %>
+
 
     },
   

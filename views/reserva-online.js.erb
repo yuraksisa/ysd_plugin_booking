@@ -1230,7 +1230,17 @@
          var current = 0;
          
          for (family in families) {
-           familiesHtml += tmpl('script_families', {category: families[family],
+           familiesHtml += tmpl('script_families', {
+              category: {
+                   family: families[family].family,
+                   description: families[family].translations["<%=session[:locale] || 'es'%>"].description,
+                   fullDescription: families[family].translations["<%=session[:locale] || 'es'%>"].fullDescription,
+                   cars: families[family].translations["<%=session[:locale] || 'es'%>"].cars,
+                   photo: families[family].photo,
+                   capacity: families[family].capacity,
+                   detailedPrice: families[family].detailedPrice,
+                   deposit: families[family].deposit
+              },
               total: total, 
               totalRows : Math.ceil(total / 3),
               currentRow: Math.floor(current / 3),
@@ -1294,8 +1304,18 @@
           }
 
          for (family in families) {
-           familiesHtml += tmpl('script_shopping_cart', {category: families[family],
-              total: total, 
+           familiesHtml += tmpl('script_shopping_cart', {
+              category: {
+                  family: families[family].family,
+                  description: families[family].translations["<%=session[:locale] || 'es'%>"].description,
+                  fullDescription: families[family].translations["<%=session[:locale] || 'es'%>"].fullDescription,
+                  cars: families[family].translations["<%=session[:locale] || 'es'%>"].cars,
+                  photo: families[family].photo,
+                  capacity: families[family].capacity,
+                  detailedPrice: families[family].detailedPrice,
+                  deposit: families[family].deposit
+              },
+              total: total,
               totalCols : numberOfColumns,
               totalRows : Math.ceil(total / numberOfColumns),
               currentRow: Math.floor(current / numberOfColumns),

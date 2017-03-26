@@ -159,8 +159,10 @@ module Sinatra
         #
         # Booking activities
         #
-        app.get '/admin/booking/activities/?*', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.get '/admin/booking/activities/?*', :allowed_usergroups => ['booking_manager','staff'] do
 
+          # TODO multi-tenant
+          @show_translations = settings.multilanguage_site
           locals = {:booking_activity_page_size => 20}
           load_em_page :booking_activities_management, 
                        :activity, false, :locals => locals
