@@ -56,6 +56,17 @@ module Sinatra
 
       end
 
+      #
+      # Parses dd/mm/yyyy date
+      #
+      def parse_date(date_str)
+        if /\d{2}\/\d{2}\/\d{4}/.match(date_str)
+          return DateTime.strptime(date_str,'%d/%m/%Y')
+        else
+          return date_str
+        end
+      end
+
     end
 
     module BookingFrontendRESTApi
@@ -102,10 +113,7 @@ module Sinatra
             request.body.rewind
             model_request = JSON.parse(URI.unescape(request.body.read)).symbolize_keys!
           rescue JSON::ParserError
-            content_type :json
-            status 422
-            {error: 'Invalid request. Expected a JSON with data params'}.to_json
-            halt
+            halt 422, {error: 'Invalid request. Expected a JSON with data params'}.to_json
           end
           product_code = model_request[:product]
           quantity = model_request[:quantity] || 1
@@ -126,9 +134,7 @@ module Sinatra
             shopping_cart_to_json(shopping_cart)
           else
             logger.error "Shopping cart does not exist"
-            content_type 'json'
-            status 404
-            {error: 'Shopping cart not found'}.to_json
+            halt 404, {error: 'Shopping cart not found'}.to_json
           end
 
         end
@@ -146,10 +152,7 @@ module Sinatra
             request.body.rewind
             model_request = JSON.parse(URI.unescape(request.body.read)).symbolize_keys!
           rescue JSON::ParserError
-            content_type :json
-            status 422
-            {error: 'Invalid request. Expected a JSON with data params'}.to_json
-            halt
+            halt 422, {error: 'Invalid request. Expected a JSON with data params'}.to_json
           end
           extra_code = model_request[:extra]
           extra_quantity = model_request[:quantity].to_i || 1
@@ -174,9 +177,7 @@ module Sinatra
             shopping_cart_to_json(shopping_cart)
           else
             logger.error "Shopping cart does not exist"
-            content_type 'json'
-            status 404
-            {error: 'Shopping cart not found'}.to_json
+            halt 404, {error: 'Shopping cart not found'}.to_json
           end
 
         end
@@ -192,10 +193,7 @@ module Sinatra
             request.body.rewind
             model_request = JSON.parse(URI.unescape(request.body.read)).symbolize_keys!
           rescue JSON::ParserError
-            content_type :json
-            status 422
-            {error: 'Invalid request. Expected a JSON with data params'}.to_json
-            halt
+            halt 422, {error: 'Invalid request. Expected a JSON with data params'}.to_json
           end
           extra_code = model_request[:extra]
 
@@ -215,9 +213,7 @@ module Sinatra
             shopping_cart_to_json(shopping_cart)
           else
             logger.error "Shopping cart does not exist"
-            content_type 'json'
-            status 404
-            {error: 'Shopping cart not found'}.to_json
+            halt 404, {error: 'Shopping cart not found'}.to_json
           end
 
         end
@@ -243,23 +239,59 @@ module Sinatra
 
           # Do the process
           if shopping_cart
-            # Updates the shopping cart
-            pay_now = request_data['payment'] != 'none'
-            payment_method_id = request_data['payment'] != 'none' ? request_data['payment'] : nil
-            shopping_cart.update(customer_name: request_data['customer_name'],
-                                 customer_surname: request_data['customer_surname'],
-                                 customer_email: request_data['customer_email'],
-                                 customer_phone: request_data['customer_phone'],
-                                 customer_mobile_phone: request_data['customer_mobile_phone'],
-                                 driver_name: request_data['driver_name'],
-                                 driver_surname: request_data['driver_surname'],
-                                 comments: request_data['comments'],
-                                 pay_now: pay_now,
-                                 payment_method_id: payment_method_id,
-            )
+            # Basic data: customer, payment and comments
+            shopping_cart.customer_name = request_data['customer_name'] || request_data['driver_name']
+            shopping_cart.customer_surname = request_data['customer_surname'] || request_data['driver_surname']
+            shopping_cart.customer_email = request_data['customer_email']
+            shopping_cart.customer_phone = request_data['customer_phone']
+            shopping_cart.customer_mobile_phone = request_data['customer_mobile_phone']
+            shopping_cart.customer_document_id = request_data['customer_document_id'] || request_data['driver_document_id']
+            shopping_cart.comments = request_data['comments']
+            shopping_cart.pay_now =  (request_data['payment'] != 'none')
+            shopping_cart.payment_method_id = (request_data['payment'] != 'none' ? request_data['payment'] : nil)
+            # Number of adults/children (accomodation)
+            shopping_cart.number_of_adults = request_data['number_of_adults'] if request_data.has_key?('number_of_adults')
+            shopping_cart.number_of_children = request_data['number_of_children'] if request_data.has_key?('number_of_children')
+            # Driver data (car/bike/truck renting)
+            shopping_cart.driver_name = request_data['driver_name'] if request_data.has_key?('driver_name')
+            shopping_cart.driver_surname = request_data['driver_surname']  if request_data.has_key?('driver_surname')
+            shopping_cart.driver_document_id = request_data['driver_document_id'] if request_data.has_key?('driver_document_id')
+            shopping_cart.driver_date_of_birth = parse_date(request_data['driver_date_of_birth'])  if request_data.has_key?('driver_date_of_birth')
+            shopping_cart.driver_driving_license_number = request_data['driver_driving_license_number'] if request_data.has_key?('driver_driving_license_number')
+            shopping_cart.driver_driving_license_date = parse_date(request_data['driver_driving_license_date']) if request_data.has_key?('driver_driving_license_date')
+            shopping_cart.driver_driving_license_country = request_data['driver_driving_license_country'] if request_data.has_key?('driver_driving_license_country')
+            if request_data.has_key?('street') || request_data.has_key?('number') || request_data.has_key?('complement') ||
+               request_data.has_key?('city') || request_data.has_key?('state') || request_data.has_key?('country') ||
+                request_data.has_key?('zip')
+              if shopping_cart.driver_address.nil?
+                shopping_cart.driver_address = LocationDataSystem::Address.new
+              end
+              shopping_cart.driver_address.street = request_data['street']
+              shopping_cart.driver_address.number = request_data['number']
+              shopping_cart.driver_address.complement = request_data['complement']
+              shopping_cart.driver_address.city = request_data['city']
+              shopping_cart.driver_address.state = request_data['state']
+              shopping_cart.driver_address.country = request_data['country']
+              shopping_cart.driver_address.zip = request_data['zip']
+            end
+
+            begin
+              shopping_cart.save
+            rescue DataMapper::SaveFailureError => error
+              logger.error "Error saving shopping_cart #{error} #{shopping_cart.errors.full_messages.inspect}"
+              halt 422, {error: shopping_cart.errors.full_messages}.to_json
+            end
+
             logger.debug "Updated shopping cart"
             # Creates the booking
-            booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart)
+            booking = nil
+            begin
+              booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart)
+            rescue DataMapper::SaveFailureError => error
+              logger.error "Error creating booking from shopping cart #{error.inspect}"
+              logger.error "Error booking : #{booking.errors.full_messages.inspect}" if booking and booking.errors
+              halt 422, {error: booking.errors.full_messages}.to_json
+            end
             logger.debug "Created booking"
             # Remove the shopping_cart_renting_id from the session
             session.delete(:shopping_cart_renting_id)

@@ -95,8 +95,7 @@ module Sinatra
 				# Step 3* : Payment [OPTIONAL]
 				#
 				['/reserva/pagar', '/book/pay'].each do |endpoint|
-					app.post endpoint ,
-									:allowed_origin => lambda { SystemConfiguration::Variable.get_value('site.domain') } do
+					app.post endpoint do #, :allowed_origin => lambda { SystemConfiguration::Variable.get_value('site.domain') } do
 
 						booking = BookingDataSystem::Booking.get_by_free_access_id(params[:id])
 						if booking
