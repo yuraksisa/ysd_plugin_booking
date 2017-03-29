@@ -260,20 +260,16 @@ module Sinatra
             shopping_cart.driver_driving_license_number = request_data['driver_driving_license_number'] if request_data.has_key?('driver_driving_license_number')
             shopping_cart.driver_driving_license_date = parse_date(request_data['driver_driving_license_date']) if request_data.has_key?('driver_driving_license_date')
             shopping_cart.driver_driving_license_country = request_data['driver_driving_license_country'] if request_data.has_key?('driver_driving_license_country')
-            if request_data.has_key?('street') || request_data.has_key?('number') || request_data.has_key?('complement') ||
-               request_data.has_key?('city') || request_data.has_key?('state') || request_data.has_key?('country') ||
-                request_data.has_key?('zip')
-              if shopping_cart.driver_address.nil?
-                shopping_cart.driver_address = LocationDataSystem::Address.new
-              end
-              shopping_cart.driver_address.street = request_data['street']
-              shopping_cart.driver_address.number = request_data['number']
-              shopping_cart.driver_address.complement = request_data['complement']
-              shopping_cart.driver_address.city = request_data['city']
-              shopping_cart.driver_address.state = request_data['state']
-              shopping_cart.driver_address.country = request_data['country']
-              shopping_cart.driver_address.zip = request_data['zip']
+            if shopping_cart.driver_address.nil?
+              shopping_cart.driver_address = LocationDataSystem::Address.new
             end
+            shopping_cart.driver_address.street = request_data['street'] if request_data.has_key?('street')
+            shopping_cart.driver_address.number = request_data['number']  if request_data.has_key?('number')
+            shopping_cart.driver_address.complement = request_data['complement']  if request_data.has_key?('complement')
+            shopping_cart.driver_address.city = request_data['city']  if request_data.has_key?('city')
+            shopping_cart.driver_address.state = request_data['state']  if request_data.has_key?('state')
+            shopping_cart.driver_address.country = request_data['country']  if request_data.has_key?('country')
+            shopping_cart.driver_address.zip = request_data['zip']  if request_data.has_key?('zip')
 
             begin
               shopping_cart.save
@@ -287,9 +283,11 @@ module Sinatra
             booking = nil
             begin
               booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart)
+              shopping_cart.destroy # Destroy the converted shopping cart
             rescue DataMapper::SaveFailureError => error
               logger.error "Error creating booking from shopping cart #{error.inspect}"
               logger.error "Error booking : #{booking.errors.full_messages.inspect}" if booking and booking.errors
+              logger.error "Eroor shopping cart: #{shopping_cart.errors.full_message.inspect}" if shopping_cart and shopping_cart.errors
               halt 422, {error: booking.errors.full_messages}.to_json
             end
             logger.debug "Created booking"
