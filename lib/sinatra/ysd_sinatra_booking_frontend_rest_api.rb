@@ -246,6 +246,7 @@ module Sinatra
             shopping_cart.customer_phone = request_data['customer_phone']
             shopping_cart.customer_mobile_phone = request_data['customer_mobile_phone']
             shopping_cart.customer_document_id = request_data['customer_document_id'] || request_data['driver_document_id']
+            shopping_cart.customer_language = request_data['customer_language'] if request_data.has_key?('customer_language')
             shopping_cart.comments = request_data['comments']
             shopping_cart.pay_now =  (request_data['payment'] != 'none')
             shopping_cart.payment_method_id = (request_data['payment'] != 'none' ? request_data['payment'] : nil)
