@@ -28,8 +28,14 @@ module Sinatra
         e_json = ::Yito::Model::Booking::RentingExtraSearch.search(shopping_cart.date_from,
                                             shopping_cart.date_to, shopping_cart.days).to_json
 
+        # Setup
+        can_pay = BookingDataSystem::Booking.payment_cadence?(shopping_cart.date_from,
+                                                              shopping_cart.time_from)
+        sales_process = {can_pay: can_pay}
+        sales_process_json = sales_process.to_json
+
         # Join all the data togheter
-        "{\"shopping_cart\": #{sc_json}, \"products\": #{p_json}, \"extras\": #{e_json} }"
+        "{\"shopping_cart\": #{sc_json}, \"products\": #{p_json}, \"extras\": #{e_json}, \"sales_process\": #{sales_process_json} }"
 
 
       end
@@ -50,8 +56,14 @@ module Sinatra
         e_json = ::Yito::Model::Booking::RentingExtraSearch.search(booking.date_from,
                                                                    booking.date_to, booking.days).to_json
 
+        # Setup
+        can_pay = BookingDataSystem::Booking.payment_cadence?(booking.date_from,
+                                                              booking.time_from)
+        sales_process = {can_pay: can_pay}
+        sales_process_json = sales_process.to_json
+
         # Join all the data togheter
-        "{\"booking\": #{b_json}, \"products\": #{p_json}, \"extras\": #{e_json} }"
+        "{\"booking\": #{b_json}, \"products\": #{p_json}, \"extras\": #{e_json}, \"sales_process\": #{sales_process_json} }"
 
 
       end
