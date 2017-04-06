@@ -518,20 +518,23 @@ module Sinatra
 
               catalog = booking_category.booking_catalog
               locals = {}
-              locals.store(:booking_item_family, 
-                catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+
+              locals.store(:booking, booking)
+              locals.store(:booking_item_family,
+                           catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
               locals.store(:booking_allow_custom_pickup_return_place,
                 SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+              pickup_return_place_def = nil
+              pickup_return_place_def_id = SystemConfiguration::Variable.get_value('booking.pickup_return_place_definition','0').to_i
+              if pickup_return_place_def_id > 0
+                pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(pickup_return_place_def_id)
+              end
+              pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first if pickup_return_place_def.nil?
+              locals.store(:booking_pickup_return_places, pickup_return_place_def.pickup_return_places)
+              locals.store(:booking_custom_pickup_return_place_cost, BigDecimal.new(SystemConfiguration::Variable.get_value('booking.custom_pickup_return_place_price', '0')))
+
               locals.store(:booking_deposit,
                 SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i) 
-              locals.store(:booking, booking)
-
-              #booking_js = catalog_template(catalog)
-              #
-              #if booking_js and not booking_js.text.empty?
-              #  locals.store(:booking_js, booking_js.text) 
-              #end
-              locals.store(:booking_js, '')
 
               load_page(:booking_edit_pickupreturn, :locals => locals)
             else

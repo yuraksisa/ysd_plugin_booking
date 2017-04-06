@@ -119,6 +119,11 @@ module Huasi
          :module => 'booking'})
 
       SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.pickup_return_place_definition'},
+          {:value => '',
+           :description => 'Pickup and return place definition'})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.allow_custom_pickup_return_place'},
         {:value => 'false',
          :description => 'Allow custom pickup and return places'})
@@ -137,6 +142,21 @@ module Huasi
         {:name => 'booking.pickup_return_timetable_out_price'},
         {:value => '0',
          :description => 'Price if the pickup/return is not on pickup/return timetable'})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.driver_min_age'},
+          {:value => '23',
+           :description => 'Driver min age'})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.driver_min_age.allowed'},
+          {:value => '0',
+           :description => 'Driver min age cost'})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.driver_min_age.cost'},
+          {:value => '0',
+           :description => 'Driver min age cost'})
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.renting'},
@@ -549,11 +569,11 @@ module Huasi
     # @return [Array]
     #   An array which contains the css resources used by the module
     #
-    def page_script(context={}, page)
-
-      ['/booking_js.js']
-
-    end
+    #def page_script(context={}, page)
+    #
+    #  ['/booking_js.js']
+    #
+    #end
 
     # --------- Menus --------------------
     

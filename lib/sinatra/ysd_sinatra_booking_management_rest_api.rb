@@ -693,37 +693,7 @@ module Sinatra
 
         end
 
-        #
-        # Booking access
-        #
-        app.get '/api/booking/:booking_id',
-          :allowed_usergroups => ['booking_manager','staff'] do
-
-          if booking=BookingDataSystem::Booking.get(params[:booking_id])
-            status 200
-            booking.to_json
-          else
-            status 404
-          end
-
-        end
-        
-        #
-        # Confirm a booking
-        #
-        app.post '/api/booking/confirm/:booking_id',
-          :allowed_usergroups => ['booking_manager','staff'] do
-
-          if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
-            content_type :json
-            result = booking.confirm!
-            booking.notify_customer if booking.total_paid > 0
-            result.to_json
-          else
-            status 404
-          end
-
-        end
+        # -------------------- Allow/Deny payment ----------------------------
 
         #
         # Allow payment
@@ -743,6 +713,9 @@ module Sinatra
 
         end
 
+        #
+        # Deny payment
+        #
         app.post '/api/booking/not-allow-payment/:booking_id', 
           :allowed_usergroups => ['booking_manager', 'staff'] do
 
@@ -787,6 +760,25 @@ module Sinatra
 
         end
 
+        # ------------- Lifecycle management : confirm, pickup/arrival, return/departure, cancel --------------------
+
+        #
+        # Confirm a booking
+        #
+        app.post '/api/booking/confirm/:booking_id',
+                 :allowed_usergroups => ['booking_manager','staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:booking_id].to_i)
+            content_type :json
+            result = booking.confirm!
+            booking.notify_customer if booking.total_paid > 0
+            result.to_json
+          else
+            status 404
+          end
+
+        end
+
         #
         # Pickup/Arrival 
         #
@@ -818,7 +810,7 @@ module Sinatra
         end
 
         #
-        # Cancel
+        # Cancel a reservation
         #
         app.post '/api/booking/cancel/:booking_id',
           :allowed_usergroups => ['booking_manager','staff']  do
@@ -829,6 +821,43 @@ module Sinatra
           else
             status 404
           end
+
+        end
+
+        # --------------------------------------------------------------------------------------------
+
+        #
+        # Get detailed prices for a date_from (time_from), date_to (time_to), pickup and return places
+        #
+        app.post '/api/booking/prices', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys!
+
+          date_from = DateTime.strptime(data[:date_from],'%Y-%m-%d')
+          time_from = data[:time_from]
+          pickup_place = data[:pickup_place]
+          date_to =  DateTime.strptime(data[:date_to],'%Y-%m-%d')
+          time_to = data[:time_to]
+          return_place = data[:return_place]
+          date_of_birth = DateTime.strptime(data[:date_of_birth],'%Y-%m-%d') if data.has_key?(:date_of_birth) && !data[:date_of_birth].nil? && !data[:date_of_birth].empty?
+          number_of_adults = data[:number_of_adults]
+          number_of_children = data[:number_of_children]
+
+          # Prepare the supplements
+          calculator = ::Yito::Model::Booking::RentingCalculator.new(date_from, time_from, date_to, time_to, pickup_place,
+                                                                     return_place, date_of_birth)
+
+          # Prepare the products
+          products = ::Yito::Model::Booking::RentingSearch.search(date_from, date_to, calculator.days)
+
+          # Prepare the extras
+          extras = ::Yito::Model::Booking::RentingExtraSearch.search(date_from,
+                                                                     date_to, calculator.days)
+
+          content_type :json
+          {calculator: calculator, products: products, extras: extras}.to_json
 
         end
 
@@ -858,6 +887,23 @@ module Sinatra
               booking_extra.save
             end
             transaction.commit
+          end
+
+        end
+
+        # ---------------------------- CRUD ----------------------------------
+
+        #
+        # Get a booking
+        #
+        app.get '/api/booking/:booking_id',
+                :allowed_usergroups => ['booking_manager','staff'] do
+
+          if booking=BookingDataSystem::Booking.get(params[:booking_id])
+            status 200
+            booking.to_json
+          else
+            status 404
           end
 
         end
