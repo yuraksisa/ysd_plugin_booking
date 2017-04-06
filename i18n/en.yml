@@ -2,7 +2,8 @@ mybooking_bottom:
   text: Reservations managed by
   link: myBooking booking engine
 booking_pages:
-  new_booking: Start booking
+  new_booking: New reservation
+  summary: Reservation summary
 confirm_line1system_admin_menu:
   apps:
     bookings_menu:
@@ -10,7 +11,7 @@ confirm_line1system_admin_menu:
       bookings: Bookings
       bookings_scheduler: Scheduler
       booking_categories: Products
-      booking_items: Resources      
+      booking_items: Resources
 booking_settings:
   form:
     title: Booking configuration
@@ -20,34 +21,34 @@ booking_settings:
     booking_mode:
       title: Mode
       rent: Rent
-      restaurant: Restaurant    
+      restaurant: Restaurant
     reservation_starts_with:
       title: The reservations starts selecting
       dates: Dates
       categories: Products
-      shoppingcart: Shopping cart    
+      shoppingcart: Shopping cart
     deposit: \% Diposit
-    allow_total_payment: Allow to pay the total of the reservation    
-    min_days: Minimum days   
+    allow_total_payment: Allow to pay the total of the reservation
+    min_days: Minimum days
     family: Product type
     custom_pickup_return_place: Custom pickup/return places
     custom_pickup_return_place_price: Custom pickup/return place price
     no_pickup_return_timetable: It does not apply
     pickup_return_timetable: Pickup/return timetable
-    pickup_return_timetable_out_price: Pickup/return out of time price    
+    pickup_return_timetable_out_price: Pickup/return out of time price
     payment: Enable online payment
     morning_turns: Morning
-    afternoon_turns: Afternoon 
+    afternoon_turns: Afternoon
     night_turns: Night
     duration_of_service: Duration of service
     duration_of_service_extra: Duration of service (extra)
-    duration_of_service_extra_turns: Duration of service (extra turns)    
+    duration_of_service_extra_turns: Duration of service (extra turns)
     min_children: Min children
-    max_children: Max children 
+    max_children: Max children
     max_children_extra: Max children (extra)
     min_children: Min adults
     max_children: Max adults
-    max_children_extra: Max adults (extra)   
+    max_children_extra: Max adults (extra)
     people_resources: People resources
     general_group: General
     pickup_return_group: Pick up and return
@@ -56,7 +57,7 @@ booking_settings:
     people_group: People
     rent_group: Renting
     item_hold_time: Expiration time (in hours)
-    payment_cadence: Payment cadence    
+    payment_cadence: Payment cadence
 booking_rates:
   title: Rates
   seasons: Seasons
@@ -69,38 +70,38 @@ booking_console:
   categories: Products
   extras: Extras
   items: Resources
-  rates: Rates 
+  rates: Rates
   reservations: Reservations
-  planning: Planning    
+  planning: Planning
   period: Period
   requested: Requests
   confirmed: Confirmed
-  new_booking: New reservation    
+  new_booking: New reservation
   availability: Availability
   summary: Summary
   places: Pickup/return
-  adjust_prices: Adjust prices    
+  adjust_prices: Adjust prices
   calendars: Calendars
-  timetables: Timetables  
-  receipts: Receipts 
-  activities: Orders  
-  information_requests: Information requests  
+  timetables: Timetables
+  receipts: Receipts
+  activities: Orders
+  information_requests: Information requests
 booking_console_restaurant:
   table_types: Table types
-  tables: Tables   
-  planning: Planning   
+  tables: Tables
+  planning: Planning
 booking_summary:
-  title: Booking summary  
+  title: Booking summary
 booking_forecast:
-  title: Booking forecast    
+  title: Booking forecast
 booking_incoming:
   title: Incoming forecast
   period: Period
-  total: Total  
+  total: Total
 booking_pickup:
   title: Pickup/Arrivals
 booking_return:
-  title: Return/Departures 
+  title: Return/Departures
 booking_list:
   id: Id
   item: Resource
@@ -125,7 +126,7 @@ booking_items:
   car: car
   bike: bike
   motorbike: motorbike
-  kayak: kayak  
+  kayak: kayak
   apartment: apartment
   room: room
   product: product
@@ -152,6 +153,8 @@ new_booking:
   return: Return
   place: Place
   other: Other
+  date: Date
+  budget: Budget
   pickup_place: Pickup place
   pickup_place_required: Pickup place is required
   return_place: Return place
@@ -171,7 +174,7 @@ new_booking:
   go_to_pay_line1: Pay a %1% deposit now
   go_to_pay_line2: (Confirm Reservation)
   payment_information: >
-                       You need to pay %1% of the reservation in order to confirm it.  
+                       You need to pay %1% of the reservation in order to confirm it.
   pay: Pay
   not_available: It\'s not available on this dates
   not_available_manager: It\'s not available on this dates
@@ -186,8 +189,8 @@ new_booking:
   time_to_cost: Return outside working hours supplement
   pickup_place_cost: Pick up place supplement
   return_place_cost: Return place supplement
-  product_deposit_cost: Deposit  
-  product_deposit_cost_legend: The product deposit will be returned when you return the product  
+  product_deposit_cost: Deposit
+  product_deposit_cost_legend: The product deposit will be returned when you return the product
   total: Total
   form_errors:
     title: Error
@@ -197,7 +200,7 @@ new_booking:
     title: Error registering booking
     description: Server error
   confirm_message: To fix the booking, we ask you to send a deposit of <span class="highlighted_text"><%= booking.booking_amount %>€</span>
-  summary_message: >   
+  summary_message: >
                    <h2>Complete booking </h2>
                    <p class="bf-title">Dear Mr/Ms. <%= booking.customer_name %> <%= booking.customer_surname %>: </p>
                    <p class="bf-message">We thank you for your confidence in <strong><%= bookingConfiguration.company %></strong> for the rental of their <%= bookingConfiguration.item_type %>.</p>
@@ -205,6 +208,20 @@ new_booking:
                    <p class="bf-message">Remember that you have a maximum of 72 hours to make payment and thus confirm your reservation.</p>
                    <p class="bf-footer">attentively, </p>
                    <p class="bf-footer">The <%= bookingConfiguration.company%> team</p>
+  promotion_code: Promotion code
+  check_promotion_code: Send
+  promotion_code_required: The promotion code is mandatory
+  promotion_code_min_length: Minimum length is 9 characters
+  invalid_promotion_code: Promotion code is not valid
+  promotion_code_applied: Promotion code has been applied
+  resources: Resources
+  resource: Product
+  resource_name_surname: Full name
+  resource_document_id: Passport or ID
+  resource_phone_number: Phone number
+  resource_email: Email
+  resource_height: Height
+  resource_weight: Weight
   height:
     label: Height
     placeholder: your height
@@ -212,53 +229,53 @@ new_booking:
   weight:
     label: Weight
     placeholder: your weight
-    required: Weight is required   
-  customer_name: 
+    required: Weight is required
+  customer_name:
     label: Name
     placeholder: your name
     required: Customer name is required
-  customer_surname: 
+  customer_surname:
     label: Surname
     placeholder: surname
     required: Customer surname is required
-  customer_email: 
+  customer_email:
     label: Email
     placeholder: Your email (account@server.com)
     required: Email is required
-    format: Email format is user@domain.com    
-  customer_email_confirmation: 
+    format: Email format is user@domain.com
+  customer_email_confirmation:
     label: Confirmation email
     placeholder: Rewrite your email
     required: Email confirmation required
-    format: Email format is user@domain.com 
-    equal_to: It must be equal to email    
-  customer_phone: 
-    label: Main telephone number 
+    format: Email format is user@domain.com
+    equal_to: It must be equal to email
+  customer_phone:
+    label: Main telephone number
     placeholder: Your main phone number
     required: Customer phone is required
-    min_length: Minimum length is 9 digits   
-  customer_mobile: 
+    min_length: Minimum length is 9 digits
+  customer_mobile:
     label: Alternative telephone number
     placeholder: Your alternative phone number
   contact:
-    label: Contact    
+    label: Contact
     description: Please fill the contact information
   contact_name:
     placeholder: Contact\'s name
   contact_surname:
     placeholder: Contact\'s surname
   contact_nif:
-    placeholder: Contact\'s ID or passport        
+    placeholder: Contact\'s ID or passport
   guests:
     title: Guests
     adults: Adults
-    children: Children   
+    children: Children
   flight:
     title: Flight
-    company: 
+    company:
       label: Flight company
       placeholder: Flight company. Vueling, EasyJet, ...
-    number: 
+    number:
       label: Flight number
       placeholder: Flight number. VG123
     time:
@@ -269,9 +286,9 @@ new_booking:
     label: Comments
     placeholder: Comments, questions
   conditions:
-    required: You must accept the terms and conditions    
+    required: You must accept the terms and conditions
   payment_method:
-    required: Payment method is required    
+    required: Payment method is required
 new_driving_booking:
   driver:
     label: Driver
@@ -288,7 +305,7 @@ new_driving_booking:
     placeholder: Driver's id or passport
   driver_date_of_birth:
     label: Driver's date of birth
-    required: Date of birth is required    
+    required: Date of birth is required
   driver_license: Driving license
   driver_license_number:
     label: Number
@@ -319,9 +336,9 @@ new_driving_booking:
     placeholder: Country
   driver_address_zip:
     label: Postal code
-    placeholder: postal code 
+    placeholder: postal code
   pickup_place_required: Pickup place is required
-  return_place_required: Return place is required        
+  return_place_required: Return place is required
 booking_management:
   title: Booking management
   description: <p>Manage bookings.</p>
@@ -334,24 +351,24 @@ booking_management:
     date_from: Date from
     date_to: Date to
     notifications: Notifications
-    category: Category    
+    category: Category
   form:
-    confirm_button: 
+    confirm_button:
       label: Confirm
       message: Do you want to confirm the booking?
-    pickup_button: 
+    pickup_button:
       label: Pickup/Arrival
       message: Do you want to mark the reservation as picked up?
-    return_button: 
+    return_button:
       label: Return/Departure
       message: Do you want to mark the reservation as returned?
-    cancel_button: 
+    cancel_button:
       label: Cancel
       message: Do you want to cancel the reservation?
     allow_payment:
       label: Allow payment
       message: Do you want to allow the reservation payment?
-    assign_button: 
+    assign_button:
       label: Assign
       message: Do you want to assign the car?
     force_allow_payment: Payment allowed
@@ -361,8 +378,8 @@ booking_management:
     status: Status
     source: Source
     payment_status: Payment
-    item: Item   
-    booking_data_title: Boooking information    
+    item: Item
+    booking_data_title: Boooking information
     date_from: Date from
     date_to: Date to
     pickup_place: Pick up place
@@ -371,7 +388,7 @@ booking_management:
     days: Days
     extras_title: Extras
     extra_description: Description
-    extra_quantity: Amount   
+    extra_quantity: Amount
     charges_title: Charges
     charge_date: Date
     charge_amount: Amount
@@ -382,12 +399,12 @@ booking_management:
     total_paid: Total paid
     total_pending: Total pending
     booking_amount: Deposit amount
-    comments: Comments   
-    anotations: Anotations 
+    comments: Comments
+    anotations: Anotations
     customer_title: Customer
     customer_name: Name
     customer_phone: Phone
-    customer_email: Email  
+    customer_email: Email
     customer_language: Language
     guests_title: Guests
     adults: Adults
@@ -405,13 +422,13 @@ booking_management:
     driver_address_country: Country
     drive_address_zip: Postal code
     other: Other information
-    free_access_id: Direct access    
+    free_access_id: Direct access
     payment_method: Payment method
 catalog_management:
   table:
     code: Code
     description: Description
-    default: Default    
+    default: Default
   form:
     title: Catalogs
     code:
@@ -423,13 +440,13 @@ catalog_management:
     product_family:
       label: Configuration
     extras:
-      label: Extras      
-    code_required: Code is required    
+      label: Extras
+    code_required: Code is required
 booking_category_management:
   table:
     calendar: Calendar
     prices: Prices
-    scheduler: Scheduler    
+    scheduler: Scheduler
   form:
     title: Products
     code:
@@ -437,27 +454,27 @@ booking_category_management:
     name:
       label: Name
     short_description:
-      label: Short description      
+      label: Short description
     description:
       label: Description
     type:
-      label: Type      
+      label: Type
     catalog:
-      label: Catalog      
+      label: Catalog
     calendar:
       label: Calendar
     price_definition:
-      label: Prices    
+      label: Prices
     stock_control:
-      label: Stock control 
+      label: Stock control
     stock:
-      label: Stock 
+      label: Stock
     sort_order:
       label: Order
     capacity:
       label: Capacity
     deposit:
-      label: Deposit      
+      label: Deposit
     active:
       label: Active
     web_public:
@@ -471,7 +488,7 @@ booking_category_management:
       description: >
                    <p class="less_contrast_text">Asociando un calendario a una categoría puede configurar
                    si desea impedir realizar reservas, habilitar los pagos, ...
-                   en fechas determinadas</p>                        
+                   en fechas determinadas</p>
 booking_extra_management:
   title: Extras management
   description: Extras management
@@ -485,41 +502,41 @@ booking_extra_management:
     name:
       label: Name
     description:
-      label: Descripction    
+      label: Descripction
     max_quantity:
-      label: Max quantity 
+      label: Max quantity
     price:
       label: Prices
     active:
       label: Active
     web_public:
-      label: Public 
+      label: Public
 booking_item_management:
   table:
     calendar: Calendar management
     prices: Prices management
   form:
-    title: Resources management 
-    reference: 
+    title: Resources management
+    reference:
       label: Reference
     category:
-      label: Category      
+      label: Category
     name:
       label: Name
     description:
-      label: Description   
+      label: Description
     calendar:
       label: Calendar
     price_definition:
       label: Prices
     active:
-      label: Active       
+      label: Active
 booking_places_definition_management:
   title: Pickup and return
   table:
     id: Id
     name: Name
-    places: Places    
+    places: Places
   form:
     name:
       label: Name
@@ -537,20 +554,21 @@ booking_places_management:
       label: Name
     is_pickup:
       label: It\'s a pickup place
-    is_return: 
+    is_return:
       label: Is\'s a return place
     price:
-      label: Price                  
-    name_mandatory: Name is required        
+      label: Price
+    name_mandatory: Name is required
 booking:
   days: !!pl
     1: 1 day
-    n: \%1 days
-  title: \%1 booking
-  expired: Expired time to deposit  
-  id: Your booking id is <strong>%1</strong>. <span class="smaller_text less_contrast_text">Use the above booking id in all your communications.</span>
+    n: "%1 days"
+  title: "%1 booking"
+  expired: Expired time to deposit
+  id: Your request id is <strong>%1</strong>. <span class="smaller_text less_contrast_text">Use the request id in all your communications.</span>
   arrival: Arrival
-  departure: Departure 
+  departure: Departure
+  customer: Customer
   customer_notified: Notified by email
   concept: Concept
   amount: Amount
@@ -572,12 +590,12 @@ booking:
   deposit_payment:
     label: Payment
     description: You can pay the deposit of the booking, <strong>%1</strong>
-  pending_payment: 
+  pending_payment:
     label: 2nd charge
     description: You can make the payment of the pending amount, <strong>%1</strong>
   summary: Booking detail
   deposit_text: You must make a deposit of <span class="highlighted_text">%1 €</span>
-  no_deposit: The booking deposit charge has not been done.    
+  no_deposit: The booking deposit charge has not been done.
   state:
     pending_confirmation: Pending confirmation
     confirming: Confirming
@@ -585,10 +603,17 @@ booking:
     in_progress: In progress
     done: Done
     cancelled: Cancelled
+booking_status:
+    pending_confirmation: Your request is pending of confirmation
+    confirming: Your request is being confirmed
+    confirmed: Your request has been confirmed
+    in_progress: Your reservation is in progress
+    done: Your reservations is done
+    cancelled: Your reservation has been canceled
 bookings_planning:
-  title: Planning    
+  title: Planning
 bookings_scheduler:
-  title: Scheduler  
+  title: Scheduler
 not_assigned_bookings:
   title: Not assigned bookings
   table:
@@ -598,9 +623,9 @@ not_assigned_bookings:
     customer: Customer
     status: Status
     color: Color
-  form:  
-    assign: Assign  
-    reassign: Reassign  
+  form:
+    assign: Assign
+    reassign: Reassign
     all_resources: Show all resources
 hourly_occupation:
-  title: Hourly occupation    
+  title: Hourly occupation

@@ -1,188 +1,188 @@
 <div id="content-reserva">
-  
-    <div id="content-header" class="bottom-margin">
-        <div>
-          <div id="wizard-navigation">
-            <ul id="wizard-options">
-              <li>
-              	 <a id="tab-choose-item" class="tab img_txt">
-              	   <span class="tab_id">1</span>
-                   <span class="tab_title"><%= t.new_booking.choose_item(t.booking_items[booking_item_type.to_sym]) %></span>
-                 </a>
-              </li>
-              <li>
-              	 <a id="tab-choose-extras" class="tab img_txt">
-              	 	<span class="tab_id">2</span>
-              	 	<span class="tab_title"><%=t.new_booking.choose_extras%></span>
-              	 </a>
-              </li>
-              <li>
-              	  <a id="tab-complete-reservation" class="tab img_txt">
-              	  	<span class="tab_id">3</span>
-              	  	<span class="tab_title"><%=t.new_booking.complete_booking%></span>
-              	  </a>
-              </li>
-            </ul>
-          </div>
-        </div>      
-    </div>
-    
-    <div id="content-body" class="bottom-margin">
 
-      <!-- ITEM SELECTION TAB -->
+	<div id="content-header" class="bottom-margin">
+		<div>
+			<div id="wizard-navigation">
+				<ul id="wizard-options">
+					<li>
+						<a id="tab-choose-item" class="tab img_txt">
+							<span class="tab_id">1</span>
+							<span class="tab_title"><%= t.new_booking.choose_item(t.booking_items[booking_item_type.to_sym]) %></span>
+						</a>
+					</li>
+					<li>
+						<a id="tab-choose-extras" class="tab img_txt">
+							<span class="tab_id">2</span>
+							<span class="tab_title"><%=t.new_booking.choose_extras%></span>
+						</a>
+					</li>
+					<li>
+						<a id="tab-complete-reservation" class="tab img_txt">
+							<span class="tab_id">3</span>
+							<span class="tab_title"><%=t.new_booking.complete_booking%></span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
-      <% if booking_reservation_starts_with == :dates %>
-	      <div id="item-selection" class="">
-          <div id="date-selection" class="bottom-margin all-border-solid-light rounded">
-          <%= partial :reserva_online_dates_selection, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type} %>
-          </div>
-          <div id="result">
-          </div>	      
-        </div>
-      <% elsif booking_reservation_starts_with == :categories %>
-        <div id="item-selection" class="bottom-margin">
-          <div id="items_families" class="container_12">
-          </div>
-          <%= partial :reserva_online_categories_selection, :locals => {:booking_item_family => booking_item_family} %>
-        </div>      
- 	    <% elsif booking_reservation_starts_with == :shopcart %>
-	      <div id="item-selection" class="bottom-margin">
-          <%= partial :reserva_online_shopping_cart_header, :locals => {:booking_item_family => booking_item_family} %>          
-          <div id="items_families" class="container_12">
-          </div>
-          <%= partial :reserva_online_shopping_cart_footer, :locals => {:booking_item_family => booking_item_family} %>
-        </div>
-	    <% end %>
+	<div id="content-body" class="bottom-margin">
 
-      <!-- OTHER TABS -->
+		<!-- ITEM SELECTION TAB -->
 
-      <div id="other-tabs" class="bottom-margin" style="display:none">
+		<% if booking_reservation_starts_with == :dates %>
+				<div id="item-selection" class="">
+					<div id="date-selection" class="bottom-margin all-border-solid-light rounded">
+						<%= partial :reserva_online_dates_selection, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type} %>
+					</div>
+					<div id="result">
+					</div>
+				</div>
+		<% elsif booking_reservation_starts_with == :categories %>
+				<div id="item-selection" class="bottom-margin">
+					<div id="items_families" class="container_12">
+					</div>
+					<%= partial :reserva_online_categories_selection, :locals => {:booking_item_family => booking_item_family} %>
+				</div>
+		<% elsif booking_reservation_starts_with == :shopcart %>
+				<div id="item-selection" class="bottom-margin">
+					<%= partial :reserva_online_shopping_cart_header, :locals => {:booking_item_family => booking_item_family} %>
+					<div id="items_families" class="container_12">
+					</div>
+					<%= partial :reserva_online_shopping_cart_footer, :locals => {:booking_item_family => booking_item_family} %>
+				</div>
+		<% end %>
 
-        <!-- The summary header (shown in all the other tabs) -->
-        <div id="other-tabs-header" class="bottom-margin all-border-solid-light rounded">
-          <%= partial :reserva_online_summary_header, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type, 
-            :booking_reservation_starts_with => booking_reservation_starts_with,
-            :promotion_codes_active => promotion_codes_active} %>
-        </div>
+		<!-- OTHER TABS -->
 
-        <!-- EXTRAS SELECTION TAB -->
-        <div id="extras-selection" class="bottom-margin all-border-solid-light rounded" style="display:none">
-      	  <form>
-      	  	<div class="container_12">
-              <div class="grid_12">
-                <fieldset id="fs_summary_extras">
-                  <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>          
-                  <table id="tblextras">
-                    <tbody>
-                    </tbody>
-                  </table>
-                </fieldset>
-              </div>
-            </div>                 
-            <% if booking_item_family.named_resources or booking_item_family.weight or
-                  booking_item_family.height %>	          
-	          <div class="container_12">
-              <div class="grid_12">
-	              <fieldset id="fs_resources_attributes">
-	                <legend id="lg_summary_extras" class="legend-first-level">Recursos</legend>	
-                  <div id="resources_attributes" class="smaller_text">
-	                </div>
-	              </fieldset>
-	            </div>
-            </div>
-            <% end %>
-	          <div class="top-margin-1line top-space-1line top-border-nosolid">
-	            <fieldset>
-	              <input type="button" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
-	            </fieldset>
-	          </div>
-          </form>
-        </div>
+		<div id="other-tabs" class="bottom-margin" style="display:none">
 
-        <!-- RESERVATION TAB -->
+			<!-- The summary header (shown in all the other tabs) -->
+			<div id="other-tabs-header" class="bottom-margin all-border-solid-light rounded">
+				<%= partial :reserva_online_summary_header, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type,
+																																:booking_reservation_starts_with => booking_reservation_starts_with,
+																																:promotion_codes_active => promotion_codes_active} %>
+			</div>
 
-	    <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
-	      <div>	      
-             <%= partial :reserva_online_data_form, :locals => {:booking_item_family => booking_item_family, :booking => booking} %>
-	      </div>
+			<!-- EXTRAS SELECTION TAB -->
+			<div id="extras-selection" class="bottom-margin all-border-solid-light rounded" style="display:none">
+				<form>
+					<div class="container_12">
+						<div class="grid_12">
+							<fieldset id="fs_summary_extras">
+								<legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>
+								<table id="tblextras">
+									<tbody>
+									</tbody>
+								</table>
+							</fieldset>
+						</div>
+					</div>
+					<% if booking_item_family.named_resources or booking_item_family.weight or
+							booking_item_family.height %>
+							<div class="container_12">
+								<div class="grid_12">
+									<fieldset id="fs_resources_attributes">
+										<legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.resources%></legend>
+										<div id="resources_attributes" class="smaller_text">
+										</div>
+									</fieldset>
+								</div>
+							</div>
+					<% end %>
+					<div class="top-margin-1line top-space-1line top-border-nosolid">
+						<fieldset>
+							<input type="button" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
+						</fieldset>
+					</div>
+				</form>
+			</div>
 
-	      <div id="reservation-summary" class="content_data_box">
-	      	<% unless admin_mode %>
-	        <fieldset id="fs_conditions">
-	          <div>
-	            <input type="checkbox" name="conditions_read" id="conditions_read">
-	              <span class="conditions_text">
-	           	    <%=t.new_booking.conditions_confirm('/renting_conditions')%>
+			<!-- RESERVATION TAB -->
+
+			<form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
+				<div>
+					<%= partial :reserva_online_data_form, :locals => {:booking_item_family => booking_item_family, :booking => booking} %>
+				</div>
+
+				<div id="reservation-summary" class="content_data_box">
+					<% unless admin_mode %>
+							<fieldset id="fs_conditions">
+								<div>
+									<input type="checkbox" name="conditions_read" id="conditions_read">
+									<span class="conditions_text">
+	           	    <%=t.new_booking.conditions_confirm(format_url_with_language('/renting_conditions'))%>
 	              </span>
-	            </input>
-	          </div>        
-	        </fieldset>	      
-	        <% end %>
-	        <fieldset id="fs_confirm">
-	        	<div style="text-align:center">
-	        	  <div style="display:inline-block">
-	      	        <button type="submit" id="button_ir_a_pagar_reserva" class="form-button botones" style="display:none">
-                      <span><%=t.new_booking.go_to_pay_line1(booking_deposit)%></span><br/>
-                      <span><%=t.new_booking.go_to_pay_line2%></span><br/>
-	      	        </button>
-	              </div>
-	        	  <div style="display:inline-block">	            
-	                <button type="submit" id="button_confirmar_reserva" class="form-button botones" style="display:none">
-                       <span><%=t.new_booking.confirm_line1%></span><br/>
-                       <span><%=t.new_booking.confirm_line2%></span>
-	                </button>
-	              </div>
-	        	  <div style="display:inline-block">	            
-	                <button type="submit" id="button_confirmar_reserva_manager" class="form-button botones" style="display:none">
-                       <span><%=t.new_booking.confirm_line1_manager%></span><br/>
-                       <span><%=t.new_booking.confirm_line2_manager%></span>
-	                </button>
-	              </div>	              
-	            </div>
-	        </fieldset>
-          <div id="reservation_payment_information"  style="display:none" class="guiblock smaller_text">
-            <%=t.new_booking.payment_information(booking_deposit) if booking_deposit > 0%>
-          </div>
-	        <div id="reservation_error">
-	        </div>	
-	      </div>
+									</input>
+								</div>
+							</fieldset>
+					<% end %>
+					<fieldset id="fs_confirm">
+						<div style="text-align:center">
+							<div style="display:inline-block">
+								<button type="submit" id="button_ir_a_pagar_reserva" class="form-button botones" style="display:none">
+									<span><%=t.new_booking.go_to_pay_line1(booking_deposit)%></span><br/>
+									<span><%=t.new_booking.go_to_pay_line2%></span><br/>
+								</button>
+							</div>
+							<div style="display:inline-block">
+								<button type="submit" id="button_confirmar_reserva" class="form-button botones" style="display:none">
+									<span><%=t.new_booking.confirm_line1%></span><br/>
+									<span><%=t.new_booking.confirm_line2%></span>
+								</button>
+							</div>
+							<div style="display:inline-block">
+								<button type="submit" id="button_confirmar_reserva_manager" class="form-button botones" style="display:none">
+									<span><%=t.new_booking.confirm_line1_manager%></span><br/>
+									<span><%=t.new_booking.confirm_line2_manager%></span>
+								</button>
+							</div>
+						</div>
+					</fieldset>
+					<div id="reservation_payment_information"  style="display:none" class="guiblock smaller_text">
+						<%=t.new_booking.payment_information(booking_deposit) if booking_deposit > 0%>
+					</div>
+					<div id="reservation_error">
+					</div>
+				</div>
 
-          <input type="hidden" name="booking[source]" id="booking[source]"/>
+				<input type="hidden" name="booking[source]" id="booking[source]"/>
 
-	    </form>
+			</form>
 
-        <!-- overlayed element -->
-        <div class="apple_overlay" id="overlay">
+			<!-- overlayed element -->
+			<div class="apple_overlay" id="overlay">
 
-	       <!-- the external content is loaded inside this tag -->
-	       <div class="contentWrap"></div>
+				<!-- the external content is loaded inside this tag -->
+				<div class="contentWrap"></div>
 
-        </div>	  
+			</div>
 
-        <div id="checking-availability" title="<%=t.new_booking.checking_availability%>" style="display:none">
-          <img src="/img/ajax-loader_grande.gif"/>
-        </div>
+			<div id="checking-availability" title="<%=t.new_booking.checking_availability%>" style="display:none">
+				<img src="/img/ajax-loader_grande.gif"/>
+			</div>
 
-        <div id="sending-booking" title="<%=t.new_booking.sending_booking_request%>" style="display:none">
-          <img src="/img/ajax-loader_grande.gif"/>
-        </div>
-        
-      </div>
+			<div id="sending-booking" title="<%=t.new_booking.sending_booking_request%>" style="display:none">
+				<img src="/img/ajax-loader_grande.gif"/>
+			</div>
 
-    </div>
-      
-    <div id="content-footer">
-      
-    </div>  
+		</div>
 
-    <div id="popup" style="background: white">
-    </div>
-      
-  </div>
+	</div>
 
-  <!-- JS TEMPLATES -->
+	<div id="content-footer">
 
-  <script type="text/tmpl" id="script_families">         
+	</div>
+
+	<div id="popup" style="background: white">
+	</div>
+
+</div>
+
+<!-- JS TEMPLATES -->
+
+<script type="text/tmpl" id="script_families">
               <div class="<%% if (currentRow == totalRows-1 && lastRowItems == 2 && currentCol == 0){%>prefix_2<%%} else if (currentRow == totalRows-1 && lastRowItems == 1 && currentCol == 0) {%>prefix_4<%%}%> grid_4">
                 <div id="family_<%%=category.family%>" class="family top-margin" style="padding:5px">
                   <div>
@@ -198,7 +198,7 @@
               </div>
   </script>
 
-  <script type="text/tmpl" id="script_shopping_cart">         
+<script type="text/tmpl" id="script_shopping_cart">
               <div class="<%% if (currentRow == totalRows-1 && lastRowItems == 2 && currentCol == 0){%>prefix_2<%%} else if (currentRow == totalRows-1 && lastRowItems == 1 && currentCol == 0) {%>prefix_4<%%}%> grid_<%%=12/totalCols%>">
                 <div id="family_<%%=category.family%>" class="family top-margin" style="padding:5px">
                   <div>
@@ -210,10 +210,10 @@
                   <div class="top-margin">
                     <div class="shopping_cart_product_price_base centered_text less_contrast_text" style="font-size:0.8em; text-decoration: line-through" rel="<%%=category.family%>"><%%if (all_prices && all_prices_base && all_prices[category.family] != all_prices_base[category.family]) { %><%%=all_prices_base[category.family]%>€<%% } %></div>
                     <div class="car_price_total_base_offer" rel="<%%=category.family%>"><%% if(all_prices && all_prices_base && all_prices[category.family] != all_prices_base[category.family]){ %><%=t.new_booking.offer%><%%}%></div>
-                  </div>   
+                  </div>
                   <div class="top-margin">
                     <div class="shopping_cart_product_price centered_text bigger_text more_contrast_text" style="font-size:2em" rel="<%%=category.family%>"><%%if (all_prices && all_prices[category.family]) { %><%%=all_prices[category.family]%>€<%% } %></div>
-                  </div>   
+                  </div>
                   <div class="top-margin">
                     <form class="select-category" rel="<%%=category.family%>">
                       <select class="quantity form-control" style="display:block; margin: 0 auto" rel="<%%=category.family%>">
@@ -226,28 +226,28 @@
                         <option value="6">6</option>
                         <option value="7">7</option>
                         <option value="8">8</option>
-                        <option value="9">9</option>                       
+                        <option value="9">9</option>
                       </select>
                     </form>
                     <div class="category_not_available smaller_text" rel="<%%=category.family%>" style="display:none">
                       <% if (admin_mode) %>
                       <span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_stock_manager%></span>
                       <% else %>
-                      <span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_stock%></span>                      
+                      <span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_stock%></span>
                       <% end %>
                     </div>
                   </div>
                 </div>
               </div>
   </script>
-  
-  <script type="text/tmpl" id="script_extras">
+
+<script type="text/tmpl" id="script_extras">
   	          <tr class="booking_extra" id="booking_extra_<%%=extra.id%>" <%% if (!extra.optionalAccepted(optional)) {%> style="display:none" <%% } %> >
 	            <td>
 	               <input type="checkbox" name="extras[<%%=extra.id%>[extra_id]]" id="extras[<%%=extra.id%>[extra_id]]" value="<%%=extra.id%>" rel="extras[<%%=extra.id%>[quantity]]" class="extra"/>
 	            </td>
-	            <td>   
-	               <label id="label_extra_<%%=extra.id%>"><%%=extra.the_name%></label>
+	            <td>
+	               <label id="label_extra_<%%=extra.id%>"><%%=extra.translations['<%=session[:locale]||"es"%>'].name%></label>
 	            </td>
 	            <td>
 	               <%% if (extra.max_quantity > 1) { %>
@@ -256,53 +256,53 @@
 	                 <%% for (var idx=1; idx <= extra.max_quantity; idx++) { %>
 	                   <option value="<%%=idx%>"><%%=idx%></option>
 	                 <%% } %>
-	               </select>	
-	               <%% } %>            
+	               </select>
+	               <%% } %>
 	            </td>
 	          </tr>
   </script>
 
-  <script type="text/tmpl" id="script_resources_attributes">
+<script type="text/tmpl" id="script_resources_attributes">
 
      <table class="table smaller_text">
        <thead class="table-header">
          <tr>
            <% if booking_item_family.named_resources %>
-           <th class="table-header-title">Recurso</th>
-           <th class="table-header-title" style="width: 250px">Nombre y apellidos</th>
-           <th class="table-header-title">DNI / Pasaporte</th>
-           <th class="table-header-title">Teléfono</th>
-           <th class="table-header-title">Email</th>           
+           <th class="table-header-title"><%=t.new_booking.resource%></th>
+           <th class="table-header-title" style="width: 250px"><%=t.new_booking.resource_name_surname%></th>
+           <th class="table-header-title"><%=t.new_booking.resource_document_id%></th>
+           <th class="table-header-title"><%=t.new_booking.resource_phone_number%></th>
+           <th class="table-header-title"><%=t.new_booking.resource_email%></th>
            <% end %>
-           <% if booking_item_family.height %>
-           <th class="table-header-title">Altura</th>
+	<% if booking_item_family.height %>
+           <th class="table-header-title"><%=t.new_booking.resource_height%></th>
            <% end %>
-           <% if booking_item_family.weight %>
-           <th class="table-header-title">Peso</th>
+	<% if booking_item_family.weight %>
+           <th class="table-header-title"><%=t.new_booking.resource_weight%></th>
            <% end %>
          </tr>
        </thead>
        <tbody>
           <%% for (item in booking.booking_lines) { %>
              <%% for (var idx=0;idx< booking.booking_lines[item].quantity;idx++) { %>
-                <tr class="table-row"> 
-                  <td class="table-cell"><%%=booking.booking_lines[item].item_description%> <%%=idx+1%></td>
+                <tr class="table-row">
+                  <td class="table-cell"><%%=bookingModel.translate_family(booking.booking_lines[item].item_id).description%> <%%=idx+1%></td>
                   <% if booking_item_family.named_resources %>
                   <td class="table-cell">
                      <input class="resource_user_name" type="text" maxlength="80" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                      <input class="resource_user_surname" type="text" maxlength="80" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_document_id" type="text" maxlength="50" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
+                     <input class="resource_user_document_id" type="text" maxlength="50" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_phone" type="text" maxlength="15" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
+                     <input class="resource_user_phone" type="text" maxlength="15" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_email" type="text" maxlength="40" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
-                  </td>                  
+                     <input class="resource_user_email" type="text" maxlength="40" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
+                  </td>
                   <% end %>
-                  <% if booking_item_family.height %>
+	<% if booking_item_family.height %>
                   <td class="table-cell">
                      <select class="height" rel="<%%=item%>" data-idx="<%%=idx%>" >
                  	   <option value=""><%=t.new_booking.height.placeholder%></option>
@@ -312,7 +312,7 @@
                      </select>
                   </td>
                   <% end %>
-                  <% if booking_item_family.weight %>
+	<% if booking_item_family.weight %>
                   <td class="table-cell">
                      <select class="weight" rel="<%%=item%>" data-idx="<%%=idx%>">
                  	   <option value=""><%=t.new_booking.weight.placeholder%></option>
@@ -332,16 +332,16 @@
                      <input class="resource_user_2_surname" type="text" maxlength="80" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_2_document_id" type="text" maxlength="50" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
+                     <input class="resource_user_2_document_id" type="text" maxlength="50" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_2_phone" type="text" maxlength="15" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
+                     <input class="resource_user_2_phone" type="text" maxlength="15" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_2_email" type="text" maxlength="40" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
-                  </td>                  
+                     <input class="resource_user_2_email" type="text" maxlength="40" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
+                  </td>
                   <% end %>
-                  <% if booking_item_family.height %>
+	<% if booking_item_family.height %>
                   <td class="table-cell">
                      <select class="height_2" rel="<%%=item%>" data-idx="<%%=idx%>" >
                      <option value=""><%=t.new_booking.height.placeholder%></option>
@@ -351,7 +351,7 @@
                      </select>
                   </td>
                   <% end %>
-                  <% if booking_item_family.weight %>
+	<% if booking_item_family.weight %>
                   <td class="table-cell">
                      <select class="weight_2" rel="<%%=item%>" data-idx="<%%=idx%>">
                      <option value=""><%=t.new_booking.weight.placeholder%></option>
@@ -364,13 +364,13 @@
                 </tr>
                 <%% } %>
              <%% } %>
-          <%% } %>	
+          <%% } %>
        </tbody>
      </table>
 
   </script>
-  
-  <script type="text/tpml" id="script_detailed_price">
+
+<script type="text/tpml" id="script_detailed_price">
       <h3 class="guiblock"><%=t.new_booking.budget%></h3>
       <table class="detailed_price">
         <thead>
@@ -385,7 +385,7 @@
         <tbody>
           <%% for (item in booking.booking_lines) { %>
           <tr>
-            <td class="first_column"><%%= bookingDataSystem.families[item].cars %></td>
+            <td class="first_column"><%%= bookingModel.translate_family(item).cars %></td>
             <td class="quantity_column"><%%= booking.days %> </td>
             <td class="quantity_column"><%%if (all_prices_base[item]!=booking.booking_lines[item].item_unit_cost){%><span class="car_price_total_base"><%%=all_prices_base[item]%>€ </span><span class="car_price_total_base_offer"><%=t.new_booking.offer_budget%> </span><%%}%><%%= booking.booking_lines[item].item_unit_cost %>€ </td>
             <td class="quantity_column"><%%= booking.booking_lines[item].quantity %> </td>
@@ -460,8 +460,8 @@
       <%% } %> 
   
   </script>
-  
-  <script type="text/tpml" id="script_detailed_product">
+
+<script type="text/tpml" id="script_detailed_product">
 
     <div id="product_detail">
       <div class="grid_12">
