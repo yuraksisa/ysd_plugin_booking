@@ -1178,7 +1178,7 @@ admin_new_reservation:
   products_table:
     photo: Photo
     product: Producto
-    stock: Stock (disponible/total)
+    stock: Stock disponible (total)
     price: Precio
   extras_table:
     extra: Extra

@@ -59,37 +59,39 @@ module Sinatra
           locals.store(:booking_min_days,
                        SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
 
+
+
+          @shopping_cart = nil
+
+          if session.has_key?('back_office_shopping_cart_renting_id')
+            @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session['back_office_shopping_cart_renting_id'])
+          end
+
+          if @shopping_cart.nil?
+            @shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.new
+          end
+
+          if product_family.cycle_of_24_hours
+            @shopping_cart.date_from = Date.today
+            @shopping_cart.date_to = Date.today + 1
+            @shopping_cart.time_from = "10:00"
+            @shopping_cart.time_to = "10:00"
+          else
+            @shopping_cart.date_from = Date.today
+            @shopping_cart.date_to = Date.today
+            @shopping_cart.time_from = "10:00"
+            @shopping_cart.time_to = "20:00"
+          end
+
           if params[:customer_name] and params[:customer_surname] and
              params[:customer_phone] and params[:customer_email]
             if booking = BookingDataSystem::Booking.first_customer_booking(params)
-              @shopping_cart = nil
-
-              if session.has_key?('back_office_shopping_cart_renting_id')
-                @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session['back_office_shopping_cart_renting_id'])
-              end
-
-              if @shopping_cart.nil?
-                @shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.new
-              end
-
-              if product_family.cycle_of_24_hours
-                @shopping_cart.date_from = Date.today
-                @shopping_cart.date_to = Date.today + 1
-                @shopping_cart.time_from = "10:00"
-                @shopping_cart.time_to = "10:00"
-              else
-                @shopping_cart.date_from = Date.today
-                @shopping_cart.date_to = Date.today
-                @shopping_cart.time_from = "10:00"
-                @shopping_cart.time_to = "20:00"
-              end
-
               @shopping_cart.update_from_booking(booking)
-              @shopping_cart.save
-              session['back_office_shopping_cart_renting_id'] = @shopping_cart.id
             end
           end
 
+          @shopping_cart.save
+          session['back_office_shopping_cart_renting_id'] = @shopping_cart.id unless session.has_key?('back_office_shopping_cart_renting_id')
 
           load_page(:booking_management_new_reservation, :locals => locals)
 

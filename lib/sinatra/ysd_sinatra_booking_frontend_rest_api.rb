@@ -144,9 +144,9 @@ module Sinatra
                  booking_item_stock_model: booking_line_resource.booking_item_stock_model,
                  booking_item_stock_plate: booking_line_resource.booking_item_stock_plate,
                  booking_item_characteristic_1: booking_line_resource.booking_item_characteristic_1,
-                 booking_item_characteristic_1: booking_line_resource.booking_item_characteristic_2,
-                 booking_item_characteristic_1: booking_line_resource.booking_item_characteristic_3,
-                 booking_item_characteristic_1: booking_line_resource.booking_item_characteristic_4
+                 booking_item_characteristic_2: booking_line_resource.booking_item_characteristic_2,
+                 booking_item_characteristic_3: booking_line_resource.booking_item_characteristic_3,
+                 booking_item_characteristic_4: booking_line_resource.booking_item_characteristic_4
                              })
              resource.merge!({
                  pax: booking_line_resource.pax,
