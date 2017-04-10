@@ -163,6 +163,7 @@ booking_console:
   requested: Solicitudes
   confirmed: Confirmadas
   new_booking: Nueva reserva
+  new_customer_booking: Nueva reserva de cliente
   availability: Calendarios
   summary: Resumen
   pickup_return: Entrega y recogida
@@ -1163,4 +1164,46 @@ front_end_reservation:
   time_from: Hora de entrega
   return_place: Lugar de devolución
   date_to: Fecha de devolución
-  time_to: Hora de devolución        
+  time_to: Hora de devolución
+admin_new_reservation:
+  title: Nueva reserva
+  description: Desde aquí puede registrar una nueva reserva de cliente
+  search_title: Seleccionar fechas de la reserva
+  products_title: Productos
+  extras_title: Extras
+  customer_title: Datos del cliente
+  summary_title: Resumen
+  search: Buscar
+  make_reservation: Realizar reserva
+  products_table:
+    photo: Photo
+    product: Producto
+    stock: Stock (disponible/total)
+    price: Precio
+  extras_table:
+    extra: Extra
+    price: Precio
+  form:
+    customer_name: Nombre
+    customer_surname: Apellidos
+    customer_phone: Teléfono
+    customer_mobile_phone: Teléfono alternativo
+    customer_email: Correo electrónico
+    pickup: Entrega
+    pickup_place: Lugar de entrega
+    return: Devolución
+    return_place: Lugar de devolución
+    days: Número de días
+    total_items: Total producto
+    total_extras: Total extras
+    time_from_cost: Suplemento hora de entrega
+    pickup_place_cost: Suplemento lugar de entrega
+    time_to_cost: Suplemento hora devolución
+    return_place_cost: Suplemento lugar de devolución
+    driver_age_cost: Suplemento edad del conductor
+    total_cost: TOTAL
+  errors:
+    error_searching: Error realizando la búsqueda
+    error_setting_product: Error seleccionando producto
+    error_setting_extra: Error seleccionando extra
+    error_making_reservation: Error registrando la reserva

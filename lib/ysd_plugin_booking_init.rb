@@ -14,6 +14,13 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YSD::BookingActivities
    sinatra_extension Sinatra::YSD::BookingManagement
    sinatra_helper Sinatra::YSD::BookingManagementRESTApiHelper
+   sinatra_extension Sinatra::YSD::BookingReports
+   sinatra_extension Sinatra::YSD::BookingPlanning
+   sinatra_extension Sinatra::YSD::BookingOccupation
+   sinatra_extension Sinatra::YSD::BookingBilling
+   sinatra_extension Sinatra::YitoExtension::BookingNewReservation
+   sinatra_extension Sinatra::YitoExtension::BookingNewReservationRESTApi
+   sinatra_helper Sinatra::YitoExtension::BookingNewReservationRESTApiHelper
    sinatra_extension Sinatra::YSD::BookingManagementRESTApi
    sinatra_extension Sinatra::YSD::RestaurantBooking
    sinatra_extension Sinatra::YSD::RestaurantBookingManagement   
@@ -37,7 +44,6 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlaceDefinitionsManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlacesManagement
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlacesManagementRESTApi
-   sinatra_extension Sinatra::YitoExtension::BookingCustomers
    sinatra_extension Sinatra::YitoExtension::BookingFrontend
    sinatra_helper Sinatra::YitoExtension::BookingFrontendRESTApiHelper
    sinatra_extension Sinatra::YitoExtension::BookingFrontendRESTApi

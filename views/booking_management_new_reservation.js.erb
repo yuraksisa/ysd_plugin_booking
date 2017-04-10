@@ -1,0 +1,455 @@
+require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
+        'YSDListSelector', 'YSDRemoteDataSource', 'YSDSelectSelector', 'json2', 'jquery.validate',
+        'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es',
+        'jquery.ui.datepicker.validation',
+        'jquery.tools', 'jquery.formparams', 'datejs', 'autonumeric'],
+    function($, YSDForms, DateControl, tmpl,
+             ListSelector, RemoteDataSource, SelectSelector) {
+
+
+/** ------------------------------ THE MODEL ------------------------------------ **/
+
+bookingNewModel = {
+
+   shopping_cart : null,
+   products: null,
+   extras: null,
+   minDays : <%= booking_min_days %>,
+
+   search: function() {
+
+       var data = $('form[name=reservation]').formParams(false);
+       var requestData = JSON.stringify(data);
+
+       $.ajax({
+           type: 'POST',
+           url : '/api/booking/new-reservation/select-dates',
+           data: requestData,
+           dataType : 'json',
+           contentType : 'application/json; charset=utf-8',
+           crossDomain: true,
+           success: function(data, textStatus, jqXHR) {
+               bookingNewModel.shopping_cart = data.shopping_cart;
+               bookingNewModel.products = data.products;
+               bookingNewModel.extras = data.extras;
+               bookingNewView.loadSearchResult();
+           },
+           error: function(data, textStatus, jqXHR) {
+               alert('<%=t.admin_new_reservation.errors.error_searching%>');
+           }
+       });
+   },
+
+   setProduct: function(productCode, quantity) { /** Sets the product **/
+
+       var data = {product: productCode,
+                   quantity: quantity};
+       var requestData = JSON.stringify(data);
+
+       $.ajax({
+           type: 'POST',
+           url : '/api/booking/new-reservation/set-product',
+           data: requestData,
+           dataType : 'json',
+           contentType : 'application/json; charset=utf-8',
+           crossDomain: true,
+           success: function(data, textStatus, jqXHR) {
+               bookingNewModel.shopping_cart = data.shopping_cart;
+               bookingNewView.loadSummary();
+           },
+           error: function(data, textStatus, jqXHR) {
+               alert('<%=t.admin_new_reservation.errors.error_setting_product%>');
+           }
+       });
+   },
+
+   setExtra: function(extraCode, quantity) { /** Sets the extra **/
+       var data = {extra: extraCode,
+                   quantity: quantity};
+       var requestData = JSON.stringify(data);
+
+       $.ajax({
+           type: 'POST',
+           url : '/api/booking/new-reservation/set-extra',
+           data: requestData,
+           dataType : 'json',
+           contentType : 'application/json; charset=utf-8',
+           crossDomain: true,
+           success: function(data, textStatus, jqXHR) {
+               bookingNewModel.shopping_cart = data.shopping_cart;
+               bookingNewView.loadSummary();
+           },
+           error: function(data, textStatus, jqXHR) {
+               alert('<%=t.admin_new_reservation.errors.error_setting_extra%>');
+           }
+       });
+   },
+
+   isShoppingCartEmpty: function() {
+
+       return this.shopping_cart == null || this.shopping_cart.items == null || this.shopping_cart.items.length == 0;
+
+   },
+
+   makeReservation: function() { /** Make the reservation **/
+
+       var data = $('form[name=customer]').formParams(false);
+       var requestData = JSON.stringify(data);
+
+       $.ajax({
+           type: 'POST',
+           url : '/api/booking/new-reservation/checkout',
+           data: requestData,
+           dataType : 'json',
+           contentType : 'application/json; charset=utf-8',
+           crossDomain: true,
+           success: function(data, textStatus, jqXHR) {
+               window.location.href = '/admin/booking/bookings/'+data.id; // Load the reservation
+           },
+           error: function(data, textStatus, jqXHR) {
+               alert('<%=t.admin_new_reservation.errors.error_making_reservation%>');
+           }
+       });
+
+   }
+
+}
+
+/** ------------------------------ THE CONTROLLER ------------------------------------ **/
+
+bookingNewController = {
+
+    dateFromChanged: function() {
+
+        var dateFrom = $('#date_from').datepicker('getDate');
+        var dateTo = $('#date_from').datepicker('getDate');
+        dateTo.setDate(dateTo.getDate() + bookingNewModel.minDays)
+        $('#date_to').datepicker('setDate', dateTo );
+        $('#date_to').datepicker('option', 'minDate', dateFrom.add(bookingNewModel.minDays).days());
+
+    },
+
+
+    change_pickup_place_select : function(pickup_place) { /* change pickup place */
+
+        if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
+            $('#other_pickup_place').show();
+            $('#pickup_place_value').val('');
+            $('#pickup_place_other').focus();
+        }
+        else
+        {
+            $('#other_pickup_place').hide();
+            $('#pickup_place_other').val('');
+            $('#pickup_place_value').val(pickup_place);
+        }
+
+    },
+
+    change_return_place_select : function(return_place) { /* change return place */
+
+        if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
+            $('#other_return_place').show();
+            $('#return_place_value').val('');
+            $('#return_place_other').focus();
+        }
+        else
+        {
+            $('#other_return_place').hide();
+            $('#return_place_other').val('');
+            $('#return_place_value').val(return_place);
+        }
+
+        bookingEditModel.updateReturnPlace($('#return_place_value').val());
+
+    },
+
+    searchButtonClick: function() {
+        bookingNewModel.search();
+    },
+
+    onChangeProductChooser: function(data) {
+        productCode = $(data[0]).val();
+        bookingNewModel.setProduct(productCode, 1);
+    },
+
+    onChangeProductSelector: function(data) {
+        productCode = $(data[0]).attr('rel');
+        quantity = $(data[0]).val();
+        bookingModel.setProduct(productCode, quantity);
+    },
+
+    onChangeExtraChooser: function(data) {
+        extraCode = $(data[0]).val();
+        bookingNewModel.setExtra(extraCode, $(data[0]).is(':checked') ? 1 : 0);
+    },
+
+    onChangeExtraSelector: function(data) {
+        extraCode = $(data[0]).attr('rel');
+        quantity = $(data[0]).val();
+        bookingNewModel.setExtra(extraCode, quantity);
+    },
+
+    makeReservationButtonClick: function() {
+        $('form[name=customer]').submit();
+    }
+}
+
+/** ------------------------------ THE VIEW ------------------------------------ **/
+
+bookingNewView = {
+
+    init: function() {
+
+        this.setupSearchValidation();
+
+        this.setupDateControls();
+
+        <% if booking_item_family.pickup_return_place %>
+        this.setupPickupReturnPlaces();
+        <% end %>
+
+        $('#search_button').bind('click', function(){
+            //bookingNewController.searchButtonClick();
+            $('form[name=reservation]').submit();
+        });
+
+    },
+
+    setupDateControls: function() {
+
+        $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+        var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
+
+        $('#date_from').datepicker({numberOfMonths:1,
+                minDate: new Date(),
+                maxDate: new Date().add(365).days(),
+                dateFormat: 'dd/mm/yy',
+                firstDay: 1},
+            locale);
+        //$('#date_from').datepicker('setDate', '+0');
+        $('#date_from').datepicker('setDate', Date.parse('<%=@shopping_cart.date_from%>'));
+
+        $('#date_to').datepicker({numberOfMonths:1,
+            minDate: new Date().add(bookingNewModel.minDays).days(),
+            maxDate: new Date().add(365).days(),
+            dateFormat: 'dd/mm/yy'}, locale);
+        //$('#date_to').datepicker('setDate', '+'+bookingNewModel.minDays);
+        $('#date_to').datepicker('setDate', Date.parse('<%=@shopping_cart.date_to%>'));
+
+        $('#date_from').bind('change', function() {
+            bookingNewController.dateFromChanged();
+        });
+
+        $('#time_from').val('<%=@shopping_cart.time_from%>');
+        $('#time_to').val('<%=@shopping_cart.time_to%>');
+
+    },
+
+    setupPickupReturnPlaces: function() {
+        var dataSourcePickupPlaces = new RemoteDataSource('/api/booking/frontend/pickup-places',
+                                                          {'id':'name','description':'name'});
+        var pickupPlaceValue = '<%=@shopping_cart.pickup_place%>';
+        var pickupPlace = new SelectSelector('pickup_place',
+            dataSourcePickupPlaces, pickupPlaceValue, false, '');
+
+        $('#pickup_place').bind('change',
+            function() {
+                bookingNewController.change_pickup_place_select($('#pickup_place option:selected').val());
+            });
+
+        var dataSourceReturnPlaces = new RemoteDataSource('/api/booking/frontend/return-places',
+                                                          {'id':'name','description':'name'});
+        var returnPlaceValue = '<%=@shopping_cart.return_place%>';
+        var returnPlace = new SelectSelector('return_place',
+            dataSourceReturnPlaces, returnPlaceValue, false, '');
+        $('#return_place').bind('change',
+            function() {
+                bookingNewController.change_return_place_select($('#return_place option:selected').val());
+            });
+
+    },
+
+    setupSearchValidation: function () {
+
+        $.validator.addMethod("time24", function(value, element) {
+            if (!/^\d{2}:\d{2}$/.test(value)) {
+                return false;
+            }
+            var parts = value.split(':');
+            if (parseInt(parts[0]) > 23 || parseInt(parts[1]) > 59) {
+                return false;
+            }
+            return true;
+        }, "Invalid time format. The format is hh:mm");
+
+        $('form[name=reservation]').validate({
+
+            submitHandler: function(form)
+            {
+                bookingNewController.searchButtonClick();
+                return false;
+            },
+
+            rules : {
+                'time_from': {
+                    time24: true
+                },
+                'time_to': {
+                    time24: true
+                }
+            },
+
+            messages : {
+                'time_from': {
+                    time24: '<%=t.validations.time_format_invalid%>'
+                },
+                'time_to': {
+                    time24: '<%=t.validations.time_format_invalid%>'
+                }
+            }
+
+        });
+
+    },
+
+    setupValidation: function() {
+
+        $('form[name=customer]').validate(
+            {
+
+                submitHandler: function(form) {
+                    $('#reservation_error').hide();
+                    $('#reservation_error').html('');
+                    if (bookingNewModel.isShoppingCartEmpty()) {
+                        alert('Por factor elija un producto para hacer la reserva');
+                    }
+                    else {
+                        bookingNewModel.makeReservation();
+                    }
+                    return false;
+                },
+
+                invalidHandler : function (form, validator) {
+                    $('#reservation_error').html('<%=t.new_booking.form_errors.description%>');
+                    $('#reservation_error').show();
+                },
+
+                rules : {
+
+                    'customer_name': 'required',
+                    'customer_surname' : 'required',
+                    'customer_email' : {
+                        required: true,
+                        email: true
+                    },
+                    'customer_phone': {
+                        required: true,
+                        minlength: 9
+                    }
+                },
+
+                messages : {
+
+                    'customer_name': '<%=t.new_booking.customer_name.required%>',
+                    'customer_surname' : '<%=t.new_booking.customer_surname.required%>',
+                    'customer_email' : {
+                        required: '<%=t.new_booking.customer_email.required%>',
+                        email: '<%=t.new_booking.customer_email.format%>'
+                    },
+                    'customer_phone': {
+                        'required': '<%=t.new_booking.customer_phone.required%>',
+                        'minlength': '<%=t.new_booking.customer_phone.min_length%>'
+                    },
+
+                },
+
+                errorClass : 'form-reservation-error'
+
+            }
+        );
+
+    },
+
+    loadSearchResult: function() {
+
+        this.loadProducts();
+        $('#customer_data').show();
+        this.loadExtras();
+        this.loadSummary();
+
+    },
+
+
+    loadProducts: function() {
+
+        $('.product_chooser').unbind('change');
+        $('.product_selector').unbind('change');
+
+        var html = tmpl('script_products')({products:bookingNewModel.products});
+        $('#products_list').html(html);
+
+        $('.product_chooser').bind('change', function(){
+            bookingNewController.onChangeProductChooser($(this));
+        });
+
+        $('.product_selector').bind('change', function(){
+            bookingNewController.onChangeProductSelector($(this));
+        });
+
+        for (var idx=0; idx<bookingNewModel.shopping_cart.items.length; idx++) {
+           $('input[name=item_id]').filter('[value='+bookingNewModel.shopping_cart.items[idx].item_id+']').prop('checked', true);
+           $('select.product_selector[rel='+bookingNewModel.shopping_cart.items[idx].item_id+']').val(bookingNewModel.shopping_cart.items[idx].quantity);
+        }
+
+
+    },
+
+    loadExtras: function() {
+
+        $('.extra_chooser').unbind('change');
+        $('.extra_selector').unbind('change');
+
+        var html = tmpl('script_extras')({extras:bookingNewModel.extras});
+        $('#extras_list').html(html);
+
+        $('.extra_chooser').bind('change', function(){
+            bookingNewController.onChangeExtraChooser($(this));
+        });
+
+        $('.extra_selector').bind('change', function(){
+            bookingNewController.onChangeExtraSelector($(this));
+        });
+
+        for (var idx=0; idx<bookingNewModel.shopping_cart.extras.length; idx++) {
+            $('input[name=extra_id_'+bookingNewModel.shopping_cart.extras[idx].extra_id+']').prop('checked', true);
+            $('select.extra_selector[rel='+bookingNewModel.shopping_cart.extras[idx].extra_id+']').val(bookingNewModel.shopping_cart.extras[idx].quantity);
+        }
+
+    },
+
+
+    loadSummary() {
+
+        var html = tmpl('script_customer')({shopping_cart: bookingNewModel.shopping_cart});
+        $('#customer').html(html);
+
+        this.setupValidation();
+
+        $('#make_reservation_button').unbind('click');
+
+        var html = tmpl('script_summary')({shopping_cart: bookingNewModel.shopping_cart});
+        $('#summary').html(html);
+
+        $('#make_reservation_button').bind('click', function() {
+            bookingNewController.makeReservationButtonClick();
+        });
+
+    }
+
+}
+
+bookingNewView.init();
+
+
+});

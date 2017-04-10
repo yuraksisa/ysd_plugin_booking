@@ -28,6 +28,7 @@ module Sinatra
       	  	  return_place = params[:return_place]
 							number_of_adults = params[:number_of_adults]
 							number_of_children = params[:number_of_children]
+							driver_under_age = ('on' == params[:driver_under_age])
 							booking_parameters = true
 						end
 

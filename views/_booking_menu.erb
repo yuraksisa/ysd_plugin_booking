@@ -35,6 +35,7 @@
    <% if booking_renting %>
    <li class='<%if ['/admin/booking/new',
                     '/admin/booking/customers',
+                    '/admin/booking/new',
                     '/admin/booking/bookings',
                     '/admin/booking/planning2',
                     '/admin/booking/monthly-occupation',
@@ -44,7 +45,8 @@
                     '/admin/booking/resources-occupation',
                     '/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
       <ul>
-        <li><a href='/admin/booking/customers'><%=t.booking_console.new_booking%></a></li>
+        <li><a href='/admin/booking/new'><%=t.booking_console.new_booking%></a></li>
+        <li><a href='/admin/booking/customers'><%=t.booking_console.new_customer_booking%></a></li>
         <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>
         <li><a href="/admin/booking/planning2?from=<%=Date.today.strftime('%Y-%m-%d')%>&to=<%=(Date.today + 180).strftime('%Y-%m-%d')%>"><%=t.booking_console.planning%></a></li> 
         <li><a href='/admin/booking/monthly-occupation'><%=t.booking_console.monthly_occupation%></a></li>        

@@ -13,7 +13,7 @@ module Sinatra
                 :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_cost,
                 :booking_amount, :pickup_place_cost, :return_place_cost,
                 :customer_name, :customer_surname, :customer_email, :customer_phone, :customer_mobile_phone, :customer_document_id,
-                :promotion_code, :comments ]
+                :driver_under_age, :promotion_code, :comments ]
         relationships = {}
         relationships.store(:extras, {})
         relationships.store(:items, {:include => [:item_resources]})      
@@ -46,24 +46,176 @@ module Sinatra
       def booking_to_json(booking)
 
         # Prepare the booking
-        b_json = booking.to_json
+        booking_summary = { # Basic data
+            id: booking.id,
+            date_from: booking.date_from,
+            date_to: booking.date_to,
+            days: booking.days,
+            customer_name: booking.customer_name,
+            customer_surname: booking.customer_surname,
+            customer_phone: booking.customer_phone,
+            customer_mobile_phone: booking.customer_mobile_phone,
+            customer_email: booking.customer_email,
+            customer_document_id: booking.customer_document_id,
+            customer_language: booking.customer_language,
+            status: booking.status,
+        }
+
+        booking_summary.merge!({ # Pickup / Return
+            pickup_place: booking.pickup_place,
+            return_place: booking.return_place
+                              })
+
+        booking_summary.merge!({ # Time from / to
+            time_from: booking.time_from,
+            time_to: booking.time_to
+                              })
+
+        booking_summary.merge!({ # Number of adults and children
+            number_of_adults: booking.number_of_adults,
+            number_of_children: booking.number_of_children
+                              })
+
+        booking_summary.merge!({ # Driver information
+            driver_name: booking.driver_name,
+            driver_surname: booking.driver_surname,
+            driver_document_id: booking.driver_document_id,
+            driver_date_of_birth: booking.driver_date_of_birth,
+            driver_age: booking.driver_age,
+            driver_under_age: booking.driver_under_age,
+            driver_age_cost: booking.driver_age_cost,
+            driver_driving_license_number: booking.driver_driving_license_number,
+            driver_driving_license_date: booking.driver_driving_license_date,
+            driver_driving_license_country: booking.driver_driving_license_country,
+                              })
+
+        booking_summary.merge!({ # Payment information
+            payment_status: booking.payment_status,
+            pay_now: booking.pay_now,
+            payment_method_id: booking.payment_method_id
+                              })
+
+        booking_summary.merge!({ # Basic cost
+            item_cost: booking.item_cost,
+            extras_cost: booking.extras_cost,
+            total_cost: booking.total_cost
+                               })
+
+        booking_summary.merge!({ # Time from / to cost
+            time_from_cost: booking.time_from_cost,
+            time_to_cost: booking.time_to_cost
+                              })
+
+        booking_summary.merge!({ # Pick up / Return place cost
+            pickup_place_cost: booking.pickup_place_cost,
+            return_place_cost: booking.return_place_cost
+                               })
+
+        booking_summary.merge!({ # Driver age cost
+            driver_age_cost: booking.driver_age_cost
+                               })
+
+        booking_summary.merge!({ # Product deposit cost
+            product_deposit_cost: booking.product_deposit_cost
+                              })
+
+        # Lines (products)
+        lines = []
+        booking.booking_lines.each do |booking_line|
+           line = {
+                    id: booking_line.id,
+                    item_id: booking_line.item_id,
+                    item_description: booking_line.item_description,
+                    item_unit_cost_base: booking_line.item_unit_cost_base,
+                    item_unit_cost: booking_line.item_unit_cost,
+                    item_cost: booking_line.item_cost,
+                    quantity: booking_line.quantity,
+                    product_deposit_unit_cost: booking_line.product_deposit_unit_cost,
+                    product_deposit_cost: booking_line.product_deposit_cost
+                  }
+           resources = []
+           booking_line.booking_line_resources.each do |booking_line_resource|
+             resource = {
+                 id: booking_line_resource.id,
+                 booking_item_category: booking_line_resource.booking_item_category
+             }
+             resource.merge!({
+                 booking_item_reference: booking_line_resource.booking_item_reference,
+                 booking_item_stock_model: booking_line_resource.booking_item_stock_model,
+                 booking_item_stock_plate: booking_line_resource.booking_item_stock_plate,
+                 booking_item_characteristic_1: booking_line_resource.booking_item_characteristic_1,
+                 booking_item_characteristic_1: booking_line_resource.booking_item_characteristic_2,
+                 booking_item_characteristic_1: booking_line_resource.booking_item_characteristic_3,
+                 booking_item_characteristic_1: booking_line_resource.booking_item_characteristic_4
+                             })
+             resource.merge!({
+                 pax: booking_line_resource.pax,
+                 resource_user_name: booking_line_resource.resource_user_name,
+                 resource_user_surname: booking_line_resource.resource_user_surname,
+                 resource_user_document_id: booking_line_resource.resource_user_document_id,
+                 resource_user_phone: booking_line_resource.resource_user_phone,
+                 resource_user_email: booking_line_resource.resource_user_email,
+                 resource_user_2_name: booking_line_resource.resource_user_2_name,
+                 resource_user_2_surname: booking_line_resource.resource_user_2_surname,
+                 resource_user_2_document_id: booking_line_resource.resource_user_2_document_id,
+                 resource_user_2_phone: booking_line_resource.resource_user_2_phone,
+                 resource_user_2_email: booking_line_resource.resource_user_2_email
+                             })
+             resources << resource
+           end
+           line.store(:booking_line_resources, resources)
+           lines << line
+        end
+        booking_summary.merge!(
+            booking_lines: lines
+        )
+
+        # Extras
+        extras = []
+        booking.booking_extras.each do |booking_extra|
+           extra = {
+               id: booking_extra.id,
+               extra_id: booking_extra.extra_id,
+               extra_description: booking_extra.extra_description,
+               extra_unit_cost: booking_extra.extra_unit_cost,
+               extra_cost: booking_extra.extra_cost,
+               quantity: booking_extra.quantity
+           }
+          extras << extra
+        end
+        booking_summary.merge!(
+            booking_extras: extras
+        )
+
+        booking_summary.merge!(
+            summary_status: "#{booking.customer_name} #{booking.customer_surname}, <strong>#{t.booking.title(t[:booking][:state][booking.status.to_sym]).to_s.downcase}</strong>"
+        )
+
+        booking_summary_json = booking_summary.to_json
 
         # Prepare the products
-        p_json = ::Yito::Model::Booking::RentingSearch.search(booking.date_from,
-                                                              booking.date_to, booking.days).to_json
+        domain = SystemConfiguration::Variable.get_value('site.domain')
+        products = ::Yito::Model::Booking::BookingCategory.all(fields: [:code, :name, :short_description, :description, :album_id],
+                                                                     conditions: {active: true}, order: [:code])
+        products_list = []
+        products.each do |item|
+          products_list << {
+              code: item.code, name: item.name, short_description: item.short_description, description: item.description,
+              photo: item.photo_url_medium.match(/^https?:/) ? item.photo_url_medium : File.join(domain, item.photo_url_medium),
+              full_photo:  item.photo_url_full.match(/^https?:/) ? item.photo_url_full : File.join(domain, item.photo_url_full)
+          }
+        end
+        p_json = products_list.to_json
 
-        # Prepare the extras
-        e_json = ::Yito::Model::Booking::RentingExtraSearch.search(booking.date_from,
-                                                                   booking.date_to, booking.days).to_json
 
-        # Setup
+        # Prepare the sales process
         can_pay = BookingDataSystem::Booking.payment_cadence?(booking.date_from,
                                                               booking.time_from)
         sales_process = {can_pay: can_pay}
         sales_process_json = sales_process.to_json
 
         # Join all the data togheter
-        "{\"booking\": #{b_json}, \"products\": #{p_json}, \"extras\": #{e_json}, \"sales_process\": #{sales_process_json} }"
+        "{\"booking\": #{booking_summary_json}, \"products\": #{p_json}, \"sales_process\": #{sales_process_json} }"
 
 
       end
@@ -287,11 +439,13 @@ module Sinatra
             begin
               shopping_cart.save
             rescue DataMapper::SaveFailureError => error
-              logger.error "Error saving shopping_cart #{error} #{shopping_cart.errors.full_messages.inspect}"
-              halt 422, {error: shopping_cart.errors.full_messages}.to_json
+              logger.error "Error saving shopping_cart #{error}"
+              logger.error "Error details: #{error.resource.errors.full_messages.inspect}"
+              halt 422, {error: error.resource.errors.full_messages}.to_json
             end
 
             logger.debug "Updated shopping cart"
+
             # Creates the booking
             booking = nil
             begin
@@ -299,10 +453,10 @@ module Sinatra
               shopping_cart.destroy # Destroy the converted shopping cart
             rescue DataMapper::SaveFailureError => error
               logger.error "Error creating booking from shopping cart #{error.inspect}"
-              logger.error "Error booking : #{booking.errors.full_messages.inspect}" if booking and booking.errors
-              logger.error "Eroor shopping cart: #{shopping_cart.errors.full_message.inspect}" if shopping_cart and shopping_cart.errors
-              halt 422, {error: booking.errors.full_messages}.to_json
+              logger.error "Error details: #{error.resource.errors.full_messages.inspect}"
+              halt 422, {error: error.resource.errors.full_messages}.to_json
             end
+
             logger.debug "Created booking"
             # Remove the shopping_cart_renting_id from the session
             session.delete(:shopping_cart_renting_id)
@@ -368,7 +522,7 @@ module Sinatra
           end
 
           # TODO Check parameters
-          date_from = time_from = date_to = time_to = pickup_place = return_place = nil
+          date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children = driver_under_age = nil
           if model_request[:date_from] && model_request[:date_to]
             date_from = DateTime.strptime(model_request[:date_from],"%d/%m/%Y")
             time_from = model_request[:time_from]
@@ -378,6 +532,7 @@ module Sinatra
             return_place = model_request[:return_place]
             number_of_adults = model_request[:number_of_adults]
             number_of_children = model_request[:number_of_children]
+            driver_under_age = ('on' == model_request[:driver_under_age])
           else
             content_type :json
             status 422
@@ -398,13 +553,15 @@ module Sinatra
             shopping_cart.change_selection_data(date_from, time_from,
                                                 date_to, time_to,
                                                 pickup_place, return_place,
-                                                number_of_adults, number_of_children)
+                                                number_of_adults, number_of_children,
+                                                driver_under_age)
           else
             shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.create(
                 date_from: date_from, time_from: time_from,
                 date_to: date_to, time_to: time_to,
                 pickup_place: pickup_place, return_place: return_place,
-                number_of_adults: number_of_adults, number_of_children: number_of_children)
+                number_of_adults: number_of_adults, number_of_children: number_of_children,
+                driver_under_age: driver_under_age)
             session[:shopping_cart_renting_id] = shopping_cart.id
           end
 
