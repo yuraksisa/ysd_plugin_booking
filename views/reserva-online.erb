@@ -183,6 +183,7 @@
 <!-- JS TEMPLATES -->
 
 <script type="text/tmpl" id="script_families">
+
               <div class="<%% if (currentRow == totalRows-1 && lastRowItems == 2 && currentCol == 0){%>prefix_2<%%} else if (currentRow == totalRows-1 && lastRowItems == 1 && currentCol == 0) {%>prefix_4<%%}%> grid_4">
                 <div id="family_<%%=category.family%>" class="family top-margin" style="padding:5px">
                   <div>
@@ -196,9 +197,15 @@
                   </div>
                 </div>
               </div>
+
   </script>
 
 <script type="text/tmpl" id="script_shopping_cart">
+
+            <%% if (currentCol == 0) { %>
+               <div class="container_12">
+            <%% } %> 	
+
               <div class="<%% if (currentRow == totalRows-1 && lastRowItems == 2 && currentCol == 0){%>prefix_2<%%} else if (currentRow == totalRows-1 && lastRowItems == 1 && currentCol == 0) {%>prefix_4<%%}%> grid_<%%=12/totalCols%>">
                 <div id="family_<%%=category.family%>" class="family top-margin" style="padding:5px">
                   <div>
@@ -239,6 +246,10 @@
                   </div>
                 </div>
               </div>
+
+            <%% if (current == total-1 || currentCol == totalCols-1) {%>
+            	</div>
+            <%% } %> 
   </script>
 
 <script type="text/tmpl" id="script_extras">
