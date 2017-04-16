@@ -226,25 +226,34 @@ require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
 
                 recalcPrice: function() {
 
-                    this.item_cost = 0;
-                    this.total_cost = 0;
-                    this.product_deposit_cost = 0;
-                    for (family in bookingModel.all_prices) {
-                        if (this.booking_lines[family]) {
-                            this.booking_lines[family].set_item_unit_cost_base(bookingModel.all_prices_base[family]);
-                            this.booking_lines[family].set_item_unit_cost(bookingModel.all_prices[family]);
-                            this.item_cost += this.booking_lines[family].item_cost;
-                            this.product_deposit_cost += this.booking_lines[family].product_deposit_cost;
-                        }
+                  this.item_cost = 0;
+                  this.total_cost = 0;
+                  this.extras_cost = 0;
+                  this.product_deposit_cost = 0;
+                  // Recalculate products cost
+                  for (family in bookingModel.all_prices) {
+                    if (this.booking_lines[family]) {
+                      this.booking_lines[family].set_item_unit_cost_base(bookingModel.all_prices_base[family]);
+                      this.booking_lines[family].set_item_unit_cost(bookingModel.all_prices[family]);
+                      this.item_cost += this.booking_lines[family].item_cost;
+                      this.product_deposit_cost += this.booking_lines[family].product_deposit_cost;
                     }
-                    this.time_from_cost = bookingDataSystem.calculate_pickup_time_price(this.date_from, this.time_from);
-                    this.time_to_cost = bookingDataSystem.calculate_return_time_price(this.date_to, this.time_to);
-                    this.total_cost = this.time_from_cost + this.time_to_cost +
-                        this.pickup_place_cost + this.return_place_cost +
-                        this.item_cost + this.extras_cost + this.product_deposit_cost;
-                    this.booking_amount = new Number(this.total_cost *
-                        <%=booking_deposit%> / 100).toFixed(0).valueOf();
-                    bookingView.update_information('booking_cost');
+                  }
+                  // Recalculate extras cost
+                  for (extra in this.booking_extras) {
+                    this.booking_extras[extra].extra_unit_cost = bookingDataSystem.calculate_extra_price(this.date_from, 
+                       this.date_to_price_calculation, this.booking_extras[extra].extra_id, this.item_id);
+                    this.booking_extras[extra].extra_cost = this.booking_extras[extra].quantity * this.booking_extras[extra].extra_unit_cost;
+                    this.extras_cost += this.booking_extras[extra].extra_cost;
+                  }
+                  // Apply totals
+                  this.time_from_cost = bookingDataSystem.calculate_pickup_time_price(this.date_from, this.time_from);
+                  this.time_to_cost = bookingDataSystem.calculate_return_time_price(this.date_to, this.time_to);
+                  this.total_cost = this.time_from_cost + this.time_to_cost +
+                                    this.pickup_place_cost + this.return_place_cost +
+                                    this.item_cost + this.extras_cost + this.product_deposit_cost;
+                  this.booking_amount = new Number(this.total_cost * <%=booking_deposit%> / 100).toFixed(0).valueOf();
+                  bookingView.update_information('booking_cost');
 
                 },
 
