@@ -59,6 +59,7 @@ module Sinatra
             customer_document_id: booking.customer_document_id,
             customer_language: booking.customer_language,
             status: booking.status,
+            free_access_id: booking.free_access_id
         }
 
         booking_summary.merge!({ # Pickup / Return
