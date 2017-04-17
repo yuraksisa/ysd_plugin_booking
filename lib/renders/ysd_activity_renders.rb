@@ -14,7 +14,7 @@ module CMSRenders
       def initialize(activity, context, display=nil)       
         @activity = if context.respond_to?(:session) and 
                        activity.respond_to?(:translate)
-                     activity.translate(activity.session[:locale])
+                     activity.translate(context.session[:locale])
                    else
                      activity
                    end
