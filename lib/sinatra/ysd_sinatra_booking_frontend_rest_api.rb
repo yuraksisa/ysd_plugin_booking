@@ -29,8 +29,9 @@ module Sinatra
                                             shopping_cart.date_to, shopping_cart.days).to_json
 
         # Setup
-        can_pay = BookingDataSystem::Booking.payment_cadence?(shopping_cart.date_from,
-                                                              shopping_cart.time_from)
+        can_pay = SystemConfiguration::Variable.get_value('booking.payment','false').to_bool &&
+                  BookingDataSystem::Booking.payment_cadence?(shopping_cart.date_from, shopping_cart.time_from)
+
         sales_process = {can_pay: can_pay}
         sales_process_json = sales_process.to_json
 
@@ -210,8 +211,10 @@ module Sinatra
 
 
         # Prepare the sales process
-        can_pay = BookingDataSystem::Booking.payment_cadence?(booking.date_from,
-                                                              booking.time_from)
+        can_pay = SystemConfiguration::Variable.get_value('booking.payment','false').to_bool &&
+                  BookingDataSystem::Booking.payment_cadence?(booking.date_from, booking.time_from)
+
+
         sales_process = {can_pay: can_pay}
         sales_process_json = sales_process.to_json
 
