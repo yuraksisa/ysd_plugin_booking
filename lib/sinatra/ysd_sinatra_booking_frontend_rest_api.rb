@@ -91,6 +91,12 @@ module Sinatra
             driver_driving_license_country: booking.driver_driving_license_country,
                               })
 
+        booking_summary.merge!({ # Flight
+                                 flight_company: booking.flight_company,
+                                 flight_number: booking.flight_number,
+                                 flight_time: booking.flight_time
+                               })
+
         booking_summary.merge!({ # Payment information
             payment_status: booking.payment_status,
             pay_now: booking.pay_now,
@@ -439,6 +445,10 @@ module Sinatra
             shopping_cart.driver_address.state = request_data['state']  if request_data.has_key?('state')
             shopping_cart.driver_address.country = request_data['country']  if request_data.has_key?('country')
             shopping_cart.driver_address.zip = request_data['zip']  if request_data.has_key?('zip')
+            # Flight
+            shopping_cart.flight_company = request_data['flight_company'] if request_data.has_key?('flight_company')
+            shopping_cart.flight_number = request_data['flight_number'] if request_data.has_key?('flight_number')
+            shopping_cart.flight_time = request_data['flight_time'] if request_data.has_key?('flight_time')
 
             begin
               shopping_cart.save
