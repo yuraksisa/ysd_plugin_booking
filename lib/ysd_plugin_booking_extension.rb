@@ -478,6 +478,7 @@ module Huasi
             menu_locals = {}
             menu_locals.store(:booking_activities, booking_activities) 
             menu_locals.store(:booking_renting, booking_renting)
+            menu_locals.store(:addon_crm, false)
             if booking_renting
               menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
               menu_locals.store(:today_pickup, BookingDataSystem::Booking.count_pickup(today))

@@ -57,18 +57,22 @@
       </ul>
    </li>   
    <% end %>
+   <% if addon_crm %>
    <li class='<%if ['/admin/order/information-requests'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.crm%></a>
       <ul>
         <li><a href='/admin/order/information-requests'><%=t.booking_console.information_requests%></a></li>  
       </ul>
    </li>
+   <% end %>
    <li class='<%if ['/admin/charges','/admin/booking/reports/charges','/admin/booking/product-billing','/admin/booking/extras-billing','/admin/booking/summary'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
       <ul>
         <li><a href='/admin/charges'><%=t.booking_console.receipts%></a></li>
         <li><a href="/admin/booking/reports/charges">Listado de cobros</a></li>
+        <% if booking_renting %>
         <li><a href='/admin/booking/product-billing'><%=t.booking_console.products_billing%></a></li>         
         <li><a href='/admin/booking/extras-billing'><%=t.booking_console.extras_billing%></a></li>
-        <li><a href='/admin/booking/summary'><%=t.booking_console.summary%></a></li>           
+        <li><a href='/admin/booking/summary'><%=t.booking_console.summary%></a></li>        
+        <% end %>   
       </ul>    
    </li>     
    <li class='<%if ['/admin/booking/reports/reservations',
@@ -79,15 +83,20 @@
      '/admin/booking/reports/customers',
      '/admin/booking/reports/stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.listing%></a>
      <ul>
+        <% if booking_renting %>
         <li><a href='/admin/booking/reports/stock'><%=t.booking_console.report_stock%></a></li>
         <li><a href='/admin/booking/reports/prereservations'><%=t.booking_console.report_prereservations%></a></li>    
         <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>
         <li><a href='/admin/booking/reports/resource-reservations'><%=t.booking_console.report_resource_reservations%></a></li>        
-        <li><a href='/admin/booking/reports/customer-reservations'><%=t.booking_console.report_customer_reservations%></a></li>        
+        <li><a href='/admin/booking/reports/customer-reservations'><%=t.booking_console.report_customer_reservations%></a></li>  
+        <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>  
+        <% end %>
+        <% if booking_activities %>      
         <li><a href='/admin/booking/activities-summary'><%=t.booking_console.activities_report%></a></li>           
-        <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>   
+        <% end %>
      </ul>     
-   </li>        
+   </li> 
+   <% if booking_renting %>       
    <li class='<%if ['/admin/booking/create-rates', '/admin/rates/adjust-prices'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.utils%></a>
       <ul>
         <li><a href='/admin/booking/create-rates'><%=t.booking_console_configuration.create_rates%></a></li>           
@@ -96,6 +105,7 @@
         <% end %>   
       </ul>    
    </li>    
+   <% end %>
    <li class='<%if ['/admin/booking/config/general',
     '/admin/booking/config/templates','/admin/booking/booking-place-defs',
     '/admin/calendar/timetables',
@@ -115,11 +125,15 @@
           <ul>
             <li><a href='/admin/rates/season-defs'><%=t.rates_console.seasons%></a></li>
             <li><a href='/admin/rates/factor-defs'><%=t.rates_console.factors%></a></li>
+            <% if booking_renting %>
             <li><a href='/admin/rates/promotion-codes'><%=t.rates_console.promotion_codes%></a></li>     
-            <li><a href='/admin/rates/discounts'><%=t.rates_console.discounts%></a></li>                   
+            <li><a href='/admin/rates/discounts'><%=t.rates_console.discounts%></a></li>
+            <% end %>                   
           </ul>    
         </li> 
-        <li><a href='/admin'><%=t.booking_console_configuration.admin%></a></li>                          
+        <% if user && user.superuser? %>
+        <li><a href='/admin'><%=t.booking_console_configuration.admin%></a></li>
+        <% end %>                          
       </ul>
    </li>
             
