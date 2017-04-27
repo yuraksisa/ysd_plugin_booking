@@ -35,6 +35,13 @@ module Huasi
     def install(context={})
 
       SystemConfiguration::Variable.first_or_create(
+        {name: 'booking.front_end_prefix'},
+        {value: '',
+                  description: 'The front-end site url if the front-end is detached from the backoffice',
+                  module: :booking}
+      )
+      
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.mode'},
         {:value => 'rent',
          :description => 'Booking mode: rent, restaurant',

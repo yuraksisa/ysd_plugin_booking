@@ -304,7 +304,8 @@ module Sinatra
           locals.store(:booking_item_family, 
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
           locals.store(:booking_payment_enabled, SystemConfiguration::Variable.get_value('booking.payment', false))
-
+          locals.store(:booking_front_end_prefix, SystemConfiguration::Variable.get_value('booking.front_end_prefix', ''))
+          
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
         end

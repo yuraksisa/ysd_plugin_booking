@@ -293,7 +293,7 @@
 
          <div id="other_tab"  class="top-margin-1line">
          
-            <%= partial :booking_management_other_tab %>
+            <%= partial :booking_management_other_tab, :locals => {:booking_front_end_prefix => booking_front_end_prefix} %>
 
             <div class="top-margin">
               <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
