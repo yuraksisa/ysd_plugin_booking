@@ -184,7 +184,13 @@
         <div class="formrow">
           <label class="fieldtitle">Matrícula (identificador)</label>
           <input type="text" name="booking_item_stock_plate" class="fieldcontrol" maxlength="80" value="<%%=entity.booking_item_stock_plate%>"/> 
-        </div>                       
+        </div>
+        <% if booking_item_family.driver %>
+        <div class="formrow">
+          <label class="fieldtitle">Km entrega</label>
+          <input type="text" name="km_miles_on_pickup" class="fieldcontrol" maxlength="80" value="<%%=entity.km_miles_on_pickup%>"/>
+        </div>
+        <% end %>
       </div>
       <div class="grid_6">
         <div class="left-margin">
@@ -204,6 +210,12 @@
             <label class="fieldtitle">Característica 4</label>
             <input type="text" name="booking_item_characteristic_4" class="fieldcontrol" maxlength="80" value="<%%=entity.booking_item_characteristic_4%>"/> 
           </div>
+          <% if booking_item_family.driver %>
+          <div class="formrow">
+            <label class="fieldtitle">Km devolución</label>
+            <input type="text" name="km_miles_on_return" class="fieldcontrol" maxlength="80" value="<%%=entity.km_miles_on_return%>"/>
+          </div>
+          <% end %>
         </div>                                      
       </div>
     </div>

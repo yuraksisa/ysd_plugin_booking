@@ -56,19 +56,50 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        
        $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
 
-       $('#driver_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+       $('#driver_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
        $('#driver_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_date_of_birth, 'dd/MM/yyyy')));
-       $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+
+       $('#driver_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
+       $('#driver_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_date, 'dd/MM/yyyy')));
+
+       $('#driver_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
+       $('#driver_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_expiration_date, 'dd/MM/yyyy')));
+
+       $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
        $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
-       
-       $('#additional_driver_1_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+
+       $('#driver_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
+       $('#driver_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_expiration_date, 'dd/MM/yyyy')));
+
+       $('#additional_driver_1_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
        $('#additional_driver_1_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_date_of_birth, 'dd/MM/yyyy')));
-       $('#additional_driver_1_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+
+       $('#additional_driver_1_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_1_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_date, 'dd/MM/yyyy')));
+
+       $('#additional_driver_1_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_1_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_expiration_date, 'dd/MM/yyyy')));
+
+       $('#additional_driver_1_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
        $('#additional_driver_1_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_date, 'dd/MM/yyyy')));
-       $('#additional_driver_2_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+
+       $('#additional_driver_1_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_1_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_expiration_date, 'dd/MM/yyyy')));
+
+       $('#additional_driver_2_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
        $('#additional_driver_2_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_date_of_birth, 'dd/MM/yyyy')));
-       $('#additional_driver_2_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy'}, "<%=session[:locale] || 'es'%>" );
+
+       $('#additional_driver_2_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_2_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_date, 'dd/MM/yyyy')));
+
+       $('#additional_driver_2_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_2_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_expiration_date, 'dd/MM/yyyy')));
+
+       $('#additional_driver_2_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
        $('#additional_driver_2_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_date, 'dd/MM/yyyy')));
+
+       $('#additional_driver_2_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
+       $('#additional_driver_2_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_expiration_date, 'dd/MM/yyyy')));
 
        // Configure resources combo 
 

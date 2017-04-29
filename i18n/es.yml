@@ -496,8 +496,10 @@ booking_management:
     m2_notification: Gestor (reserva recibida con pago online)
     m3_notification: Gestor (reserva confirmada)
   form:
+    customer_tab: Cliente
+    comments_tab: Comentarios y notas
     reservation_tab: Datos de la reserva
-    flight_tab: Vuelo + Dirección destino
+    flight_tab: Vuelo / Alojamiento
     driver_tab: Conductor
     additional_drivers_tab: Cond. Adic.
     weight_height_tab: Peso/Altura
@@ -543,6 +545,7 @@ booking_management:
     payment_status: Estado cobro
     payment_title: Cobros  
     booking_data_title: Datos reserva
+    destination_address_title: Alojamiento
     pickup_return: Entrega y devolución    
     date_from: Entrega / Entrada
     date_to: Devolución / Salida
@@ -598,11 +601,15 @@ booking_management:
     additional_driver_2_title: Conductor adicional 2
     driver_name: Nombre
     driver_date_of_birth: Fecha de nacimiento
+    driver_origin_country: País de origen
     driver_document_id: Numero documento
+    driver_document_id_date: Fecha de expedición
+    driver_document_id_expiration_date: Fecha de caducidad
     driver_license_number: Permiso de conducir
     driver_license_date: Fecha permiso conducir
+    driver_driving_license_expiration_date: Fecha de caducidad
     driver_license_country: País permiso conducir
-    driver_address_title : Dirección
+    driver_address_title : Dirección habitual
     driver_address_street: Calle
     driver_address_number: Número
     driver_address_complement: Complemento
@@ -611,6 +618,7 @@ booking_management:
     driver_address_country: País
     driver_address_zip: Código postal
     other: Otra información
+    external_invoice_number: Factura (sistema externo)
     free_access_id: Acceso directo
     payment_method: Forma de pago 
     flight_title: Vuelo
