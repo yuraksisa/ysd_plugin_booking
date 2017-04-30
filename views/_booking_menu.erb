@@ -104,9 +104,21 @@
         <li><a href='/admin/rates/adjust-prices'><%=t.booking_console.adjust_prices%></a></li>
         <% end %>   
       </ul>    
-   </li>    
-   <% end %>
-   <li class='<%if ['/admin/booking/config/general',
+   </li>
+    <% if defined?YsdPluginTryton %>
+    <li class='<%if ['/admin/tryton/setup',
+                     '/admin/integration/data',
+                     '/admin/integration/errors',
+                     '/admin/tryton/pending-charges'].index(request.path)%>active <%end%>has-sub'><a href='#'>Tryton</a>
+      <ul>
+        <li><a href='/admin/tryton/setup'>Configuración</a></li>
+        <li><a href='/admin/tryton/pending-charges'>Depósitos pendientes</a></li>
+        <li><a href='/admin/integration/data'>Datos traspasados</a></li>
+        <li><a href='/admin/integration/errors'>Errores de traspaso</a></li>
+      </ul>
+    </li>
+    <% end %>
+    <li class='<%if ['/admin/booking/config/general',
     '/admin/booking/config/templates','/admin/booking/booking-place-defs',
     '/admin/calendar/timetables',
     '/admin/rates/seasons','/admin/booking/booking-places',
