@@ -120,7 +120,7 @@
         <% end %>
      </ul>
    </li>
-   <% if 1==0 %>
+   <% if ((defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == '3.0')) || (!defined?MY_BOOKING_FRONTEND) %>
    <li class='<%if ['/admin/booking/create-rates'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.utils%></a>
       <ul>
         <li><a href='/admin/booking/create-rates'><%=t.booking_console_configuration.create_rates%></a></li>           

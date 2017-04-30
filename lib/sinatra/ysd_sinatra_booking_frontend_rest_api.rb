@@ -106,7 +106,9 @@ module Sinatra
         booking_summary.merge!({ # Basic cost
             item_cost: booking.item_cost,
             extras_cost: booking.extras_cost,
-            total_cost: booking.total_cost
+            total_cost: booking.total_cost,
+            total_paid: booking.total_paid,
+            total_pending: booking.total_pending
                                })
 
         booking_summary.merge!({ # Time from / to cost

@@ -14,10 +14,13 @@ module Sinatra
           File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 
           'views')))
         app.settings.translations = Array(app.settings.translations).push(File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'i18n')))      
-      
-        app.set :bookingcharge_gateway_return_ok, '/p/booking/payment-gateway-return/ok'
-        app.set :bookingcharge_gateway_return_cancel, '/p/booking/payment-gateway-return/cancel'
-        app.set :bookingcharge_gateway_return_nok, '/p/booking/payment-gateway-return/nok'
+
+        if ((defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == "3.0")) || (!defined?MY_BOOKING_FRONTEND)
+          p "Setting up mybooking 3.0"
+          app.set :bookingcharge_gateway_return_ok, '/p/booking/payment-gateway-return/ok'
+          app.set :bookingcharge_gateway_return_cancel, '/p/booking/payment-gateway-return/cancel'
+          app.set :bookingcharge_gateway_return_nok, '/p/booking/payment-gateway-return/nok'
+        end
         
         #
         # Get the booking script (with products and prices)

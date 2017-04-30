@@ -521,10 +521,10 @@ module Huasi
           booking_activities = SystemConfiguration::Variable.get_value('booking.activities','false').to_bool
 
           # Complete with a request to the add-ons
-          addon_crm = false
-          addon_finances = false
-          addon_massive_price_adjust = false
-          addon_offer_promotion_code = false
+          addon_crm = (app.settings.respond_to?(:mybooking_addon_crm) ? app.settings.mybooking_addon_crm : false)
+          addon_finances = (app.settings.respond_to?(:mybooking_addon_finances) ? app.settings.mybooking_addon_finances : false)
+          addon_massive_price_adjust = (app.settings.respond_to?(:mybooking_addon_massive_price_adjust) ? app.settings.mybooking_addon_massive_price_adjust : false)
+          addon_offer_promotion_code = (app.settings.respond_to?(:mybooking_addon_offer_promotion_code) ? app.settings.mybooking_addon_offer_promotion_code : false)
 
           if booking_mode == 'rent'
             menu_locals = {addon_crm: addon_crm,
@@ -576,11 +576,11 @@ module Huasi
     # @return [Array]
     #   An array which contains the css resources used by the module
     #
-    #def page_script(context={}, page)
-    #
-    #  ['/booking_js.js']
-    #
-    #end
+    def page_script(context={}, page)
+    
+      ['/booking_js.js'] if ((defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == '3.0')) || (!defined?MY_BOOKING_FRONTEND) 
+    
+    end
 
     # --------- Menus --------------------
     

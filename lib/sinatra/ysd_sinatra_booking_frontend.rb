@@ -4,13 +4,14 @@ module Sinatra
 
       def self.registered(app)
 
-				# TODO CHECK VARIABLES if RESERVATION_MODE = 2.0
+       if (defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == '4.0')
+          p "Setting up mybooking 4.0"
+		     app.set :bookingcharge_gateway_return_ok, '/reserva/payment-gateway-return/ok'
+		     app.set :bookingcharge_gateway_return_cancel, '/reserva/payment-gateway-return/cancel'
+		     app.set :bookingcharge_gateway_return_nok, '/reserva/payment-gateway-return/nok'
+       end
 
-				app.set :bookingcharge_gateway_return_ok, '/reserva/payment-gateway-return/ok'
-				app.set :bookingcharge_gateway_return_cancel, '/reserva/payment-gateway-return/cancel'
-				app.set :bookingcharge_gateway_return_nok, '/reserva/payment-gateway-return/nok'
-
-				# =================== RESERVATION PROCESS (FRONT-END) ==========================================
+		# =================== RESERVATION PROCESS (FRONT-END) ==========================================
 
       	#
       	# Step 1 in reservation : choose product
