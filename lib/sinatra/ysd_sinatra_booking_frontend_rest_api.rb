@@ -254,6 +254,7 @@ module Sinatra
       	#
       	app.get '/api/booking/frontend/pickup-places' do 
 
+          content_type 'json'
       	  BookingDataSystem.pickup_places.to_json(only: [:id, :name])
 
       	end
@@ -262,7 +263,8 @@ module Sinatra
       	# Get the return places
       	#
       	app.get '/api/booking/frontend/return-places' do 
-
+          
+          content_type 'json'
       	  BookingDataSystem.return_places.to_json(only: [:id, :name])
 
       	end
@@ -272,7 +274,8 @@ module Sinatra
         #
       	app.get '/api/booking/frontend/pickup-return-times' do 
 
-		      BookingDataSystem.pickup_return_timetable.to_json
+		      content_type 'json'
+          BookingDataSystem.pickup_return_timetable.to_json
 
       	end
 
