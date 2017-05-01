@@ -1639,15 +1639,27 @@ module Sinatra
           
           booking = BookingDataSystem::Booking.new(booking_data)
           booking.init_user_agent_data(request.env["HTTP_USER_AGENT"])
-          booking.save
+
+          begin
+            BookingDataSystem::Booking.transaction do
+              booking.save
+
+              # MYBOOKING V3.0 integration
+              if booking.pay_now
+                booking.notify_request_to_customer_pay_now
+                booking.notify_manager_pay_now
+              end
+            end  
+          rescue DataMapper::SaveFailureError => error
+            logger.error "Error creating booking: #{error.resource.errors.full_messages.inspect}"
+            raise error
+          end  
 
           session[:booking_id] = booking.id
 
           pay_now_url = "/p/mybooking/#{booking.free_access_id}"
           summary_url = '/p/booking/summary'
 
-          #pay_now_url = format_url_with_language("/p/mybooking/#{booking.free_access_id}")
-          #summary_url = format_url_with_language('/p/booking/summary')
 
           # Pay booking
           response = if booking.pay_now
