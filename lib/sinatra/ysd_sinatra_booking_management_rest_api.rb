@@ -1648,7 +1648,11 @@ module Sinatra
               if booking.pay_now
                 booking.notify_request_to_customer_pay_now
                 booking.notify_manager_pay_now
+              else
+                booking.notify_request_to_customer
+                booking.notify_manager
               end
+
             end  
           rescue DataMapper::SaveFailureError => error
             logger.error "Error creating booking: #{error.resource.errors.full_messages.inspect}"
