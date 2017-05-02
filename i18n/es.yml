@@ -915,6 +915,13 @@ booking:
     done: Finalizada
     cancelled: Cancelada
 booking_status:
+    pending_confirmation: Pendiente
+    confirming: Confirmando
+    confirmed: Confirmada
+    in_progress: En curso
+    done: Finalizada
+    cancelled: Cancelada
+booking_status_literal:
     pending_confirmation: Su petición está pendiente de confirmación
     confirming: Su petición está siendo confirmada
     confirmed: Su petición se ha confirmado

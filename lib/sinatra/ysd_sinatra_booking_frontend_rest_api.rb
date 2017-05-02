@@ -468,7 +468,9 @@ module Sinatra
             # Creates the booking
             booking = nil
             begin
-              booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart, request.env["HTTP_USER_AGENT"])
+              booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart,
+                                                                             request.env["HTTP_USER_AGENT"],
+                                                                             false)
               shopping_cart.destroy # Destroy the converted shopping cart
             rescue DataMapper::SaveFailureError => error
               logger.error "Error creating booking from shopping cart #{error.inspect}"
@@ -616,6 +618,71 @@ module Sinatra
             status 404
             {error: 'Booking not found'}.to_json
           end
+
+        end
+
+        # --------------------- Compatibility  -----------------------------------
+
+        #
+        # Booking creation (front-end)
+        #
+        # MYBOOKING V3.0 compatibility
+        #
+        #
+        app.post '/api/booking/?' do
+
+          options = extract_request_query_string
+
+          request.body.rewind
+          data = JSON.parse request.body.read
+
+          booking_data = data['booking'].keep_if do |key, value|
+            BookingDataSystem::Booking.properties.field_map.keys.include?(key) or
+                BookingDataSystem::Booking.relationships.named?(key)
+          end
+          booking_data.symbolize_keys!
+          unless booking_data.has_key?(:customer_language)
+            booking_data[:customer_language] = session[:locale] || 'es'
+          end
+
+          session[:locale] = booking_data[:customer_language] || settings.default_locale
+
+          booking = BookingDataSystem::Booking.new(booking_data)
+          booking.init_user_agent_data(request.env["HTTP_USER_AGENT"])
+
+          begin
+            BookingDataSystem::Booking.transaction do
+              booking.save
+              booking.send_new_booking_request_notifications
+            end
+          rescue DataMapper::SaveFailureError => error
+            logger.error "Error creating booking: #{error.resource.errors.full_messages.inspect}"
+            raise error
+          end
+
+          session[:booking_id] = booking.id
+
+          pay_now_url = "/p/mybooking/#{booking.free_access_id}"
+          summary_url = '/p/booking/summary'
+
+
+          # Pay booking
+          response = if booking.pay_now
+                       <<-HTML
+                         <script type="text/javascript">
+                         window.location.href= "#{pay_now_url}"
+                         </script>
+                       HTML
+                     else
+                       <<-HTML
+                         <script type="text/javascript">
+                         window.location.href= "#{summary_url}"
+                         </script>
+                       HTML
+                     end
+
+          status 200
+          body response
 
         end
 

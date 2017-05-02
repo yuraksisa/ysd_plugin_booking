@@ -227,7 +227,9 @@ module Sinatra
             # Creates the booking
             booking = nil
             begin
-              booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart, request.env["HTTP_USER_AGENT"])
+              booking = BookingDataSystem::Booking.create_from_shopping_cart(shopping_cart,
+                                                                             request.env["HTTP_USER_AGENT"],
+                                                                             true)
               shopping_cart.destroy # Destroy the converted shopping cart
             rescue DataMapper::SaveFailureError => error
               logger.error "Error creating booking from shopping cart #{error.inspect}. Details: #{error.resource.errors.full_messages.inspect}"
