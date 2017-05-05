@@ -296,7 +296,7 @@
                                <td class="table-cell right_text"><%%= booking.booking_lines[lineIdx].quantity %></td>
                                <td class="table-cell right_text">
                                 <input type="text" size="8" maxlength="10" class="item-cost price right_text" id="booking_line[<%%=lineIdx%>][item_unit_cost]" rel="<%%=lineIdx%>"
-                                     name="booking_lines[<%%=lineIdx%>][item_unit_cost]" value="<%%= new Number(booking.booking_lines[lineIdx].item_unit_cost).toFixed(2) %>"/>
+                                     name="booking_lines[<%%=lineIdx%>][item_unit_cost]" value="<%%= booking.booking_lines[lineIdx].item_unit_cost.toFixed(2) %>"/>
                                </td>
                                <td class="table-cell right_text">
                                   <%%= new Number(booking.booking_lines[lineIdx].item_cost).toFixed(2) %>
@@ -309,7 +309,7 @@
                                <td class="table-cell right_text"><%%= booking.booking_extras[extraIdx].quantity %></td>
                                <td class="table-cell right_text">
                                   <input type="text" size="8" maxlength="10" class="extra-cost price right_text" id="booking_extra[<%%=extraIdx%>][extra_unit_cost]" rel="<%%=extraIdx%>"
-                                     name="booking_extra[<%%=extraIdx%>][extra_unit_cost]" value="<%%= new Number(booking.booking_extras[extraIdx].extra_unit_cost).toFixed(2) %>"/>
+                                     name="booking_extra[<%%=extraIdx%>][extra_unit_cost]" value="<%%= booking.booking_extras[extraIdx].extra_unit_cost.toFixed(2) %>"/>
                                </td>
                                <td class="table-cell right_text">
                                   <%%= new Number(booking.booking_extras[extraIdx].extra_cost).toFixed(2) %> 
