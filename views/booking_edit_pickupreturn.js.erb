@@ -63,24 +63,28 @@
           total_paid: <%=booking.total_paid%>,
           total_pending: <%=booking.total_pending%>,
           booking_amount: <%=booking.booking_amount%>,
-          driver_date_of_birth: $.datepicker.parseDate("dd/mm/yy", "<%= booking.driver_date_of_birth.strftime('%d/%m/%y')%>"),
+          driver_date_of_birth: <%if !booking.driver_date_of_birth.nil? %> 
+                                $.datepicker.parseDate("dd/mm/yy", "<%= booking.driver_date_of_birth.strftime('%d/%m/%y')%>"),
+                                <% else %>
+                                null,
+                                <% end %>
           number_of_adults: <%= booking.number_of_adults || 0 %> ,
           number_of_children: <%= booking.number_of_children || 0 %> ,
           booking_lines: [
             <% booking.booking_lines.each do |item| %>
               {'id':<%=item.id%>, 'item_id':'<%=item.item_id%>', 'item_description':'<%=item.item_description%>',
-               'item_unit_cost':new Number(<%=item.item_unit_cost%>), 'item_cost':new Number(<%=item.item_cost%>),
-               'product_deposit_unit_cost': new Number(<%=item.product_deposit_unit_cost%>),
-               'product_deposit_cost': new Number(<%=item.product_deposit_cost%>),
-               'quantity':new Number(<%=item.quantity%>)
+               'item_unit_cost':new Number('<%=item.item_unit_cost%>'), 'item_cost':new Number('<%=item.item_cost%>'),
+               'product_deposit_unit_cost': new Number('<%=item.product_deposit_unit_cost%>'),
+               'product_deposit_cost': new Number('<%=item.product_deposit_cost%>'),
+               'quantity':new Number('<%=item.quantity%>'')
               },      
             <% end %>                    
           ],
           booking_extras: [
             <% booking.booking_extras.each do |extra| %>
               {'id':<%=extra.id%>, 'extra_id':'<%=extra.extra_id%>', 'extra_description':'<%=extra.extra_description%>',
-               'extra_unit_cost':new Number(<%=extra.extra_unit_cost%>), 'extra_cost':new Number(<%=extra.extra_cost%>),
-               'quantity':new Number(<%=extra.quantity%>)
+               'extra_unit_cost':new Number('<%=extra.extra_unit_cost%>'), 'extra_cost':new Number('<%=extra.extra_cost%>'),
+               'quantity':new Number('<%=extra.quantity%>')
               },
             <% end %>
           ]
@@ -123,7 +127,7 @@
                                           time_to: time_to,
                                           pickup_place: pickup_place,
                                           return_place: return_place,
-                                          date_of_birth: this.booking.driver_date_of_birth.toString("yyyy-MM-dd")});
+                                          date_of_birth: this.booking.driver_date_of_birth ? this.booking.driver_date_of_birth.toString("yyyy-MM-dd") : null});
 
             $.ajax(
                 {
