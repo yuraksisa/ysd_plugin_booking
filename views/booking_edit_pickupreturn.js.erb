@@ -175,7 +175,7 @@
                                 self.booking.item_cost += self.booking.booking_lines[i].item_cost;
                             }
                             for (var i=0;i<self.booking.booking_extras.length;i++) {
-                                self.booking.booking_extras[i].extra_unit_cost = self.extras[self.booking.booking_extras[i].extra_id].price || 0;
+                                self.booking.booking_extras[i].extra_unit_cost = self.extras[self.booking.booking_extras[i].extra_id].unit_price || 0;
                                 self.booking.booking_extras[i].extra_cost = self.booking.booking_extras[i].extra_unit_cost * self.booking.booking_extras[i].quantity;
                                 self.booking.extras_cost += self.booking.booking_extras[i].extra_cost;
                             }

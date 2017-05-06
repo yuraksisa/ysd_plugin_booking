@@ -299,11 +299,11 @@
         <%% } %>
 
         <%% if (shopping_cart.return_place_cost > 0) { %>
-        <li><%= t.admin_new_reservation.form.return_place_cost %>: <span class="pull-right"><%%=new Number(hopping_cart.return_place_cost).toFixed(2)%>€</span></li>
+        <li><%= t.admin_new_reservation.form.return_place_cost %>: <span class="pull-right"><%%=new Number(shopping_cart.return_place_cost).toFixed(2)%>€</span></li>
         <%% } %>
 
         <%% if (shopping_cart.driver_age_cost > 0) { %>
-        <li><%= t.admin_new_reservation.form.driver_age_cost %>: <span class="pull-right"><%%=new Number(hopping_cart.driver_age_cost).toFixed(2)%>€</span></li>
+        <li><%= t.admin_new_reservation.form.driver_age_cost %>: <span class="pull-right"><%%=new Number(shopping_cart.driver_age_cost).toFixed(2)%>€</span></li>
         <%% } %>
 
         <li><%= t.admin_new_reservation.form.total_cost %>: <span class="pull-right"><strong><%%=new Number(shopping_cart.total_cost).toFixed(2)%>€</strong></span></li>
