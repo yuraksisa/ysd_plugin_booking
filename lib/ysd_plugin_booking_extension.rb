@@ -472,8 +472,14 @@ module Huasi
           today = Date.today
           year = today.year
           booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
-          booking_renting = SystemConfiguration::Variable.get_value('booking.renting','false').to_bool
-          booking_activities = SystemConfiguration::Variable.get_value('booking.activities','false').to_bool
+          
+          booking_renting = true
+          booking_activities = false
+          if app.settings.respond_to?(:mybooking_plan)  
+            booking_renting = [:pro_renting, :pro_plus].include?(app.settings.mybooking_plan)
+            booking_activities = [:pro_activities, :pro_plus].include?(app.settings.mybooking_plan)
+          end
+
           if booking_mode == 'rent'
             menu_locals = {}
             menu_locals.store(:booking_activities, booking_activities) 

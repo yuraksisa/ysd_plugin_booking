@@ -20,8 +20,13 @@ module Sinatra
         #
         app.get '/admin/booking/dashboard', :allowed_usergroups => ['booking_manager', 'staff'] do
           
-          @booking_activities = SystemConfiguration::Variable.get_value('booking.activities','false').to_bool
-          @booking_renting = SystemConfiguration::Variable.get_value('booking.renting','false').to_bool
+          @booking_renting = true
+          @booking_activities = false
+          if settings.respond_to?(:mybooking_plan)  
+            @booking_renting = [:pro_renting,:pro_plus].include?(settings.mybooking_plan)
+            @booking_activities = [:pro_activities, :pro_plus].include?(settings.mybooking_plan)
+          end
+
           @today = Date.today
           @year = DateTime.now.year
           @total_billing = 0
