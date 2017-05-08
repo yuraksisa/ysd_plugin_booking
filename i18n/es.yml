@@ -508,6 +508,7 @@ booking_management:
     charges_tab: Detalle cobros
     payment_tab: Pago
     planning_tab: Planning
+    external_invoicing_tab: Facturación externa
     other_tab: Otros datos
     deposit_received: Depósito
     confirm_button: 
@@ -620,7 +621,8 @@ booking_management:
     driver_address_country: País
     driver_address_zip: Código postal
     other: Otra información
-    external_invoice_number: Factura (sistema externo)
+    external_invoice_number: Número factura (sistema externo)
+    external_invoice_date: Fecha factura (sistema externo)
     free_access_id: Acceso directo
     payment_method: Forma de pago 
     flight_title: Vuelo

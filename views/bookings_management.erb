@@ -235,11 +235,14 @@
               <a name="resources_tab" href="#resources_tab"><%= t.booking_management.form.booking_resources.title %></a>
           </li>           
           <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="notifications_tab" href="#notifications_tab"><%= t.booking_management.form.notifications.title %></a>
+              <a name="related_bookings_tab" href="#related_bookings_tab"><%= t.booking_management.form.related_bookings %></a>
+          </li>
+          <li class="no-border no-background top-space" style="border:none; backgrond:none">
+              <a name="external_invoicing_tab" href="#external_invoicing_tab"><%=t.booking_management.form.external_invoicing_tab%></a>
           </li>
           <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="related_bookings_tab" href="#related_bookings_tab"><%= t.booking_management.form.related_bookings %></a>
-          </li>          
+              <a name="notifications_tab" href="#notifications_tab"><%= t.booking_management.form.notifications.title %></a>
+          </li>
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
               <a name="other_tab" href="#other_tab"><%=t.booking_management.form.other_tab%></a>
           </li>          
@@ -304,17 +307,26 @@
            <%= partial :booking_management_related_bookings %>
          </div>
 
+         <div id="external_invoicing_tab" class="top-margin-1line">
+           <%= partial :booking_management_external_invoicing_tab %>
+         </div>
+
          <div id="other_tab"  class="top-margin-1line">
          
             <%= partial :booking_management_other_tab, :locals => {:booking_front_end_prefix => booking_front_end_prefix} %>
 
-            <div class="top-margin">
-              <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
+            <div class="container_12">
+              <div class="grid_6">
+                <div class="top-margin">
+
+                  <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
                                             :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
                                             :edit_element_form_ingroup => edit_element_form_ingroup,
                                             :new_element_form => new_element_form,
                                             :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
                                             :new_element_form_ingroup => new_element_form_ingroup}) %>
+                </div>
+              </div>
             </div>
 
          </div>

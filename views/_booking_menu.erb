@@ -171,7 +171,9 @@
             <% end %>
           </ul>    
         </li> 
-        <li><a href='/admin'><%=t.booking_console_configuration.admin%></a></li>                          
+        <% if user && user.superuser? %>
+        <li><a href='/admin'><%=t.booking_console_configuration.admin%></a></li>
+        <% end %>                          
       </ul>
    </li>
             

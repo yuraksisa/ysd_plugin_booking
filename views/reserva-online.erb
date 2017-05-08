@@ -1,5 +1,4 @@
 <div id="content-reserva">
-  
     <div id="content-header" class="bottom-margin">
         <div>
           <div id="wizard-navigation">
@@ -114,76 +113,75 @@
 	              <span class="conditions_text">
 	           	    <%=t.new_booking.conditions_confirm(format_url_with_language('/renting_conditions'))%>
 	              </span>
-	            </input>
-	          </div>        
-	        </fieldset>	      
-	        <% end %>
-	        <fieldset id="fs_confirm">
-	        	<div style="text-align:center">
-	        	  <div style="display:inline-block">
-	      	        <button type="submit" id="button_ir_a_pagar_reserva" class="form-button botones" style="display:none">
-                      <span><%=t.new_booking.go_to_pay_line1(booking_deposit)%></span><br/>
-                      <span><%=t.new_booking.go_to_pay_line2%></span><br/>
-	      	        </button>
-	              </div>
-	        	  <div style="display:inline-block">	            
-	                <button type="submit" id="button_confirmar_reserva" class="form-button botones" style="display:none">
-                       <span><%=t.new_booking.confirm_line1%></span><br/>
-                       <span><%=t.new_booking.confirm_line2%></span>
-	                </button>
-	              </div>
-	        	  <div style="display:inline-block">	            
-	                <button type="submit" id="button_confirmar_reserva_manager" class="form-button botones" style="display:none">
-                       <span><%=t.new_booking.confirm_line1_manager%></span><br/>
-                       <span><%=t.new_booking.confirm_line2_manager%></span>
-	                </button>
-	              </div>	              
-	            </div>
-	        </fieldset>
-          <div id="reservation_payment_information"  style="display:none" class="guiblock smaller_text">
-            <%=t.new_booking.payment_information(booking_deposit) if booking_deposit > 0%>
-          </div>
-	        <div id="reservation_error">
-	        </div>	
-	      </div>
+									</input>
+								</div>
+							</fieldset>
+					<% end %>
+					<fieldset id="fs_confirm">
+						<div style="text-align:center">
+							<div style="display:inline-block">
+								<button type="submit" id="button_ir_a_pagar_reserva" class="form-button botones" style="display:none">
+									<span><%=t.new_booking.go_to_pay_line1(booking_deposit)%></span><br/>
+									<span><%=t.new_booking.go_to_pay_line2%></span><br/>
+								</button>
+							</div>
+							<div style="display:inline-block">
+								<button type="submit" id="button_confirmar_reserva" class="form-button botones" style="display:none">
+									<span><%=t.new_booking.confirm_line1%></span><br/>
+									<span><%=t.new_booking.confirm_line2%></span>
+								</button>
+							</div>
+							<div style="display:inline-block">
+								<button type="submit" id="button_confirmar_reserva_manager" class="form-button botones" style="display:none">
+									<span><%=t.new_booking.confirm_line1_manager%></span><br/>
+									<span><%=t.new_booking.confirm_line2_manager%></span>
+								</button>
+							</div>
+						</div>
+					</fieldset>
+					<div id="reservation_payment_information"  style="display:none" class="guiblock smaller_text">
+						<%=t.new_booking.payment_information(booking_deposit) if booking_deposit > 0%>
+					</div>
+					<div id="reservation_error">
+					</div>
+				</div>
 
-          <input type="hidden" name="booking[source]" id="booking[source]"/>
+				<input type="hidden" name="booking[source]" id="booking[source]"/>
 
-	    </form>
+			</form>
 
-        <!-- overlayed element -->
-        <div class="apple_overlay" id="overlay">
+			<!-- overlayed element -->
+			<div class="apple_overlay" id="overlay">
 
-	       <!-- the external content is loaded inside this tag -->
-	       <div class="contentWrap"></div>
+				<!-- the external content is loaded inside this tag -->
+				<div class="contentWrap"></div>
 
-        </div>	  
+			</div>
 
-        <div id="checking-availability" title="<%=t.new_booking.checking_availability%>" style="display:none">
-          <img src="/img/ajax-loader_grande.gif"/>
-        </div>
+			<div id="checking-availability" title="<%=t.new_booking.checking_availability%>" style="display:none">
+				<img src="/img/ajax-loader_grande.gif"/>
+			</div>
 
-        <div id="sending-booking" title="<%=t.new_booking.sending_booking_request%>" style="display:none">
-          <img src="/img/ajax-loader_grande.gif"/>
-        </div>
-        
-      </div>
+			<div id="sending-booking" title="<%=t.new_booking.sending_booking_request%>" style="display:none">
+				<img src="/img/ajax-loader_grande.gif"/>
+			</div>
 
-    </div>
-      
-    <div id="content-footer">
-      
-    </div>  
+		</div>
 
-    <div id="popup" style="background: white">
-    </div>
-      
-  </div>
+	</div>
 
-  <!-- JS TEMPLATES -->
+	<div id="content-footer">
 
-  <script type="text/tmpl" id="script_families">
+	</div>
 
+	<div id="popup" style="background: white">
+	</div>
+
+</div>
+
+<!-- JS TEMPLATES -->
+
+<script type="text/tmpl" id="script_families">
               <div class="<%% if (currentRow == totalRows-1 && lastRowItems == 2 && currentCol == 0){%>prefix_2<%%} else if (currentRow == totalRows-1 && lastRowItems == 1 && currentCol == 0) {%>prefix_4<%%}%> grid_4">
                 <div id="family_<%%=category.family%>" class="family top-margin" style="padding:5px">
                   <div>
@@ -216,10 +214,10 @@
                   <div class="top-margin">
                     <div class="shopping_cart_product_price_base centered_text less_contrast_text" style="font-size:0.8em; text-decoration: line-through" rel="<%%=category.family%>"><%%if (all_prices && all_prices_base && all_prices[category.family] != all_prices_base[category.family]) { %><%%=all_prices_base[category.family]%>€<%% } %></div>
                     <div class="car_price_total_base_offer" rel="<%%=category.family%>"><%% if(all_prices && all_prices_base && all_prices[category.family] != all_prices_base[category.family]){ %><%=t.new_booking.offer%><%%}%></div>
-                  </div>   
+                  </div>
                   <div class="top-margin">
                     <div class="shopping_cart_product_price centered_text bigger_text more_contrast_text" style="font-size:2em" rel="<%%=category.family%>"><%%if (all_prices && all_prices[category.family]) { %><%%=all_prices[category.family]%>€<%% } %></div>
-                  </div>   
+                  </div>
                   <div class="top-margin">
                     <form class="select-category" rel="<%%=category.family%>">
                       <select class="quantity form-control" style="display:block; margin: 0 auto" rel="<%%=category.family%>">
@@ -232,14 +230,14 @@
                         <option value="6">6</option>
                         <option value="7">7</option>
                         <option value="8">8</option>
-                        <option value="9">9</option>                       
+                        <option value="9">9</option>
                       </select>
                     </form>
                     <div class="category_not_available smaller_text" rel="<%%=category.family%>" style="display:none">
                       <% if (admin_mode) %>
                       <span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_stock_manager%></span>
                       <% else %>
-                      <span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_stock%></span>                      
+                      <span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_stock%></span>
                       <% end %>
                     </div>
                   </div>
@@ -251,8 +249,8 @@
             <%% } %> 
 
   </script>
-  
-  <script type="text/tmpl" id="script_extras">
+
+<script type="text/tmpl" id="script_extras">
   	          <tr class="booking_extra" id="booking_extra_<%%=extra.id%>" <%% if (!extra.optionalAccepted(optional)) {%> style="display:none" <%% } %> >
 	            <td>
 	               <input type="checkbox" name="extras[<%%=extra.id%>[extra_id]]" id="extras[<%%=extra.id%>[extra_id]]" value="<%%=extra.id%>" rel="extras[<%%=extra.id%>[quantity]]" class="extra"/>
@@ -267,13 +265,13 @@
 	                 <%% for (var idx=1; idx <= extra.max_quantity; idx++) { %>
 	                   <option value="<%%=idx%>"><%%=idx%></option>
 	                 <%% } %>
-	               </select>	
-	               <%% } %>            
+	               </select>
+	               <%% } %>
 	            </td>
 	          </tr>
   </script>
 
-  <script type="text/tmpl" id="script_resources_attributes">
+<script type="text/tmpl" id="script_resources_attributes">
 
      <table class="table smaller_text">
        <thead class="table-header">
@@ -304,16 +302,16 @@
                      <input class="resource_user_surname" type="text" maxlength="80" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_document_id" type="text" maxlength="50" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
+                     <input class="resource_user_document_id" type="text" maxlength="50" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_phone" type="text" maxlength="15" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
+                     <input class="resource_user_phone" type="text" maxlength="15" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_email" type="text" maxlength="40" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
-                  </td>                  
+                     <input class="resource_user_email" type="text" maxlength="40" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
+                  </td>
                   <% end %>
-                  <% if booking_item_family.height %>
+	<% if booking_item_family.height %>
                   <td class="table-cell">
                      <select class="height" rel="<%%=item%>" data-idx="<%%=idx%>" >
                  	   <option value=""><%=t.new_booking.height.placeholder%></option>
@@ -323,7 +321,7 @@
                      </select>
                   </td>
                   <% end %>
-                  <% if booking_item_family.weight %>
+	<% if booking_item_family.weight %>
                   <td class="table-cell">
                      <select class="weight" rel="<%%=item%>" data-idx="<%%=idx%>">
                  	   <option value=""><%=t.new_booking.weight.placeholder%></option>
@@ -343,16 +341,16 @@
                      <input class="resource_user_2_surname" type="text" maxlength="80" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_2_document_id" type="text" maxlength="50" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
+                     <input class="resource_user_2_document_id" type="text" maxlength="50" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_2_phone" type="text" maxlength="15" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
+                     <input class="resource_user_2_phone" type="text" maxlength="15" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
                   </td>
                   <td class="table-cell">
-                     <input class="resource_user_2_email" type="text" maxlength="40" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>                  
-                  </td>                  
+                     <input class="resource_user_2_email" type="text" maxlength="40" size="15" rel="<%%=item%>" data-idx="<%%=idx%>"/>
+                  </td>
                   <% end %>
-                  <% if booking_item_family.height %>
+	<% if booking_item_family.height %>
                   <td class="table-cell">
                      <select class="height_2" rel="<%%=item%>" data-idx="<%%=idx%>" >
                      <option value=""><%=t.new_booking.height.placeholder%></option>
@@ -362,7 +360,7 @@
                      </select>
                   </td>
                   <% end %>
-                  <% if booking_item_family.weight %>
+	<% if booking_item_family.weight %>
                   <td class="table-cell">
                      <select class="weight_2" rel="<%%=item%>" data-idx="<%%=idx%>">
                      <option value=""><%=t.new_booking.weight.placeholder%></option>
@@ -375,13 +373,13 @@
                 </tr>
                 <%% } %>
              <%% } %>
-          <%% } %>	
+          <%% } %>
        </tbody>
      </table>
 
   </script>
-  
-  <script type="text/tpml" id="script_detailed_price">
+
+<script type="text/tpml" id="script_detailed_price">
       <h3 class="guiblock"><%=t.new_booking.budget%></h3>
       <table class="detailed_price">
         <thead>
@@ -471,8 +469,8 @@
       <%% } %> 
   
   </script>
-  
-  <script type="text/tpml" id="script_detailed_product">
+
+<script type="text/tpml" id="script_detailed_product">
 
     <div id="product_detail">
       <div class="grid_12">

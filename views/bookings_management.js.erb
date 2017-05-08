@@ -101,7 +101,11 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        $('#additional_driver_2_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
        $('#additional_driver_2_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_expiration_date, 'dd/MM/yyyy')));
 
-       // Configure resources combo 
+       $('#external_invoice_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
+       $('#external_invoice_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.external_invoice_date, 'dd/MM/yyyy')));
+
+
+        // Configure resources combo
 
        for (var lineIdx=0; lineIdx < entity.booking_lines.length; lineIdx++) { 
          for (var resourceIdx=0; resourceIdx < entity.booking_lines[lineIdx].booking_line_resources.length; resourceIdx++) { 
