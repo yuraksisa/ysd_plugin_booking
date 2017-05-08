@@ -90,10 +90,16 @@ module Huasi
            :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.notify_confirmation'},
+          {:name => 'booking.send_notifications'},
           {:value => 'true',
-           :description => 'Notify confirmation',
+           :description => 'Send notifications by email',
            :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.send_notifications_new_reservations_from_backoffice'},
+          {:value => 'true',
+           :description => 'Send new reservation notifications from the backoffice',
+           :module => :booking})      
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.reservation_starts_with'},
