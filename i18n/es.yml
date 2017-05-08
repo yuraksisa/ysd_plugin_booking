@@ -621,6 +621,7 @@ booking_management:
     driver_address_country: País
     driver_address_zip: Código postal
     other: Otra información
+    next_external_invoice_number: Siguiente
     external_invoice_number: Número factura (sistema externo)
     external_invoice_date: Fecha factura (sistema externo)
     free_access_id: Acceso directo

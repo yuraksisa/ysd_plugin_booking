@@ -35,6 +35,18 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        'refunded': '<%= t.charge_status.refunded%>'
     };
 
+    this.nextExternalInvoiceNumber = function() {
+        $.ajax({
+            type: 'GET',
+            url : '/api/bookings/next-external-invoice-number',
+            contentType: 'application/json; charset=utf-8',
+            dataType : 'json',
+            success: function(data, textStatus, jqXHR) {
+                $('#external_invoice_number').val(data);
+            }
+        });
+    }
+
     this.entityKey = function(entity) {
       return entity.id;
     }    
@@ -420,6 +432,10 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         var resourceIdx = $(form).attr('data-resourceindex');
         self.prepareFormEditBookingLineResource(lineIdx, resourceIdx);
       });
+
+      $('#next_external_invoice_number').bind('click', function(){
+          self.nextExternalInvoiceNumber();
+      })
 
     }
 

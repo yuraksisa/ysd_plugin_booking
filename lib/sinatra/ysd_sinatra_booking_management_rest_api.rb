@@ -1612,7 +1612,15 @@ module Sinatra
             status 404
           end
 
-        end  
+        end
+
+        # -------------------------- External invoice -------------------------------
+
+        app.get '/api/bookings/next-external-invoice-number', :allowed_usergroups => ['booking_manager', 'staff'] do
+          content_type :json
+          value = (BookingDataSystem::Booking.max_external_invoice_number.to_i + 1)
+          value.to_json
+        end
 
       end
 
