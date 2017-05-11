@@ -30,7 +30,8 @@
             <th class="table-cell" scope="col" style="width:2em">Teléfono</th>
             <th class="table-cell" scope="col" style="width:4.5em">Email</th>
             <th class="table-cell" scope="col" style="width:1em">Productos</th>
-            <th class="table-cell" scope="col" style="width:1em">Total</th>             
+            <th class="table-cell" scope="col" style="width:1em">Total</th>    
+            <th class="table-cell" scope="col" style="width:1em">Web</th>         
           </tr>
         </thead>
         <tbody>      
@@ -49,6 +50,7 @@
             <% end %>
           </td>
           <td class="table-cell right_text"><%="%.2f" % reservation.total_cost%></td>
+          <td class="table-cell centered_text"><%= reservation.created_by_manager ? 'N' : 'S' %></td>
         </tr>
         <% end %>
         </tbody>

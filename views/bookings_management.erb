@@ -23,6 +23,7 @@
          <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.category %></th>                
          <th class="table-header-title centered_text" scope="col" style="width:12%"><%= t.booking_management.table.date_from %></th>
          <th class="table-header-title centered_text" scope="col" style="width:12%"><%= t.booking_management.table.date_to %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.created_by_manager %></th>         
          <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.notifications %></th>
        </tr>
      </thead>
@@ -65,6 +66,7 @@
       <td class="table-cell centered_text"><%%= entity.booking_lines[0].item_id %> </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_from,'dd.MM.yyyy') %> </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_to,'dd.MM.yyyy') %> </td>
+      <td class="table-cell centered_text"><%%= entity.created_by_manager ? '<%=t.booking_management.table.created_by_manager_no%>' : '<%=t.booking_management.table.created_by_manager_yes%>' %>
       <td class="table-cell centered_text">
          <%% if (entity.customer_req_notification_sent) { %><span class="element-status pending-status smaller_text">c1</span> <%% } %>
          <%% if (entity.customer_notification_sent) { %><span class="element-status confirmed-status smaller_text">c2</span> <%%}%>

@@ -48,7 +48,7 @@ booking_settings:
     title: Configuración General
     notification_email: Email de notificación
     send_notifications: Envía notificaciones por email
-    send_notifications_new_reservations_from_backoffice: Envía notificaciones nueva reserva backoffice
+    send_notifications_backoffice_reservations: Envía notificaciones por mail (reservas del backoffice)
     scheduler_start_time: Hora de inicio planificación
     scheduler_finish_time: Hora de fin planificación    
     booking_mode:
@@ -488,6 +488,9 @@ booking_management:
     date_to: Fecha fin
     notifications: Notificaciones
     category: Categoría
+    created_by_manager: Web
+    created_by_manager_yes: S
+    created_by_manager_no: N
   footer:
     title: Notificaciones
     c1_notification: Cliente (reserva recibida)
