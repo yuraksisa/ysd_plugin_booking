@@ -77,7 +77,13 @@
            <% end %>
            <td class="table-cell left_text">
              <%% for (var idx=0;idx<data[i].booking_line_resources.length;idx++) { %>
-               <%%=data[i].booking_line_resources[idx].booking_item_reference%>&nbsp;
+             <strong><%%=data[i].booking_line_resources[idx].item_id%></strong>
+             <%%if (data[i].booking_line_resources[idx].booking_item_reference) {%>
+             -
+             <%% } else { %>
+             &nbsp;
+             <%% } %>
+             <%%=data[i].booking_line_resources[idx].booking_item_reference%>&nbsp;
              <%% } %>
            </td>             
            <td class="table-cell left_text right-margin"><%%=data[i].customer_name%> <%%=data[i].customer_surname%></td>
@@ -129,6 +135,12 @@
            <% end %>
            <td class="table-cell left_text">
              <%% for (var idx=0;idx<data[i].booking_line_resources.length;idx++) { %>
+               <strong><%%=data[i].booking_line_resources[idx].item_id%></strong>
+               <%%if (data[i].booking_line_resources[idx].booking_item_reference) {%>
+                -
+               <%% } else { %>
+               &nbsp;
+               <%% } %>
                <%%=data[i].booking_line_resources[idx].booking_item_reference%>&nbsp;
              <%% } %>
            </td>            
