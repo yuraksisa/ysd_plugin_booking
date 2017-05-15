@@ -46,7 +46,7 @@ module Sinatra
         #
         # Create/Update the renting shopping cart
         #
-        app.post '/api/booking/new-reservation/select-dates', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
+        app.post '/api/booking/new-reservation/select-dates', :allowed_usergroups => ['booking_manager', 'booking_operator','staff'] do
 
           # Extract the data parameters
           begin
@@ -191,7 +191,7 @@ module Sinatra
         #
         # Confirm reservation
         #
-        app.post '/api/booking/new-reservation/checkout' do
+        app.post '/api/booking/new-reservation/checkout', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
 
           # Request data
           request.body.rewind

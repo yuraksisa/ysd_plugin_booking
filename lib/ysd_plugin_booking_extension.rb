@@ -467,6 +467,9 @@ module Huasi
        {:name => 'booking_admin_menu',
         :module_name => :booking,
         :theme => Themes::ThemeManager.instance.selected_theme.name},
+       {:name => 'booking_operator_menu',
+        :module_name => :booking,
+        :theme => Themes::ThemeManager.instance.selected_theme.name},
        {:name => 'booking_activities_shopping_cart',
         :module_name => :booking,
         :theme => Themes::ThemeManager.instance.selected_theme.name},
@@ -519,7 +522,7 @@ module Huasi
         when 'booking_selector_full_v2'
           result = app.partial(:rent_search_form_full_v2, :locals => locals)
           result << app.partial(:rent_search_form_full_v2_js, :locals => locals)
-        when 'booking_admin_menu'
+        when 'booking_operator_menu', 'booking_admin_menu'
           today = Date.today
           year = today.year
           booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
@@ -554,7 +557,11 @@ module Huasi
               menu_locals.store(:pending_confirmation_activities, ::Yito::Model::Order::Order.count_pending_confirmation_orders(year))
               menu_locals.store(:today_start_activities, ::Yito::Model::Order::Order.count_start(today))
             end
-            app.partial(:booking_menu, :locals => menu_locals)
+            if block_name == 'booking_admin_menu'
+              app.partial(:booking_menu, :locals => menu_locals)
+            else
+              app.partial(:booking_operator_menu, :locals => menu_locals)
+            end
           elsif booking_mode == 'restaurant'
             app.partial(:booking_menu_restaurant)
           end              

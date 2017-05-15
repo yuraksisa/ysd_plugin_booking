@@ -54,7 +54,7 @@ module Sinatra
         #
         # Pickup and return
         #
-        app.get '/admin/booking/reports/pickup-return', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/reports/pickup-return', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           locals = {}
           if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
@@ -64,7 +64,7 @@ module Sinatra
           load_page(:report_pickup_return, :locals => locals)
         end
 
-        app.get '/admin/booking/reports/pickup-return-pdf', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/reports/pickup-return-pdf', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           from = DateTime.now
           if params[:from]

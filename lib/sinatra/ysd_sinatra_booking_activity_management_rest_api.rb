@@ -171,7 +171,7 @@ module Sinatra
         #
         # Booking activities scheduler
         #
-        app.get '/api/booking-activities/scheduler', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/api/booking-activities/scheduler', :allowed_usergroups => ['booking_manager','booking_operator', 'staff'] do
 
           from = Time.at(params['start'].to_i)
           to = Time.at(params['end'].to_i)

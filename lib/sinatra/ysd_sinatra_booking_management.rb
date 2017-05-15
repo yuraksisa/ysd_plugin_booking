@@ -252,7 +252,7 @@ module Sinatra
         #
         # Change reservation period or pickup/return places
         #
-        app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager'] do
+        app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager', 'booking_operator'] do
 
           if booking = BookingDataSystem::Booking.get(params[:booking_id])
             if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.booking_lines.first.item_id)
@@ -296,7 +296,7 @@ module Sinatra
         #
         # Bookings admin page
         #
-        app.get '/admin/booking/bookings/?*', :allowed_usergroups => ['booking_manager'] do 
+        app.get '/admin/booking/bookings/?*', :allowed_usergroups => ['booking_manager', 'booking_operator'] do
 
           context = {:app => self}
           
@@ -325,7 +325,7 @@ module Sinatra
         #
         # Contract
         #
-        app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager','staff'] do
+        app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager', 'booking_operator','staff'] do
 
            if booking = BookingDataSystem::Booking.get(params[:id])
              product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
@@ -346,7 +346,7 @@ module Sinatra
         #
         # Assign stock
         #
-        app.get '/admin/booking/assign-stock/:id', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/assign-stock/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           if @booking_line_resource = BookingDataSystem::BookingLineResource.get(params[:id])
             @booking = @booking_line_resource.booking_line.booking

@@ -7,7 +7,7 @@ module Sinatra
         #
         # Booking customers search
         #
-        app.get '/admin/booking/customers/?*', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.get '/admin/booking/customers/?*', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
 
           load_page(:booking_management_new_reservation_customer_selection)
 
@@ -16,7 +16,7 @@ module Sinatra
         #
         # Booking customers search
         #
-        app.post '/admin/booking/customers/?*', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.post '/admin/booking/customers/?*', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
 
           @item_count, @bookings = BookingDataSystem::Booking.customer_search(params[:search],{})
           

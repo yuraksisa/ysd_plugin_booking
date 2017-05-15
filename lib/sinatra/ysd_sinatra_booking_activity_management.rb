@@ -7,7 +7,7 @@ module Sinatra
         #
         # Booking activities occupation
         #
-        app.get '/admin/booking/activities-occupation', :allowed_usergroups => ['booking_manager','staff'] do
+        app.get '/admin/booking/activities-occupation', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
 
           today = Date.today
           
@@ -28,7 +28,7 @@ module Sinatra
         #
         # Get the activities for a date
         #
-        app.get '/admin/booking/day-activities/?', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.get '/admin/booking/day-activities/?', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
 
           @date = Date.today
 
@@ -81,7 +81,7 @@ module Sinatra
         #
         # Activity detail
         #
-        app.get '/admin/booking/activity-detail/?*', :allowed_usergroups => ['booking_manager','staff'] do
+        app.get '/admin/booking/activity-detail/?*', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
  
           if params[:date] and params[:time] and params[:item_id]
             
@@ -103,7 +103,7 @@ module Sinatra
         #
         # Confirmed booking activities
         #
-        app.get '/admin/booking/programmed-activities/?*', :allowed_usergroups => ['booking_manager','staff'] do
+        app.get '/admin/booking/programmed-activities/?*', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
 
           year = Date.today.year
 
@@ -135,7 +135,7 @@ module Sinatra
         #
         # Booking activities schedule
         #
-        app.get '/admin/booking/activities-schedule/?*', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.get '/admin/booking/activities-schedule/?*', :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
 
           today = Date.today
           @year = today.year

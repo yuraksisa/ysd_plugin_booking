@@ -1,0 +1,69 @@
+<style type="text/css">
+
+  .booking_menu a:link, .booking_menu a:visited {
+    color: white;
+  }
+
+  .booking_menu a:hover {
+    color: yellow;	
+  }
+
+  .booking_menu {
+
+  }
+
+</style>
+
+<div id="cssmenu" class="booking_menu admin_menu smaller_text all-space">
+  <ul style="font-size: 0.92em">
+   <% if booking_renting %>
+   <li class='<%if ['/admin/booking/new',
+                    '/admin/booking/customers',
+                    '/admin/booking/bookings',
+                    '/admin/booking/edit/pickup-return',
+                    '/admin/booking/planning2',
+                    '/admin/booking/reports/pickup-return',
+                    '/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
+      <ul>
+        <li><a href='/admin/booking/new'><%=t.booking_console.new_booking%></a></li>
+        <li><a href='/admin/booking/customers'><%=t.booking_console.new_customer_booking%></a></li>
+        <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>
+        <li><a href="/admin/booking/planning2?from=<%=Date.today.strftime('%Y-%m-%d')%>&to=<%=(Date.today + 180).strftime('%Y-%m-%d')%>"><%=t.booking_console.planning%></a></li> 
+        <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%><%if today_pickup>0 || today_return>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_pickup%>/<%=today_return%></span><%end%></a></li>
+      </ul>
+   </li>   
+   <% end %>
+   <% if booking_activities %>
+   <li class='<%if ['/admin/order/orders/new',
+                    '/admin/order/orders',
+                    '/admin/booking/activities-occupation',
+                    '/admin/booking/activities-schedule',
+                    '/admin/booking/activity-detail'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.activity_bookings%></a>
+      <ul>
+        <li><a href='/admin/order/orders/new'><%=t.booking_console.new_order%></a></li>   
+        <li><a href='/admin/order/orders'><%=t.booking_console.orders%></a></li>
+        <li><a href='/admin/booking/activities-schedule'><%=t.booking_console.activities_schedule%></a></li>
+        <li><a href='/admin/booking/activities-occupation'><%=t.booking_console.activities_occupation%></a></li>
+      </ul>
+   </li>   
+   <% end %>
+   <% if addon_crm %>
+   <li class='<%if ['/admin/order/information-requests'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.crm%></a>
+      <ul>
+        <li><a href='/admin/order/information-requests'><%=t.booking_console.information_requests%></a></li>  
+      </ul>
+   </li>
+   <% end %>
+  </ul>
+</div>
+
+
+<script>
+
+require(["jquery","YSDCssMenu"],function($,YsdCssMenu){
+  $(document).ready(function(){
+    YsdCssMenu.buildMenu();
+  });
+});
+
+</script>

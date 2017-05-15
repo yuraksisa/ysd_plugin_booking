@@ -10,7 +10,7 @@ module Sinatra
         #
         # Bookings planning
         #
-        app.get '/admin/booking/planning', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/planning', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           load_page(:bookings_planning)
         end
@@ -18,7 +18,7 @@ module Sinatra
         #
         # Bookings planning V2
         #
-        app.get '/admin/booking/planning2', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/planning2', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           today = Date.today
 
@@ -61,7 +61,7 @@ module Sinatra
         #
         # Planning: Remove prereservation
         #
-        app.post '/admin/booking/planning-remove-prereservation', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.post '/admin/booking/planning-remove-prereservation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           id = params[:id]
           if prereservation = BookingDataSystem::BookingPrereservation.get(id)
@@ -76,7 +76,7 @@ module Sinatra
         #
         # Planning : Change color
         #
-        app.post '/admin/booking/planning-change-color', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.post '/admin/booking/planning-change-color', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
           id = params[:id]
           type = params[:type]
           color = params[:color]
@@ -104,7 +104,7 @@ module Sinatra
         #
         # Reassign reservation / prereservation
         #
-        app.post '/admin/booking/planning-reassign-reservation', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.post '/admin/booking/planning-reassign-reservation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           id = params[:id]
           resource = params[:resource]
@@ -150,7 +150,7 @@ module Sinatra
         #
         # The user selects a cell in the planning
         #
-        app.get '/admin/booking/planning2-select', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/planning2-select', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           @bookings = BookingDataSystem::Booking.resource_occupation_detail(params[:date], params[:reference])
           load_page(:booking_planning_select, :layout => false)
@@ -159,14 +159,14 @@ module Sinatra
         #
         # The user selects a reservation
         #
-        app.get '/admin/booking/planning2-search', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/planning2-search', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
         end
 
         #
         # The user select the reservations not asigned
         #
-        app.get '/admin/booking/planning2-pending-assignation', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/planning2-pending-assignation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
 
@@ -178,7 +178,7 @@ module Sinatra
         #
         # The user selects prereservations
         #
-        app.get '/admin/booking/planning2-prereservations', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/planning2-prereservations', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           year = Date.today.year
 
