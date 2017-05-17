@@ -122,7 +122,40 @@
 
       <div class="left-margin">
 
-        <div id="customer">
+        <div id="customer" style="display:none">
+          <div id="customer_data">
+            <div class="all-space all-border-solid-light">
+              <form name="customer">
+                <h2><%=t.admin_new_reservation.customer_title%></h2>
+
+                <div class="formrow">
+                  <label for="customer_name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_name %> <span class="mandatoryfield">*</span></label>
+                  <input type="text" maxlength="40" id="customer_name" name="customer_name" class="fieldcontrol" value="<%= @shopping_cart.customer_name %>" />
+                </div>
+
+                <div class="formrow">
+                  <label for="customer_name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_surname %> <span class="mandatoryfield">*</span></label>
+                  <input type="text" maxlength="40" id="customer_surname" name="customer_surname" class="fieldcontrol" value="<%= @shopping_cart.customer_surname %>" />
+                </div>
+
+                <div class="formrow">
+                  <label for="customer_phone" class="fieldtitle"><%= t.admin_new_reservation.form.customer_phone %> <span class="mandatoryfield">*</span></label>
+                  <input type="text" maxlength="15" id="customer_phone" name="customer_phone" class="fieldcontrol" value="<%= @shopping_cart.customer_phone %>" />
+                </div>
+
+                <div class="formrow">
+                  <label for="customer_phone" class="fieldtitle"><%= t.admin_new_reservation.form.customer_mobile_phone %></label>
+                  <input type="text" maxlength="15" id="customer_mobile_phone" name="customer_mobile_phone" class="fieldcontrol" value="<%= @shopping_cart.customer_mobile_phone %>" />
+                </div>
+
+                <div class="formrow">
+                  <label for="name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_email %> <span class="mandatoryfield">*</span></label>
+                  <input type="text" maxlength="40" id="customer_email" name="customer_email" class="fieldcontrol" value="<%= @shopping_cart.customer_email %>" />
+                </div>
+
+              </form>
+            </div>
+          </div>
         </div>
 
         <br>
@@ -217,44 +250,6 @@
       </table>
     </form>
   </div>
-
-</script>
-
-<script type="text/tmpl" id="script_customer">
-
-        <div id="customer_data">
-          <div class="all-space all-border-solid-light">
-            <form name="customer">
-              <h2><%=t.admin_new_reservation.customer_title%></h2>
-
-              <div class="formrow">
-                <label for="customer_name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_name %> <span class="mandatoryfield">*</span></label>
-                <input type="text" maxlength="40" id="customer_name" name="customer_name" class="fieldcontrol" value="<%%= shopping_cart.customer_name %>" />
-              </div>
-
-              <div class="formrow">
-                <label for="customer_name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_surname %> <span class="mandatoryfield">*</span></label>
-                <input type="text" maxlength="40" id="customer_surname" name="customer_surname" class="fieldcontrol" value="<%%= shopping_cart.customer_surname %>" />
-              </div>
-
-              <div class="formrow">
-                <label for="customer_phone" class="fieldtitle"><%= t.admin_new_reservation.form.customer_phone %> <span class="mandatoryfield">*</span></label>
-                <input type="text" maxlength="15" id="customer_phone" name="customer_phone" class="fieldcontrol" value="<%%= shopping_cart.customer_phone %>" />
-              </div>
-
-              <div class="formrow">
-                <label for="customer_phone" class="fieldtitle"><%= t.admin_new_reservation.form.customer_mobile_phone %></label>
-                <input type="text" maxlength="15" id="customer_mobile_phone" name="customer_mobile_phone" class="fieldcontrol" value="<%%= shopping_cart.customer_mobile_phone %>" />
-              </div>
-
-              <div class="formrow">
-                <label for="name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_email %> <span class="mandatoryfield">*</span></label>
-                <input type="text" maxlength="40" id="customer_email" name="customer_email" class="fieldcontrol" value="<%%= shopping_cart.customer_email %>" />
-              </div>
-
-            </form>
-          </div>
-        </div>
 
 </script>
 

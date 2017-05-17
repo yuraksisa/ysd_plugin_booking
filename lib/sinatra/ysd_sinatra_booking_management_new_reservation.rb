@@ -65,6 +65,7 @@ module Sinatra
 
           if session.has_key?('back_office_shopping_cart_renting_id')
             @shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session['back_office_shopping_cart_renting_id'])
+            @shopping_cart.clear
           end
 
           if @shopping_cart.nil?

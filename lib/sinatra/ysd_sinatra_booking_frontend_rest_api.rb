@@ -243,6 +243,19 @@ module Sinatra
         end
       end
 
+      #
+      # Calculates age
+      #
+      def age(date_of_reference, date_of_birth)
+
+        if date_of_reference.nil? || date_of_birth.nil?
+          return nil
+        else
+          (date_of_reference.year-date_of_birth.year) + (date_of_birth.month>date_of_reference.month ? 1:0)
+        end
+
+      end
+
     end
 
     module BookingFrontendRESTApi
@@ -418,6 +431,9 @@ module Sinatra
 
           # Do the process
           if shopping_cart
+
+            min_age = SystemConfiguration::Variable.get_value('booking.driver_min_age.allowed','0').to_i
+
             # Basic data: customer, payment and comments
             shopping_cart.customer_name = request_data['customer_name'] || request_data['driver_name']
             shopping_cart.customer_surname = request_data['customer_surname'] || request_data['driver_surname']
@@ -437,6 +453,8 @@ module Sinatra
             shopping_cart.driver_surname = request_data['driver_surname']  if request_data.has_key?('driver_surname')
             shopping_cart.driver_document_id = request_data['driver_document_id'] if request_data.has_key?('driver_document_id')
             shopping_cart.driver_date_of_birth = parse_date(request_data['driver_date_of_birth'])  if request_data.has_key?('driver_date_of_birth')
+            shopping_cart.driver_age = age(Date.today, shopping_cart.driver_date_of_birth) unless shopping_cart.driver_date_of_birth.nil?
+            shopping_cart.driver_under_age = (min_age > 0 && !shopping_cart.driver_age.nil? && shopping_cart.driver_age > min_age) ? true : false
             shopping_cart.driver_driving_license_number = request_data['driver_driving_license_number'] if request_data.has_key?('driver_driving_license_number')
             shopping_cart.driver_driving_license_date = parse_date(request_data['driver_driving_license_date']) if request_data.has_key?('driver_driving_license_date')
             shopping_cart.driver_driving_license_country = request_data['driver_driving_license_country'] if request_data.has_key?('driver_driving_license_country')
@@ -450,6 +468,23 @@ module Sinatra
             shopping_cart.driver_address.state = request_data['state']  if request_data.has_key?('state')
             shopping_cart.driver_address.country = request_data['country']  if request_data.has_key?('country')
             shopping_cart.driver_address.zip = request_data['zip']  if request_data.has_key?('zip')
+            # Additional driver
+            shopping_cart.additional_driver_1_name = request_data['additional_driver_1_name'] if request_data.has_key?('additional_driver_1_name')
+            shopping_cart.additional_driver_1_surname = request_data['additional_driver_1_surname'] if request_data.has_key?('additional_driver_1_surname')
+            shopping_cart.additional_driver_1_document_id = request_data['additional_driver_1_document_id'] if request_data.has_key?('additional_driver_1_document_id')
+            shopping_cart.additional_driver_1_document_id_date = parse_date(request_data['additional_driver_1_document_id_date']) if request_data.has_key?('additional_driver_1_document_id_date')
+            shopping_cart.additional_driver_1_document_id_expiration_date = parse_date(request_data['additional_driver_1_document_id_expiration_date']) if request_data.has_key?('additional_driver_1_document_id_expiration_date')
+            shopping_cart.additional_driver_1_origin_country = request_data['additional_driver_1_origin_country'] if request_data.has_key?('additional_driver_1_origin_country')
+            shopping_cart.additional_driver_1_date_of_birth = parse_date(request_data['additional_driver_1_date_of_birth']) if request_data.has_key?('additional_driver_1_date_of_birth')
+            shopping_cart.additional_driver_1_under_age = request_data['additional_driver_1_under_age'] if request_data.has_key?('additional_driver_1_under_age')
+            shopping_cart.additional_driver_1_age = age(Date.today, shopping_cart.additional_driver_1_date_of_birth) unless shopping_cart.additional_driver_1_date_of_birth.nil?
+            shopping_cart.additional_driver_1_under_age = (min_age > 0 && !shopping_cart.additional_driver_1_age.nil? && shopping_cart.additional_driver_1_age > min_age) ? true : false
+            shopping_cart.additional_driver_1_driving_license_number = request_data['additional_driver_1_driving_license_number'] if request_data.has_key?('additional_driver_1_driving_license_number')
+            shopping_cart.additional_driver_1_driving_license_date = parse_date(request_data['additional_driver_1_driving_license_date']) if request_data.has_key?('additional_driver_1_driving_license_date')
+            shopping_cart.additional_driver_1_driving_license_country = parse_date(request_data['additional_driver_1_driving_license_country']) if request_data.has_key?('additional_driver_1_driving_license_country')
+            shopping_cart.additional_driver_1_driving_license_expiration_date = request_data['additional_driver_1_driving_license_expiration_date'] if request_data.has_key?('additional_driver_1_driving_license_expiration_date')
+            shopping_cart.additional_driver_1_phone = request_data['additional_driver_1_phone'] if request_data.has_key?('additional_driver_1_phone')
+            shopping_cart.additional_driver_1_email = request_data['additional_driver_1_email'] if request_data.has_key?('additional_driver_1_email')
             # Flight
             shopping_cart.flight_company = request_data['flight_company'] if request_data.has_key?('flight_company')
             shopping_cart.flight_number = request_data['flight_number'] if request_data.has_key?('flight_number')

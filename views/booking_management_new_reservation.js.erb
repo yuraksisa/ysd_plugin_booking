@@ -429,8 +429,9 @@ bookingNewView = {
 
     loadSummary() {
 
-        var html = tmpl('script_customer')({shopping_cart: bookingNewModel.shopping_cart});
-        $('#customer').html(html);
+        if ($('#customer').not(':visible')) {
+            $('#customer').show();
+        }
 
         this.setupValidation();
 
