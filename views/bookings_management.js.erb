@@ -68,54 +68,85 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        
        $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
 
-       $('#driver_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#driver_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_date_of_birth, 'dd/MM/yyyy')));
+       $('#driver_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.driver_date_of_birth != null) {
+           $('#driver_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_date_of_birth, 'dd/MM/yyyy')));
+       }
 
-       $('#driver_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#driver_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_date, 'dd/MM/yyyy')));
+       $('#driver_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.driver_document_id_date != null) {
+           $('#driver_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_date, 'dd/MM/yyyy')));
+       }
 
-       $('#driver_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
-       $('#driver_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_expiration_date, 'dd/MM/yyyy')));
+       $('#driver_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.driver_document_id_date != null) {
+           $('#driver_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_expiration_date, 'dd/MM/yyyy')));
+       }
 
-       $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
+       $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.driver_driving_license_date != null) {
+           $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
+       }
 
-       $('#driver_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
-       $('#driver_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_expiration_date, 'dd/MM/yyyy')));
+       $('#driver_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.driver_driving_license_expiration_date != null) {
+           $('#driver_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_expiration_date, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_1_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_1_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_date_of_birth, 'dd/MM/yyyy')));
+       $('#additional_driver_1_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_1_date_of_birth != null) {
+            $('#additional_driver_1_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_date_of_birth, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_1_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_1_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_date, 'dd/MM/yyyy')));
+       $('#additional_driver_1_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_1_document_id_date != null) {
+           $('#additional_driver_1_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_date, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_1_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_1_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_expiration_date, 'dd/MM/yyyy')));
+       $('#additional_driver_1_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_1_document_id_expiration_date != null) {
+           $('#additional_driver_1_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_expiration_date, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_1_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_1_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_date, 'dd/MM/yyyy')));
+       $('#additional_driver_1_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_1_driving_license_date != null) {
+           $('#additional_driver_1_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_date, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_1_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_1_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_expiration_date, 'dd/MM/yyyy')));
+       $('#additional_driver_1_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_1_driving_license_expiration_date != null) {
+            $('#additional_driver_1_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_expiration_date, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_2_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_2_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_date_of_birth, 'dd/MM/yyyy')));
+       $('#additional_driver_2_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_2_date_of_birth != null) {
+           $('#additional_driver_2_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_date_of_birth, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_2_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_2_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_date, 'dd/MM/yyyy')));
+       $('#additional_driver_2_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_2_document_id_date != null) {
+           $('#additional_driver_2_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_date, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_2_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_2_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_expiration_date, 'dd/MM/yyyy')));
+       $('#additional_driver_2_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_2_document_id_expiration_date != null) {
+          $('#additional_driver_2_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_expiration_date, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_2_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_2_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_date, 'dd/MM/yyyy')));
+       $('#additional_driver_2_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_2_driving_license_date != null) {
+          $('#additional_driver_2_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_date, 'dd/MM/yyyy')));
+       }
 
-       $('#additional_driver_2_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years()}, "<%=session[:locale] || 'es'%>" );
-       $('#additional_driver_2_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_expiration_date, 'dd/MM/yyyy')));
+       $('#additional_driver_2_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date().add(10).years(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.additional_driver_2_driving_license_expiration_date != null) {
+          $('#additional_driver_2_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_expiration_date, 'dd/MM/yyyy')));
+       }
 
-       $('#external_invoice_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date()}, "<%=session[:locale] || 'es'%>" );
-       $('#external_invoice_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.external_invoice_date, 'dd/MM/yyyy')));
-
+       $('#external_invoice_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+       if (entity.external_invoice_date != null) {
+          $('#external_invoice_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.external_invoice_date, 'dd/MM/yyyy')));
+       }
 
         // Configure resources combo
 
@@ -162,32 +193,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
        // Validation
 
-       $('form[name=real_pickup_return_form]').validate({
-
-            submitHandler: function(form) 
-            {
-              return false;
-            },   
-
-            rules : {        
-               'pickup_time': {
-                 time24: true
-               },
-               'return_time': {
-                 time24: true
-               }
-            },
-            
-            messages : {
-               'pickup_time': {
-                 time24: '<%=t.validations.time_format_invalid%>'
-               },
-               'return_time': {
-                 time24: '<%=t.validations.time_format_invalid%>'
-               }
-            }
-
-       });
+       this.configValidations();
 
               
        $.ajax({
@@ -462,6 +468,389 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       });
 
     }
+
+    this.configValidations = function() {
+
+        this.configCustomerValidation();
+        this.configDriverValidation();
+        this.configAdditionalDriverValidation();
+        this.configRealPickupReturnValidation();
+
+    }
+
+    this.configCustomerValidation = function() {
+
+        $('form[name=customer]').validate({
+
+            submitHandler: function(form)
+            {
+                $('#customer_error_summary').html('');
+                $('#customer_error_summary').hide();
+                return false;
+            },
+
+            invalidHandler : function (form, validator) {
+                $('#customer_error_summary').html('<%=t.booking_management.form.validations.customer_errors_summary%>');
+                $('#customer_error_summary').show();
+            },
+
+            rules : {
+                'customer_name': {
+                    required: true
+                },
+                'customer_surname': {
+                    required: true
+                },
+                'customer_phone' : {
+                    required: true
+                },
+                'customer_email' : {
+                    required: true
+                },
+            },
+
+            messages : {
+                'customer_name': {
+                    required: '<%=t.booking_management.form.validations.customer_name_required%>'
+                },
+                'customer_surname': {
+                    required: '<%=t.booking_management.form.validations.customer_surname_required%>'
+                },
+                'customer_phone': {
+                    required: '<%=t.booking_management.form.validations.customer_phone_required%>'
+                },
+                'customer_email': {
+                    required: '<%=t.booking_management.form.validations.customer_email_required%>'
+                }
+            },
+
+            errorPlacement : function(error, element) {
+
+                if (element.attr('name') === 'customer_name' || element.attr('name') === 'customer_surname')  {
+                    error.insertAfter('#customer_surname');
+                }
+
+                if (element.attr('name') === 'customer_phone') {
+                    error.insertAfter('#customer_mobile_phone');
+                }
+
+                if (element.attr('name') === 'customer_email') {
+                    error.insertAfter('#customer_email');
+                }
+
+            }
+
+        });
+
+    }
+
+    this.configDriverValidation = function() {
+
+        $('form[name=driver]').validate({
+
+            submitHandler: function(form)
+            {
+                $('#driver_error_summary').html('');
+                $('#driver_error_summary').hide();
+                return false;
+            },
+
+            invalidHandler : function (form, validator) {
+                $('#driver_error_summary').html('<%=t.booking_management.form.validations.driver_errors_summary%>');
+                $('#driver_error_summary').show();
+            },
+
+            rules : {
+                'driver_date_of_birth': {
+                    <% if booking_item_family.driver_date_of_birth %>required: true, <% end %>
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date().add(-18).years(),
+                },
+                'driver_driving_license_date': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date()
+                },
+                'driver_driving_license_expiration_date': {
+                    validDate: true,
+                    minDate: new Date(),
+                    maxDate: new Date().add(30).years(),
+                },
+                'driver_document_id_date': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date(),
+                },
+                'driver_document_id_expiration_date': {
+                    validDate: true,
+                    minDate: new Date(),
+                    maxDate: new Date().add(30).years(),
+                }
+            },
+
+            messages : {
+                'driver_date_of_birth': {
+                    <% if booking_item_family.driver_date_of_birth %>required: '<%=t.booking_management.form.validations.driver_date_of_birth_mandatory%>',<%end%>
+                    validDate: '<%=t.booking_management.form.validations.driver_date_of_birth_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.driver_date_of_birth_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.driver_date_of_birth_max((d=Date.today;Date.new(d.year-18,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                },
+                'driver_driving_license_date': {
+                    validDate: '<%=t.booking_management.form.validations.driver_driving_license_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.driver_driving_license_date_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.driver_driving_license_date_max(Date.today.strftime('%d-%m-%Y'))%>'
+                },
+                'driver_driving_license_expiration_date': {
+                    validDate: '<%=t.booking_management.form.validations.driver_driving_license_expiration_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.driver_driving_license_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.driver_driving_license_expiration_date_max((d=Date.today;Date.new(d.year+30,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                },
+                'driver_document_id_date': {
+                    validDate: '<%=t.booking_management.form.validations.driver_document_id_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.driver_document_id_date_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.driver_document_id_date_max(Date.today.strftime('%d-%m-%Y'))%>'
+                },
+                'driver_document_id_expiration_date': {
+                    validDate: '<%=t.booking_management.form.validations.driver_document_id_expiration_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.driver_document_id_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.driver_document_id_expiration_date_max((d=Date.today;Date.new(d.year+30,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                }
+
+            },
+
+            errorPlacement : function(error, element) {
+
+                if (element.attr('name') === 'driver_date_of_birth')  {
+                    error.insertAfter('#driver_date_of_birth');
+                }
+
+                if (element.attr('name') === 'driver_driving_license_date')  {
+                    error.insertAfter('#driver_driving_license_date');
+                }
+
+                if (element.attr('name') === 'driver_driving_license_expiration_date')  {
+                    error.insertAfter('#driver_driving_license_expiration_date');
+                }
+
+                if (element.attr('name') === 'driver_document_id_date')  {
+                    error.insertAfter('#driver_document_id_date');
+                }
+
+                if (element.attr('name') === 'driver_document_id_expiration_date')  {
+                    error.insertAfter('#driver_document_id_expiration_date');
+                }
+
+            }
+
+        });
+
+    }
+
+    this.configAdditionalDriverValidation = function() {
+
+        $('form[name=additional_drivers]').validate({
+
+            submitHandler: function(form)
+            {
+                $('#additional_drivers_error_summary').html('');
+                $('#additional_drivers_error_summary').hide();
+                return false;
+            },
+
+            invalidHandler : function (form, validator) {
+                $('#additional_drivers_error_summary').html('<%=t.booking_management.form.validations.driver_errors_summary%>');
+                $('#additional_drivers_error_summary').show();
+            },
+
+            rules : {
+                'additional_driver_1_date_of_birth': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date().add(-18).years()
+                },
+                'additional_driver_1_driving_license_date': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date()
+                },
+                'additional_driver_1_driving_license_expiration_date': {
+                    validDate: true,
+                    minDate: new Date(),
+                    maxDate: new Date().add(30).years()
+               },
+                'additional_driver_1_document_id_date': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date(),
+                },
+                'additional_driver_1_document_id_expiration_date': {
+                    validDate: true,
+                    minDate: new Date(),
+                    maxDate: new Date().add(30).years()
+                },
+                'additional_driver_2_date_of_birth': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date().add(-18).years()
+                },
+                'additional_driver_2_driving_license_date': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date()
+                },
+                'additional_driver_2_driving_license_expiration_date': {
+                    validDate: true,
+                    minDate: new Date(),
+                    maxDate: new Date().add(30).years()
+                },
+                'additional_driver_2_document_id_date': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date(),
+                },
+                'additional_driver_2_document_id_expiration_date': {
+                    validDate: true,
+                    minDate: new Date(),
+                    maxDate: new Date().add(30).years(),
+                }
+            },
+
+            messages : {
+                'additional_driver_1_date_of_birth': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_1_date_of_birth_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_1_date_of_birth_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_1_date_of_birth_max((d=Date.today;Date.new(d.year-18,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                },
+                'additional_driver_1_driving_license_date': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_1_driving_license_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_1_driving_license_date_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_1_driving_license_date_max(Date.today.strftime('%d-%m-%Y'))%>'
+                },
+                'additional_driver_1_driving_license_expiration_date': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_1_driving_license_expiration_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_1_driving_license_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_1_driving_license_expiration_date_max((d=Date.today;Date.new(d.year+30,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+
+                },
+                'additional_driver_1_document_id_date': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_1_document_id_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_1_document_id_date_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_1_document_id_date_max(Date.today.strftime('%d-%m-%Y'))%>'
+                },
+                'additional_driver_1_document_id_expiration_date': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_1_document_id_expiration_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_1_document_id_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_1_document_id_expiration_date_max((d=Date.today;Date.new(d.year+30,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                },
+                'additional_driver_2_date_of_birth': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_2_date_of_birth_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_2_date_of_birth_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_2_date_of_birth_max((d=Date.today;Date.new(d.year-18,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                },
+                'additional_driver_2_driving_license_date': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_2_driving_license_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_2_driving_license_date_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_2_driving_license_date_max(Date.today.strftime('%d-%m-%Y'))%>'
+                },
+                'additional_driver_2_driving_license_expiration_date': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_2_driving_license_expiration_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_2_driving_license_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_2_driving_license_expiration_date_max((d=Date.today;Date.new(d.year+30,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+
+                },
+                'additional_driver_2_document_id_date': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_2_document_id_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_2_document_id_date_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_2_document_id_date_max(Date.today.strftime('%d-%m-%Y'))%>'
+                },
+                'additional_driver_2_document_id_expiration_date': {
+                    validDate: '<%=t.booking_management.form.validations.additional_driver_2_document_id_expiration_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.additional_driver_2_document_id_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.additional_driver_2_document_id_expiration_date_max((d=Date.today;Date.new(d.year+30,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+
+                }
+            },
+
+            errorPlacement : function(error, element) {
+
+                if (element.attr('name') === 'additional_driver_1_date_of_birth')  {
+                    error.insertAfter('#additional_driver_1_date_of_birth');
+                }
+
+                if (element.attr('name') === 'additional_driver_1_driving_license_date')  {
+                    error.insertAfter('#additional_driver_1_driving_license_date');
+                }
+
+                if (element.attr('name') === 'additional_driver_1_driving_license_expiration_date')  {
+                    error.insertAfter('#additional_driver_1_driving_license_expiration_date');
+                }
+
+                if (element.attr('name') === 'additional_driver_1_document_id_date')  {
+                    error.insertAfter('#additional_driver_1_document_id_date');
+                }
+
+                if (element.attr('name') === 'additional_driver_1_document_id_expiration_date')  {
+                    error.insertAfter('#additional_driver_1_document_id_expiration_date');
+                }
+
+                if (element.attr('name') === 'additional_driver_2_date_of_birth')  {
+                    error.insertAfter('#additional_driver_2_date_of_birth');
+                }
+
+                if (element.attr('name') === 'additional_driver_2_driving_license_date')  {
+                    error.insertAfter('#additional_driver_2_driving_license_date');
+                }
+
+                if (element.attr('name') === 'additional_driver_2_driving_license_expiration_date')  {
+                    error.insertAfter('#additional_driver_2_driving_license_expiration_date');
+                }
+
+                if (element.attr('name') === 'additional_driver_2_document_id_date')  {
+                    error.insertAfter('#additional_driver_2_document_id_date');
+                }
+
+                if (element.attr('name') === 'additional_driver_2_document_id_expiration_date')  {
+                    error.insertAfter('#additional_driver_2_document_id_expiration_date');
+                }
+
+            }
+
+        });
+
+    }
+
+    this.configRealPickupReturnValidation = function() {
+
+        $('form[name=real_pickup_return_form]').validate({
+
+            submitHandler: function(form)
+            {
+                return false;
+            },
+
+            rules : {
+                'pickup_time': {
+                    time24: true
+                },
+                'return_time': {
+                    time24: true
+                }
+            },
+
+            messages : {
+                'pickup_time': {
+                    time24: '<%=t.validations.time_format_invalid%>'
+                },
+                'return_time': {
+                    time24: '<%=t.validations.time_format_invalid%>'
+                }
+            }
+
+        });
+
+    }
+
 
     this.prepareFormNewBookingLine = function(entity) { /* Show the form to create a new booking line */
 

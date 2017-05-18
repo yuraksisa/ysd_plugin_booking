@@ -608,9 +608,11 @@ booking_management:
     driver_name: Nombre
     driver_date_of_birth: Fecha de nacimiento
     driver_origin_country: País de origen
+    driver_document: DNI/Pasaporte
     driver_document_id: Numero documento
     driver_document_id_date: Fecha de expedición
     driver_document_id_expiration_date: Fecha de caducidad
+    driver_license: Permiso de conducir
     driver_license_number: Permiso de conducir
     driver_license_date: Fecha permiso conducir
     driver_driving_license_expiration_date: Fecha de caducidad
@@ -682,6 +684,59 @@ booking_management:
       confirm_delete_message: ¿Está seguro que desea eliminar el cobro de la reserva?
       done: Cobro eliminado con éxito
       error: Error eliminando cobro
+    validations:
+      customer_name_required: El nombre del cliente es obligatorio
+      customer_surname_required: Los apellidos del cliente son obligatorios
+      customer_phone_required: El teléfono principal del cliente es obligatorio
+      customer_email_required: El email del cliente es obligatorio
+      customer_errors_summary: Hay errores en los datos del cliente. Por favor, revísalos
+      driver_date_of_birth_mandatory: Fecha de nac. conductor obligatorio.
+      driver_date_of_birth_invalid_date: Fecha de nac. conductor no válida. Formato dd/mm/aaaa
+      driver_date_of_birth_max: Fecha de nac. conductor deber ser anterior a %1
+      driver_date_of_birth_min: Fecha de nac. conductor deber ser posterior de %1
+      driver_driving_license_date_invalid_date: Fecha de permiso conducir no válida. Formato dd/mm/aaaa
+      driver_driving_license_date_min: Fecha de permiso conducir deber ser posterior a %1
+      driver_driving_license_date_max: Fecha de permiso conducir deber ser anterior a %1
+      driver_driving_license_expiration_date_invalid_date: Fecha expiración de permiso conducir no válida. Formato dd/mm/aaaa
+      driver_driving_license_expiration_date_min:  Fecha expiración de permiso conducir deber ser posterior a %1
+      driver_driving_license_expiration_date_max:  Fecha expiración de permiso conducir deber ser anterior a %1
+      driver_document_id_date_invalid_date: Fecha expedición documento conductor no válida. Formato dd/mm/aaaa
+      driver_document_id_date_min: Fecha expedición documento conductor deber ser posterior de %1
+      driver_document_id_date_max: Fecha expedición documento conductor deber ser anterior de %1
+      driver_document_id_expiration_date_invalid_date: Fecha expiración documento conductor no válida. Formato dd/mm/aaaa
+      driver_document_id_expiration_date_min: Fecha expiración documento conductor deber ser posterior de %1
+      driver_document_id_expiration_date_max: Fecha expiración documento conductor deber ser anterior de %1
+      additional_driver_1_date_of_birth_invalid_date: Fecha de nac. conductor no válida. Formato dd/mm/aaaa
+      additional_driver_1_date_of_birth_max: Fecha de nac. conductor deber ser anterior a %1
+      additional_driver_1_date_of_birth_min: Fecha de nac. conductor deber ser posterior a %1
+      additional_driver_1_driving_license_date_invalid_date: Fecha de permiso conducir no válida. Formato dd/mm/aaaa
+      additional_driver_1_driving_license_date_max: Fecha de permiso conducir deber ser posterior a %1
+      additional_driver_1_driving_license_date_max: Fecha de permiso conducir deber ser anterior a %1
+      additional_driver_1_driving_license_expiration_date_invalid_date: Fecha expiración de permiso conducir no válida. Formato dd/mm/aaaa
+      additional_driver_1_driving_license_expiration_date_min:  Fecha expiración de permiso conducir deber ser posterior a %1
+      additional_driver_1_driving_license_expiration_date_max:  Fecha expiración de permiso conducir deber ser anterior a %1
+      additional_driver_1_document_id_date_invalid_date: Fecha expedición documento conductor no válida. Formato dd/mm/aaaa
+      additional_driver_1_document_id_date_min: Fecha expedición documento conductor deber ser posterior a %1
+      additional_driver_1_document_id_date_max: Fecha expedición documento conductor deber ser anterior a %1
+      additional_driver_1_document_id_expiration_date_invalid_date: Fecha expiración documento conductor no válida. Formato dd/mm/aaaa
+      additional_driver_1_document_id_expiration_date_min: Fecha expiración documento conductor deber ser posterior a %1
+      additional_driver_1_document_id_expiration_date_max: Fecha expiración documento conductor deber ser anterior a %1
+      additional_driver_2_date_of_birth_invalid_date: Fecha de nac. conductor no válida. Formato dd/mm/aaaa
+      additional_driver_2_date_of_birth_max: Fecha de nac. conductor deber ser anterior a %1
+      additional_driver_2_date_of_birth_min: Fecha de nac. conductor deber ser posterior a %1
+      additional_driver_2_driving_license_date_invalid_date: Fecha de permiso conducir no válida. Formato dd/mm/aaaa
+      additional_driver_2_driving_license_date_min: Fecha de permiso conducir deber ser posterior a %1
+      additional_driver_2_driving_license_date_max: Fecha de permiso conducir deber ser anterior a %1
+      additional_driver_2_driving_license_expiration_date_invalid_date: Fecha expiración de permiso conducir no válida. Formato dd/mm/aaaa
+      additional_driver_2_driving_license_expiration_date_min:  Fecha expiración de permiso conducir deber ser posterior a %1
+      additional_driver_2_driving_license_expiration_date_max:  Fecha expiración de permiso conducir deber ser anterior a %1
+      additional_driver_2_document_id_date_invalid_date: Fecha expedición documento conductor no válida. Formato dd/mm/aaaa
+      additional_driver_2_document_id_date_min: Fecha expedición documento conductor deber ser posterior a %1
+      additional_driver_2_document_id_date_max: Fecha expedición documento conductor deber ser anterior a %1
+      additional_driver_2_document_id_expiration_date_invalid_date: Fecha expiración documento conductor no válida. Formato dd/mm/aaaa
+      additional_driver_2_document_id_expiration_date_min: Fecha expiración documento conductor deber ser posterior a %1
+      additional_driver_2_document_id_expiration_date_max: Fecha expiración documento conductor deber ser anterior a %1
+      driver_errors_summary: Hay errores en los datos del contacto/conductor. Por favor, revísalos
   charge_form:
     title: Cobro
     date: Fecha 

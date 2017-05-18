@@ -943,7 +943,31 @@ module Sinatra
           data_request = body_as_json(BookingDataSystem::Booking)
                               
           if data = BookingDataSystem::Booking.get(data_request.delete(:id).to_i)     
-            data.attributes=data_request  
+            data_request.each do |k,v|
+              if [:driver_date_of_birth,
+                  :driver_driving_license_date,
+                  :driver_driving_license_expiration_date,
+                  :driver_document_id_date,
+                  :driver_document_id_expiration_date,
+                  :additional_driver_1_date_of_birth,
+                  :additional_driver_1_driving_license_date,
+                  :additional_driver_1_driving_license_expiration_date,
+                  :additional_driver_1_document_id_date,
+                  :additional_driver_1_document_id_expiration_date,
+                  :additional_driver_2_date_of_birth,
+                  :additional_driver_2_driving_license_date,
+                  :additional_driver_2_driving_license_expiration_date,
+                  :additional_driver_2_document_id_date,
+                  :additional_driver_2_document_id_expiration_date,
+                  :additional_driver_3_date_of_birth,
+                  :additional_driver_3_driving_license_date,
+                  :additional_driver_3_driving_license_expiration_date,
+                  :additional_driver_3_document_id_date,
+                  :additional_driver_3_document_id_expiration_date,].include?(k)
+                data_request[k] = nil if v.empty?
+              end
+            end
+            data.attributes=data_request
             data.save
           end
       
