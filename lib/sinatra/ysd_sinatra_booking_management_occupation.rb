@@ -78,7 +78,7 @@ module Sinatra
         end
 
         #
-        # Check the resources occupation
+        # Check the resources occupation (AVAILABILITY)
         #
         app.get '/admin/booking/resources-occupation', :allowed_usergroups => ['booking_manager','staff'] do
 
