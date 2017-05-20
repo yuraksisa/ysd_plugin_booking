@@ -236,10 +236,17 @@ module Sinatra
       # Parses dd/mm/yyyy date
       #
       def parse_date(date_str)
-        if /\d{2}\/\d{2}\/\d{4}/.match(date_str)
-          return DateTime.strptime(date_str,'%d/%m/%Y')
-        else  
+        if date_str.nil?
           return nil
+        elsif /\d{2}\/\d{2}\/\d{4}/.match(date_str)
+          return DateTime.strptime(date_str,'%d/%m/%Y')
+        else
+          begin
+            return DateTime.parse(date_str)
+          rescue ArgumentError
+            logger.error "Invalid date #{date_str}"
+            return nil
+          end
         end
       end
 
