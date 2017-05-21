@@ -833,6 +833,22 @@ booking_category_management:
       label: Avisar al cliente si no hay reservas
     alias:
       label: Alias
+    request_customer_information:
+      label: Solicitar datos de los participantes
+    request_customer_document_id:
+      label: Solicitar el ID de los participantes (DNI/Pasaporte)
+    request_customer_phone:
+      label: Solicituar teléfono de los participantes
+    request_customer_email:
+      label: Solicituar correo electrónico de los participantes
+    request_customer_height:
+      label: Solicituar altura de los participantes
+    request_customer_weight:
+      label: Solicitar peso de los participantes
+    request_customer_allergies_intolerances:
+      label: Solicituar alergias/intolerancias
+    uses_planning_resources:
+      label: Usar recursos del planning
     create_rates:
       label: Generar tarifas
     create_calendar:
@@ -1177,7 +1193,23 @@ activity:
   no_ticket_selected: No ha seleccionado tickets
   activity_not_available: Lo sentimos, no hay plazas disponibles. Por favor, consulte telefónicamente.
   activity_not_available_dates: Lo sentimos, no hay plazas disponibles en esta fecha. Por favor, consulte telefónicamente.
-  activity_finished: Lo sentimos, la actividad ya se llevó a cabo. Por favor, consulte telefónicamente.                  
+  activity_finished: Lo sentimos, la actividad ya se llevó a cabo. Por favor, consulte telefónicamente.
+  item_customer: Cliente
+  item_customer_name: Nombre
+  item_customer_surname: Apellidos
+  item_customer_document_id: DNI/ID/Pasaporte
+  item_customer_phone: Teléfono
+  item_customer_email: Correo electrónico
+  item_customer_height: Altura
+  item_customer_weight: Peso
+  item_customer_allergies_intolerances: Alergias o Intolerancias
+activity_checkout:
+  make_order: Realizar pedido
+  order_summary: Resumen del pedido
+  reservation_data: Datos de la reserva  
+  activity_customers: Clientes de la actividad %1
+activity_shopping_cart_summary:
+  total: Total  
 report_stock:
   title: Listado de stock
   print: Imprimir

@@ -1,118 +1,117 @@
 <div id="content-reserva">
-    <div id="content-header" class="bottom-margin">
-        <div>
-          <div id="wizard-navigation">
-            <ul id="wizard-options">
-              <li>
-              	 <a id="tab-choose-item" class="tab img_txt">
-              	   <span class="tab_id">1</span>
-                   <span class="tab_title"><%= t.new_booking.choose_item(t.booking_items[booking_item_type.to_sym]) %></span>
-                 </a>
-              </li>
-              <li>
-              	 <a id="tab-choose-extras" class="tab img_txt">
-              	 	<span class="tab_id">2</span>
-              	 	<span class="tab_title"><%=t.new_booking.choose_extras%></span>
-              	 </a>
-              </li>
-              <li>
-              	  <a id="tab-complete-reservation" class="tab img_txt">
-              	  	<span class="tab_id">3</span>
-              	  	<span class="tab_title"><%=t.new_booking.complete_booking%></span>
-              	  </a>
-              </li>
-            </ul>
-          </div>
-        </div>      
-    </div>
-    
-    <div id="content-body" class="bottom-margin">
+	<div id="content-header" class="bottom-margin">
+		<div>
+			<div id="wizard-navigation">
+				<ul id="wizard-options">
+					<li>
+						<a id="tab-choose-item" class="tab img_txt">
+							<span class="tab_id">1</span>
+							<span class="tab_title"><%= t.new_booking.choose_item(t.booking_items[booking_item_type.to_sym]) %></span>
+						</a>
+					</li>
+					<li>
+						<a id="tab-choose-extras" class="tab img_txt">
+							<span class="tab_id">2</span>
+							<span class="tab_title"><%=t.new_booking.choose_extras%></span>
+						</a>
+					</li>
+					<li>
+						<a id="tab-complete-reservation" class="tab img_txt">
+							<span class="tab_id">3</span>
+							<span class="tab_title"><%=t.new_booking.complete_booking%></span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
-      <!-- ITEM SELECTION TAB -->
+	<div id="content-body" class="bottom-margin">
 
-      <% if booking_reservation_starts_with == :dates %>
-	      <div id="item-selection" class="">
-          <div id="date-selection" class="bottom-margin all-border-solid-light rounded">
-          <%= partial :reserva_online_dates_selection, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type} %>
-          </div>
-          <div id="result">
-          </div>	      
-        </div>
-      <% elsif booking_reservation_starts_with == :categories %>
-        <div id="item-selection" class="bottom-margin">
-          <div id="items_families" class="container_12">
-          </div>
-          <%= partial :reserva_online_categories_selection, :locals => {:booking_item_family => booking_item_family} %>
-        </div>      
- 	    <% elsif booking_reservation_starts_with == :shopcart %>
-	      <div id="item-selection" class="bottom-margin">
-          <%= partial :reserva_online_shopping_cart_header, :locals => {:booking_item_family => booking_item_family} %>          
-          <div id="items_families" class="container_12">
-          </div>
-          <%= partial :reserva_online_shopping_cart_footer, :locals => {:booking_item_family => booking_item_family} %>
-        </div>
-	    <% end %>
+		<!-- ITEM SELECTION TAB -->
 
-      <!-- OTHER TABS -->
+		<% if booking_reservation_starts_with == :dates %>
+				<div id="item-selection" class="">
+					<div id="date-selection" class="bottom-margin all-border-solid-light rounded">
+						<%= partial :reserva_online_dates_selection, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type} %>
+					</div>
+					<div id="result">
+					</div>
+				</div>
+		<% elsif booking_reservation_starts_with == :categories %>
+				<div id="item-selection" class="bottom-margin">
+					<div id="items_families" class="container_12">
+					</div>
+					<%= partial :reserva_online_categories_selection, :locals => {:booking_item_family => booking_item_family} %>
+				</div>
+		<% elsif booking_reservation_starts_with == :shopcart %>
+				<div id="item-selection" class="bottom-margin">
+					<%= partial :reserva_online_shopping_cart_header, :locals => {:booking_item_family => booking_item_family} %>
+					<div id="items_families" class="container_12">
+					</div>
+					<%= partial :reserva_online_shopping_cart_footer, :locals => {:booking_item_family => booking_item_family} %>
+				</div>
+		<% end %>
 
-      <div id="other-tabs" class="bottom-margin" style="display:none">
+		<!-- OTHER TABS -->
 
-        <!-- The summary header (shown in all the other tabs) -->
-        <div id="other-tabs-header" class="bottom-margin all-border-solid-light rounded">
-          <%= partial :reserva_online_summary_header, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type, 
-            :booking_reservation_starts_with => booking_reservation_starts_with,
-            :promotion_codes_active => promotion_codes_active} %>
-        </div>
+		<div id="other-tabs" class="bottom-margin" style="display:none">
 
-        <!-- EXTRAS SELECTION TAB -->
-        <div id="extras-selection" class="bottom-margin all-border-solid-light rounded" style="display:none">
-      	  <form>
-      	  	<div class="container_12">
-              <div class="grid_12">
-                <fieldset id="fs_summary_extras">
-                  <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>          
-                  <table id="tblextras">
-                    <tbody>
-                    </tbody>
-                  </table>
-                </fieldset>
-              </div>
-            </div>                 
-            <% if booking_item_family.named_resources or booking_item_family.weight or
-                  booking_item_family.height %>	          
-	          <div class="container_12">
-              <div class="grid_12">
-	              <fieldset id="fs_resources_attributes">
-	                <legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.resources%></legend>
-                  <div id="resources_attributes" class="smaller_text">
-	                </div>
-	              </fieldset>
-	            </div>
-            </div>
-            <% end %>
-	          <div class="top-margin-1line top-space-1line top-border-nosolid">
-	            <fieldset>
-	              <input type="button" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
-	            </fieldset>
-	          </div>
-          </form>
-        </div>
+			<!-- The summary header (shown in all the other tabs) -->
+			<div id="other-tabs-header" class="bottom-margin all-border-solid-light rounded">
+				<%= partial :reserva_online_summary_header, :locals => {:booking_item_family => booking_item_family, :booking_item_type => booking_item_type, :booking_reservation_starts_with => booking_reservation_starts_with,
+					:promotion_codes_active => promotion_codes_active} %>
+			</div>
 
-        <!-- RESERVATION TAB -->
+			<!-- EXTRAS SELECTION TAB -->
+			<div id="extras-selection" class="bottom-margin all-border-solid-light rounded" style="display:none">
+				<form>
+					<div class="container_12">
+						<div class="grid_12">
+							<fieldset id="fs_summary_extras">
+								<legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.extras%></legend>
+								<table id="tblextras">
+									<tbody>
+									</tbody>
+								</table>
+							</fieldset>
+						</div>
+					</div>
+					<% if booking_item_family.named_resources or booking_item_family.weight or
+							booking_item_family.height %>
+							<div class="container_12">
+								<div class="grid_12">
+									<fieldset id="fs_resources_attributes">
+										<legend id="lg_summary_extras" class="legend-first-level"><%=t.new_booking.resources%></legend>
+										<div id="resources_attributes" class="smaller_text">
+										</div>
+									</fieldset>
+								</div>
+							</div>
+					<% end %>
+					<div class="top-margin-1line top-space-1line top-border-nosolid">
+						<fieldset>
+							<input type="button" value="<%=t.new_booking.continue%>" id="button_continua_rellenar_datos" class="form-button"/>
+						</fieldset>
+					</div>
+				</form>
+			</div>
 
-	    <form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
-	      <div>	      
-             <%= partial :reserva_online_data_form, :locals => {:booking_item_family => booking_item_family, :booking => booking} %>
-	      </div>
+			<!-- RESERVATION TAB -->
 
-	      <div id="reservation-summary" class="content_data_box">
-	      	<% unless admin_mode %>
-	        <fieldset id="fs_conditions">
-	          <div>
-	            <input type="checkbox" name="conditions_read" id="conditions_read">
-	              <span class="conditions_text">
-	           	    <%=t.new_booking.conditions_confirm(format_url_with_language('/renting_conditions'))%>
-	              </span>
+			<form id="form-reservation" name="form-reservation" class="bottom-separator top-space bottom-space bottom-margin" method="POST" style="display:none">
+				<div>
+					<%= partial :reserva_online_data_form, :locals => {:booking_item_family => booking_item_family, :booking => booking} %>
+				</div>
+
+				<div id="reservation-summary" class="content_data_box">
+					<% unless admin_mode %>
+							<fieldset id="fs_conditions">
+								<div>
+									<input type="checkbox" name="conditions_read" id="conditions_read">
+									<span class="conditions_text">
+	           	                      <%=t.new_booking.conditions_confirm(format_url_with_language('/renting_conditions'))%>
+	                                </span>
 									</input>
 								</div>
 							</fieldset>
