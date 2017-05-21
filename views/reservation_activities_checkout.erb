@@ -38,10 +38,17 @@
 	            <input type="text" name="customer_phone" id="customer_phone" class="fieldcontrol" maxlength="15" placeholder="<%=t.new_booking.customer_phone.placeholder%>" <%unless @shopping_cart.nil?%>value="<%=@shopping_cart.customer_phone%>"<%end%>/>      
 	          </div>
 
+					  <% if @shopping_cart.request_customer_address %>
+							 <%= partial :customer_address, locals: {source: @shopping_cart} %>
+						<% end %>
+
 	          <div class="formrow">
 	            <label id="label_comments" for="comments" class="fieldtitle"><%=t.new_booking.comments.label%></label>
 	            <textarea id="comments" name="comments" class="fieldcontrol" rows="10" placeholder="<%=t.new_booking.comments.placeholder%>"><%unless @shopping_cart.nil?%><%=@shopping_cart.comments%><%end%></textarea>
-	          </div>	      
+	          </div>
+
+
+
 	          <p class="form-reservation-right-column"> <span id="booking_comments_length"></span> <%=t.available_chars%></p>
 
               <!-- Customer information -->

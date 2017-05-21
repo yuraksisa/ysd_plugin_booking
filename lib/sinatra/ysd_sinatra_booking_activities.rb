@@ -118,6 +118,7 @@ module Sinatra
                 end
                 activity_options = {
                    request_customer_information: activity.request_customer_information,
+                   request_customer_address: activity.request_customer_address,
                    request_customer_document_id: activity.request_customer_document_id,
                    request_customer_phone: activity.request_customer_phone,
                    request_customer_email: activity.request_customer_email,
@@ -238,6 +239,7 @@ module Sinatra
             if @shopping_cart              
               @shopping_cart.transaction do 
                 begin
+                  # Update activities customers
                   if params[:shopping_cart_item_customers]
                     params[:shopping_cart_item_customers].each do |item|
                       if shopping_cart_item_customer = ::Yito::Model::Order::ShoppingCartItemCustomer.get(item[:id])
@@ -266,6 +268,18 @@ module Sinatra
                   deposit = SystemConfiguration::Variable.get_value('order.deposit').to_i
                   if allow_deposit_payment and deposit > 0
                     @order.reservation_amount = (@order.total_cost * deposit / 100).round
+                  end
+                  if @order.request_customer_address
+                    customer_address = LocationDataSystem::Address.new
+                    customer_address.street = params[:street]
+                    customer_address.number = params[:number]
+                    customer_address.complement = params[:complement]
+                    customer_address.city = params[:city]
+                    customer_address.state = params[:state]
+                    customer_address.country = params[:country]
+                    customer_address.zip = params[:zip]
+                    customer_address.save
+                    @order.customer_address = customer_address
                   end
                   @order.save
                   @shopping_cart.destroy
@@ -311,6 +325,27 @@ module Sinatra
 
             load_page(:reservation_activities_shopping_cart, {cache: false})
 
+        end
+
+        #
+        # Show activities list (from a view)
+        #
+        app.before /^[^.]*$/ do
+
+          preffixes = Plugins::Plugin.plugin_invoke_all('ignore_path_prefix_cms', {:app => self})
+          if request.path_info.empty? or request.path_info.start_with?(*preffixes)
+            pass
+          end
+
+          path = request.path_info.sub(/\/page\/\d+/, '').sub(/\/\d+$/,'')
+          if view = ContentManagerSystem::View.first(:url => path)
+            if view.model_name == 'activity'
+              session.delete(:activity_id)
+              session.delete(:activity_date_id)
+              session.delete(:date)
+              session.delete(:turn)
+            end
+          end
         end
 
         #
