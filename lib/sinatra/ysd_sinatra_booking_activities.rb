@@ -5,6 +5,17 @@ module Sinatra
 
       def load_activity
 
+          if session.has_key?(:activity_id)
+            if session[:activity_id] != @activity.id
+              session[:activity_id] = @activity.id
+              session.delete(:activity_date_id)
+              session.delete(:date)
+              session.delete(:turn)
+            end
+          else
+            session[:activity_id] = @activity.id
+          end
+
           @occupation = {total_occupation: 0, occupation_detail: {}, occupation_capacity: @activity.capacity}
           
           if session[:activity_date_id]
@@ -59,6 +70,7 @@ module Sinatra
 
           # Query activity
           if @activity = ::Yito::Model::Booking::Activity.first(:alias => request.path_info)
+            @activity = @activity.translate(session[:locale]) if session.has_key?(:locale)
             load_activity        
           else
             pass
@@ -104,6 +116,16 @@ module Sinatra
                 if @shopping_cart.nil?
                   @shopping_cart = ::Yito::Model::Order::ShoppingCart.create(:creation_date => DateTime.now)
                 end
+                activity_options = {
+                   request_customer_information: activity.request_customer_information,
+                   request_customer_document_id: activity.request_customer_document_id,
+                   request_customer_phone: activity.request_customer_phone,
+                   request_customer_email: activity.request_customer_email,
+                   request_customer_height: activity.request_customer_height,
+                   request_customer_weight: activity.request_customer_weight,
+                   request_customer_allergies_intolerances: activity.request_customer_allergies_intolerances,
+                   uses_planning_resources: activity.uses_planning_resources
+                }
                 # Appends items
                 if !quantity_rate_1.nil? and quantity_rate_1 > 0
                   @shopping_cart.add_item(date, 
@@ -113,7 +135,8 @@ module Sinatra
                                           1,
                                           quantity_rate_1,
                                           activity.rates(date)[1][1],
-                                          activity.price_1_description)
+                                          activity.price_1_description,
+                                          activity.price_1_affects_capacity ? activity_options : {})
                 end
 
                 if !quantity_rate_2.nil? and quantity_rate_2 > 0
@@ -124,7 +147,8 @@ module Sinatra
                                           2,
                                           quantity_rate_2,
                                           activity.rates(date)[2][1],
-                                          activity.price_2_description) 
+                                          activity.price_2_description,
+                                          activity.price_2_affects_capacity ? activity_options : {}) 
                 end
 
                 if !quantity_rate_3.nil? and quantity_rate_3 > 0
@@ -135,7 +159,8 @@ module Sinatra
                                           3,
                                           quantity_rate_3,
                                           activity.rates(date)[3][1],
-                                          activity.price_3_description)               
+                                          activity.price_3_description,
+                                          activity.price_3_affects_capacity ? activity_options : {})               
                 end
               rescue DataMapper::SaveFailureError => error
                 p "Error adding item(s) to shopping_cart. #{@shopping_cart.inspect} #{@shopping_cart.errors.inspect}"
@@ -195,6 +220,7 @@ module Sinatra
                            else
                              ::Yito::Model::Order::ShoppingCart.new
                            end
+          @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
 
           @shopping_cart = ::Yito::Model::Order::ShoppingCart.new if @shopping_cart.nil?
           @activities_request_reservation = SystemConfiguration::Variable.get_value('order.request_reservations','true').to_bool
@@ -212,6 +238,22 @@ module Sinatra
             if @shopping_cart              
               @shopping_cart.transaction do 
                 begin
+                  if params[:shopping_cart_item_customers]
+                    params[:shopping_cart_item_customers].each do |item|
+                      if shopping_cart_item_customer = ::Yito::Model::Order::ShoppingCartItemCustomer.get(item[:id])
+                        shopping_cart_item_customer.customer_name = item[:customer_name] if item.has_key?('customer_name')
+                        shopping_cart_item_customer.customer_surname = item[:customer_surname] if item.has_key?('customer_surname')
+                        shopping_cart_item_customer.customer_document_id = item[:customer_document_id] if item.has_key?('customer_document_id')
+                        shopping_cart_item_customer.customer_phone = item[:customer_phone] if item.has_key?('customer_phone')
+                        shopping_cart_item_customer.customer_email = item[:customer_email] if item.has_key?('customer_email')
+                        shopping_cart_item_customer.customer_height = item[:customer_height] if item.has_key?('customer_height')
+                        shopping_cart_item_customer.customer_weight = item[:customer_weight] if item.has_key?('customer_weight')
+                        shopping_cart_item_customer.customer_allergies_or_intolerances = item[:customer_allergies_or_intolerances] if item.has_key?('customer_allergies_or_intolerances')
+                        shopping_cart_item_customer.save
+                      end
+                    end
+                    @shopping_cart.reload
+                  end
                   @order = ::Yito::Model::Order::Order.create_from_shopping_cart(@shopping_cart)
                   @order.comments = params[:comments]
                   @order.customer_name = params[:customer_name]
@@ -303,8 +345,9 @@ module Sinatra
         # Show an activity
         #
         app.get '/p/activity/:id/?*' do
-        
+
           @activity = ::Yito::Model::Booking::Activity.get(params[:id])
+          @activity = @activity.translate(session[:locale]) if session.has_key?(:locale)
           load_activity
 
         end

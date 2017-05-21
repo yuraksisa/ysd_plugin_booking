@@ -175,9 +175,9 @@
           </form>
         </div>
         <div id="characteristics_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_6">
-              <form name="element" method="POST">
+          <form name="element" method="POST">
+            <div class="container_12">
+              <div class="grid_6">
                 <input type="hidden" name="id" value="<%%=entity.id%>"/>
                 <div class="formrow">
                   <label class="fieldtitle">Color agenda</label>                
@@ -191,14 +191,54 @@
                   <label class="fieldtitle">Duración horas (hh:mm)</label>
                   <input type="text" maxlength="5" id="duration_hours" name="duration_hours" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_hours%>" <%% } %>/>
                 </div>
+              </div>
+              <div class="grid_6">
+                <div class="left-margin">
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_information.label%></label>
+                  <input type="checkbox" name="request_customer_information" value="true" id="request_customer_information" <%% if (entity && entity.request_customer_information) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_document_id.label%></label>
+                  <input type="checkbox" name="request_customer_document_id" value="true" id="request_customer_document_id" <%% if (entity && entity.request_customer_document_id) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_phone.label%></label>
+                  <input type="checkbox" name="request_customer_phone" value="true" id="request_customer_phone" <%% if (entity && entity.request_customer_phone) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_email.label%></label>
+                  <input type="checkbox" name="request_customer_email" value="true" id="request_customer_email" <%% if (entity && entity.request_customer_email) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_height.label%></label>
+                  <input type="checkbox" name="request_customer_height" value="true" id="request_customer_height" <%% if (entity && entity.request_customer_height) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_weight.label%></label>
+                  <input type="checkbox" name="request_customer_weight" value="true" id="request_customer_weight" <%% if (entity && entity.request_customer_weight) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_allergies_intolerances.label%></label>
+                  <input type="checkbox" name="request_customer_allergies_intolerances" value="true" id="request_customer_allergies_intolerances" <%% if (entity && entity.request_customer_allergies_intolerances) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.uses_planning_resources.label%></label>
+                  <input type="checkbox" name="uses_planning_resources" value="true" id="uses_planning_resources" <%% if (entity && entity.uses_planning_resources) { %>checked="checked"<%%}%>/>
+                </div>
+                </div>
+              </div>
+            </div>
+            <div class="container_12">
+              <div class="grid_12">
                 <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                   <div class="navigation-bar-crud-buttons">
                     <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
                   </div>
-                </div>                                 
-              </form>
+                </div>
+              </div>
             </div>
-          </div>
+          </form>
         </div>
         <div id="detail_tab" class="top-margin bottom-margin">
           <div class="container_12">
