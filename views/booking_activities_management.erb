@@ -195,6 +195,10 @@
               <div class="grid_6">
                 <div class="left-margin">
                 <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_address.label%></label>
+                  <input type="checkbox" name="request_customer_address" value="true" id="request_customer_address" <%% if (entity && entity.request_customer_address) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
                   <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_information.label%></label>
                   <input type="checkbox" name="request_customer_information" value="true" id="request_customer_information" <%% if (entity && entity.request_customer_information) { %>checked="checked"<%%}%>/>
                 </div>

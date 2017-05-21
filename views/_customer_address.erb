@@ -1,0 +1,31 @@
+<div id="location_form">
+  <h3><%=t.location.location_title%></h3>
+  <div class="formrow">
+    <label for="location_street" class="fieldtitle"><%=t.location.street%></label>
+    <input type="text" maxlength="60" id="street" name="street" class="fieldcontrol" <%if !source.nil? && !source.customer_address.nil?%>value="<%=source.customer_address.street%>"<%end%> />
+  </div>
+  <div class="formrow">
+    <label for="location_number" class="fieldtitle"><%=t.location.number%></label>
+    <input type="text" maxlength="10" id="number" name="number" class="fieldcontrol" <%if !source.nil? && !source.customer_address.nil?%>value="<%=source.customer_address.number%>"<%end%> />
+  </div>
+  <div class="formrow">
+    <label for="location_complement" class="fieldtitle"><%=t.location.complement%></label>
+    <input type="text" maxlength="20" id="complement" name="complement" class="fieldcontrol" <%if !source.nil? && !source.customer_address.nil?%>value="<%=source.customer_address.complement%>"<%end%> />
+  </div>
+  <div class="formrow">
+    <label for="location_city" class="fieldtitle"><%=t.location.city%></label>
+    <input type="text" maxlength="60" id="city" name="city" class="fieldcontrol" <%if !source.nil? && !source.customer_address.nil?%>value="<%=source.customer_address.city%>"<%end%> />
+  </div>
+  <div class="formrow">
+    <label for="location_state" class="fieldtitle"><%=t.location.state%></label>
+    <input type="text" maxlength="60" id="state" name="state" class="fieldcontrol" <%if !source.nil? && !source.customer_address.nil?%>value="<%=source.customer_address.state%>"<%end%> />
+  </div>
+  <div class="formrow">
+    <label for="location_country" class="fieldtitle"><%=t.location.country%></label>
+    <input type="text" maxlength="50" id="country" name="country" class="fieldcontrol" <%if !source.nil? && !source.customer_address.nil?%>value="<%=source.customer_address.country%>"<%end%> />
+  </div>
+  <div class="formrow">
+    <label for="location_zip" class="fieldtitle"><%=t.location.zip%></label>
+    <input type="text" maxlength="10" id="zip" name="zip" class="fieldcontrol" <%if !source.nil? && !source.customer_address.nil?%>value="<%=source.customer_address.zip%>"<%end%> />
+  </div>
+</div>
