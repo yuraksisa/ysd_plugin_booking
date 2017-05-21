@@ -359,7 +359,80 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       }
 
-      return data;  
+      if ($('#request_customer_information').length > 0) {
+          if ($('#request_customer_information').prop('checked')) {
+              data.request_customer_information = true;
+          }
+          else {
+              data.request_customer_information = false;
+          }
+      }
+
+      if ($('#request_customer_document_id').length > 0) {
+          if ($('#request_customer_document_id').prop('checked')) {
+              data.request_customer_document_id = true;
+          }
+          else {
+              data.request_customer_document_id = false;
+          }
+      }
+
+      if ($('#request_customer_phone').length > 0) {
+          if ($('#request_customer_phone').prop('checked')) {
+              data.request_customer_phone = true;
+          }
+          else {
+              data.request_customer_phone = false;
+          }
+      }
+
+      if ($('#request_customer_email').length > 0) {
+          if ($('#request_customer_email').prop('checked')) {
+              data.request_customer_email = true;
+          }
+          else {
+              data.request_customer_email = false;
+          }
+      }
+
+      if ($('#request_customer_height').length > 0) {
+          if ($('#request_customer_height').prop('checked')) {
+              data.request_customer_height = true;
+          }
+          else {
+              data.request_customer_height = false;
+          }
+      }
+
+      if ($('#request_customer_weight').length > 0) {
+          if ($('#request_customer_weight').prop('checked')) {
+              data.request_customer_weight = true;
+          }
+          else {
+              data.request_customer_weight = false;
+          }
+      }
+
+      if ($('#request_customer_allergies_intolerances').length > 0) {
+          if ($('#request_customer_allergies_intolerances').prop('checked')) {
+              data.request_customer_allergies_intolerances = true;
+          }
+          else {
+              data.request_customer_allergies_intolerances = false;
+          }
+      }
+
+
+      if ($('#uses_planning_resources').length > 0) {
+          if ($('#uses_planning_resources').prop('checked')) {
+              data.uses_planning_resources = true;
+          }
+          else {
+              data.uses_planning_resources = false;
+          }
+      }
+
+      return data;
       
     }
 
