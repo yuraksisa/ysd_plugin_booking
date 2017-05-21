@@ -47,10 +47,10 @@
         <tr>
           <% @detail.values.each do |value| %>
             <td class="table-cell centered_text" scope="col" style="<%if value[:occupation]<value[:stock]%>background:green; color:white<%else%>background:red; color: white<%end%>">
-              <div><%=[0, value[:stock] - value[:occupation]].max%>/<%=value[:stock]%><%if value[:occupation]>value[:occupation_assigned]%>*<%end%>
-              <%if value[:occupation] > value[:occupation_assigned]%>
+              <div><%=[0, value[:stock] - value[:occupation]].max%>/<%=value[:stock]%><%if value[:assignation_pending].size > 0%>*<%end%>
+              <%if value[:assignation_pending].size > 0%>
                 <br/>
-                <span class="smaller_text">(<strong><%=value[:occupation]-value[:occupation_assigned]%></strong> no asignado)</span>
+                <span class="smaller_text">(<strong><%=value[:assignation_pending].size%></strong> no asignado)</span>
               <%end%>
               </div>
             </td>
@@ -66,12 +66,12 @@
         <div class="container_12">
           <% value[:available_stock].each do |v| %>
           <div class="grid_3">
-            <div class="guiblock"><%=v%></div>
+            <div class="guiblock"><%if value[:automatically_preassigned_stock].include?(v)%><em></rm><%=v%>*</em><%else%><b><%=v%></b><%end%></div>
           </div> 
           <% end %>
         </div>
-        <%if value[:occupation] > value[:occupation_assigned]%>
-          <div class="all-space all-border-dashed"><strong><%=value[:occupation]-value[:occupation_assigned]%></strong> pendiente de asignar</div>
+        <%if value[:assignation_pending].size > 0%>
+          <div class="all-space all-border-dashed"><strong><%=value[:assignation_pending].size%></strong> pendiente de asignar</div>
         <%end%>
       <% end %>
     <% end %>
@@ -89,6 +89,7 @@
               <th class="table-cell" scope="col" style="width:150px">Detalle</th>
               <th class="table-cell" scope="col" style="width:80px">Fecha inicio</th>
               <th class="table-cell" scope="col" style="width:80px">Fecha fin</th>
+              <th class="table-cell" scope="col" style="width:50px">Preasignación</th>
             </tr>
           </thead>
           <tbody>  
@@ -106,6 +107,7 @@
                 <td class="table-cell"><%= item.detail%></td>
                 <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
                 <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>
+                <td class="table-cell"><%= item.preassigned_item_reference %>*</td>
               </tr> 
             <% end %>
           </tbody>
@@ -133,7 +135,7 @@
             <span <% if detail[:available] %>style="color:green"<% else %>style="color:red"<%end%>><%=id%></span>
           </td>
           <td class="table-cell">
-             <% if detail[:detail].size > 0 %>
+             <% if detail[:detail].size > 0 || detail[:estimation].size > 0 %>
 
                <table class="table">
                  <thead class="table-header">
@@ -147,7 +149,15 @@
                  <tbody>  
                    <% detail[:detail].each do |item| %>
                      <tr>
-                       <td class="table-cell"><%= item.id %></td>
+                       <td class="table-cell"><b><%= item.id %></b></td>
+                       <td class="table-cell"><%= item.title%></td>
+                       <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
+                       <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>
+                     </tr>      
+                   <% end %>                  
+                   <% detail[:estimation].each do |item| %>
+                     <tr>
+                       <td class="table-cell"><b><em><%= item.id %>*</em></b></td>
                        <td class="table-cell"><%= item.title%></td>
                        <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
                        <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>
@@ -161,5 +171,8 @@
         <% end %>
         </tbody>
       </table>
+  </div>
+  <div class="guiblock smaller_text">
+     <p>* preasignación automática</p>
   </div>
 </div>

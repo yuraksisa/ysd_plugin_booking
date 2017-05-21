@@ -276,6 +276,7 @@ module Sinatra
         #
         app.get '/p/activities/?*' do 
 
+          session.delete(:activity_id)
           session.delete(:activity_date_id)
           session.delete(:date)
           session.delete(:turn)
@@ -302,7 +303,7 @@ module Sinatra
         # Show an activity
         #
         app.get '/p/activity/:id/?*' do
-          
+        
           @activity = ::Yito::Model::Booking::Activity.get(params[:id])
           load_activity
 
