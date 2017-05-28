@@ -963,7 +963,8 @@ module Sinatra
                   :additional_driver_3_driving_license_date,
                   :additional_driver_3_driving_license_expiration_date,
                   :additional_driver_3_document_id_date,
-                  :additional_driver_3_document_id_expiration_date,].include?(k)
+                  :additional_driver_3_document_id_expiration_date,
+                  :external_invoice_date].include?(k)
                 data_request[k] = nil if v.empty?
               end
             end

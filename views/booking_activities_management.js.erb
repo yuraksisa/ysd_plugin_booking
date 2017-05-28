@@ -359,6 +359,15 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       }
 
+      if ($('#request_customer_address').length > 0) {
+          if ($('#request_customer_address').prop('checked')) {
+              data.request_customer_address = true;
+          }
+          else {
+              data.request_customer_address = false;
+          }
+      }
+
       if ($('#request_customer_information').length > 0) {
           if ($('#request_customer_information').prop('checked')) {
               data.request_customer_information = true;
