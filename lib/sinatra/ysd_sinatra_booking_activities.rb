@@ -23,9 +23,13 @@ module Sinatra
             if @activity_date = ::Yito::Model::Booking::ActivityDate.get(@activity_date_id)
               @occupation = @activity.occupation(@activity_date.date_from, @activity_date.time_from)
             end
-          elsif session[:date] or session[:turn]
+          elsif session[:date] or session[:turn] #DateTime.parse(session[:date]).to_date
             @date = session[:date] ? Date.strptime(session[:date],'%Y-%m-%d') : nil
-            @time = session[:turn] 
+            if session[:turn] && !session[:turn].to_s.empty?
+              @time = session[:turn]
+            else
+              @time = nil
+            end
             if @date and !@date.nil? and @time and !@time.nil?
               @occupation = @activity.occupation(@date, @time)
             end
@@ -403,7 +407,11 @@ module Sinatra
               session[:activity_date_id] = @activity_date_id
             elsif params[:date] or params[:turn]
               @date = params[:date]
-              @time = params[:turn]
+              if params[:turn] && !params[:turn].to_s.empty?
+                @time = params[:turn]
+              else
+                @time = nil
+              end
               if @date and !@date.nil? and @time and !@time.nil?
                 @occupation = @activity.occupation(@date, @time)
               end

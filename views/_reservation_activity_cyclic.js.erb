@@ -6,6 +6,7 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
     cyclicModel = {
        date: null,
        turn: null,
+       dateShortLiteral: null,
        dateLiteral: null,
        total: 0,
        all_days_same_turns: <%=@activity.all_days_same_turns%>,
@@ -39,8 +40,6 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
        nightTurns: [],
        buildTurns: function() {
            this.total = 0;
-           this.date = $('#datepicker').datepicker("getDate").toString('yyyy-MM-dd');
-           this.dateLiteral = $('#datepicker').datepicker("getDate").toString('dd MMMM, yyyy');
            var _morningTurns = '', _afternoonTurns = '', _nightTurns = '';
            if (this.all_days_same_turns) {
              _morningTurns = this.morning_turns;
@@ -112,11 +111,18 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
     };
 
     cyclicController = {
-        onDateChanged: function(control) {
-            control.form.submit();
+        onDateChanged: function() {
+            cyclicModel.date = $('#datepicker').datepicker('getDate');
+            cyclicModel.dateShortLiteral = cyclicModel.date.toString('yyyy-MM-dd');
+            cyclicModel.dateLiteral = cyclicModel.date.toString('dd MMMM, yyyy');
+            cyclicModel.turn = null;
+            $('input[name=date]').val(cyclicModel.dateShortLiteral);
+            $('input[name=turn]').val('');
+            $('input[name=date]')[0].form.submit();
         },
-        onTurnChanged: function(control) {
-            control.form.submit();
+        onTurnChanged: function() {
+            cyclicModel.turn = $('input[name=turn]').val();
+            $('input[name=turn]')[0].form.submit();
         },
         onQuantityChanged: function() {
             cyclicModel.calculatePrice();
@@ -186,47 +192,53 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
                        break;
                   }
                 <% end %>
-                /*
-                if (date.getDate() == 14) {
-                    return [false];
+                tomorrow = new Date(new Date().toString('MM/dd/yyyy')).add(1).days();
+                if (date < tomorrow) {
+                  return [false];
                 }
-                */
                 return [true];
               }
             });
-            $('#datepicker').datepicker('setDate', <%if defined?@date and !@date.nil?%>new Date("<%=@date%>")<%else%>new Date()<%end%>);
+
+            <% if defined?@date and !@date.nil? %>
+            cyclicModel.date = new Date("<%=@date%>");
+            cyclicModel.dateShortLiteral = cyclicModel.date.toString('yyyy-MM-dd');
+            cyclicModel.dateLiteral = cyclicModel.date.toString('dd MMMM, yyyy');
+            $('input[name=date]').val(cyclicModel.dateShortLiteral);
+            $('input[name=time]').val(cyclicModel.turn);
+            <% end %>
+
+            $('#datepicker').datepicker('setDate', cyclicModel.date || new Date());
             $('#datepicker').bind('change', function() {
-               var date = $('#datepicker').datepicker("getDate").toString('yyyy-MM-dd');
-               $('#select_date').val(date);              
-               cyclicController.onDateChanged($('#select_date')[0]);
-            });  
+               cyclicController.onDateChanged($('input[name=date]')[0]);
+            });
+
             $('.quantity_rate').bind('change', function() {
                cyclicController.onQuantityChanged();
             });
+
+            if (cyclicModel.date) {
+                cyclicModel.buildTurns();
+            }
+
             $('form[name=activity_form]').bind('submit', function() {
-               return cyclicController.onActivityFormSubmited();
-            });             
-            cyclicModel.buildTurns();  
+                return cyclicController.onActivityFormSubmited();
+            });
+
         },
 
         updateDate: function() {
+          if (cyclicModel.date == null) {
+            return;
+          }
           $('#date_text').html(cyclicModel.dateLiteral);
-          $('#select_date').val(cyclicModel.date);
-        },
-
-        updatePrice: function() {
-           $('#total').html(cyclicModel.total.toFixed(2) + '€');
-           if (cyclicModel.total > 0) {
-             $('#total').show();
-             $('#botonera').show();
-           }
-           else {
-             $('#total').hide();
-             $('#botonera').hide();
-           }
         },
 
         updateTurns: function() {
+
+           if (cyclicModel.date == null) {
+             return;
+           }
 
            var html = tmpl('script_turns_blocks',
              {morningTurns: cyclicModel.morningTurns,
@@ -245,17 +257,29 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
            $('#turns').html(html);
            
            $('form[name=select_date_form] input[name=date]').bind('change', function(e) {
-              cyclicController.onDateChanged($(this)[0]);
+              cyclicController.onDateChanged();
            });
 
            $('input[name=turn]').bind('change', function(e) {
-              cyclicController.onTurnChanged($(this)[0]);
+              cyclicController.onTurnChanged();
            });   
 
            <% if defined?@time and !@time.nil? %>
              $('form[name=select_date_form] input[name=turn][value="<%=@time%>"]').prop('checked', true);
            <% end %>
 
+        },
+
+        updatePrice: function() {
+            $('#total').html(cyclicModel.total.toFixed(2) + '€');
+            if (cyclicModel.total > 0) {
+                $('#total').show();
+                $('#botonera').show();
+            }
+            else {
+                $('#total').hide();
+                $('#botonera').hide();
+            }
         }
     };
 
