@@ -16,12 +16,11 @@
         <input type="hidden" name="activity_id" id="activity_id" value="<%=@activity.id%>"/>
         <div id="activity_date">
           <input type="hidden" name="date" id="select_date">
-          <h5 id="date_text" class="smaller_text less_contrast_text"></h5>
+          <h5 id="date_text" class="smaller_text less_contrast_text bottom-margin"></h5>
         </div>              
         <div id="datepicker"></div>
         <div id="turns" class="top-margin"></div>
       </form>
-      <% p "the occupation: #{@occupation.inspect}" %>
       <% if @occupation[:occupation_capacity] > @occupation[:total_occupation].to_i %>
         <% if defined?@date and !@date.nil? and defined?@time and !@time.nil? %>
           <form name="activity_form" id="activity_form" <%if request.path.starts_with?('/admin')%>action="/admin/order/new-order-item-add-activity"<%else%>action="/p/activity/add-to-shopping-cart"<%end%> method="post">
