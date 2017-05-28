@@ -8,7 +8,7 @@
 </div>
 <div class="container_12">
   <div class="grid_8">
-    <div id="activity_content" class="all-space">
+    <div id="activity_photo">
       <% if @activity.photo_url_full.nil? or @activity.photo_url_full.empty?%> 
          <div>
             <span class="centered_text" style="font-size:25em; display: block" data-icon="&#xe072;"></span> 
@@ -17,7 +17,7 @@
          <img id="activity_image" src="<%= @activity.photo_url_full %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto; width: 100%" rel="<%%= index %>"/>
       <% end %>
     </div>  
-    <div class="top-margin-1line bottom-margin-2lines">
+    <div id="activity_description" class="top-margin-1line bottom-margin-2lines">
       <%= @activity.description %> 
     </div>
   </div>
