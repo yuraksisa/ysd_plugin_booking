@@ -175,8 +175,14 @@
                                 self.booking.item_cost += self.booking.booking_lines[i].item_cost;
                             }
                             for (var i=0;i<self.booking.booking_extras.length;i++) {
-                                self.booking.booking_extras[i].extra_unit_cost = self.extras[self.booking.booking_extras[i].extra_id].unit_price || 0;
-                                self.booking.booking_extras[i].extra_cost = self.booking.booking_extras[i].extra_unit_cost * self.booking.booking_extras[i].quantity;
+                                if (self.extras[self.booking.booking_extras[i].extra_id]) {
+                                    self.booking.booking_extras[i].extra_unit_cost = self.extras[self.booking.booking_extras[i].extra_id].unit_price || 0;
+                                    self.booking.booking_extras[i].extra_cost = self.booking.booking_extras[i].extra_unit_cost * self.booking.booking_extras[i].quantity;
+                                }
+                                else {
+                                    self.booking.booking_extras[i].extra_unit_cost = 0;
+                                    self.booking.booking_extras[i].extra_cost = 0;
+                                }
                                 self.booking.extras_cost += self.booking.booking_extras[i].extra_cost;
                             }
 
