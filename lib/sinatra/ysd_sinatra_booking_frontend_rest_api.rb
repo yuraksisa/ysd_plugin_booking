@@ -529,7 +529,7 @@ module Sinatra
             session[:booking_id] = booking.id
             # Prepare response
             content_type :json
-            booking.to_json(only: [:free_access_id, :pay_now, :payment, :payment_method_id])
+            booking.to_json(only: [:free_access_id, :pay_now, :payment, :payment_method_id, :total_cost, :customer_email, :customer_name, :customer_surname])
           else
             logger.error "Shopping cart does not exist"
             content_type 'json'
