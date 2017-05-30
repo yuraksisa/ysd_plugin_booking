@@ -562,7 +562,6 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
             rules : {
                 'driver_date_of_birth': {
-                    <% if booking_item_family.driver_date_of_birth %>required: true, <% end %>
                     validDate: true,
                     minDate: new Date().add(-100).years(),
                     maxDate: new Date().add(-18).years(),
@@ -591,7 +590,6 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
             messages : {
                 'driver_date_of_birth': {
-                    <% if booking_item_family.driver_date_of_birth %>required: '<%=t.booking_management.form.validations.driver_date_of_birth_mandatory%>',<%end%>
                     validDate: '<%=t.booking_management.form.validations.driver_date_of_birth_invalid_date%>',
                     minDate: '<%=t.booking_management.form.validations.driver_date_of_birth_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
                     maxDate: '<%=t.booking_management.form.validations.driver_date_of_birth_max((d=Date.today;Date.new(d.year-18,d.month,d.day)).strftime('%d-%m-%Y'))%>'
