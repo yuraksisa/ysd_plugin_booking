@@ -216,12 +216,9 @@ module Sinatra
           }
         end
         p_json = products_list.to_json
-
-
+        
         # Prepare the sales process
-        can_pay = SystemConfiguration::Variable.get_value('booking.payment','false').to_bool &&
-                  BookingDataSystem::Booking.payment_cadence?(booking.date_from, booking.time_from)
-
+        can_pay = booking.can_pay?
 
         sales_process = {can_pay: can_pay}
         sales_process_json = sales_process.to_json
