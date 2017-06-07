@@ -23,7 +23,7 @@
           </form>
           <div><strong style="width: 80px; display:inline-block">Comentarios:</strong> <%=prereservation.notes%></div>
           <button type="button" class="destroy_prereservation_button form-button red-button" style="margin: 5px auto; width: 100%" rel="<%=prereservation.id%>">Eliminar prereserva</button>    
-          <button type="button" class="select_prereservation_button form-button blue-button" style="margin: 5px auto; width: 100%" rel="<%=prereservation.id%>">Ver en el planning</button>              
+          <button type="button" class="select_prereservation_button form-button blue-button" style="margin: 5px auto; width: 100%" rel="<%=prereservation.id%>" data-prereservation="P<%=prereservation.id%>" data-reference="<%=prereservation.booking_item_reference%>" data-date="<%=prereservation.date_from.strftime('%Y-%m-%d')%>">Ver en el planning</button>              
         </div>
         <% end %>
       <% end %>
