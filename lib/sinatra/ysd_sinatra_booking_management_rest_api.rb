@@ -501,14 +501,9 @@ module Sinatra
              to = DateTime.strptime(params[:to], '%Y-%m-%d')
            end
 
-           data = BookingDataSystem::Booking.all(
-            :date_from.gte => from,
-            :date_from.lte => to,
-            :status => [:confirmed, :in_progress, :done],
-            :order => [:date_from.asc, :time_from.asc]).sort do |x,y| 
-              comp = x.date_from <=> y.date_from 
-              comp.zero? ? Time.parse(x.time_from) <=> Time.parse(y.time_from) : comp
-             end
+           addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+
+           data = BookingDataSystem::Booking.pickup_list(from, to ,addon_journal)
 
            data.to_json
 
@@ -529,17 +524,12 @@ module Sinatra
              to = DateTime.strptime(params[:to], '%Y-%m-%d')
            end
 
-           data = BookingDataSystem::Booking.all(
-            :date_to.gte => from,
-            :date_to.lte => to,
-            :status => [:confirmed, :in_progress, :done],
-            :order => [:date_to.asc, :time_to.asc]).sort do |x,y| 
-               comp = x.date_to <=> y.date_to 
-               comp.zero? ? Time.parse(x.time_to) <=> Time.parse(y.time_to) : comp
-             end 
+           addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+
+           data = BookingDataSystem::Booking.return_list(from, to, addon_journal)
 
            data.to_json
-
+          
         end
 
         #

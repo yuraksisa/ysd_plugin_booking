@@ -3,7 +3,44 @@
   <div class="form-button" style="float: right">
   	 <a id="print_link" href="/admin/booking/reports/pickup-return-pdf" target="_blank">Imprimir</a>
   </div>
+  <% if addon_journal %>
+      <button id="add_journal_button" class="form-button right-margin" style="float: right">Añadir diario</button>
+      <div class="form-button right-margin" style="float: right">
+        <a id="show_journal" href="/admin/booking/journal">Gestión diario</a>
+      </div>
+  <% end %>
 </div>
 <div class="admin_content_wrapper">
 <%= partial(:pickedup_bookings, :locals => {:product_family => product_family}) %>
 </div>
+<% if addon_journal %>
+    <div id="new_journal" class="all-space" style="background-color: white; display: none; min-width: 600px">
+      <h3 class="guiblock"><%=t.new_journal.form.title%></h3>
+      <form name="new_journal_form" class="form-element">
+        <div class="container_12">
+          <div class="grid_12">
+            <input type="hidden" name="calendar_id" value="<%=booking_journal_calendar.id%>"/>
+            <div class="formrow">
+              <label for="date" class="fieldtitle"><%=t.new_journal.form.date.label%></label>
+              <input type="text" name="from" class="fieldcontrol" size="14"/>
+              <input type="hidden" name="to"/>
+            </div>
+            <div class="formrow">
+              <label for="event_type" class="fieldtitle"><%=t.new_journal.form.pickup_return.label%></label>
+              <select id="event_type" name="event_type_id" class="fieldcontrol"></select>
+            </div>
+            <div class="formrow">
+              <label for="description" class="fieldtitle"><%=t.new_journal.form.notes.label%></label>
+              <textarea name="description" rows="4" class="fieldcontrol" style="padding: 7px;" cols="18"></textarea>
+            </div>
+            <div class="navigation-bar bottom-margin">
+              <div id="error_summary" class="alert alert-danger" style="display: none; margin: 10px"></div>
+              <div class="navigation-bar-crud-buttons right-float right-margin">
+                <input type="submit" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+<% end %>

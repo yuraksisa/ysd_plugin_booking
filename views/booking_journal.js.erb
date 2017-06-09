@@ -1,0 +1,14 @@
+require(["jquery"],function($){
+
+   $(document).ready(function(){
+       $.ajax({
+           url: '/admin/calendar/events/<%=@calendar.id%>?mode=timestamp',
+           dataType: 'text'}).done(function(html) {
+           var dom = $('<html />').prop('innerHTML', html);
+           $('#calendar_container').html(dom.find('body #page_wrapper'));
+           $('head').append(dom.find('script:not([src])'));
+           $('#calendar').fullCalendar('render');
+       });
+   });
+
+});

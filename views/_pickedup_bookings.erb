@@ -49,15 +49,16 @@
     <table id="table" class="table">
        <thead class="table-header">
          <tr>
-           <th class="table-header-title left_text" scope="col"><%=t.booking_list.id%></th>
            <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.date_from%></th>
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.days%></th>
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.id%></th>
            <% if product_family and product_family.pickup_return_place %>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.place%></th>
            <% end %>
-           <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.item%></th>           
+           <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.item%></th>
+           <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.extras%></th>
            <th class="table-header-title left_text" scope="col" style="width:5em"><%=t.booking_list.customer%></th>
-           <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer_phone%></th>
-           <th class="table-header-title left_text" scope="col" style="width:5em"><%=t.booking_list.customer_email%></th>
+           <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.notas%></th>
            <% if product_family and product_family.flight %>          
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.flight%></th>       
            <% end %>
@@ -65,36 +66,39 @@
            <th class="table-header-title centered_text" scope="col" style="width:4em"></th>
          </tr>
        </thead>
+       <% colspan = 8 %>
+       <% colspan = colspan + 1 if product_family and product_family.pickup_return_place %>
+       <% colspan = colspan + 1 if product_family and product_family.flight %>
        <tbody id="elements_tbody" class="table-tbody">  
          <%% 
          var i=0;
-         for (i=0; i<data.length; i++) { %>          
-         <tr class="table-row"> 
-           <td class="table-cell"><a href="/admin/booking/bookings/<%%=data[i].id%>"><%%=data[i].id%></a></td>
+         for (i=0; i<data.length; i++) { %>
+         <%% if (data[i].id == '.') { %>
+         <tr class="table-row">
            <td class="table-cell left_text right-margin"><%%=data[i].date_from.toString('yyyy.MM.dd')%> <% if product_family and product_family.time_to_from%> <%%=data[i].time_from%> <%end%> </td>
+           <td class="table-cell left_text" colspan="<%=colspan%>">
+             <%%= data[i].product %>
+           </td>
+         </tr>
+         <%% } else { %>
+         <tr class="table-row"> 
+           <td class="table-cell left_text right-margin"><%%=data[i].date_from.toString('yyyy.MM.dd')%> <% if product_family and product_family.time_to_from%> <%%=data[i].time_from%> <%end%></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].days%></td>
+           <td class="table-cell"><a href="/admin/booking/bookings/<%%=data[i].id%>"><%%=data[i].id%></a></td>
            <% if product_family and product_family.pickup_return_place %>
            <td class="table-cell left_text right-margin"><%%=data[i].pickup_place%></td>
            <% end %>
-           <td class="table-cell left_text">
-             <%% for (var idx=0;idx<data[i].booking_line_resources.length;idx++) { %>
-             <strong><%%=data[i].booking_line_resources[idx].item_id%></strong>
-             <%%if (data[i].booking_line_resources[idx].booking_item_reference) {%>
-             -
-             <%% } else { %>
-             &nbsp;
-             <%% } %>
-             <%%=data[i].booking_line_resources[idx].booking_item_reference%>&nbsp;
-             <%% } %>
-           </td>             
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_name%> <%%=data[i].customer_surname%></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_email%></td>
+           <td class="table-cell left_text"><%%= data[i].product %></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].extras %></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].customer%> <br><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%> <br><%%=data[i].customer_email%></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].notes %></td>
            <% if product_family and product_family.flight %>
-           <td class="table-cell left_text right-margin"><%%=data[i].flight_number%> <%%=data[i].flight_time%></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].flight%></td>
            <% end %>
            <td class="table-cell right_text right-margin"><%%=data[i].total_pending ? new Number(data[i].total_pending).toFixed(2) : new Number(0).toFixed()%></td>
            <td class="table-cell"><div class="form-button"><a href="/admin/booking/contract/<%%=data[i].id%>" target="_blank"><%=t.booking_management.print_contract%></a></div></td>                
          </tr>
+         <%% } %>
          <%% } %>
        </tbody>
     </table>
@@ -112,8 +116,8 @@
     <table id="table" class="table">
        <thead class="table-header">
          <tr>
-           <th class="table-header-title left_text" scope="col"><%=t.booking_list.id%></th>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.date_to%></th>
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.id%></th>
            <% if product_family and product_family.pickup_return_place %>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.place%></th>
            <% end %>
@@ -126,28 +130,27 @@
        <tbody id="elements_tbody" class="table-tbody">  
          <%% 
          var i=0;
-         for (i=0; i<data.length; i++) { %>          
-         <tr class="table-row"> 
-           <td class="table-cell"><a href="/admin/booking/bookings/<%%=data[i].id%>"><%%=data[i].id%></a></td>
+         for (i=0; i<data.length; i++) { %>
+         <%% if (data[i].id == '.') { %>
+         <tr class="table-row">
            <td class="table-cell left_text right-margin"><%%=data[i].date_to.toString('yyyy.MM.dd')%> <% if product_family and product_family.time_to_from%> <%%=data[i].time_to%> <%end%> </td>
+           <td class="table-cell left_text" <% if product_family and product_family.pickup_return_place %>colspan="6"<%else%>colspan="5"<%end%>>
+             <%%= data[i].product %>
+           </td>
+         </tr>
+         <%% } else { %>
+         <tr class="table-row"> 
+           <td class="table-cell left_text right-margin"><%%=data[i].date_to.toString('yyyy.MM.dd')%> <% if product_family and product_family.time_to_from%> <%%=data[i].time_to%> <%end%> </td>
+           <td class="table-cell"><a href="/admin/booking/bookings/<%%=data[i].id%>"><%%=data[i].id%></a></td>
            <% if product_family and product_family.pickup_return_place %>
            <td class="table-cell left_text right-margin"><%%=data[i].return_place%></td>
            <% end %>
-           <td class="table-cell left_text">
-             <%% for (var idx=0;idx<data[i].booking_line_resources.length;idx++) { %>
-               <strong><%%=data[i].booking_line_resources[idx].item_id%></strong>
-               <%%if (data[i].booking_line_resources[idx].booking_item_reference) {%>
-                -
-               <%% } else { %>
-               &nbsp;
-               <%% } %>
-               <%%=data[i].booking_line_resources[idx].booking_item_reference%>&nbsp;
-             <%% } %>
-           </td>            
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_name%> <%%=data[i].customer_surname%></td>
+           <td class="table-cell left_text"><%%= data[i].product %></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].customer%></td>
            <td class="table-cell left_text right-margin"><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%></td>
            <td class="table-cell left_text right-margin"><%%=data[i].customer_email%></td> 
          </tr>
+         <%% } %>
          <%% } %>
        </tbody>
     </table>

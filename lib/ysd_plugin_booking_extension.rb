@@ -434,7 +434,22 @@ module Huasi
 
       ContentManagerSystem::Template.first_or_create({:name => 'booking_summary_message'},
           {:description=>'Mensaje al finalizar la reserva',
-           :text => ::Yito::Model::Booking::Templates.summary_message}) 
+           :text => ::Yito::Model::Booking::Templates.summary_message})
+
+      # Creates the calendar and the events for the booking journal (pickup/return integration)
+      unless booking_journal_calendar = Yito::Model::Calendar::Calendar.first(:name => 'booking_journal')
+        booking_journal_calendar = Yito::Model::Calendar::Calendar.create({:name => 'booking_journal', :description => 'Booking journal calendar'})
+      end  
+      
+      if Yito::Model::Calendar::EventType.count(:name => 'booking_pickup') == 0
+        booking_pickup_event = Yito::Model::Calendar::EventType.create(name: 'booking_pickup', description: 'Entrega')
+        Yito::Model::Calendar::EventTypeCalendar.create(calendar: booking_journal_calendar, event_type: booking_pickup_event)
+      end
+      
+      if Yito::Model::Calendar::EventType.count(:name => 'booking_return') == 0
+        booking_return_event = Yito::Model::Calendar::EventType.create(name: 'booking_return', description: 'Recogida')
+        Yito::Model::Calendar::EventTypeCalendar.create(calendar: booking_journal_calendar, event_type: booking_return_event)
+      end
 
     end
     
@@ -539,12 +554,14 @@ module Huasi
           addon_finances = (app.settings.respond_to?(:mybooking_addon_finances) ? app.settings.mybooking_addon_finances : false)
           addon_massive_price_adjust = (app.settings.respond_to?(:mybooking_addon_massive_price_adjust) ? app.settings.mybooking_addon_massive_price_adjust : false)
           addon_offer_promotion_code = (app.settings.respond_to?(:mybooking_addon_offer_promotion_code) ? app.settings.mybooking_addon_offer_promotion_code : false)
-
+          addon_journal = (app.settings.respond_to?(:mybooking_addon_journal) ? app.settings.mybooking_addon_journal : false)
+          
           if booking_mode == 'rent'
             menu_locals = {addon_crm: addon_crm,
                            addon_finances: addon_finances,
                            addon_massive_price_adjust: addon_massive_price_adjust,
-                           addon_offer_promotion_code: addon_offer_promotion_code}
+                           addon_offer_promotion_code: addon_offer_promotion_code,
+                           addon_journal: addon_journal}
             menu_locals.store(:booking_activities, booking_activities) 
             menu_locals.store(:booking_renting, booking_renting)
             menu_locals.store(:addon_crm, false)

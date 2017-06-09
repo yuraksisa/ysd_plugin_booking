@@ -57,6 +57,14 @@ module Sinatra
         app.get '/admin/booking/reports/pickup-return', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           locals = {}
+
+          addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+          locals.store(:addon_journal, addon_journal)
+          
+          if addon_journal
+            locals.store(:booking_journal_calendar, ::Yito::Model::Calendar::Calendar.first(name: 'booking_journal'))
+          end
+
           if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
             product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
             locals.store(:product_family, product_family)
@@ -84,8 +92,10 @@ module Sinatra
             end
           end
 
+          addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+
           content_type 'application/pdf'
-          pdf = ::Yito::Model::Booking::Pdf::PickupReturn.new(from, to).build.render
+          pdf = ::Yito::Model::Booking::Pdf::PickupReturn.new(from, to, addon_journal).build.render
 
         end
 

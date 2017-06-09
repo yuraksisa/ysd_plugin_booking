@@ -1,1 +1,114 @@
 <%= partial('pickedup_bookings.js'.to_sym, :locals => {:product_family => product_family}) %>
+
+<% if addon_journal %>
+require(['jquery','YSDRemoteDataSource', 'YSDSelectSelector','YSDForms', 'YSDGui',
+        'jquery.formparams', 'jquery.validate', 'jquery.ui.timepicker'],
+         function($,RemoteDataSource, SelectSelector, YSDForms, YSDGui) {
+
+    newJournalModel = {
+
+        createJournal: function() {
+            var formdata = $('form[name="new_journal_form"]').formParams(true);
+            var json_request = JSON.stringify(formdata);
+            $.ajax({
+                type: 'POST',
+                data : json_request,
+                url : '/api/event',
+                success: function(data, textStatus, jqXHR) {
+                    alert('<%=t.new_journal.form.new_journal_created%>');
+                    YSDGui.hideElement(document.getElementById('new_journal'));
+                    window.location.href = window.location.href;
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('<%=t.new_journal.form.new_journal_creation_error%>');
+                }
+            });
+        }
+
+    }
+
+    newJournalController = {
+
+        addJournalButtonClick: function() {
+
+            YSDGui.showElement(document.getElementById('new_journal'), true);
+
+        },
+
+        dateChanged: function() {
+            $('input[name=to]').val($('input[name=from]').val());
+        }
+
+    }
+
+    newJournalView = {
+        init: function () {
+            this.setupControls();
+            this.setupEvents();
+            this.setupValidation();
+        },
+        setupControls: function() {
+            $('input[name=from]').datetimepicker({controlType: 'select',
+                 showTimezone: false, useLocalTimezone: true,
+                 numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+                '<%= session[:locale] %>');
+            $('input[name=from]').datetimepicker('setDate', new Date());
+
+            var dataSourceModel = new RemoteDataSource('/api/calendar/<%=booking_journal_calendar.id%>/event-types');
+            var valueModel = null;
+            var selectorModel = new SelectSelector('event_type',
+                dataSourceModel, valueModel, false);
+
+            $('input[name=from]').bind('change', function(){
+                newJournalController.dateChanged();
+            });
+
+        },
+        setupEvents: function(){
+           $('#add_journal_button').bind('click', function(){
+              newJournalController.addJournalButtonClick();
+           });
+        },
+        setupValidation: function() {
+            $('form[name=new_journal_form]').validate({
+
+                submitHandler: function(form)
+                {
+                    $('#error_summary').html('');
+                    $('#error_summary').hide();
+                    newJournalModel.createJournal();
+                    return false;
+                },
+
+                invalidHandler : function (form, validator) {
+                    $('#error_summary').html('<%=t.new_journal.form.validations.errors_summary%>');
+                    $('#error_summary').show();
+                },
+
+                rules : {
+                    'date_from': {
+                        required: true
+                    },
+                    'event_type': {
+                        required: true
+                    }
+                },
+
+                messages : {
+                    'date_from': {
+                        required: '<%=t.new_journal.form.validations.date_from_required%>'
+                    },
+                    'event_type': {
+                        required: '<%=t.new_journal.form.validations.event_type_required%>'
+                    }
+                }
+
+            });
+        }
+    }
+
+    newJournalView.init();
+});
+
+<% end %>
+

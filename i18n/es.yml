@@ -188,6 +188,7 @@ booking_console:
   report_prereservations: Prereservas
   activities_report: Actividades  
   report_customers: Clientes
+  journal: Diario
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas
@@ -218,6 +219,9 @@ booking_list:
   flight: Vuelo
   customer_email: Email
   total_pending: Pendiente
+  extras: Extras
+  notas: Notas
+  days: Días
 booking_status:
   pending_confirmation: Pendiente
   confirmed: Confirmado
@@ -1330,3 +1334,19 @@ location:
   zip: Código postal
   latitude: Latitud
   longitude: Longitud
+booking_journal_management:
+  title: Diario
+new_journal:
+  form:
+    title: Añadir diario
+    errors_summary: El formulario contiene errores. Por favor, revíselos.
+    date:
+      label: Fecha
+    pickup_return:
+      label: Entrega/Recogida
+    notes:
+      label: Notas
+    new_journal_created: Registro creado
+    new_journal_creation_error: Error creando registro
+booking_journal:
+  title: Diario
