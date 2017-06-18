@@ -57,8 +57,8 @@
            <% end %>
            <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.item%></th>
            <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.extras%></th>
-           <th class="table-header-title left_text" scope="col" style="width:5em"><%=t.booking_list.customer%></th>
            <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.notas%></th>
+           <th class="table-header-title left_text" scope="col" style="width:5em"><%=t.booking_list.customer%></th>
            <% if product_family and product_family.flight %>          
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.flight%></th>       
            <% end %>
@@ -90,8 +90,8 @@
            <% end %>
            <td class="table-cell left_text"><%%= data[i].product %></td>
            <td class="table-cell left_text right-margin"><%%=data[i].extras %></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer%> <br><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%> <br><%%=data[i].customer_email%></td>
            <td class="table-cell left_text right-margin"><%%=data[i].notes %></td>
+           <td class="table-cell left_text right-margin"><%%=data[i].customer%> <br><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%> <br><%%=data[i].customer_email%></td>
            <% if product_family and product_family.flight %>
            <td class="table-cell left_text right-margin"><%%=data[i].flight%></td>
            <% end %>
@@ -122,9 +122,9 @@
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.place%></th>
            <% end %>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.item%></th>
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.extras%></th>
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.notas%></th>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer%></th>
-           <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer_phone%></th>
-           <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer_email%></th> 
          </tr>
        </thead>
        <tbody id="elements_tbody" class="table-tbody">  
@@ -146,9 +146,9 @@
            <td class="table-cell left_text right-margin"><%%=data[i].return_place%></td>
            <% end %>
            <td class="table-cell left_text"><%%= data[i].product %></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer%></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].customer_email%></td> 
+           <td class="table-cell left_text"><%%= data[i].extras %></td>
+           <td class="table-cell left_text"><%%= data[i].notes %></td>
+           <td class="table-cell left_text"><%%=data[i].customer%> <br><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%> <br><%%=data[i].customer_email%></td> 
          </tr>
          <%% } %>
          <%% } %>

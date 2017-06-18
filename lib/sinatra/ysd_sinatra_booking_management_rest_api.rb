@@ -1482,7 +1482,8 @@ module Sinatra
 
           if booking_line_resource = BookingDataSystem::BookingLineResource.get(data.delete(:id).to_i)
             booking_item_reference = data.delete(:booking_item_reference)
-            if booking_item_reference != booking_line_resource.booking_item_reference
+            if !booking_item_reference.nil? && !booking_item_reference.empty? &&
+                booking_item_reference != booking_line_resource.booking_item_reference
               if booking_item = ::Yito::Model::Booking::BookingItem.get(booking_item_reference) 
                 booking_line_resource.booking_item_category = booking_item.category.code if booking_item.category
                 booking_line_resource.booking_item_reference = booking_item.reference
@@ -1494,8 +1495,20 @@ module Sinatra
                 booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4              
               end
             end
-            booking_line_resource.attributes = data
-            booking_line_resource.save
+            booking_line_resource.booking_item_stock_model = data[:booking_item_stock_model] if data.has_key?(:booking_item_stock_model) and (!data[:booking_item_stock_model].nil? and !data[:booking_item_stock_model].empty?)
+            booking_line_resource.booking_item_stock_plate = data[:booking_item_stock_plate] if data.has_key?(:booking_item_stock_plate) and (!data[:booking_item_stock_plate].nil? and !data[:booking_item_stock_plate].empty?)
+            booking_line_resource.booking_item_characteristic_1 = data[:booking_item_characteristic_1] if data.has_key?(:booking_item_characteristic_1) and (!data[:booking_item_characteristic_1].nil? and !data[:booking_item_characteristic_1].empty?)
+            booking_line_resource.booking_item_characteristic_2 = data[:booking_item_characteristic_2] if data.has_key?(:booking_item_characteristic_2) and (!data[:booking_item_characteristic_2].nil? and !data[:booking_item_characteristic_2].empty?)
+            booking_line_resource.booking_item_characteristic_3 = data[:booking_item_characteristic_3] if data.has_key?(:booking_item_characteristic_3) and (!data[:booking_item_characteristic_3].nil? and !data[:booking_item_characteristic_3].empty?)
+            booking_line_resource.booking_item_characteristic_4 = data[:booking_item_characteristic_4] if data.has_key?(:booking_item_characteristic_4) and (!data[:booking_item_characteristic_4].nil? and !data[:booking_item_characteristic_4].empty?)
+            booking_line_resource.km_miles_on_pickup = data[:km_miles_on_pickup] if data.has_key?(:km_miles_on_pickup) and (!data[:km_miles_on_pickup].nil? and !data[:km_miles_on_pickup].empty?)
+            booking_line_resource.km_miles_on_return = data[:km_miles_on_return] if data.has_key?(:km_miles_on_return) and (!data[:km_miles_on_return].nil? and !data[:km_miles_on_return].empty?)
+            begin
+              booking_line_resource.save
+            rescue DataMapper::SaveFailureError => error
+              logger.error "Error updating booking_line_resource #{error.resource.errors.full_messages.inspect}"
+              raise error
+            end
             body booking_line_resource.to_json
           else
             status 404
