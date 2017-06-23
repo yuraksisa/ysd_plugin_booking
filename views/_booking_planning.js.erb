@@ -165,6 +165,26 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
           function(responseText, textStatus, jqXHR){
             if (jqXHR.status == 200) {
               bookingPlanningView.update('notification', 'Prereservas (bloqueos stock)');
+              $('.destroy_prereservation_button').bind('click', function() {
+                  bookingPlanningController.destroyPrereservationClick($(this).attr('rel'));
+              });
+              $('.select_prereservation_button').bind('click', function() {
+                  if ($('#preresevation_area:visible')) {
+                      $('#prereservation_container').hide();
+                      $('#operation_area').show();
+                  }
+                  bookingPlanningModel.view = 'home';
+                  $('#planning_views').val(bookingPlanningModel.view);
+                  bookingPlanningModel.selectedReservations = $(this).attr('data-prereservation');
+                  bookingPlanningModel.selectedReference = $(this).attr('data-reference');
+                  bookingPlanningModel.selectedDate = $(this).attr('data-date');
+                  $('#parent').animate({
+                      scrollTop: $('td[data-reference='+$(this).attr('data-reference')+']').offset().top -
+                                 $('#planning_table').offset().top - 60
+                  }, 2000);
+                  bookingPlanningModel.loadSelectedReservations(false);
+
+              });
             }
           });    
       }
@@ -539,8 +559,32 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     },
 
     destroyPrereservationClick: function(id) { /* Destroy preresevation */
-      
-      bookingPlanningModel.destroyPrereservation(id);
+
+        $("<div title='Eliminar prereserva'>" +
+            '¿Está seguro?' + "</div>").dialog(
+            { height: 250, modal: true,
+                buttons: {
+                    Ok: function() {
+                        response = true;
+                        $(this).dialog( "close" );
+                    },
+                    Cancel: function() {
+                        response = false;
+                        $( this ).dialog( "close" );
+                    }
+                },
+                close : function(event, ui) {
+                    if (response) {
+                      bookingPlanningModel.destroyPrereservation(id);
+                    }
+                }
+            });
+
+    },
+
+    showPreservationClick: function(id) { /** Select prerervation **/
+
+       bookingPlanningView.selectReservation('P', id);
 
     },
 
@@ -912,7 +956,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         break;
 
       case 'destroyed_preservation':
-        alert('Reserva eliminada');
+        alert('Prereserva eliminada');
         this.reload(false); // Reload the reservations
         break;
 
