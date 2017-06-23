@@ -78,6 +78,24 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       }
 
+      if ($('#own_property').length > 0) {
+        if ($('#own_property').prop('checked')) {
+          data.own_property = true;
+        }
+        else {
+          data.own_property = false;
+        }
+      }
+
+      if ($('#assignable').length > 0) {
+        if ($('#assignable').prop('checked')) {
+            data.assignable = true;
+        }
+        else {
+            data.assignable = false;
+        }
+      }
+
       return data;  
       
     }

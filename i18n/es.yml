@@ -889,9 +889,16 @@ booking_extra_management:
     web_public:
       label: Público 
 booking_item_management:
+  total_products: "Hay <strong>%1</strong> productos en stock (%2 asignables)"
   table:
     calendar: Gestió del calendario
-    prices: Gestión de precios    
+    prices: Gestión de precios
+    assignable: Asignable
+    assignable_yes: S
+    assignable_no: N
+    own_property: Stock propio
+    own_property_yes: S
+    own_property_no: N
   form:
     title: Stock
     reference: 
@@ -927,6 +934,10 @@ booking_item_management:
     active_filter:
       only: Sólo activos
       all: Todos
+    own_property:
+      label: Stock propio
+    assignable:
+      label: Asignable
 booking_places_definition_management:
   title: Lugares entrega y recogida
   table:

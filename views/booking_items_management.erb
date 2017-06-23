@@ -37,13 +37,19 @@
          <th class="table-header-title" scope="col" style="width:20%">
             <%= t.booking_item_management.form.name.label %>
          </th>       
-         <th class="table-header-title" scope="col" style="width:10%">
+         <th class="table-header-title" scope="col" style="width:15%">
             <%= t.booking_item_management.form.model.label %>
          </th>
-         <th class="table-header-title" scope="col" style="width:20%">
+         <th class="table-header-title" scope="col" style="width:15%">
             <%= t.booking_item_management.form.plate.label %>
          </th>
-         <th class="table-header-title" scope="col" style="width:30%">
+         <th class="table-header-title" scope="col" style="width:100px">
+            <%= t.booking_item_management.table.own_property %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:100px">
+            <%= t.booking_item_management.table.assignable %>
+         </th>
+         <th class="table-header-title" scope="col">
          </th>         
        </tr>
      </thead>
@@ -70,6 +76,12 @@
       </td>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
          <%%= entity.stock_plate %>
+      </td>
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+         <%%= entity.own_property ? '<%=t.booking_item_management.table.own_property_yes%>' : '<%=t.booking_item_management.table.own_property_no%>' %>
+      </td>
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+         <%%= entity.assignable ? '<%=t.booking_item_management.table.assignable_yes%>' : '<%=t.booking_item_management.table.assignable_no%>'  %>
       </td>
       <td class="table-cell">
       </td>
@@ -119,6 +131,14 @@
                   <label class="fieldtitle"><%= t.booking_item_management.form.active.label%></label>
                   <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
                 </div>                   
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.own_property.label%></label>
+                  <input type="checkbox" name="own_property" value="true" id="own_property" <%% if (entity && entity.own_property) { %>checked="checked"<%%}%>/>
+                </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_item_management.form.assignable.label%></label>
+                  <input type="checkbox" name="assignable" value="true" id="assignable" <%% if (entity && entity.assignable) { %>checked="checked"<%%}%>/>
+                </div>
                 <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                   <div class="navigation-bar-crud-buttons">
                     <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>

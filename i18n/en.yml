@@ -531,6 +531,8 @@ booking_item_management:
       label: Prices
     active:
       label: Active
+    own_property:
+      label: Own stock
 booking_places_definition_management:
   title: Pickup and return
   table:

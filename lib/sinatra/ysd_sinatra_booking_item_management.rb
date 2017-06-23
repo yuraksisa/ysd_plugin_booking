@@ -13,11 +13,17 @@ module Sinatra
 
         end
 
+        #
+        # Products that belongs to a category
+        #
         app.get '/admin/booking/stock/:category/?*', :allowed_usergroups => ['booking_manager','staff'] do
 
+          @items = ::Yito::Model::Booking::BookingItem.all(conditions: {category_code: params[:category], active: true},
+                                                           order: [:own_property.desc, :assignable.desc, :reference])
           load_page :booking_category_stock
 
         end
+
 
 
       end
