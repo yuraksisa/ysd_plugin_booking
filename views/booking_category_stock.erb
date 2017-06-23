@@ -1,0 +1,58 @@
+<div id="page_wrapper">
+  <h4 class="guiblock">Detalle del stock</h4>
+<% if @items.empty? %>
+    <div class="all-border-solid-light top-margin-1line">
+      <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+    </div>
+<% else %>
+  <table class="table">
+    <thead>
+    <tr>
+      <th class="table-header-title" scope="col" style="width:15%">
+        <%= t.booking_item_management.form.reference.label %>
+      </th>
+      <th class="table-header-title" scope="col" style="width:20%">
+        <%= t.booking_item_management.form.name.label %>
+      </th>
+      <th class="table-header-title" scope="col" style="width:15%">
+        <%= t.booking_item_management.form.model.label %>
+      </th>
+      <th class="table-header-title" scope="col" style="width:15%">
+        <%= t.booking_item_management.form.plate.label %>
+      </th>
+      <th class="table-header-title centered_text" scope="col" style="width:100px">
+        <%= t.booking_item_management.table.own_property %>
+      </th>
+      <th class="table-header-title centered_text" scope="col" style="width:100px">
+        <%= t.booking_item_management.table.assignable %>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+      <% @items.each do |entity| %>
+      <tr class="table-row" <%unless entity.assignable%>style="color: #aaaaaa"<%end%>>
+        <td class="table-cell">
+          <%= entity.reference %>
+        </td>
+        <td class="table-cell">
+          <%= entity.name %>
+        </td>
+        <td class="table-cell">
+          <%= entity.stock_model %>
+        </td>
+        <td class="table-cell">
+          <%= entity.stock_plate %>
+        </td>
+        <td class="table-cell centered_text">
+          <%= entity.own_property ? t.booking_item_management.table.own_property_yes : t.booking_item_management.table.own_property_no %>
+        </td>
+        <td class="table-cell centered_text">
+          <%= entity.assignable ? t.booking_item_management.table.assignable_yes : t.booking_item_management.table.assignable_no %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p><%=t.booking_item_management.total_products(@items.size, @items.select{|item| item.assignable}.size)%></p>
+<% end %>
+</div>

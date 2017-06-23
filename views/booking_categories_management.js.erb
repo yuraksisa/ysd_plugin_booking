@@ -24,6 +24,13 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         $('#prices_container').html(dom.find('body #page_wrapper'));
         $('head').append(dom.find('script:not([src])'));
       });
+      
+      // Embed stock
+      $.ajax({url: '/admin/booking/stock/'+ entity.code, dataType: 'text'}).done(function(html) {
+        var dom = $('<html />').prop('innerHTML', html);
+        $('#stock_detail_container').html(dom.find('body #page_wrapper'));
+        $('head').append(dom.find('script:not([src])'));
+      });
 
       // Embed translations
       <% if @show_translations %>
