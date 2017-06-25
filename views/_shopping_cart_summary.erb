@@ -23,6 +23,9 @@
             <div class="left-margin">
               <h4><%=first_shopping_cart_item.item_description%></h4>
               <div class="less_contrast_text"><%=l(first_shopping_cart_item.date,"%d %B %Y")%> <%first_shopping_cart_item.time%></div>
+              <% if first_shopping_cart_item.custom_customers_pickup_place %>
+              <div class="more_contrast_text top-margin smaller_text"><%=t.activity_shopping_cart.pickup_customer(first_shopping_cart_item.customers_pickup_place)%></div>
+              <% end %>
               <div class="top-margin">
                 <% shopping_cart_items[:items].each do |shopping_cart_item| %>
                 <div class="grid_8 shopping_cart_item">

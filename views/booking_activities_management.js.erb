@@ -123,6 +123,20 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       });
 
+      $('#custom_pickup_places').bind('change', function() {
+          if ($('#custom_pickup_places').is(':checked')) {
+              $('#pickup_places_container').show();
+          }
+          else {
+              $('#pickup_places_container').hide();
+          }
+      });
+
+      var valueModel = entity.pickup_return_place_definition_id;
+      var dataSourceModel = new RemoteDataSource('/api/booking-place-defs',{'id':'id',
+            'description':'name'});
+      var selectorModel = new SelectSelector('pickup_return_place_definition',
+           dataSourceModel, valueModel, true );
 
     },
   
@@ -321,7 +335,16 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         else {
           data.web_public = false;
         }
-      }      
+      }
+
+      if ($('#custom_pickup_places').length > 0) {
+          if ($('#custom_pickup_places').prop('checked')) {
+              data.custom_pickup_places = true;
+          }
+          else {
+              data.custom_pickup_places = false;
+          }
+      }
 
       if ($('#capacities_on_multiple_prices').length > 0) {
         if ($('#capacities_on_multiple_prices').prop('checked')) {

@@ -169,6 +169,22 @@ module Sinatra
         end
 
         #
+        # Get booking-activity-place
+        #
+        app.get "/api/booking-activiy-places/:activity_id" do
+
+          if activity = ::Yito::Model::Booking::Activity.first(code: params[:activity_id])
+            data = ::Yito::Model::Booking::PickupReturnPlace.all(:place_definition_id => activity.pickup_return_place_definition_id)
+            status 200
+            content_type :json
+            data.to_json
+          else
+            status 404
+          end  
+            
+        end
+
+        #
         # Booking activities scheduler
         #
         app.get '/api/booking-activities/scheduler', :allowed_usergroups => ['booking_manager', 'staff'] do
@@ -176,7 +192,7 @@ module Sinatra
           from = Time.at(params['start'].to_i)
           to = Time.at(params['end'].to_i)
 
-          programmed_activities = ::Yito::Model::Order::Order.programmed_activities(from, to)
+          programmed_activities = ::Yito::Model::Order::Order.programmed_activities_plus_pending(from, to)
 
           booking_activities = programmed_activities.map do |item|
             time = item.time == 'TARDE' ? "19:00" : (item.time.size == 4 ? "0#{item.time}" : item.time)
@@ -186,15 +202,19 @@ module Sinatra
             time = Time.parse(item.duration_hours)
             end_date += item.duration_days + (time.hour / 24.0) + (time.min / (24.0 * 60.0))  
             end_str = end_date.strftime('%Y-%m-%dT%H:%M:00')
+            title = "#{item.item_description} (#{t.booking_activities_scheduler.pax("%.0f" % (item.pending_confirmation + item.confirmed))}"
+            title << "*-#{"%.0f" % item.pending_confirmation} pendiente(s)-" if item.pending_confirmation > 0
+            title << ")"
+            background_color = item.confirmed > 0 ? item.schedule_color : '#ffffff'
 
             {:id => "#{item.item_id}-#{item.date.strftime('%Y-%m-%d')}-#{item.time}:00",
-             :title => "#{item.item_description} (#{t.booking_activities_scheduler.pax("%.0f" % item.occupation)})",
+             :title => title,
              :start => start_str,
              :end => end_str,
              :allDay => item.duration_days > 0 ? true : false,
              :url => "/admin/booking/activity-detail?date=#{item.date.strftime('%Y-%m-%d')}&time=#{item.time}&item_id=#{item.item_id}",
              :editable => false,
-             :backgroundColor => "#{item.schedule_color}",
+             :backgroundColor => background_color,
              :textColor => 'black'}
           end
 

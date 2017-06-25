@@ -1,16 +1,23 @@
-        <% total = 0 %>
+        <% total_pending_confirmation = 0 %>
+        <% total_confirmed = 0%>
         <tr class="table-row more_contrast_text">
           <td class="table-cell">TOTAL</td>
-          <td class="table-cell">
+          <td class="table-cell" colspan="5">
             <% summary.each do |key, value| %>
-              <p><%=value%> x <%=key%></p>
-              <% total += value %>
+              <% if value.has_key?(:confirmed) %>
+                <p><%=value[:confirmed]%> x <%=key%></p>
+                <% total_confirmed += value[:confirmed] %>
+              <% end %>
+              <% if value.has_key?(:pending_confirmation) %>
+                <p><em class="less_contrast_text"><%=value[:pending_confirmation]%> x <%=key%> (pendiente de confirmación)</em></p>
+                <% total_pending_confirmation += value[:pending_confirmation] %>
+              <% end %>
             <% end %>
-            <p style="border-top: 1px solid #EEE; margin-top: 0.5em; padding-top: 0.5em;"><%=total%> x plazas de <%=last_activity_capacity%></p>
+            <p style="border-top: 1px solid #EEE; margin-top: 0.5em; padding-top: 0.5em;">
+              <%=total_confirmed+total_pending_confirmation%>
+              <%if total_pending_confirmation>0%><span class="smaller_text">(<%=total_pending_confirmation%> pendiente de confirmar)<%end%>
+              x plazas de <%=last_activity_capacity%></p>
           </td>
+          <td class="table-cell"><%="%.2f" % paid%></td>
           <td class="table-cell"></td>
-          <td class="table-cell"></td>
-          <td class="table-cell"></td>
-          <td class="table-cell"></td>
-          <td class="table-cell"><%="%.2f" % paid%></td>          
         </tr>

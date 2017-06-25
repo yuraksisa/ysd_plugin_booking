@@ -31,6 +31,12 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
         alert('<%=t.activity.no_ticket_selected%>');
         return false;
       }
+      <% if @activity.custom_pickup_places %>
+      if ($('select[name=customers_pickup_place]').val() == '') {
+          alert('<%=t.activity.no_pickup_place_selected%>');
+          return false;
+      }
+      <% end %>
       return true;
     }
   }

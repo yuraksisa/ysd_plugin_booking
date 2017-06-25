@@ -37,6 +37,9 @@
                 <%= partial :reservation_activity_tickets %>
               <% end %>
             <% end %>
+            <% if @activity.custom_pickup_places %>
+                <%= partial :reservation_activity_pickup_place %>
+            <% end %>
             <div id="total" class="centered_text more_contrast_text" style="font-size:3em"></div>
             <div id="botonera" class="top-margin">
               <input type="submit" class="form-button green-button" style="width:100%" value="Reservar"/>
