@@ -48,7 +48,7 @@
             <% if quantities.is_a?Hash %>
               <td class="table-cell centered_text">
                 <% total = 0 %>
-                <% pending = false %>
+                <% pending = ((pending_confirmation.select {|k,v| v > 0}).size > 0) %>
                 <% total_hash = {} %>
                 <% quantities.each do |item_price_type, quantity| %>
                   <% total += quantity %>
@@ -60,7 +60,6 @@
                 <% end %>
                 <% pending_confirmation.each do |item_price_type, quantity| %>
                   <% total += quantity %>
-                  <% pending = true %>
                   <% if total_hash.has_key?(item_price_type) %>
                   <% total_hash[item_price_type] += quantity %>
                   <% else %>
@@ -68,7 +67,7 @@
                   <% end %>
                 <% end %>
                 <% total_hash.each do |k,v| %>
-                    <div <%if v >0%>class="more_contrast_text"<%end%>><%=activity_detail[:price_literals][k][0]%>:<%="%.f" %v%><%if pending%>*<%end%></div>
+                    <div <%if v >0%>class="more_contrast_text"<%end%>><%=activity_detail[:price_literals][k][0]%>:<%="%.f" %v%><%if v > 0 and pending%>*<%end%></div>
                 <% end %>
                 <% percentage = total.to_f / real_capacity.to_f * 100%>
                 <div class="more_contrast_text <%if percentage > 0 %>occupation-detail<%end%>" style="top-margin:0.5em;bottom-margin:0.5em; border-top:1px solid #CCC;  <% if percentage >= 100 %>background:red; color: white;<%elsif percentage >= 75 and !percentage.infinite?%>background:orange;<%elsif percentage > 0 and !percentage.infinite?%>background:yellow;<%end%><% if total.to_f == 0 and real_capacity.to_f == 0%>background:#DDD<%end%>" <%if percentage > 0%>data-url="/admin/booking/activity-detail?date=<%=Date.new(@year,@month,day).strftime('%Y-%m-%d')%>&time=<%=timetable%>&item_id=<%=activity_id%>&layout=no"<%end%> title="<%="%.f" %total%>/<%="%.f" %real_capacity%>"><%if total.to_f == 0 and real_capacity.to_f == 0%>NO<%else%> <%="%.f" %total%>/<%="%.f" %real_capacity%><%if pending%>*<%end%><%end%></div>
