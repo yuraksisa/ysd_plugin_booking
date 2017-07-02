@@ -92,6 +92,52 @@ module Sinatra
         end
 
         #
+        # Get booking activities
+        #
+        app.get "/api/booking-activities-search", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          search_text = params[:term]
+
+          conditions =  Conditions::JoinComparison.new('$and',
+                                                       [Conditions::Comparison.new(:active, '$eq', true),
+                                                                 Conditions::JoinComparison.new('$or', [
+                                                                     Conditions::Comparison.new(:code, '$like', "%#{search_text}%"),
+                                                                     Conditions::Comparison.new(:short_description, '$like', "%#{search_text}%")
+                                                                 ])
+                                                       ])
+
+          data = conditions.build_datamapper(::Yito::Model::Booking::Activity).all.map do |item|
+            {value: item.code,
+             label: item.short_description}
+          end
+
+          status 200
+          content_type :json
+          data.to_json
+
+        end
+
+        #
+        # Get the rates of an activity code
+        #
+        app.get "/api/booking-activities-rate/:activity_code", :allowed_usergroups => ['booking_management','staff'] do
+
+          if activity = ::Yito::Model::Booking::Activity.first(code: params[:activity_code])
+            data = activity.price_definition_detail.map do |k,v|
+                     {id: k, description: v}
+            end
+            status 200
+            content_type :json
+            data.to_json
+          else
+            status 200
+            content_type :json
+            [].to_json
+          end
+
+        end
+
+        #
         # Get a booking activity
         #
         app.get "/api/booking-activity/:id", :allowed_usergroups => ['booking_manager', 'staff'] do
