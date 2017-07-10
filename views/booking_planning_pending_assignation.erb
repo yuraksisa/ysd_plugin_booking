@@ -52,7 +52,12 @@
                       </td>
                       <td class="table-cell">
                         <form>
-                          <input type="button" class="pending_assign_button form-button blue-button" style="padding:2px; min-width: 45px" value="Asignar" data-id="<%=booking_line_resource.id%>" data-date-from="<%=booking.date_from.strftime('%Y-%m-%d')%>" data-date-to="<%=booking.date_to.strftime('%Y-%m-%d')%>" data-planning-color="<%=booking.planning_color%>"/>
+                          <input type="button" class="pending_assign_button form-button blue-button" style="padding:2px; min-width: 45px" value="Asignar"
+                                 data-id="<%=booking_line_resource.id%>"
+                                 data-category-code="<%=booking_line.item_id%>"
+                                 data-date-from="<%=booking.date_from.strftime('%Y-%m-%d')%>"
+                                 data-date-to="<%=booking.date_to.strftime('%Y-%m-%d')%>"
+                                 data-planning-color="<%=booking.planning_color%>"/>
                         </form>
                       </td>
                     </tr>
