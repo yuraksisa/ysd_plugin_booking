@@ -61,6 +61,9 @@ booking_settings:
       dates: Selección fechas (para 1 producto)
       categories: Selección producto (para 1 producto)
       shoppingcart: Reserva múltiples productos
+    assignation:
+      allow_different_category: Permitir asignar diferentes categorías
+      allow_busy_resource: Permitir asignar recurso ocupado
     renting: Gestión de alquileres
     activities: Gestión de actividades o eventos
     deposit: "% Depósito"
@@ -700,6 +703,8 @@ booking_category_management:
     prices: Precios  
     scheduler: Agenda
   form:
+    stock_not_match: El stock del producto con coincide con el stock definido.
+    product_not_ready: El producto no está listo para la venta. Revise si informó código, nombre, descripción corta, descripción y tarifas
     new_product_detail: >
                         <h3>Nuevo producto</h3>
                         <p>Está creando un nuevo producto que ofrecerá en alquiler a sus clientes.

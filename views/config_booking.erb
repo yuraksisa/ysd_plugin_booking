@@ -78,7 +78,9 @@
                       <%= render_variable_select('booking.item_family', t.booking_settings.form.family, families) %>
                       <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>  
                       <%= render_variable_select('booking.reservation_starts_with', t.booking_settings.form.reservation_starts_with.title,  reservation_starts_with) %>
-                      <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.form.calendar_mode.title, calendar_modes) %>                                            
+                      <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.form.calendar_mode.title, calendar_modes) %>
+                      <%= render_variable_checkbox_boolean('booking.assignation.allow_different_category', t.booking_settings.form.assignation.allow_different_category) %>
+                      <%= render_variable_checkbox_boolean('booking.assignation.allow_busy_resource', t.booking_settings.form.assignation.allow_busy_resource) %>
                       <div class="formrow-botonera top-separator top-space">
                         <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
                       </div>
