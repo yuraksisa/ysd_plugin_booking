@@ -41,7 +41,12 @@
       <form name="select_booking">
       <% @bookings.each do |booking| %>
         <div class="guiblock bottom-margin">
-          <div><input type="radio" name="id" value="<%=booking.id2%>" rel="<%=booking.origin%>" data-category-code="<%=booking.booking_item_category%>" data-date-from="<%=booking.date_from.strftime('%Y-%m-%d')%>" data-date-to="<%=booking.date_to.strftime('%Y-%m-%d')%>" data-planning-color="<%=booking.planning_color%>"></input><strong style="width: 80px; display:inline-block">Localizador:</strong> <%if booking.origin == 'booking'%>R <a href="/admin/booking/bookings/<%=booking.id%>"><%=booking.id%></a><%else%>PR <%=booking.id%><%end%></div>
+          <div><input type="radio" name="id" value="<%=booking.id2%>"
+                                             rel="<%=booking.origin%>"
+                                             data-category-code="<%=booking.booking_item_category%>"
+                                             data-date-from="<%=booking.date_from.strftime('%Y-%m-%d')%>"
+                                             data-date-to="<%=booking.date_to.strftime('%Y-%m-%d')%>"
+                                             data-planning-color="<%=booking.planning_color%>"></input><strong style="width: 80px; display:inline-block">Localizador:</strong> <%if booking.origin == 'booking'%>R <a href="/admin/booking/bookings/<%=booking.id%>"><%=booking.id%></a><%else%>PR <%=booking.id%><%end%></div>
           <div><strong style="width: 80px; display:inline-block">Cliente:</strong> <%=booking.customer_name%> <%=booking.customer_surname%></div>
           <div><strong style="width: 80px; display:inline-block">Fecha inicio:</strong> <b><%=booking.date_from.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_from%><%end%></b></div>
           <div><strong style="width: 80px; display:inline-block">Fecha fin:</strong> <b><%=booking.date_to.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=booking.time_to%><%end%></b></div>

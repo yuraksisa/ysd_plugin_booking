@@ -15,6 +15,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     selectedReservations: null,        /* Reservations of the selected cell */
     selectedDate: null,                /* Date of the selected cell */
     selectedReference: null,           /* Stock reference of the selected cell */
+    selectedCategoryCode: null,        /* Category code of the selected cell */
 
     // Selected reservation (one cell can hold more than 1 reservation)
     selectedItemOrigin: null,          /* Origin of the selected reservation or prereservation */
@@ -171,21 +172,11 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                   bookingPlanningController.destroyPrereservationClick($(this).attr('rel'));
               });
               $('.select_prereservation_button').bind('click', function() {
-                  if ($('#preresevation_area:visible')) {
-                      $('#prereservation_container').hide();
-                      $('#operation_area').show();
-                  }
-                  bookingPlanningModel.view = 'home';
-                  $('#planning_views').val(bookingPlanningModel.view);
-                  bookingPlanningModel.selectedReservations = $(this).attr('data-prereservation');
-                  bookingPlanningModel.selectedReference = $(this).attr('data-reference');
-                  bookingPlanningModel.selectedDate = $(this).attr('data-date');
-                  $('#parent').animate({
-                      scrollTop: $('td[data-reference='+$(this).attr('data-reference')+']').offset().top -
-                                 $('#planning_table').offset().top - 60
-                  }, 2000);
-                  bookingPlanningModel.loadSelectedReservations(false);
-
+                  // Simulate dataFilledClick
+                  bookingPlanningController.dataFilledClick($(this).attr('data-reference'),
+                      $(this).attr('data-category-code'),
+                      $(this).attr('data-date'),
+                      $(this).attr('data-prereservation'));
               });
             }
           });    
@@ -198,7 +189,9 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     },
 
     loadSelectedReservations: function(startResourceSelection) { /* Load the selected reservation */
-      $('#operation_area').load('/admin/booking/planning2-select?reference='+this.selectedReference+'&date='+this.selectedDate+' #reservation_selector', null,
+      $('#operation_area').load('/admin/booking/planning2-select?reference='+
+                                this.selectedReference+
+                               '&date='+this.selectedDate+' #reservation_selector', null,
         function(responseText, textStatus, jqXHR){
           if (jqXHR.status == 200) {
             if ($('form[name=select_booking]').length > 0) { // More than one candidate
@@ -220,7 +213,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
               else {
                 bookingPlanningModel.selectedItemId = null;
               }
-              bookingPlanningModel.selectedItemCategoryCode = $('#select_resource').attr('data-category-code');
+              bookingPlanningModel.selectedItemCategoryCode = bookingPlanningModel.selectedCategoryCode;
               bookingPlanningModel.selectedItemDateFrom = $('#select_resource').attr('data-date-from');
               bookingPlanningModel.selectedItemDateTo = $('#select_resource').attr('data-date-to');
               bookingPlanningModel.selectedItemPlanningColor = $('#select_resource').attr('data-planning-color');
@@ -368,7 +361,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
 
     },
 
-    dataFilledClick: function(reference, date, selectedReservations) {
+    dataFilledClick: function(reference, categoryCode, date, selectedReservations) {
 
       bookingPlanningModel.view = 'home';
       $('#planning_views').val(bookingPlanningModel.view);
@@ -395,6 +388,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         }
         bookingPlanningModel.selectedReservations = selectedReservations;
         bookingPlanningModel.selectedReference = reference;
+        bookingPlanningModel.selectedCategoryCode = categoryCode;
         bookingPlanningModel.selectedDate = date;
         bookingPlanningModel.loadSelectedReservations(false);
       }
@@ -599,7 +593,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
     },
 
 
-    candidateChanged: function(id, categoryCode, origin, dateFrom, dateTo, planningColor) { /* Select candidate (if there are more than one in cell) */
+    candidateChanged: function(id, origin, categoryCode, dateFrom, dateTo, planningColor) { /* Select candidate (if there are more than one in cell) */
       if (bookingPlanningModel.selectedItemId != null) {
         var element = $("td[rel~="+"'"+bookingPlanningModel.selectedItemOriginAbbr+bookingPlanningModel.selectedItemId+"'"+"]");
         element.removeClass('selected');
@@ -637,7 +631,8 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
                                                  $(this).attr('data-date'));
       });
       $(".data.filled").bind('click', function(event) {
-        bookingPlanningController.dataFilledClick($(this).parent().attr('id'), 
+        bookingPlanningController.dataFilledClick($(this).parent().attr('id'),
+                                                  $(this).parent().attr('rel'),
                                                   $(this).attr('data-date'),
                                                   $(this).attr('rel'));
       });  
@@ -895,6 +890,7 @@ require(['YSDFormatter', 'jquery', 'jquery.ui', 'jquery.ui.datepicker-es', 'jque
         });        
         $(".data.filled").bind('click', function(event) {
           bookingPlanningController.dataFilledClick($(this).parent().attr('id'),
+                                                    $(this).parent().attr('rel'),
                                                     $(this).attr('data-date'),
                                                     $(this).attr('rel'));
         }); 		 
