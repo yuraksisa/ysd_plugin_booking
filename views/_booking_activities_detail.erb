@@ -44,7 +44,7 @@
           <% paid = 0%>
       <% end %>       
       <tr class="table-row">
-        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><a href="/admin/orders/order/<%=activity.order_id%>"><%=activity.order_id%></a></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><a href="/admin/order/orders/<%=activity.order_id%>"><%=activity.order_id%></a></td>
         <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%=activity.customer_name%> <%=activity.customer_surname%></td>
         <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%=activity.customer_phone%> </td>
         <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%=activity.customer_email%></td>

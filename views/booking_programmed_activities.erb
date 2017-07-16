@@ -42,7 +42,7 @@
         </thead>
         <tbody>   
         <% @activities.each do |activity| %>  
-          <tr class="table-row">
+          <tr class="table-row <%if activity.confirmed == 0%>less_contrast_text italic_text<%end%>">
             <td class="table-cell"><%=activity.date.strftime('%d-%m-%Y')%> <%=activity.time%></td>
             <td class="table-cell"><%=activity.item_description%></td>
             <td class="table-cell right_text"><%="%.0f" % activity.confirmed%></td>

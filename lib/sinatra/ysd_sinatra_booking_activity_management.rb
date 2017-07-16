@@ -19,8 +19,10 @@ module Sinatra
           @previous_period = @period << 1
 
           @days = Date.civil(@year, @month, -1).day
-          @data = ::Yito::Model::Order::Order.cyclic_occupation_detail(@month, @year)
-          
+          @data = ::Yito::Model::Order::Order.one_time_occupation_detail(@month, @year)
+          @data.merge!(::Yito::Model::Order::Order.multiple_dates_occupation_detail(@month, @year))
+          @data.merge!(::Yito::Model::Order::Order.cyclic_occupation_detail(@month, @year))
+
           load_page :booking_activity_occupation
 
         end

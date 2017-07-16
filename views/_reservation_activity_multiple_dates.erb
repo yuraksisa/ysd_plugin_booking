@@ -19,7 +19,7 @@
         <% end %>
       </select>
     </form> 
-    <% if @activity.capacity > @occupation[:total_occupation].to_i %>
+    <% if @occupation[:occupation_capacity].to_i > @occupation[:total_occupation].to_i %>
       <% if defined?@activity_date and !@activity_date.nil? %>
         <form name="activity_form" id="activity_form" <%if request.path.starts_with?('/admin')%>action="/admin/order/new-order-item-add-activity"<%else%>action="/p/activity/add-to-shopping-cart"<%end%> method="post">
           <% if request.path.starts_with?('/admin') %>

@@ -11,7 +11,7 @@
                           </tr>
                         </thead>
                         <tbody class="table-tbody">
-                          <%% for (var activityDateIdx=entity.activity_dates.length-1; activityDateIdx >=0 ; activityDateIdx--) { %>
+                          <%% for (var activityDateIdx=0; activityDateIdx < entity.activity_dates.length; activityDateIdx++) { %>
                             <tr class="table-row">
                                <td class="table-cell left_text"><%%= entity.activity_dates[activityDateIdx].description %></td>
                                <td class="table-cell left_text"><%%=self.formatDate(entity.activity_dates[activityDateIdx].date_from, 'dd.MM.yyyy')%> <%%=entity.activity_dates[activityDateIdx].time_from%></td>

@@ -379,12 +379,13 @@ module Sinatra
         #
         # Show the programmed activities
         #
-        app.get '/programmed-activities/?*' do
+        ['/programmed-activities/?*','/actividades-programadas'].each do |endpoint|
 
-          date = Date.today
-
-          @activities = ::Yito::Model::Order::Order.public_programmed_activities(date)
-          load_page(:reservation_programmed_activities)
+          app.get endpoint do
+            date = Date.today
+            @activities = ::Yito::Model::Order::Order.public_programmed_activities(date)
+            load_page(:reservation_programmed_activities)
+          end
 
         end
 
