@@ -191,6 +191,14 @@
                   <label class="fieldtitle">Duración horas (hh:mm)</label>
                   <input type="text" maxlength="5" id="duration_hours" name="duration_hours" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_hours%>" <%% } %>/>
                 </div>
+                <div class="formrow">
+                  <label class="fieldtitle"><%= t.booking_activity_management.form.custom_pickup_places%></label>
+                  <input type="checkbox" name="custom_pickup_places" value="true" id="custom_pickup_places" <%% if (entity && entity.custom_pickup_places) { %>checked="checked"<%%}%>/>
+                </div>
+                <div id="pickup_places_container" class="formrow"  <%% if (!entity || !entity.custom_pickup_places) { %> style="display:none"<%%}%>>
+                  <label class="fieldtitle"><%= t.booking_activity_management.form.pickup_places %></label>
+                  <select name="pickup_return_place_definition_id" class="fieldcontrol" id="pickup_return_place_definition"></select>
+                </div>
               </div>
               <div class="grid_6">
                 <div class="left-margin">

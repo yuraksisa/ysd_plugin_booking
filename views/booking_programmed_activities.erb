@@ -36,6 +36,7 @@
               <th class="table-cell left_text" scope="col" style="width:150px">Fecha</th>
               <th class="table-cell left_text" scope="col" style="width:260px">Actividad</th>
               <th class="table-cell right_text" scope="col" style="width:150px">Plazas confirmadas</th>
+              <th class="table-cell right_text" scope="col" style="width:150px">Plazas pendientes</th>
               <th class="table-cell" scope="col"></th>
             </tr>
         </thead>
@@ -44,7 +45,8 @@
           <tr class="table-row">
             <td class="table-cell"><%=activity.date.strftime('%d-%m-%Y')%> <%=activity.time%></td>
             <td class="table-cell"><%=activity.item_description%></td>
-            <td class="table-cell right_text"><%="%.0f" % activity.occupation%></td>
+            <td class="table-cell right_text"><%="%.0f" % activity.confirmed%></td>
+            <td class="table-cell right_text"><%="%.0f" % activity.pending_confirmation %></td>
             <td class="table-cell">
               <div class="form-button green-button" style="margin-left: 5em">
                 <a href="/admin/booking/activity-detail?date=<%=activity.date.strftime('%Y-%m-%d')%>&time=<%=activity.time%>&item_id=<%=activity.item_id%>">Ver detalle</a>

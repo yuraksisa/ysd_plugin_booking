@@ -126,7 +126,7 @@ module Sinatra
             end
           end
 
-          @activities = ::Yito::Model::Order::Order.programmed_activities(date_from, date_to)
+          @activities = ::Yito::Model::Order::Order.programmed_activities_plus_pending(date_from, date_to)
 
           load_page(:booking_programmed_activities)
 

@@ -60,7 +60,6 @@
     </table>
 
     <h3 class="highlight_block">Stock disponible</h3>
-
     <% if (@detail.select {|k,v| !v[:available_stock].empty?}).size == 0%>
       <div class="guiblock smaller_txt">
         <ul>

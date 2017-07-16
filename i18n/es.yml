@@ -64,6 +64,9 @@ booking_settings:
       dates: Selección fechas (para 1 producto)
       categories: Selección producto (para 1 producto)
       shoppingcart: Reserva múltiples productos
+    assignation:
+      allow_different_category: Permitir asignar diferentes categorías
+      allow_busy_resource: Permitir asignar recurso ocupado
     renting: Gestión de alquileres
     activities: Gestión de actividades o eventos
     deposit: "% Depósito"
@@ -785,6 +788,8 @@ booking_category_management:
     prices: Precios  
     scheduler: Agenda
   form:
+    stock_not_match: El stock del producto con coincide con el stock definido.
+    product_not_ready: El producto no está listo para la venta. Revise si informó código, nombre, descripción corta, descripción y tarifas
     new_product_detail: >
                         <h3>Nuevo producto</h3>
                         <p>Está creando un nuevo producto que ofrecerá en alquiler a sus clientes.
@@ -1153,6 +1158,8 @@ booking_activity_management:
     total_capacity: Capacidad total
     duration_days: Duración en días
     duration_hours: Duración en horas
+    custom_pickup_places: Permite indicar lugares de recogida de clientes
+    pickup_places: Lugares de recogida de clientes
     occurrence: Frecuencia
     occurrence_one_time: Una vez (determinada por la empresa)
     occurrence_multiple_dates: Múltiples fechas (determinadas por la empresa)
@@ -1204,9 +1211,12 @@ activity:
   evenings: Noches
   dates: Seleccionar la fecha
   turns: Seleccionar el horario
+  pickup_place: Seleccionar lugar de recogida
+  choose_pickup_place: Seleccionar lugar de recogida
   tickets: Seleccionar los tickets
   choose_tickets: Número de tickets (%1)
   event_date: Fecha
+  no_pickup_place_selected: No ha seleccionado el lugar de recogida
   no_ticket_selected: No ha seleccionado tickets
   activity_not_available: Lo sentimos, no hay plazas disponibles. Por favor, consulte telefónicamente.
   activity_not_available_dates: Lo sentimos, no hay plazas disponibles en esta fecha. Por favor, consulte telefónicamente.
@@ -1225,6 +1235,8 @@ activity_checkout:
   order_summary: Resumen del pedido
   reservation_data: Datos de la reserva  
   activity_customers: Clientes de la actividad %1
+activity_shopping_cart:
+  pickup_customer: Recogida en %1
 activity_shopping_cart_summary:
   total: Total  
 report_stock:

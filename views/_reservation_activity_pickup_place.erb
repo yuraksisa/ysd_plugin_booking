@@ -1,0 +1,14 @@
+              <h4><%=t.activity.pickup_place%></h4>
+              <div id="pickup_places_container" class="top-margin">
+                <div>
+                  <input type="hidden" name="custom_customers_pickup_place" id="custom_customers_pickup_place" value="<%=@activity.custom_pickup_places%>"/>
+                  <select name="customers_pickup_place" id="customers_pickup_place" class="quantity_rate" style="width:99%">
+                    <option value=""><%=t.activity.choose_pickup_place%></option>
+                    <% if @activity.pickup_return_place_definition and @activity.pickup_return_place_definition.pickup_return_places and @activity.pickup_return_place_definition.pickup_return_places.size > 0 %>
+                        <% @activity.pickup_return_place_definition.pickup_return_places.each do |pickup_place| %>
+                            <option value="<%=pickup_place.name%>"><%=pickup_place.name%></option>
+                        <% end %>
+                    <% end %>
+                  </select>
+                </div>
+              </div>

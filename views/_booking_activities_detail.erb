@@ -36,6 +36,7 @@
               <th class="table-cell left_text" scope="col" style="width:140px">Tipo</th>
               <th class="table-cell left_text" scope="col" style="width:60px">Precio</th>
               <th class="table-cell left_text" scope="col" style="width:60px">Total</th>
+              <th class="table-cell left_text" scope="col" style="width:120px">Notas</th>
             </tr>
           </thead>
           <tbody>   
@@ -43,13 +44,19 @@
           <% paid = 0%>
       <% end %>       
       <tr class="table-row">
-        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><a href="/admin/orders/order/<%=activity.order_id%>"><%=activity.order_id%></a></td>
-        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_name%> <%=activity.customer_surname%></td>
-        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_phone%> </td>
-        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.customer_email%></td>
-        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%=activity.quantity%> x <%=activity.item_price_description%></td>
-        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%="%.2f" % activity.item_unit_cost%></td>
-        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text<%end%>"><%="%.2f" % activity.item_cost%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><a href="/admin/orders/order/<%=activity.order_id%>"><%=activity.order_id%></a></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%=activity.customer_name%> <%=activity.customer_surname%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%=activity.customer_phone%> </td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%=activity.customer_email%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%=activity.quantity%> x <%=activity.item_price_description%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%="%.2f" % activity.item_unit_cost%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>"><%="%.2f" % activity.item_cost%></td>
+        <td class="table-cell <%if activity.status.to_sym == :pending_confirmation%>less_contrast_text italic_text<%end%>">
+            <% notes = '' %>
+            <% notes << "Comentarios:#{activity.comments}" if activity.comments and !activity.comments.nil? and !activity.comments.empty? %>
+            <% notes << "Notas:#{activity.notes}" if activity.notes and !activity.notes.nil? and !activity.notes.empty? %>
+            <% notes << "Recogida:#{activity.customers_pickup_place}" if activity.customers_pickup_place and !activity.customers_pickup_place.empty? %>
+            <%=notes%>
       </tr>
       <% last_date = activity.date %>
       <% last_activity = activity.item_id %>
@@ -57,14 +64,19 @@
       <% last_activity_capacity = activity.capacity %>
       <% paid += activity.item_cost if activity.status.to_sym == :confirmed%>
       <% if summary.has_key?(activity.item_price_description)
-           summary[activity.item_price_description] += activity.quantity if activity.status.to_sym == :confirmed
+           if summary[activity.item_price_description].has_key?(activity.status.to_sym)
+             summary[activity.item_price_description][activity.status.to_sym] += activity.quantity
+           else
+             summary[activity.item_price_description].store(activity.status.to_sym, activity.quantity)
+           end
          else 
-           summary.store(activity.item_price_description, activity.quantity) if activity.status.to_sym == :confirmed
+           summary.store(activity.item_price_description, {activity.status.to_sym => activity.quantity}) if [:pending_confirmation, :confirmed].include?(activity.status.to_sym)
          end %>
     <% end %>
 
     <%= partial :booking_activities_summary_total, locals: {summary: summary, last_activity_capacity: last_activity_capacity, paid: paid} %>        
           </tbody>
         </table>
-  <% end %> 
+  <% end %>
+  <div class="guiblock">En gris y cursiva se muestran las reservas que están pendientes de confirmación</div>
 </div> 

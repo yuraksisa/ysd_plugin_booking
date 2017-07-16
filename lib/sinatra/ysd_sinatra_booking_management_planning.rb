@@ -53,6 +53,9 @@ module Sinatra
             @reference = params[:reference]
           end
 
+          @assignation_allow_diferent_categories = SystemConfiguration::Variable.get_value('booking.assignation.allow_different_category', 'true').to_bool
+          @assignation_allow_busy_resource = SystemConfiguration::Variable.get_value('booking.assignation.allow_busy_resource', 'true').to_bool
+
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           load_page(:bookings_planning_v2)
 

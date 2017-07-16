@@ -48,6 +48,20 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+         {name: 'booking.assignation.allow_different_category'},
+         {value: 'true',
+                   description: 'It allows to assign a different category resource to a reservation',
+                   module: :booking}
+      )
+
+      SystemConfiguration::Variable.first_or_create(
+          {name: 'booking.assignation.allow_busy_resource'},
+          {value: 'true',
+           description: 'It allows to assign a busy resource to a reservation',
+           module: :booking}
+      )
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.notification_email'},
         {:value => '',
          :description => 'Bookings notification email',

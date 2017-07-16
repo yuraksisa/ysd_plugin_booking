@@ -124,10 +124,17 @@ module Sinatra
                        :dates => t.booking_settings.form.reservation_starts_with.dates, 
                        :categories => t.booking_settings.form.reservation_starts_with.categories,
                        :shopcart => t.booking_settings.form.reservation_starts_with.shoppingcart} }
-          locals.store(:booking_renting, 
-              SystemConfiguration::Variable.get_value('booking.renting','false').to_bool)        
-          locals.store(:booking_activities, 
-              SystemConfiguration::Variable.get_value('booking.activities','false').to_bool)        
+
+          booking_renting = true
+          booking_activities = false
+          
+          if app.settings.respond_to?(:mybooking_plan)
+            booking_renting = [:pro_renting, :pro_plus].include?(app.settings.mybooking_plan)
+            booking_activities = [:pro_activities, :pro_plus].include?(app.settings.mybooking_plan)
+          end
+          
+          locals.store(:booking_renting, booking_renting)        
+          locals.store(:booking_activities, booking_activities)        
          
           load_page(:config_booking, {:locals => locals})
         end

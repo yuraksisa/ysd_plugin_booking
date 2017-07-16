@@ -27,11 +27,11 @@
   
   <% @data.each do |activity_id, activity_detail| %> 
   <h3 class="guiblock"><%=activity_id%>-<%=activity_detail[:name]%></h3>
-  <div>
+  <div style="overflow: scroll-x">
     <table id="table-<%=activity_id%>" class="table">
       <thead class="table-header">
         <tr>
-          <th class="table-cell" scope="col" style="width: 80px"></th>
+          <th class="table-cell" scope="col" style="width: 50px"></th>
           <% (1..@days).each do |day| %>
           <th class="table-cell centered_text" scope="col"><%=day%></th>
           <% end %>     
@@ -43,17 +43,35 @@
           <td class="table-cell"><%= timetable %></td>
           <% occupation_detail.each do |day, value| %>
             <% quantities = value[:quantity] %>
+            <% pending_confirmation = value[:pending_confirmation]%>
             <% real_capacity = value[:capacity] %>
             <% if quantities.is_a?Hash %>
               <td class="table-cell centered_text">
                 <% total = 0 %>
+                <% pending = ((pending_confirmation.select {|k,v| v > 0}).size > 0) %>
+                <% total_hash = {} %>
                 <% quantities.each do |item_price_type, quantity| %>
                   <% total += quantity %>
-                  <div <%if quantity >0%>class="more_contrast_text"<%end%>><%=activity_detail[:price_literals][item_price_type][0]%>:<%="%.f" %quantity%></div>
+                    <% if total_hash.has_key?(item_price_type) %>
+                        <% total_hash[item_price_type] += quantity %>
+                    <% else %>
+                        <% total_hash[item_price_type] = quantity %>
+                    <% end %>
                 <% end %>
-                 <% percentage = total.to_f / real_capacity.to_f * 100%>
-                  <div class="more_contrast_text <%if percentage > 0 %>occupation-detail<%end%>" style="top-margin:0.5em;bottom-margin:0.5em; border-top:1px solid #CCC;  <% if percentage >= 100 %>background:red; color: white;<%elsif percentage >= 75 and !percentage.infinite?%>background:orange;<%elsif percentage > 0 and !percentage.infinite?%>background:yellow;<%end%><% if total.to_f == 0 and real_capacity.to_f == 0%>background:#DDD<%end%>" <%if percentage > 0%>data-url="/admin/booking/activity-detail?date=<%=Date.new(@year,@month,day).strftime('%Y-%m-%d')%>&time=<%=timetable%>&item_id=<%=activity_id%>&layout=no"<%end%> title="<%="%.f" %total%>/<%="%.f" %real_capacity%>"><%if total.to_f == 0 and real_capacity.to_f == 0%>NO<%else%> <%="%.f" %total%>/<%="%.f" %real_capacity%><%end%></div>
-                  <div><span class="ui-icon ui-icon-pencil edit-icon" data-date="<%=Date.new(@year,@month,day).strftime('%Y-%m-%d')%>" data-time="<%=timetable%>" data-activity-code="<%=activity_id%>" style="cursor: hand; cursor: pointer"></span></div>             
+                <% pending_confirmation.each do |item_price_type, quantity| %>
+                  <% total += quantity %>
+                  <% if total_hash.has_key?(item_price_type) %>
+                  <% total_hash[item_price_type] += quantity %>
+                  <% else %>
+                  <% total_hash[item_price_type] = quantity %>
+                  <% end %>
+                <% end %>
+                <% total_hash.each do |k,v| %>
+                    <div <%if v >0%>class="more_contrast_text"<%end%>><%=activity_detail[:price_literals][k][0]%>:<%="%.f" %v%><%if v > 0 and pending%>*<%end%></div>
+                <% end %>
+                <% percentage = total.to_f / real_capacity.to_f * 100%>
+                <div class="more_contrast_text <%if percentage > 0 %>occupation-detail<%end%>" style="top-margin:0.5em;bottom-margin:0.5em; border-top:1px solid #CCC;  <% if percentage >= 100 %>background:red; color: white;<%elsif percentage >= 75 and !percentage.infinite?%>background:orange;<%elsif percentage > 0 and !percentage.infinite?%>background:yellow;<%end%><% if total.to_f == 0 and real_capacity.to_f == 0%>background:#DDD<%end%>" <%if percentage > 0%>data-url="/admin/booking/activity-detail?date=<%=Date.new(@year,@month,day).strftime('%Y-%m-%d')%>&time=<%=timetable%>&item_id=<%=activity_id%>&layout=no"<%end%> title="<%="%.f" %total%>/<%="%.f" %real_capacity%>"><%if total.to_f == 0 and real_capacity.to_f == 0%>NO<%else%> <%="%.f" %total%>/<%="%.f" %real_capacity%><%if pending%>*<%end%><%end%></div>
+                <div><span class="ui-icon ui-icon-pencil edit-icon" data-date="<%=Date.new(@year,@month,day).strftime('%Y-%m-%d')%>" data-time="<%=timetable%>" data-activity-code="<%=activity_id%>" style="cursor: hand; cursor: pointer"></span></div>
               </td>
             <% else %>
             <td class="table-cell centered_text"><%=quantities%></td>
@@ -67,7 +85,7 @@
   <% end %>
 
 </div>
-<div id="occupation-detail" class="all-space" style="width:800px; height: 400px; background: white; overflow-y: scroll; font-size: 1em; display: none">
+<div id="occupation-detail" class="all-space" style="width: 950px; min-height: 450px; background: white; overflow-y: scroll; font-size: 1.2em; display: none">
 </div>
-<div id="dialog_container" class="all-space" style="width: 600px; min-height: 300px; background: white; display:none">
+<div id="dialog_container" class="all-space" style="width: 950px; min-height: 450px; background: white; display:none">
 </div>

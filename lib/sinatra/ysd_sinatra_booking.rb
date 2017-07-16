@@ -230,7 +230,8 @@ module Sinatra
             locals.store(:booking, booking)
             locals.store(:booking_deposit, SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
             locals.store(:booking_allow_total_payment,
-              SystemConfiguration::Variable.get_value('booking.allow_total_payment').to_bool) 
+              SystemConfiguration::Variable.get_value('booking.allow_total_payment').to_bool)
+            locals.store(:cache, false)   
             load_page('reserva-finalizada'.to_sym, :locals => locals)
           else
             logger.error "Back from payment gateway NOT booking in session"
@@ -254,6 +255,7 @@ module Sinatra
               SystemConfiguration::Variable.get_value('booking.allow_total_payment').to_bool)                 
              locals.store(:booking_payment,
                  SystemConfiguration::Variable.get_value('booking.payment', 'false').to_bool)
+             locals.store(:cache, false)
              load_page :reserva, :locals => locals
           else
              logger.error "Back from payment gateway NOT booking in session"
@@ -274,6 +276,7 @@ module Sinatra
             locals.store(:booking_deposit, SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
             locals.store(:booking_allow_total_payment,
               SystemConfiguration::Variable.get_value('booking.allow_total_payment').to_bool) 
+            locals.store(:cache, false)
             load_page('reserva-denegada'.to_sym, :locals => locals)
           else
             logger.error "Back from payment gateway NOT booking in session"
