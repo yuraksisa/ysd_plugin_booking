@@ -45,8 +45,9 @@
             <% quantities = value[:quantity] %>
             <% pending_confirmation = value[:pending_confirmation]%>
             <% real_capacity = value[:capacity] %>
+            <% planned = value[:planned] %>
             <% if quantities.is_a?Hash %>
-              <td class="table-cell centered_text">
+              <td class="table-cell centered_text <%unless planned%>less_contrast_text italic_text<%end%>">
                 <% total = 0 %>
                 <% pending = ((pending_confirmation.select {|k,v| v > 0}).size > 0) %>
                 <% total_hash = {} %>

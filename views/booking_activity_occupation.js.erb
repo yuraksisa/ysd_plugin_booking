@@ -8,7 +8,7 @@ require(['YSDGui','jquery',
   occupationController = {
     occupationDetailClick: function(dataUrl) {
       $('#occupation-detail').load(dataUrl + ' .admin_content_wrapper');
-      YSDGui.showElement(document.getElementById('occupation-detail'), true);
+      YSDGui.showElementInMode(document.getElementById('occupation-detail'), true, null, 'absolute', 0, 200);
     },
     editIconClicked: function(date, time, activityCode) {
       var url = '/admin/booking/planned-activity?date='+date+'&time='+time+'&activity_code='+activityCode;
