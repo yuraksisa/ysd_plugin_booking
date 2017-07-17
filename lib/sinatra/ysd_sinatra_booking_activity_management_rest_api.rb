@@ -241,27 +241,32 @@ module Sinatra
           programmed_activities = ::Yito::Model::Order::Order.programmed_activities_plus_pending(from, to)
 
           booking_activities = programmed_activities.map do |item|
-            time = item.time == 'TARDE' ? "19:00" : (item.time.size == 4 ? "0#{item.time}" : item.time)
-            start_str = "#{item.date.strftime('%Y-%m-%d')}T#{time}:00"
-            end_str = "#{item.date.strftime('%Y-%m-%d')}T#{time}:00"
-            end_date = DateTime.parse(end_str)
-            time = Time.parse(item.duration_hours)
-            end_date += item.duration_days + (time.hour / 24.0) + (time.min / (24.0 * 60.0))  
-            end_str = end_date.strftime('%Y-%m-%dT%H:%M:00')
-            title = "#{item.item_description} (#{t.booking_activities_scheduler.pax("%.0f" % (item.pending_confirmation + item.confirmed))}"
-            title << "*-#{"%.0f" % item.pending_confirmation} pendiente(s)-" if item.pending_confirmation > 0
-            title << ")"
-            background_color = item.confirmed > 0 ? item.schedule_color : '#ffffff'
+            begin
+              time = item.time == 'TARDE' ? "19:00" : (item.time.size == 4 ? "0#{item.time}" : item.time)
+              start_str = "#{item.date.strftime('%Y-%m-%d')}T#{time}:00"
+              end_str = "#{item.date.strftime('%Y-%m-%d')}T#{time}:00"
+              end_date = DateTime.parse(end_str)
+              time = Time.parse(item.duration_hours)
+              end_date += (item.duration_days-1) + (time.hour / 24.0) + (time.min / (24.0 * 60.0))
+              end_str = end_date.strftime('%Y-%m-%dT%H:%M:00')
+              title = "#{item.item_description} (#{t.booking_activities_scheduler.pax("%.0f" % (item.pending_confirmation + item.confirmed))}"
+              title << "*-#{"%.0f" % item.pending_confirmation} pendiente(s)-" if item.pending_confirmation > 0
+              title << ")"
+              background_color = item.confirmed > 0 ? item.schedule_color : '#ffffff'
 
-            {:id => "#{item.item_id}-#{item.date.strftime('%Y-%m-%d')}-#{item.time}:00",
-             :title => title,
-             :start => start_str,
-             :end => end_str,
-             :allDay => item.duration_days > 0 ? true : false,
-             :url => "/admin/booking/activity-detail?date=#{item.date.strftime('%Y-%m-%d')}&time=#{item.time}&item_id=#{item.item_id}",
-             :editable => false,
-             :backgroundColor => background_color,
-             :textColor => 'black'}
+              {:id => "#{item.item_id}-#{item.date.strftime('%Y-%m-%d')}-#{item.time}:00",
+               :title => title,
+               :start => start_str,
+               :end => end_str,
+               :allDay => item.duration_days > 0 ? true : false,
+               :url => "/admin/booking/activity-detail?date=#{item.date.strftime('%Y-%m-%d')}&time=#{item.time}&item_id=#{item.item_id}",
+               :editable => false,
+               :backgroundColor => background_color,
+               :textColor => 'black'}
+            rescue
+              logger.error "Ignoring invalid date #{item.inspect}"
+            end
+
           end
 
           booking_activities.to_json

@@ -346,6 +346,10 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           }
       }
 
+      if (!data.custom_pickup_places) {
+          delete data.pickup_return_place_definition_id;
+      }
+
       if ($('#capacities_on_multiple_prices').length > 0) {
         if ($('#capacities_on_multiple_prices').prop('checked')) {
           data.capacities_on_multiple_prices = true;
