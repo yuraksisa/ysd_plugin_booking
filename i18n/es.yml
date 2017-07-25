@@ -1156,6 +1156,7 @@ booking_activity_management:
     price_name: Nombre tarifa
     affects_capacity: Afecta capacidad
     total_capacity: Capacidad total
+    step_tickets: Venta de tickets en múltiplos
     duration_days: Duración en días
     duration_hours: Duración en horas
     custom_pickup_places: Permite indicar lugares de recogida de clientes
