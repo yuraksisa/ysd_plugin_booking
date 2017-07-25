@@ -75,11 +75,15 @@
                               <div class="formrow">
                                 <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
                                 <input type="checkbox" name="price_1_affects_capacity" value="true" id="price_1_affects_capacity" <%% if (entity && entity.price_1_affects_capacity) { %>checked="checked"<%%}%>/>                            
-                              </div>                               
+                              </div>
+                              <div class="formrow">
+                                <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
+                                <input type="text" maxlength="80" id="price_1_step_tickets" name="price_1_step_tickets" class="fieldcontrol" value="<%%=entity.price_1_step_tickets%>"/>
+                              </div>
                               <%% if (entity.capacities_on_multiple_prices) { %>
                               <div class="formrow">
                                   <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
-                                  <input type="text" maxlength="80" id="price_1_description" name="price_1_total_capacity" class="fieldcontrol" value="<%%=entity.price_1_total_capacity%>"/>
+                                  <input type="text" maxlength="80" id="price_1_total_capacity" name="price_1_total_capacity" class="fieldcontrol" value="<%%=entity.price_1_total_capacity%>"/>
                               </div>
                               <%% } %>    
                               <%% if (entity.type_of_multiple_prices == 'duration') { %>
@@ -121,7 +125,11 @@
                               <div class="formrow">
                                 <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
                                 <input type="checkbox" name="price_2_affects_capacity" value="true" id="price_2_affects_capacity" <%% if (entity && entity.price_2_affects_capacity) { %>checked="checked"<%%}%>/>                            
-                              </div>                               
+                              </div>
+                              <div class="formrow">
+                                <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
+                                <input type="text" maxlength="80" id="price_2_step_tickets" name="price_2_step_tickets" class="fieldcontrol" value="<%%=entity.price_2_step_tickets%>"/>
+                              </div>
                               <%% if (entity.capacities_on_multiple_prices) { %>
                               <div class="formrow">
                                   <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
@@ -161,7 +169,11 @@
                               <div class="formrow">
                                 <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
                                 <input type="checkbox" name="price_3_affects_capacity" value="true" id="price_3_affects_capacity" <%% if (entity && entity.price_3_affects_capacity) { %>checked="checked"<%%}%>/>                            
-                              </div>                               
+                              </div>
+                              <div class="formrow">
+                                <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
+                                <input type="text" maxlength="80" id="price_3_step_tickets" name="price_3_step_tickets" class="fieldcontrol" value="<%%=entity.price_3_step_tickets%>"/>
+                              </div>
                               <%% if (entity.capacities_on_multiple_prices) { %>
                               <div class="formrow">
                                   <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
