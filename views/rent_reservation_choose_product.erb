@@ -1,5 +1,5 @@
         <!-- PAGE WITH SIDEBAR -->
-        <section class="page-section with-sidebar sub-page">
+        <section id="page_choose_product" class="page-section with-sidebar sub-page">
             <div class="container">
                 <div class="row">
                     <!-- CONTENT -->
@@ -14,15 +14,14 @@
                     <!-- /CONTENT -->
 
                     <!-- SIDEBAR -->
-                    <aside class="col-md-3 sidebar" id="sidebar">
+                    <aside class="col-md-3 sidebar" id="sidebar" style="display: none">
                         <!-- widget -->
                         <div class="widget shadow widget-find-car">
                             <h4 class="widget-title">Producto</h4>
                             <div class="widget-content">
                                 <!-- Search form -->
                                 <div class="form-search light">
-                                    <form action="#">
-
+                                    <form action="<%=format_url_with_language('/reserva/producto')%>" method="POST">
                                         <div class="form-group has-icon has-label">
                                             <label for="formSearchUpLocation3">Lugar entrega</label>
                                                 <select name="pickup_place" id="pickup_place"
@@ -80,7 +79,7 @@
                         </div>
                         <!-- /widget -->
                         <!-- widget helping center -->
-                        <div class="widget shadow widget-helping-center" style="display:none">
+                        <div class="widget shadow widget-helping-center">
                             <h4 class="widget-title">Atención al cliente</h4>
                             <div class="widget-content">
                                 <p>Vivamus eget nibh. Etiam cursus leo vel metus. Nulla facilisi. Aenean nec eros.</p>
@@ -104,7 +103,7 @@
 
             <div class="thumbnail no-border no-padding thumbnail-car-card clearfix">
                <div class="media">
-                  <img src="<%%=product.photo%>" style="height:202px" alt=""/>
+                  <img src="<%%=product.photo%>" style="min-height:202px" alt=""/>
                </div>
                <div class="caption">
                   <h4 class="caption-title"><%%=product.name%></h4>
@@ -112,11 +111,11 @@
                   <div class="caption-text"><%%=product.short_description%></div>
                   <table class="table">
                      <tr>
-                       <td><i class="fa fa-car"></i> 2013</td>
-                       <td><i class="fa fa-dashboard"></i> Diesel</td>
-                       <td><i class="fa fa-cog"></i> Auto</td>
-                       <td><i class="fa fa-road"></i> 25000</td>
+                       <%% if (product.availability) { %>
                        <td class="buttons"><a class="btn btn-theme btn-choose-product" href="#" data-product="<%%=product.code%>">Seleccionar</a></td>
+                       <%% } else { %>
+                       <td class="not-available"><%=t.front_end_reservation.not_available%></td> 
+                       <%% } %>
                      </tr>
                   </table>
                 </div>

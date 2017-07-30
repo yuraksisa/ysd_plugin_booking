@@ -1,5 +1,5 @@
 require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
-        'ysdtemplate', 'jquery.formparams',
+        'ysdtemplate', 'jquery.formparams','jquery.form',
 	     'jquery.validate', 'jquery.ui', 'jquery.ui.datepicker-es', 
 	     'jquery.ui.datepicker.validation', 'datejs',
 	     'bootstrap', 'bootstrap.select'], 
@@ -10,6 +10,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     shopping_cart: null,
     products: null,
     extras: null,
+    sales_process: null,
 
     // ------------ Product information detail ------------------------
 
@@ -17,15 +18,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     	if (this.shopping_cart && this.shopping_cart.items.length > 0)
     	{	
-    	    var productCode = this.shopping_cart.items[0].item_id;
-    		if (this.products == null) {
-    			return null;
-    		}
-    		for (var idx=0;idx<=this.products.length;idx++) {
-    			if (this.products[idx].code == productCode) {
-    				return this.products[idx];
-    			}
-    		}
+    	   var productCode = this.shopping_cart.items[0].item_id;
+    		 if (this.products == null) {
+    		 	 return null;
+    	 	 }
+    		 for (var idx=0;idx<=this.products.length;idx++) {
+    		 	 if (this.products[idx].code == productCode) {
+    			 	 return this.products[idx];
+    			 }
+    		 }
 		  }
 
     	return null;
@@ -40,7 +41,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       if (this.shopping_cart != null) {
           for (var idx=0;idx<this.shopping_cart.extras.length;idx++) {
-              shoppingCartExtras[this.shopping_cart.extras[idx].extra_id] = this.shopping_cart.extras[idx].quantity;
+            shoppingCartExtras[this.shopping_cart.extras[idx].extra_id] = this.shopping_cart.extras[idx].quantity;
           }
       }
 
@@ -54,12 +55,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
        $.ajax({
                type: 'GET',
+               dataType : 'json',
+               contentType : 'application/json; charset=utf-8',          
                url : '/api/booking/frontend/shopping-cart',
                success: function(data, textStatus, jqXHR) {
                  
                  model.shopping_cart = data.shopping_cart;
                  model.products = data.products;
                  model.extras = data.extras;
+                 model.sales_process = data.sales_process;
 
                  view.updateShoppingCart();
 
@@ -68,6 +72,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
                  alert('Error cargando carrito');
 
+               },
+               complete: function(jqXHR, textStatus) {
+                 $('#full_loader').hide();
+                 $('#content').show();
+                 $('#sidebar').show();
                }
           });
 
@@ -78,8 +87,8 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     buildSetExtraDataParams: function(extraCode, quantity) {
 
       var data = {
-           extra: extraCode,
-           quantity: quantity
+        extra: extraCode,
+        quantity: quantity
       };
 
       var jsonData = encodeURIComponent(JSON.stringify(data));
@@ -109,7 +118,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
             alert('Error actualizando extra');
 
-        }
+        },
+        beforeSend: function(jqXHR) {
+            $('#full_loader').show();
+        },
+        complete: function(jqXHR, textStatus) {
+            $('#full_loader').hide();
+        }   
       });
 
 
@@ -149,7 +164,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
             alert('Error eliminando extra');
 
-        }
+        },
+        beforeSend: function(jqXHR) {
+            $('#full_loader').show();
+        },
+        complete: function(jqXHR, textStatus) {
+            $('#full_loader').hide();
+        }   
       });
 
     },
@@ -158,9 +179,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     buildCheckoutDataParams: function() {
 
-        var reservation = $('form[name=reservation_form]').formParams(false);
-        reservation.comments = $('#comments').val();
-        reservation.payment = $('#accordion a[aria-expanded=true]').attr('data-payment-method');
+      var reservation = $('form[name=reservation_form]').formParams(false);
+      reservation.comments = $('#comments').val();
+      reservation.payment = $('#accordion a').not('.collapsed').attr('data-payment-method');
 
         var reservationJSON = JSON.stringify(reservation);
 
@@ -179,9 +200,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             success: function(data, textStatus, jqXHR) {
                 var payNow = data.pay_now;
                 var bookingId = data.free_access_id;
-                if (payNow) {
-                    $.form('/reserva/pagar',{id: bookingId,
-                        payment: 'deposit', payment_method_id: 'paypal_standard'},'POST').submit();
+                var payment_method_id = data.payment_method_id;
+                // remove the shopping cart id from the session
+                model.deleteShoppingCartFreeAccessId();
+                model.putBookingFreeAccessId(bookingId);                
+                if (payNow && payment_method_id != null && payment_method_id != '') {
+                    $.form(commonServices.URL_PREFIX + '/reserva/pagar',{id: bookingId,
+                        payment: 'deposit', payment_method_id: payment_method_id},'POST').submit();
                 }
                 else {
                     window.location.href = '/reserva/' + bookingId;
@@ -189,6 +214,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             },
             error: function(data, textStatus, jqXHR) {
                 alert('Lo sentimos. Se ha producido un error registrando la reserva');
+            },
+            beforeSend: function(jqXHR) {
+                $('#full_loader').show();
+            },
+            complete: function(jqXHR, textStatus) {
+                $('#full_loader').hide();
             }
         });
 
@@ -221,6 +252,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
   	init: function() {
   	  this.setupEvents();
   	  this.setupValidation();
+      $('#full_loader').show();
   	  model.loadShoppingCart();
   	},
 
@@ -285,7 +317,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
                     'customer_name': '<%=t.new_booking.customer_name.required%>',
                     'customer_surname' : '<%=t.new_booking.customer_surname.required%>',
-                    'customer_email]' : {
+                    'customer_email' : {
                         required: '<%=t.new_booking.customer_email.required%>',
                         email: '<%=t.new_booking.customer_email.format%>'
                     },
@@ -328,12 +360,15 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     updateShoppingCart: function() { // Updates the shopping cart
     	
     	// Show the product information
-	  	var productInfo = tmpl('script_product_detail')({product: model.getShoppingCartProduct(),
+	  	var productInfo = tmpl('script_product_detail')(
+                    {product: model.getShoppingCartProduct(),
 										 shopping_cart: model.shopping_cart});
 		  $('#selected_product').html(productInfo);
 
       // Update the summary
       this.updateShoppingCartSummary();
+      this.updateExtras();
+      this.updatePayment();
 
     },
 
@@ -341,7 +376,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
        var reservationDetail = tmpl('script_reservation_summary')({shopping_cart: model.shopping_cart});
        $('#reservation_detail').html(reservationDetail);
-       this.updateExtras();
 
     },
 
@@ -373,56 +407,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             controller.extraQuantityChanged(extraCode, extraQuantity);
         });
 
+    },
+
+    updatePayment: function() { // Update the payment 
+      var paymentInfo = tmpl('script_payment_detail')(
+                    {sales_process: model.sales_process});
+      $('#payment_detail').html(paymentInfo);
     }
 
   };
 
   view.init();
 
-           jQuery(function($) {
-             $.extend({
-               form: function(url, data, method) {
-                   if (method == null) method = 'POST';
-                   if (data == null) data = {};
+  // TEMPORARY : TODO : Refactor in JS Module
 
-                   var form = $('<form>').attr({
-                       method: method,
-                       action: url
-                   }).css({
-                       display: 'none'
-                   });
-
-                   var addData = function(name, data) {
-                       if ($.isArray(data)) {
-                           for (var i = 0; i < data.length; i++) {
-                               var value = data[i];
-                               addData(name + '[]', value);
-                           }
-                       } else if (typeof data === 'object') {
-                           for (var key in data) {
-                               if (data.hasOwnProperty(key)) {
-                                   addData(name + '[' + key + ']', data[key]);
-                               }
-                           }
-                       } else if (data != null) {
-                           form.append($('<input>').attr({
-                               type: 'hidden',
-                               name: String(name),
-                               value: String(data)
-                           }));
-                       }
-                   };
-
-                   for (var key in data) {
-                       if (data.hasOwnProperty(key)) {
-                           addData(key, data[key]);
-                       }
-                   }
-
-                   return form.appendTo('body');
-               }
-             });
-           });
-
+ 
 
 });

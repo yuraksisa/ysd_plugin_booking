@@ -7,19 +7,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 	     function($, RemoteDataSource, SelectSelector) {
 
   selectorModel = {
-
-
+    minDays   : <%=booking_min_days%>,
   };
 
   selectorController = {
 
       dateFromChanged: function() {
 
-          var dateFrom = $('#date_from').datepicker('getDate');
-          var dateTo = $('#date_from').datepicker('getDate');
-          dateTo.setDate(dateTo.getDate() + <%=booking_min_days%>)
-          $('#date_to').datepicker('setDate', dateTo );
-          $('#date_to').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+      var dateFrom = $('#date_from').datepicker('getDate');
+      var dateTo = $('#date_from').datepicker('getDate');
+      dateTo.setDate(dateTo.getDate() + selectorModel.minDays)
+      $('#date_to').datepicker('setDate', dateTo );
+      $('#date_to').datepicker('option', 'minDate', dateFrom.add(selectorModel.minDays).days());
 
       }
 
@@ -37,27 +36,28 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
   	},
 
   	setupDateControls: function() {
-
-  	  $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+      
+      $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
       var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
 
       $('#date_from').datepicker({numberOfMonths:1, 
-      		minDate: new Date(), 
-         	maxDate: new Date().add(365).days(), 
-         	dateFormat: 'dd/mm/yy',
-         	firstDay: 1}, 
-         	locale);
+          minDate: new Date(), 
+          maxDate: new Date().add(365).days(), 
+          dateFormat: 'dd/mm/yy',
+          firstDay: 1}, 
+          locale);
       $('#date_from').datepicker('setDate', '+0'); 
 
       $('#date_to').datepicker({numberOfMonths:1, 
-      		minDate: new Date().add(<%=booking_min_days%>).days(),
+          minDate: new Date().add(selectorModel.minDays).days(),
             maxDate: new Date().add(365).days(), 
             dateFormat: 'dd/mm/yy'}, locale);
-      $('#date_to').datepicker('setDate', '+<%=booking_min_days%>');
+      $('#date_to').datepicker('setDate', '+'+selectorModel.minDays);
 
       $('#date_from').bind('change', function() {
-          selectorController.dateFromChanged();
-      });
+           selectorController.dateFromChanged();
+         });
+
   	},
 
   	loadPickupReturnPlaces: function() {

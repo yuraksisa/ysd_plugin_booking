@@ -3,7 +3,7 @@
             <div class="container">
                 <div class="row">
                     <!-- CONTENT -->
-                    <div class="col-md-9 content" id="content">
+                    <div class="col-md-9 content" id="content" style="display: none">
 
                         <!-- Product -->
                         <div id="selected_product">
@@ -33,6 +33,7 @@
 
                         <h3 class="block-title alt"><i class="fa fa-angle-down"></i>Información del cliente</h3>
                         <form id="form-reservation" name="reservation_form" class="form-delivery" method="post">
+                            <input type="hidden" name="customer_language" value="<%=session[:locale]%>"/>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -87,52 +88,8 @@
                         </form>
 
                         <!-- Payment -->
-                        <h3 class="block-title alt"><i class="fa fa-angle-down"></i>Pago</h3>
-                        <div class="alert alert-success">
-                          <p>Para confirmar la reserva se requiere una paga y señal del 20% del importe total de la reserva</p>
-                        </div>
-                        <div class="panel-group payments-options" id="accordion" role="tablist" aria-multiselectable="true">
-                          <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingThree">
-                              <h4 class="panel-title">
-                                <a class="collapsed" data-payment-method="none" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="false" aria-controls="collapseTwo">
-                                  <span class="dot"></span> Sólo solicitud de reserva
-                                </a>
-                              </h4>
-                            </div>
-                            <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2"></div>
-                          </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingThree">
-                                    <h4 class="panel-title">
-                                        <a class="collapsed" data-payment-method="credit_card" data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="false" aria-controls="collapseThree">
-                                            <span class="dot"></span> Tarjeta de crédito (20% de paga y señal para confirmar reserva)
-                                        </a>
-                                <span class="overflowed pull-right">
-                                    <!--img src="assets/img/preview/payments/mastercard-2.jpg" alt=""/>
-                                    <img src="assets/img/preview/payments/visa-2.jpg" alt=""/>
-                                    <img src="assets/img/preview/payments/american-express-2.jpg" alt=""/>
-                                    <img src="assets/img/preview/payments/discovery-2.jpg" alt=""/>
-                                    <img src="assets/img/preview/payments/eheck-2.jpg" alt=""/-->
-                                </span>
-                                    </h4>
-                                </div>
-                                <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3"></div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="heading4">
-                                    <h4 class="panel-title">
-                                        <a class="collapsed" data-payment-method="paypal_standard" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="false" aria-controls="collapse4">
-                                            <span class="dot"></span> PayPal (20% de paga y señal para confirmar reserva)
-                                        </a>
-                                        <span class="overflowed pull-right">
-                                           <!--img src="assets/img/preview/payments/paypal-2.jpg" alt=""/-->
-                                        </span>
-                                    </h4>
-                                </div>
-                                <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4"></div>
-                            </div>
-                        </div>
+                        <div id="payment_detail">
+                        </div>  
 
                         <!-- Reservation buttons -->
 
@@ -153,7 +110,7 @@
                     <!-- /CONTENT -->
 
                     <!-- SIDEBAR -->
-                    <aside class="col-md-3 sidebar" id="sidebar">
+                    <aside class="col-md-3 sidebar" id="sidebar" style="display: none">
                         <!-- widget detail reservation -->
                         <div class="widget shadow widget-details-reservation">
                             <div id="reservation_detail">
@@ -256,7 +213,7 @@
        <h5 class="widget-title-sub">Entrega</h5>
        <div class="media">
           <span class="media-object pull-left"><i class="fa fa-calendar"></i></span>
-          <div class="media-body"><p><%%=shopping_cart.date_from.toString('d MMMM yyyy')%> / <%%=shopping_cart.time_from%></p></div>
+          <div class="media-body"><p><%%=new Date(shopping_cart.date_from).toString('d MMMM yyyy')%> / <%%=shopping_cart.time_from%></p></div>
        </div>
        <div class="media">
           <span class="media-object pull-left"><i class="fa fa-location-arrow"></i></span>
@@ -265,7 +222,7 @@
        <h5 class="widget-title-sub">Recogida</h5>
        <div class="media">
          <span class="media-object pull-left"><i class="fa fa-calendar"></i></span>
-         <div class="media-body"><p><%%=shopping_cart.date_to.toString('d MMMM yyyy')%> / <%%=shopping_cart.time_to%></p></div>
+         <div class="media-body"><p><%%=new Date(shopping_cart.date_to).toString('d MMMM yyyy')%> / <%%=shopping_cart.time_to%></p></div>
        </div>
        <div class="media">
          <span class="media-object pull-left"><i class="fa fa-location-arrow"></i></span>
@@ -293,9 +250,8 @@
             <%% } %>
 
             <%% if (shopping_cart.return_place_cost > 0) { %>
-            <li>Suplemento lugar devolución: <span class="pull-right"><%%=new Number(hopping_cart.return_place_cost).toFixed(2)%>€</span></li>
+            <li>Suplemento lugar devolución: <span class="pull-right"><%%=new Number(shopping_cart.return_place_cost).toFixed(2)%>€</span></li>
             <%% } %>
-
 
             <li>TOTAL: <span class="pull-right"><%%=new Number(shopping_cart.total_cost).toFixed(2)%>€</span></li>
           </ul>
@@ -306,4 +262,57 @@
        </div>
     </div>
 </script>
+
+<!-- Script payment -->
+<script type="text/tmpl" id="script_payment_detail">
+                        <h3 class="block-title alt"><i class="fa fa-angle-down"></i>Pago</h3>
+                        <div class="alert alert-success">
+                          <p>Para confirmar la reserva se requiere una paga y señal del 20% del importe total de la reserva</p>
+                        </div>
+                        <div class="panel-group payments-options" id="accordion" role="tablist" aria-multiselectable="true">
+                          <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingThree">
+                              <h4 class="panel-title">
+                                <a data-payment-method="none" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="false" aria-controls="collapseTwo">
+                                  <span class="dot"></span> Sólo solicitud de reserva
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="collapse2" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2"></div>
+                          </div>
+                          <%% if (sales_process.can_pay) { %>
+                          <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingThree">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" data-payment-method="redsys256" data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="false" aria-controls="collapseThree">
+                                            <span class="dot"></span> Tarjeta de crédito (20% de paga y señal para confirmar reserva)
+                                        </a>
+                                <span class="overflowed pull-right">
+                                    <!--img src="assets/img/preview/payments/mastercard-2.jpg" alt=""/>
+                                    <img src="assets/img/preview/payments/visa-2.jpg" alt=""/>
+                                    <img src="assets/img/preview/payments/american-express-2.jpg" alt=""/>
+                                    <img src="assets/img/preview/payments/discovery-2.jpg" alt=""/>
+                                    <img src="assets/img/preview/payments/eheck-2.jpg" alt=""/-->
+                                </span>
+                                    </h4>
+                                </div>
+                                <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3"></div>
+                          </div>
+                          <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="heading4">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" data-payment-method="paypal_standard" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                                            <span class="dot"></span> PayPal (20% de paga y señal para confirmar reserva)
+                                        </a>
+                                        <span class="overflowed pull-right">
+                                           <!--img src="assets/img/preview/payments/paypal-2.jpg" alt=""/-->
+                                        </span>
+                                    </h4>
+                                </div>
+                                <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4"></div>
+                          </div>
+                          <%% } %>
+                        </div>
+</script> 
+
 

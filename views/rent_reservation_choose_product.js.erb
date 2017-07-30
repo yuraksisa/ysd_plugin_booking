@@ -7,15 +7,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
   model = {
 
+    minDays: <%=booking_min_days%>,
     data : null,
     shopping_cart: null,
     products: null,
+    sales_process: null,
     date_from : null,
     time_from : null,
     date_to : null,
     time_to : null,
     pickup_place: null,
     return_place: null,
+    driver_under_age: null,
     loading : true, // control the loading process
     loadedPickupPlaces: false,
     loadedReturnPlaces: false,
@@ -25,58 +28,62 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     // -------------- Extract data -----------------------------
 
     getUrlVars : function() {
-       var vars = [], hash;
-       var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-       for (var i = 0; i < hashes.length; i++) {
-           hash = hashes[i].split('=');
-           vars.push(hash[0]);
-           vars[hash[0]] = hash[1];
-       }
-       return vars;
-    },
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for(var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+      return vars;
+    }, 
 
     extractVariables: function() { // Load variables from the request
 
-          var url_vars = this.getUrlVars();
-
-          this.date_from = decodeURIComponent(url_vars['date_from']);
-          if (this.date_from == null || this.date_from == 'undefined') {
-              this.date_from = '<%=@date_from%>';
-          }
-          this.time_from = decodeURIComponent(url_vars['time_from']);
-          if (this.time_from == null || this.time_from == 'undefined') {
-              this.time_from = '<%=@time_from%>'
-          }
-          this.date_to = decodeURIComponent(url_vars['date_to']);
-          if (this.date_to == null || this.date_to == 'undefined') {
-              this.date_to = '<%= @date_to %>';
-          }
-          this.time_to = decodeURIComponent(url_vars['time_to']);
-          if (this.time_to == null || this.time_to == 'undefined') {
-              this.time_to = '<%= @time_to %>';
-          }
-          this.pickup_place = decodeURIComponent(url_vars['pickup_place']);
-          if (this.pickup_place == null || this.pickup_place == 'undefined') {
-              this.pickup_place = '<%= @pickup_place %>';
-          }
-          this.return_place = decodeURIComponent(url_vars['return_place']);
-          if (this.return_place == null || this.return_place == 'undefined') {
-              this.return_place = '<%= @return_place %>';
-          }
+      var url_vars = this.getUrlVars();
+          
+      this.date_from = decodeURIComponent(url_vars['date_from']);        
+      if (this.date_from == null || this.date_from == 'undefined') {
+        this.date_from = '<%=@date_from%>';
+      }
+      this.time_from = decodeURIComponent(url_vars['time_from']);
+      if (this.time_from == null || this.time_from == 'undefined') {
+        this.time_from = '<%=@time_from%>'
+      }
+      this.date_to = decodeURIComponent(url_vars['date_to']);
+      if (this.date_to == null || this.date_to == 'undefined') {
+        this.date_to = '<%= @date_to %>';
+      }
+      this.time_to = decodeURIComponent(url_vars['time_to']);
+      if (this.time_to == null || this.time_to == 'undefined') {
+        this.time_to = '<%= @time_to %>';
+      }
+      this.pickup_place = decodeURIComponent(url_vars['pickup_place']);
+      if (this.pickup_place == null || this.pickup_place == 'undefined') {
+        this.pickup_place = '<%= @pickup_place %>';
+      }
+      this.return_place = decodeURIComponent(url_vars['return_place']);
+      if (this.return_place == null || this.return_place == 'undefined') {
+        this.return_place = '<%= @return_place %>';
+      }
+      this.driver_under_age = decodeURIComponent(url_vars['driver_under_age']);
+      if (this.driver_under_age == null || this.driver_under_age == 'undefined') {
+        this.driver_under_age = '<%= (@driver_under_age ? "on" : "") || "on" %>';
+      }
     },
 
     // --------------- Miscelanea -------------------------------------
 
-    checkLoading: function() { // check loading process
+    checkLoading: function() {
 
-          if (this.loadedPickupPlaces &&
-              this.loadedReturnPlaces &&
-              this.loadedPickupTimes &&
-              this.loadedReturnTimes &&
-              this.loading) {
-              this.loading = false;
-              this.loadShoppingCart();
-          }
+       if (this.loadedPickupPlaces &&
+           this.loadedReturnPlaces &&
+           this.loadedPickupTimes &&
+           this.loadedReturnTimes &&
+           this.loading) {
+         this.loading = false;
+         this.loadShoppingCart();
+       }
 
     },
 
@@ -84,27 +91,29 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     isShoppingCartData: function() {
 
-        return (this.date_from != 'undefined' && this.date_from != '' &&
-                this.time_from != 'undefined' && this.time_from != '' &&
-                this.date_to != 'undefined' && this.date_to != '' &&
-                this.time_to != 'undefined' && this.time_to != '' &&
-                this.pickup_place != 'undefined' && this.pickup_place != '' &&
-                this.return_place != 'undefined' && this.return_place != '');
-
+      return (this.date_from != 'undefined' && this.date_from != '' &&
+              this.time_from != 'undefined' && this.time_from != '' &&
+              this.date_to != 'undefined' && this.date_to != '' &&
+              this.time_to != 'undefined' && this.time_to != '' &&
+              this.pickup_place != 'undefined' && this.pickup_place != '' &&
+              this.return_place != 'undefined' && this.return_place != '' &&
+              this.driver_under_age != 'undefined');
+    
     },
 
     buildLoadShoppingCartDataParams: function() { /* Build create/update shopping cart data */
 
-        var data = {
-           date_from : this.date_from,
-           time_from : this.time_from,
-           date_to : this.date_to,
-           time_to : this.time_to,
-           pickup_place: this.pickup_place,
-           return_place: this.return_place
-        };
+      var data = {
+        date_from : this.date_from,
+        time_from : this.time_from,
+        date_to : this.date_to,
+        time_to : this.time_to,
+        pickup_place: this.pickup_place,
+        return_place: this.return_place,
+        driver_under_age: this.driver_under_age
+      };
 
-        var jsonData = encodeURIComponent(JSON.stringify(data));
+      var jsonData = encodeURIComponent(JSON.stringify(data));
 
         return jsonData;
 
@@ -127,7 +136,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 },
                 error: function(data, textStatus, jqXHR) {
                     alert('Error obteniendo la información');
+                },
+                complete: function(jqXHR, textStatus) {
+                    $('#full_loader').hide();
+                    $('#sidebar').show();
                 }
+
             });
         }
         else { // retrieve the shopping cart
@@ -142,6 +156,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 },
                 error: function(data, textStatus, jqXHR) {
                     alert('Error obteniendo la información');
+                },
+                complete: function(jqXHR, textStatus) {
+                   $('#full_loader').hide();
+                   $('#sidebar').show();
                 }
             });
         }
@@ -151,6 +169,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     shoppingCartResultProcess: function(data, textStatus, jqXHR) {
         model.shopping_cart = data.shopping_cart;
         model.products = data.products;
+        model.sales_process = data.sales_process;
         view.showShoppingCart();
     },
 
@@ -185,6 +204,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                error: function(data, textStatus, jqXHR) {
 
                   alert('Error seleccionando producto');
+               },
+               beforeSend: function(jqXHR) {
+                  $('#full_loader').show();
+               },
+               complete: function(jqXHR, textStatus) {
+                 $('#full_loader').hide();
                }
           });
 
@@ -204,9 +229,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       var dateFrom = $('#date_from').datepicker('getDate');
       var dateTo = $('#date_from').datepicker('getDate');
-      dateTo.setDate(dateTo.getDate() + <%=booking_min_days%>)
+      dateTo.setDate(dateTo.getDate() + model.minDays)
       $('#date_to').datepicker('setDate', dateTo );
-      $('#date_to').datepicker('option', 'minDate', dateFrom.add(<%=booking_min_days%>).days());
+      $('#date_to').datepicker('option', 'minDate', dateFrom.add(model.minDays).days());
 
     }
 
@@ -218,10 +243,11 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
         model.extractVariables();
 
-        // Load the frontend controls
-        this.setupDateControls();
-        this.loadPickupReturnPlaces();
-        this.loadPickupReturnTime();
+      // Load the frontend controls
+      this.setupDateControls();
+      $('#full_loader').show();
+      this.loadPickupReturnPlaces();
+      this.loadPickupReturnTime();
 
   	},
 
@@ -240,10 +266,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       $('#date_from').datepicker('setDate', '+0'); 
 
       $('#date_to').datepicker({numberOfMonths:1, 
-          minDate: new Date().add(<%=booking_min_days%>).days(),
+          minDate: new Date().add(model.minDays).days(),
             maxDate: new Date().add(365).days(), 
             dateFormat: 'dd/mm/yy'}, locale);
-      $('#date_to').datepicker('setDate', '+<%=booking_min_days%>');
+      $('#date_to').datepicker('setDate', '+'+model.minDays);
 
       $('#date_from').bind('change', function() {
            controller.dateFromChanged();
