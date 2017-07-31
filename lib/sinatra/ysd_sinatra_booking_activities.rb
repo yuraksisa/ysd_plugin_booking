@@ -23,7 +23,7 @@ module Sinatra
             if @activity_date = ::Yito::Model::Booking::ActivityDate.get(@activity_date_id)
               @occupation = @activity.occupation(@activity_date.date_from, @activity_date.time_from)
             end
-          elsif session[:date] or session[:turn] #DateTime.parse(session[:date]).to_date
+          elsif session[:date] or session[:turn]
             @date = session[:date] ? Date.strptime(session[:date],'%Y-%m-%d') : nil
             if session[:turn] && !session[:turn].to_s.empty?
               @time = session[:turn]
