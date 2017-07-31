@@ -112,11 +112,16 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
 
     cyclicController = {
         onDateChanged: function() {
+            /*
             cyclicModel.date = $('#datepicker').datepicker('getDate');
-            cyclicModel.dateShortLiteral = cyclicModel.date.toString('yyyy-MM-dd');
+            cyclicModel.dateShortLiteral = cyclicModel.date.toISOString().substring(0,10); //cyclicModel.date.toString('yyyy-MM-dd');
             cyclicModel.dateLiteral = cyclicModel.date.toString('dd MMMM, yyyy');
             cyclicModel.turn = null;
-            $('input[name=date]').val(cyclicModel.dateShortLiteral);
+            $('input[name=date]').val(cyclicModel.selectedDateLiteral);
+            */
+            var selectedDate = $('#datepicker').datepicker('getDate');
+            var selectedDateLiteral = selectedDate.toISOString().substring(0,10);
+            $('input[name=date]').val(selectedDateLiteral);
             $('input[name=turn]').val('');
             $('input[name=date]')[0].form.submit();
         },
@@ -208,8 +213,12 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
 
             <% if defined?@date and !@date.nil? %>
             cyclicModel.date = new Date("<%=@date%>");
-            cyclicModel.dateShortLiteral = cyclicModel.date.toString('yyyy-MM-dd');
-            cyclicModel.dateLiteral = cyclicModel.date.toString('dd MMMM, yyyy');
+            cyclicModel.dateShortLiteral = '<%=@date%>';
+            <% if @date.is_a?(String) %>
+            cyclicModel.dateLiteral = "<%= l(DateTime.strptime(@date,'%Y-%m-%d'),'%d %B %Y') %>";
+            <% else %>
+            cyclicModel.dateLiteral = "<%= l(@date,'%d %B %Y') %>";
+            <% end %>
             $('input[name=date]').val(cyclicModel.dateShortLiteral);
             $('input[name=time]').val(cyclicModel.turn);
             <% end %>
