@@ -112,15 +112,8 @@ require(["jquery",'ysdtemplate', "YSDMemoryDataSource", "YSDSelectSelector", "jq
 
     cyclicController = {
         onDateChanged: function() {
-            /*
-            cyclicModel.date = $('#datepicker').datepicker('getDate');
-            cyclicModel.dateShortLiteral = cyclicModel.date.toISOString().substring(0,10); //cyclicModel.date.toString('yyyy-MM-dd');
-            cyclicModel.dateLiteral = cyclicModel.date.toString('dd MMMM, yyyy');
-            cyclicModel.turn = null;
-            $('input[name=date]').val(cyclicModel.selectedDateLiteral);
-            */
-            var selectedDate = $('#datepicker').datepicker('getDate');
-            var selectedDateLiteral = selectedDate.toISOString().substring(0,10);
+            var x=$('#datepicker').val().split('/');
+            var selectedDateLiteral = x[2]+'-'+x[1]+'-'+x[0];
             $('input[name=date]').val(selectedDateLiteral);
             $('input[name=turn]').val('');
             $('input[name=date]')[0].form.submit();
