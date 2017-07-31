@@ -201,12 +201,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 var payNow = data.pay_now;
                 var bookingId = data.free_access_id;
                 var payment_method_id = data.payment_method_id;
-                // remove the shopping cart id from the session
-                model.deleteShoppingCartFreeAccessId();
-                model.putBookingFreeAccessId(bookingId);                
                 if (payNow && payment_method_id != null && payment_method_id != '') {
-                    $.form(commonServices.URL_PREFIX + '/reserva/pagar',{id: bookingId,
-                        payment: 'deposit', payment_method_id: payment_method_id},'POST').submit();
+                    $.form('/reserva/pagar',{id: bookingId,
+                        payment: 'deposit', payment_method_id: payment_method_id},
+                        'POST').submit();
                 }
                 else {
                     window.location.href = '/reserva/' + bookingId;

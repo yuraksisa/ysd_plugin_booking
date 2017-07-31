@@ -317,10 +317,12 @@ module Sinatra
 
           # TODO : Validate it's a valid product
 
+          p "shopping cart : #{session[:shopping_cart_renting_id]}"
+
           # Retrieve the shopping cart
           if params[:free_access_id]
             shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
-          elsif session.has_key?('shopping_cart_renting_id')
+          elsif session.has_key?(:shopping_cart_renting_id)
             shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
           end
 
@@ -356,10 +358,12 @@ module Sinatra
 
           # TODO : Validate it's a valid extra
 
+          p "shopping cart : #{session[:shopping_cart_renting_id]}"
+
           # Retrieve the shopping cart
           shopping_cart = if params[:free_access_id]
                             ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
-                          elsif session.has_key?('shopping_cart_renting_id')
+                          elsif session.has_key?(:shopping_cart_renting_id)
                             ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
                           end
 
@@ -396,10 +400,12 @@ module Sinatra
 
           # TODO : Validate it's a valid extra and it's contained in the shopping cart
 
+          p "shopping cart : #{session[:shopping_cart_renting_id]}"
+
           # Retrieve the shopping cart
           shopping_cart = if params[:free_access_id]
                             ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
-                          elsif session.has_key?('shopping_cart_renting_id')
+                          elsif session.has_key?(:shopping_cart_renting_id)
                             ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
                           end
 
@@ -427,10 +433,12 @@ module Sinatra
           request.body.rewind
           request_data = JSON.parse(URI.unescape(request.body.read))
 
+          p "shopping cart : #{session[:shopping_cart_renting_id]}"
+
           # Retrieve the shopping cart
           shopping_cart = if params[:free_access_id]
                             ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
-                          elsif session.has_key?('shopping_cart_renting_id')
+                          elsif session.has_key?(:shopping_cart_renting_id)
                             ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
                           end
 
@@ -546,10 +554,12 @@ module Sinatra
 
           shopping_cart = nil
 
+          p "shopping cart : #{session[:shopping_cart_renting_id]}"
+
           # Retrieve the shopping cart
           if params[:free_access_id]
             shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
-          elsif session.has_key?('shopping_cart_renting_id')
+          elsif session.has_key?(:shopping_cart_renting_id)
             shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
           end
 
@@ -602,11 +612,13 @@ module Sinatra
             halt
           end
 
+          p "shopping cart : #{session[:shopping_cart_renting_id]}"
+
           # Retrieve the shopping cart
           shopping_cart = nil
           if params[:free_access_id]
             shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
-          elsif session.has_key?('shopping_cart_renting_id')
+          elsif session.has_key?(:shopping_cart_renting_id)
             shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get(session[:shopping_cart_renting_id])
           end
 
@@ -625,6 +637,7 @@ module Sinatra
                 number_of_adults: number_of_adults, number_of_children: number_of_children,
                 driver_under_age: driver_under_age)
             session[:shopping_cart_renting_id] = shopping_cart.id
+            p "storing shopping cart : #{shopping_cart.id}"
           end
 
           # Return the shopping cart
@@ -682,7 +695,7 @@ module Sinatra
                 BookingDataSystem::Booking.relationships.named?(key)
           end
           booking_data.symbolize_keys!
-          unless booking_data.has_key?('customer_language')
+          unless booking_data.has_key?(:customer_language)
             booking_data[:customer_language] = session[:locale] || 'es'
           end
 
