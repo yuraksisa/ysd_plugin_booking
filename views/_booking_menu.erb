@@ -132,26 +132,33 @@
       </ul>
    </li>
    <% end %>
-   <!-- Configuration menu item -->
-   <li class='<%if ['/admin/booking/config/general',
-                    '/admin/booking/config/templates',
-                    '/admin/booking/booking-place-defs',
-                    '/admin/booking/booking-places',
-                    '/admin/calendar/timetables',
-                    '/admin/rates/season-defs',
-                    '/admin/rates/seasons',
-                    '/admin/rates/factor-defs',
-                    '/admin/rates/factors',
-                    '/admin/rates/adjust-prices',
-                    '/admin/rates/promotion-codes',
-                    '/admin/rates/discounts',
-                    '/admin'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.configuration%></a>
+    <% if defined?YsdPluginTryton %>
+    <li class='<%if ['/admin/tryton/setup',
+                     '/admin/integration/data',
+                     '/admin/integration/errors',
+                     '/admin/tryton/pending-charges'].index(request.path)%>active <%end%>has-sub'><a href='#'>Tryton</a>
+      <ul>
+        <li><a href='/admin/tryton/setup'>Configuración</a></li>
+        <li><a href='/admin/tryton/pending-charges'>Depósitos pendientes</a></li>
+        <li><a href='/admin/integration/data'>Datos traspasados</a></li>
+        <li><a href='/admin/integration/errors'>Errores de traspaso</a></li>
+      </ul>
+    </li>
+    <% end %>
+    <li class='<%if [
+    '/admin/booking/config/general',
+    '/admin/postal/email-settings',
+    '/admin/booking/config/templates',
+    '/admin/booking/booking-place-defs',
+    '/admin/calendar/timetables',
+    '/admin/rates/seasons','/admin/booking/booking-places',
+    '/admin/rates/season-defs','/admin/rates/factor-defs',
+    '/admin/rates/promotion-codes','/admin'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.configuration%></a>
       <ul>
         <li><a href='/admin/booking/config/general'><%=t.booking_console_configuration.general_configuration%></a></li>
         <li><a href='/admin/booking/config/templates'><%=t.booking_console_configuration.templates%></a></li>
-        <li class='<%if ['/admin/booking/booking-place-defs',
-                         '/admin/booking/booking-places',
-                         '/admin/calendar/timetables'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.pickup_return%></a>
+        <li><a href='/admin/postal/email-settings'><%=t.booking_console_configuration.email_settings%></a></li>
+        <li class='<%if ['/admin/booking/booking-place-defs','/admin/calendar/timetables'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.pickup_return%></a>
           <ul>
              <li><a href='/admin/booking/booking-place-defs'><%=t.booking_console.places%></a></li>
              <li><a href='/admin/calendar/timetables'><%=t.booking_console.timetables%></a></li>

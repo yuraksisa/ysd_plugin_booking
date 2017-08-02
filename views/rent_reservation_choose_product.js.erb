@@ -340,11 +340,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         $('#return_place').val(model.shopping_cart.return_place.replace(/\+/g, ' '));
         $('#return_place').selectpicker('refresh');
 
-        $('#date_from').datepicker("setDate", new Date(model.shopping_cart.date_from));
+        var date_from = model.shopping_cart.date_from.substring(8,10) + '/' + model.shopping_cart.date_from.substring(5,7) + '/' + model.shopping_cart.date_from.substring(0,4);
+        var date_to = model.shopping_cart.date_to.substring(8,10) + '/' + model.shopping_cart.date_to.substring(5,7) + '/' + model.shopping_cart.date_to.substring(0,4);
+
+        $('#date_from').datepicker("setDate", date_from);
         $('#time_from').val(model.shopping_cart.time_from);
         $('#time_from').selectpicker('refresh');
 
-        $('#date_to').datepicker("setDate", new Date(model.shopping_cart.date_to));
+        $('#date_to').datepicker("setDate", date_to);
         $('#time_to').val(model.shopping_cart.time_to);
         $('#time_to').selectpicker('refresh');
 
