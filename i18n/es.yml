@@ -14,6 +14,7 @@ system_admin_menu:
 booking_console_configuration:
   title: Configuración sistema de reservas
   general_configuration: General
+  email_settings: Correo electrónico
   payment: Forma de Pago
   templates: Plantillas      
   create_rates: Generar tarifas web

@@ -119,8 +119,11 @@
       </ul>
     </li>
     <% end %>
-    <li class='<%if ['/admin/booking/config/general',
-    '/admin/booking/config/templates','/admin/booking/booking-place-defs',
+    <li class='<%if [
+    '/admin/booking/config/general',
+    '/admin/postal/email-settings',
+    '/admin/booking/config/templates',
+    '/admin/booking/booking-place-defs',
     '/admin/calendar/timetables',
     '/admin/rates/seasons','/admin/booking/booking-places',
     '/admin/rates/season-defs','/admin/rates/factor-defs',
@@ -128,6 +131,7 @@
       <ul>
         <li><a href='/admin/booking/config/general'><%=t.booking_console_configuration.general_configuration%></a></li>
         <li><a href='/admin/booking/config/templates'><%=t.booking_console_configuration.templates%></a></li>
+        <li><a href='/admin/postal/email-settings'><%=t.booking_console_configuration.email_settings%></a></li>
         <li class='<%if ['/admin/booking/booking-place-defs','/admin/calendar/timetables'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.pickup_return%></a>
           <ul>
              <li><a href='/admin/booking/booking-place-defs'><%=t.booking_console.places%></a></li>
