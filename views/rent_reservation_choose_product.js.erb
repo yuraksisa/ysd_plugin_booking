@@ -340,8 +340,19 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         $('#return_place').val(model.shopping_cart.return_place.replace(/\+/g, ' '));
         $('#return_place').selectpicker('refresh');
 
-        var date_from = model.shopping_cart.date_from.substring(8,10) + '/' + model.shopping_cart.date_from.substring(5,7) + '/' + model.shopping_cart.date_from.substring(0,4);
-        var date_to = model.shopping_cart.date_to.substring(8,10) + '/' + model.shopping_cart.date_to.substring(5,7) + '/' + model.shopping_cart.date_to.substring(0,4);
+        if (model.shopping_cart.date_from instanceof Date) {
+            var date_from = model.shopping_cart.date_from.getDate() + '/' + (model.shopping_cart.date_from.getMonth()+1)+ '/' + model.shopping_cart.date_from.getFullYear();
+        }
+        else if (model.shopping_cart.date_from instanceof String) {
+            var date_from = model.shopping_cart.date_from.substring(8,10) + '/' + model.shopping_cart.date_from.substring(5,7) + '/' + model.shopping_cart.date_from.substring(0,4);
+        }
+
+        if (model.shopping_cart.date_to instanceof Date) {
+            var date_to = model.shopping_cart.date_to.getDate() + '/' + (model.shopping_cart.date_to.getMonth()+1) + '/' + model.shopping_cart.date_to.getFullYear();
+        }
+        else if (model.shopping_cart.date_to instanceof String) {
+            var date_to = model.shopping_cart.date_to.substring(8, 10) + '/' + model.shopping_cart.date_to.substring(5, 7) + '/' + model.shopping_cart.date_to.substring(0, 4);
+        }
 
         $('#date_from').datepicker("setDate", date_from);
         $('#time_from').val(model.shopping_cart.time_from);

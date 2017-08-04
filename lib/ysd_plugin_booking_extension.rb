@@ -557,22 +557,35 @@ module Huasi
         when 'booking_operator_menu', 'booking_admin_menu'
           today = Date.today
           year = today.year
+
           booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
 
+          # Check Plan [First RequestStore (cloud) and then Sinatra settings (standalone)]
           booking_renting = true
           booking_activities = false
-          if app.settings.respond_to?(:mybooking_plan)  
-            booking_renting = [:pro_renting, :pro_plus].include?(app.settings.mybooking_plan)
-            booking_activities = [:pro_activities, :pro_plus].include?(app.settings.mybooking_plan)
+          unless mybooking_plan = RequestStore.store[:mybooking_plan]
+            mybooking_plan = app.settings.respond_to?(:mybooking_plan) ? app.settings.mybooking_plan : nil
+          end
+          if mybooking_plan
+            booking_renting = [:pro_renting, :pro_plus].include?(mybooking_plan)
+            booking_activities = [:pro_activities, :pro_plus].include?(mybooking_plan)
           end
 
-          # Complete with a request to the add-ons
-          addon_crm = (app.settings.respond_to?(:mybooking_addon_crm) ? app.settings.mybooking_addon_crm : false)
-          addon_finances = (app.settings.respond_to?(:mybooking_addon_finances) ? app.settings.mybooking_addon_finances : false)
-          addon_massive_price_adjust = (app.settings.respond_to?(:mybooking_addon_massive_price_adjust) ? app.settings.mybooking_addon_massive_price_adjust : false)
-          addon_offer_promotion_code = (app.settings.respond_to?(:mybooking_addon_offer_promotion_code) ? app.settings.mybooking_addon_offer_promotion_code : false)
-          addon_journal = (app.settings.respond_to?(:mybooking_addon_journal) ? app.settings.mybooking_addon_journal : false)
-          
+          # Complete with a request to the add-ons [First RequestStore (cloud) and the Sinatra settings (standalone)]
+          if RequestStore.store[:mybooking_addons]
+            addon_crm = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_crm)
+            addon_finances = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_finances)
+            addon_massive_price_adjust = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_massive_price_adjust)
+            addon_offer_promotion_code = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_offer_promotion_code)
+            addon_journal = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_journal)
+          else
+            addon_crm = (app.settings.respond_to?(:mybooking_addon_crm) ? app.settings.mybooking_addon_crm : false)
+            addon_finances = (app.settings.respond_to?(:mybooking_addon_finances) ? app.settings.mybooking_addon_finances : false)
+            addon_massive_price_adjust = (app.settings.respond_to?(:mybooking_addon_massive_price_adjust) ? app.settings.mybooking_addon_massive_price_adjust : false)
+            addon_offer_promotion_code = (app.settings.respond_to?(:mybooking_addon_offer_promotion_code) ? app.settings.mybooking_addon_offer_promotion_code : false)
+            addon_journal = (app.settings.respond_to?(:mybooking_addon_journal) ? app.settings.mybooking_addon_journal : false)
+          end
+
           if booking_mode == 'rent'
             menu_locals = {addon_crm: addon_crm,
                            addon_finances: addon_finances,
@@ -581,7 +594,6 @@ module Huasi
                            addon_journal: addon_journal}
             menu_locals.store(:booking_activities, booking_activities) 
             menu_locals.store(:booking_renting, booking_renting)
-            menu_locals.store(:addon_crm, false)
             if booking_renting
               menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
               menu_locals.store(:today_pickup, BookingDataSystem::Booking.count_pickup(today))

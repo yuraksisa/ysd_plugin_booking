@@ -125,12 +125,15 @@ module Sinatra
                        :categories => t.booking_settings.form.reservation_starts_with.categories,
                        :shopcart => t.booking_settings.form.reservation_starts_with.shoppingcart} }
 
+          # Check Plan [First RequestStore (cloud) and then Sinatra settings (standalone)]
           booking_renting = true
           booking_activities = false
-          
-          if app.settings.respond_to?(:mybooking_plan)
-            booking_renting = [:pro_renting, :pro_plus].include?(app.settings.mybooking_plan)
-            booking_activities = [:pro_activities, :pro_plus].include?(app.settings.mybooking_plan)
+          unless mybooking_plan = RequestStore.store[:mybooking_plan]
+            mybooking_plan = app.settings.respond_to?(:mybooking_plan) ? app.settings.mybooking_plan : nil
+          end
+          if mybooking_plan
+            booking_renting = [:pro_renting, :pro_plus].include?(mybooking_plan)
+            booking_activities = [:pro_activities, :pro_plus].include?(mybooking_plan)
           end
           
           locals.store(:booking_renting, booking_renting)        
