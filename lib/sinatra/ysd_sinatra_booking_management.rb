@@ -740,7 +740,7 @@ module Sinatra
           end   
 
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          @data,@detail = BookingDataSystem::Booking.extras_occupation(@date_from, @date_to)
+          @data,@detail = BookingDataSystem::Booking.extras_resources_occupation(@date_from, @date_to)
           
           load_page :extras_occupation
 
