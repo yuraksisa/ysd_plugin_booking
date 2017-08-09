@@ -161,7 +161,8 @@ booking_console:
   reservations: Reservas
   planning: Planning 
   monthly_occupation: Ocupación
-  check_availability: Disponibilidad   
+  check_availability: Disponibilidad
+  extras_availability: Disponibilidad extras   
   period: Período
   requested: Solicitudes
   confirmed: Confirmadas

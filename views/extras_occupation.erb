@@ -1,0 +1,138 @@
+<style>
+ 
+ .table {
+   table-layout: fixed;
+   border: 1px solid #EEE;
+ }
+
+ .table .table-cell {
+   border-right: 1px solid #EEE;
+   font-size: 0.85em;
+ }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Disponibilidad de los extras</h2>
+</div>
+<div class="admin_content_wrapper all-space">
+
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="report_charges_form" action="/admin/booking/extras-occupation" method="get">
+        <div class="formrow">
+          <div style="display: inline-block">
+            <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+    <table id="table" class="table">
+      <thead class="table-header">
+        <tr>
+          <% @detail.keys.each do |extra| %>
+            <th class="table-cell" scope="col" style="width:1em"><%=extra%></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <% @detail.values.each do |value| %>
+            <td class="table-cell centered_text" scope="col" style="<%if value[:occupation]<value[:stock]%>background:green; color:white<%else%>background:red; color: white<%end%>">
+              <div><%=[0, value[:stock] - value[:occupation]].max%>/<%=value[:stock]%><%if value[:assignation_pending].size > 0%>*<%end%>
+              <%if value[:assignation_pending].size > 0%>
+                <br/>
+                <span class="smaller_text">(<strong><%=value[:assignation_pending].size%></strong> no asignado)</span>
+              <%end%>
+              </div>
+            </td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="highlight_block">Stock disponible</h3>
+    <% if (@detail.select {|k,v| !v[:available_stock].empty?}).size == 0%>
+      <div class="guiblock smaller_txt">
+        <ul>
+          <li>No hay stock disponible</li>
+        </ul>
+      </div>
+    <% else %>
+      <% @detail.each do |product, value| %>
+        <% unless value[:available_stock].empty? %>
+          <h4 class="bottom-border-solid"><%=product%></h4>
+          <div class="container_12">
+            <% value[:available_stock].each do |v| %>
+            <div class="grid_3">
+              <div class="guiblock" <%unless @data[v][:assignable]%>style="color: #aaaaaa"<%end%>>
+                  <%if value[:automatically_preassigned_stock].include?(v)%><em></rm><%=v%>*</em><%else%><b><%=v%></b><%end%>
+              </div>
+            </div>
+            <% end %>
+          </div>
+          <%if value[:assignation_pending].size > 0%>
+            <div class="all-space all-border-dashed"><strong><%=value[:assignation_pending].size%></strong> pendiente de asignar</div>
+          <%end%>
+        <% end %>
+      <% end %>
+    <% end %>
+
+  <h3 class="highlight_block">Detalle de la ocupación</h3>
+  <div>  
+      <table id="table" class="table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:80px">Producto</th>
+            <th class="table-cell" scope="col" style="width:120px">Stock</th>
+            <th class="table-cell" scope="col">Ocupación</th>
+          </tr>
+        </thead>
+        <tbody>      
+        <% @data.each do |id, detail| %>  
+        <tr class="table-row">
+          <td class="table-cell centered_text">
+            <span <% if detail[:available] %>style="color:green"<% else %>style="color:red"<%end%>><%=detail[:category]%></span>            
+          </td>
+          <td class="table-cell">
+            <span <% if detail[:available] %>style="color:green"<% else %>style="color:red"<%end%>><%=id%></span>
+          </td>
+          <td class="table-cell">
+             <% if detail[:estimation].size > 0 %>
+
+               <table class="table">
+                 <thead class="table-header">
+                   <tr>
+                     <th class="table-cell" scope="col" style="width:80px">Id</th>
+                     <th class="table-cell" scope="col" style="width:150px">Info</th>
+                     <th class="table-cell" scope="col" style="width:150px">Fecha inicio</th>
+                     <th class="table-cell" scope="col" style="width:150px">Fecha fin</th>
+                   </tr>
+                 </thead>
+                 <tbody>                 
+                   <% detail[:estimation].each do |item| %>
+                     <tr>
+                       <td class="table-cell"><b><em><%= item.id %>*</em></b></td>
+                       <td class="table-cell"><%= item.title%></td>
+                       <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
+                       <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>
+                     </tr>      
+                   <% end %>
+                 </tbody>
+               </table>
+             <% end %>
+          </td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+  </div>
+</div>

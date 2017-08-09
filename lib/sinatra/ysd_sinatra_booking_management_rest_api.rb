@@ -56,6 +56,33 @@ module Sinatra
 
       end
 
+      #
+      # Get the booking extras occupation for the dates
+      #
+      # @params [Hash]
+      #
+      #   from: Date from
+      #   to: Date to
+      #
+      def booking_extras_occupation(params)
+
+        if params['from'].nil? or params['to'].nil?
+           []
+        else
+           begin
+             from = DateTime.strptime(params[:from], '%Y-%m-%d')
+             to = DateTime.strptime(params[:to], '%Y-%m-%d')
+             BookingDataSystem::Booking.extras_occupation(from, to).map do |item|  
+                {extra_id: item.extra_id, stock: item.stock, busy: item.busy}
+             end
+           rescue ArgumentError => ex
+             []
+           end
+        end  
+
+
+      end
+
       def booking_payment_enabled(params)
 
         if params['from'].nil? or params['to'].nil?
@@ -192,9 +219,15 @@ module Sinatra
                            true if stock_hash.has_key?(item) and ((stock_hash[item][:stock_control] and stock_hash[item][:busy] < stock_hash[item][:stock]) or (!stock_hash[item][:stock_control]))
                          end
 
+          extras_occupation_hash = booking_extras_occupation(params).inject({}) do |result, item|
+                                     result.store(item[:extra_id], {stock: item[:stock], busy: item[:busy]})
+                                     result
+                                   end
+
           result = {:availability => availability,
                     :payment => booking_payment_enabled(params),
-                    :stock => stock_hash}
+                    :stock => stock_hash,
+                    :extras_stock => extras_occupation_hash}
           result.to_json          
 
         end
