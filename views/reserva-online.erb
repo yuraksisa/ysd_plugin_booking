@@ -270,7 +270,17 @@
 	               </select>
 	            </td>
 	          </tr>
-	        <%% } %>  
+	        <%% } else { %>
+              <tr class="booking_extra" id="booking_extra<%%=extra.id%>" <%% if (!extra.optionalAccepted(optional)) {%> style="display:none" <%% } %> >
+                <td>&nbsp;</td>
+	            <td>
+	               <label id="label_extra_<%%=extra.id%>"><%%=extra.translations['<%=session[:locale]||"es"%>'].name%></label>
+	            </td>
+	            <td>
+                   <span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_stock%></span>
+	            </td>
+              </tr>
+	        <%% } %>
   </script>
 
 <script type="text/tmpl" id="script_resources_attributes">
