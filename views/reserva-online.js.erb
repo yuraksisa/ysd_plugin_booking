@@ -98,6 +98,7 @@ require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
             process_state : 'item_selection',
             categoriesAvailable: [],
             stock: {},
+            stockExtras: {},
             categoriesPaymentEnabled: [],
             confirmBookingResponse : null, /* It holds the confirm booking response */
             pendingTimeToStartBooking: 0,
@@ -541,6 +542,7 @@ require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
                         success : function(data, textStatus, jqXHR) { /* RESPONSE OK */
                             bookingModel.categoriesAvailable = data.availability || [];
                             bookingModel.stock = data.stock || {};
+                            bookingModel.stockExtras = data.extras_stock;
                             bookingModel.categoriesPaymentEnabled = data.payment || [];
                             bookingModel.calculate_price(date_from, time_from, date_to, time_to, pickup_place, return_place);
                             <% if booking_reservation_starts_with == :dates %>
@@ -1972,6 +1974,7 @@ require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
                 for (extra in extras) {
                     extrasHtml += tmpl('script_extras', {
                         extra: extras[extra],
+                        extraStock: bookingModel.stockExtras[extra],
                         optional: bookingModel.booking.optional});
                     extrasCount++;
                 }

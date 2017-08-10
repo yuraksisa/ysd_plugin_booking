@@ -250,6 +250,7 @@
   </script>
 
 <script type="text/tmpl" id="script_extras">
+            <%% if (extraStock.stock > extraStock.busy) { %>
   	          <tr class="booking_extra" id="booking_extra_<%%=extra.id%>" <%% if (!extra.optionalAccepted(optional)) {%> style="display:none" <%% } %> >
 	            <td>
 	               <input type="checkbox" name="extras[<%%=extra.id%>[extra_id]]" id="extras[<%%=extra.id%>[extra_id]]" value="<%%=extra.id%>" rel="extras[<%%=extra.id%>[quantity]]" class="extra"/>
@@ -258,16 +259,26 @@
 	               <label id="label_extra_<%%=extra.id%>"><%%=extra.translations['<%=session[:locale]||"es"%>'].name%></label>
 	            </td>
 	            <td>
-	               <%% if (extra.max_quantity > 1) { %>
+	               <%% var extraAvailableStock = extraStock.stock - extraStock.busy; %> 
 	               <select name="extras[<%%=extra.id%>[quantity]]" id="extras[<%%=extra.id%>[quantity]]" class="extraquantity" rel="<%%=extra.id%>">
 	                 <option value="0" selected="selected">0</option>
-	                 <%% for (var idx=1; idx <= extra.max_quantity; idx++) { %>
+	                 <%% for (var idx=1; idx <= extraAvailableStock; idx++) { %>
 	                   <option value="<%%=idx%>"><%%=idx%></option>
 	                 <%% } %>
 	               </select>
-	               <%% } %>
 	            </td>
 	          </tr>
+	        <%% } else { %>
+              <tr class="booking_extra" id="booking_extra<%%=extra.id%>" <%% if (!extra.optionalAccepted(optional)) {%> style="display:none" <%% } %> >
+                <td>&nbsp;</td>
+	            <td>
+	               <label id="label_extra_<%%=extra.id%>"><%%=extra.translations['<%=session[:locale]||"es"%>'].name%></label>
+	            </td>
+	            <td>
+                   <span class="booking-not-available centered_text" style="display:block"><%=t.new_booking.not_stock%></span>
+	            </td>
+              </tr>
+	        <%% } %>
   </script>
 
 <script type="text/tmpl" id="script_resources_attributes">

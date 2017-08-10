@@ -454,6 +454,39 @@ module Sinatra
 
 
 
+        #
+        # Check the extras occupation
+        # 
+        app.get '/admin/booking/extras-occupation', :allowed_usergroups => ['booking_manager','staff'] do 
+
+          @date_from = Date.today
+          @date_to = Date.today + 7
+
+          if params[:from]
+            begin
+              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:from]}")
+            end
+          end
+
+          if params[:to]
+            begin
+              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+            rescue
+              logger.error("date not valid #{params[:to]}")
+            end
+          end   
+
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          @data,@detail = BookingDataSystem::Booking.extras_resources_occupation(@date_from, @date_to)
+          
+          load_page :extras_occupation
+
+        end
+
+
+
         # ------------------- Contract --------------------
 
         #
