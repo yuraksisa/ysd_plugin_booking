@@ -139,7 +139,8 @@ module Sinatra
 
           # Do the process
           if shopping_cart
-            multiple_products = (SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym == :shopcart)
+            product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+            multiple_products = (product_family.frontend == :shopcart)
             shopping_cart.set_item(product_code, quantity, multiple_products)
             content_type 'json'
             shopping_cart_to_json(shopping_cart)

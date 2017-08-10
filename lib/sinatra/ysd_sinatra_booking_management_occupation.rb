@@ -13,11 +13,10 @@ module Sinatra
         app.get '/admin/booking/occupation-detail', :allowed_usergroups => ['booking_manager','staff'] do
 
           locals = {}
-          locals.store(:booking_reservation_starts_with,
-                       SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
           if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
             product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
             locals.store(:product_family, product_family)
+            locals.store(:booking_reservation_starts_with, product_family.frontend)
           end
 
           @date = Date.today

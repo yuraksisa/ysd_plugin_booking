@@ -14,11 +14,10 @@ module Sinatra
         app.get '/admin/booking/reports/pending-confirmation', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           locals = {}
-          locals.store(:booking_reservation_starts_with,
-                       SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
           if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
             product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
             locals.store(:product_family, product_family)
+            locals.store(:booking_reservation_starts_with, product_family.frontend)
           end
 
           @reservations = BookingDataSystem::Booking.all(
@@ -34,18 +33,16 @@ module Sinatra
         #
         app.get '/admin/booking/reports/in-progress', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          locals = {}
-          locals.store(:booking_reservation_starts_with,
-                       SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-
           @today = Date.today.to_date
-
           @reservations = BookingDataSystem::Booking.all(
               :conditions => {:status => [:confirmed, :in_progress],
                               :date_from.lte => @today,
                               :date_to.gte => @today},
               :order => :date_to.asc)
+
+          locals = {}
+          locals.store(:booking_reservation_starts_with, @product_family.frontend)
 
           load_page(:report_in_progress, :locals => locals)
 
@@ -206,11 +203,10 @@ module Sinatra
                                                      ]
           )
 
-          @reservations = condition.build_datamapper(BookingDataSystem::Booking).all(
-              :order => [:date_from, :time_from])
+          @reservations = condition.build_datamapper(BookingDataSystem::Booking).all(:order => [:date_from, :time_from])
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           locals = {}
-          locals.store(:booking_reservation_starts_with,
-                       SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
+          locals.store(:booking_reservation_starts_with, @product_family.frontend)
           load_page(:report_reservations, :locals => locals)
         end
 
@@ -263,11 +259,10 @@ module Sinatra
                                                      ]
           )
 
-          @reservations = condition.build_datamapper(BookingDataSystem::Booking).all(
-              :order => [:date_from, :time_from])
+          @reservations = condition.build_datamapper(BookingDataSystem::Booking).all(:order => [:date_from, :time_from])
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           locals = {}
-          locals.store(:booking_reservation_starts_with,
-                       SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
+          locals.store(:booking_reservation_starts_with, @product_family.frontend)
           load_page(:report_customer_reservations, :locals => locals)
         end
 
@@ -311,9 +306,10 @@ module Sinatra
             @reservations = []
           end
 
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           locals = {}
-          locals.store(:booking_reservation_starts_with,
-                       SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
+          locals.store(:booking_reservation_starts_with, @product_family.frontend)
+
           load_page(:report_resource_reservations, :locals => locals)
 
 
@@ -368,8 +364,7 @@ module Sinatra
           @prereservations = condition.build_datamapper(BookingDataSystem::BookingPrereservation).all(
               :order => [:date_to, :time_to])
           locals = {}
-          locals.store(:booking_reservation_starts_with,
-                       SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
+          locals.store(:booking_reservation_starts_with, @product_family.frontend)
           load_page(:report_prereservations, :locals => locals)
         end
 

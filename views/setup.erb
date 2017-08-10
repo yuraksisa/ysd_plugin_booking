@@ -1,0 +1,14 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.setup_booking.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <%= t.setup_booking.welcome %>
+  <br>
+  <br>
+  <% if @booking_renting %>
+    <a href="/admin/booking/setup-renting-1"><%=t.setup_booking.renting%></a>
+  <% end %>
+  <% if @booking_activities %>
+    <a href="/admin/booking/setup-activities-1"><%=t.setup_booking.activities%></a>
+  <% end %>
+</div>

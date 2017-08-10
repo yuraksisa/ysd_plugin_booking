@@ -90,6 +90,139 @@ module Sinatra
           load_page(:booking_create_rates)
         end
 
+        # ----------------------------------------------------------------------------------------------
+        # ----------------------------------- Setup ----------------------------------------------------
+        # ----------------------------------------------------------------------------------------------
+
+        #
+        # Setup the platform
+        #
+        app.get "/admin/booking/setup", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          @booking_renting, @booking_activities = mybooking_plan
+
+          load_page(:setup)
+
+        end
+
+        # ------------------------------ Renting setup ------------------------------------------------
+
+        #
+        # Renting setup step 1
+        #
+        app.get "/admin/booking/setup-renting-1", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if mybooking_plan.first
+            @current_type_of_business = SystemConfiguration::Variable.get_value('booking.item_family', nil)
+            @types_of_business = ::Yito::Model::Booking::ProductFamily.all(order: [:presentation_order])
+            load_page(:setup_renting_step_1)
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Renting setup step 1 (POST)
+        #
+        app.post "/admin/booking/setup-renting-1", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if params[:type_of_business]
+            if params[:type_of_business] != SystemConfiguration::Variable.get_value('booking.item_family', nil)
+              SystemConfiguration::Variable.set_value('booking.item_family', params[:type_of_business])
+            end
+          end
+
+          redirect '/admin/booking/setup-renting-2'
+
+        end
+
+        #
+        # Renting setup step 2
+        #
+        app.get "/admin/booking/setup-renting-2", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if mybooking_plan.first
+            load_page(:setup_renting_step_2)
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Renting setup step 2 (POST)
+        #
+        app.post "/admin/booking/setup-renting-2", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if mybooking_plan.first
+
+            if min_days = params['booking.min_days'.to_sym]
+              SystemConfiguration::Variable.set_value('booking.min_days', min_days)
+            end
+
+            redirect '/admin/booking/setup-renting-3'
+
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Renting setup step 3
+        #
+        app.get "/admin/booking/setup-renting-3", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if mybooking_plan.first
+            load_page(:setup_renting_step_3)
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Renting setup step 3 (POST)
+        #
+        app.post "/admin/booking/setup-renting-3", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          redirect '/admin/booking/setup-renting-4'
+
+        end
+
+        #
+        # Renting setup step 4
+        #
+        app.get "/admin/booking/setup-renting-4", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if mybooking_plan.first
+            load_page(:setup_renting_step_4)
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Renting setup step 4 (POST)
+        #
+        app.post "/admin/booking/setup-renting-4", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          redirect '/admin/booking/setup'
+
+        end
+
+
+        # ----------------------------- Activities setup ----------------------------------------------
+
+        #
+        #
+        #
+        app.get "/admin/booking/setup-activities-1", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+        end
+
         # --------------------- Configuration ----------------------------------------------------------
 
         #
@@ -125,17 +258,8 @@ module Sinatra
                        :categories => t.booking_settings.form.reservation_starts_with.categories,
                        :shopcart => t.booking_settings.form.reservation_starts_with.shoppingcart} }
 
-          # Check Plan [First RequestStore (cloud) and then Sinatra settings (standalone)]
-          booking_renting = true
-          booking_activities = false
-          unless mybooking_plan = RequestStore.store[:mybooking_plan]
-            mybooking_plan = app.settings.respond_to?(:mybooking_plan) ? app.settings.mybooking_plan : nil
-          end
-          if mybooking_plan
-            booking_renting = [:pro_renting, :pro_plus].include?(mybooking_plan)
-            booking_activities = [:pro_activities, :pro_plus].include?(mybooking_plan)
-          end
-          
+          booking_renting, booking_activities = mybooking_plan
+
           locals.store(:booking_renting, booking_renting)        
           locals.store(:booking_activities, booking_activities)        
          

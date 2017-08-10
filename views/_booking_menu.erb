@@ -5,7 +5,7 @@
   }
 
   .booking_menu a:hover {
-    color: yellow;	
+    color: yellow;
   }
 
   .booking_menu {
@@ -16,154 +16,154 @@
 
 <div id="cssmenu" class="booking_menu admin_menu smaller_text all-space">
   <ul style="font-size: 0.92em">
-   <li class='<%if ['/admin/booking/catalog',
-                    '/admin/booking/booking-categories',
-                    '/admin/booking/booking-items',
-                    '/admin/booking/booking-extras',
-                    '/admin/booking/activities'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.products%></a>
+    <li class='<%if ['/admin/booking/catalog',
+                     '/admin/booking/booking-categories',
+                     '/admin/booking/booking-items',
+                     '/admin/booking/booking-extras',
+                     '/admin/booking/activities'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.products%></a>
       <ul>
         <% if booking_renting %>
-        <li><a href='/admin/booking/booking-categories'><%=t.booking_console.categories%></a></li>
-        <li><a href='/admin/booking/booking-extras'><%=t.booking_console.extras%></a></li>
-        <li><a href='/admin/booking/booking-items'><%=t.booking_console.items%></a></li>
+            <li><a href='/admin/booking/booking-categories'><%=t.booking_console.categories%></a></li>
+            <li><a href='/admin/booking/booking-extras'><%=t.booking_console.extras%></a></li>
+            <li><a href='/admin/booking/booking-items'><%=t.booking_console.items%></a></li>
         <% end %>
         <% if booking_activities %>
-        <li><a href='/admin/booking/activities'><%=t.booking_console.activities%></a></li>                                
+            <li><a href='/admin/booking/activities'><%=t.booking_console.activities%></a></li>
         <% end %>
-      </ul>    
-   </li>    
-   <% if booking_renting %>
-   <li class='<%if ['/admin/booking/new',
-                    '/admin/booking/customers',
-                    '/admin/booking/new',
-                    '/admin/booking/bookings',
-                    '/admin/booking/edit/pickup-return',
-                    '/admin/booking/planning2',
-                    '/admin/booking/monthly-occupation',
-                    '/admin/booking/reports/pickup-return',
-                    '/admin/booking/journal',
-                    '/admin/booking/reports/pending-confirmation',
-                    '/admin/booking/reports/in-progress',
-                    '/admin/booking/resources-occupation',
-                    '/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
-      <ul>
-        <li><a href='/admin/booking/new'><%=t.booking_console.new_booking%></a></li>
-        <li><a href='/admin/booking/customers'><%=t.booking_console.new_customer_booking%></a></li>
-        <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>
-        <li><a href="/admin/booking/planning2?from=<%=Date.today.strftime('%Y-%m-%d')%>&to=<%=(Date.today + 180).strftime('%Y-%m-%d')%>"><%=t.booking_console.planning%></a></li> 
-        <li><a href='/admin/booking/monthly-occupation'><%=t.booking_console.monthly_occupation%></a></li>        
-        <li><a href='/admin/booking/resources-occupation'><%=t.booking_console.check_availability%></a></li>  
-        <li style="border-top: 1px dotted; border-color: #EEE"><a href='/admin/booking/reports/pending-confirmation'><%=t.booking_console.report_pending_confirmation%><%if pending_confirmation>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation%></span><%end%></a></li>
-        <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%><%if today_pickup>0 || today_return>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_pickup%>/<%=today_return%></span><%end%></a></li>
-        <% if addon_journal %>
-            <li><a href='/admin/booking/journal'><%=t.booking_console.journal%></a></li>
-        <% end %>
-        <li><a href='/admin/booking/reports/in-progress'><%=t.booking_console.report_in_progress%></a></li>
-      </ul>    
-   </li>   
-   <% end %>
-   <% if booking_activities %>
-   <li class='<%if ['/admin/order/orders/new',
-                    '/admin/order/orders',
-                    '/admin/booking/reports/pending-confirmation-activities',
-                    '/admin/booking/activities-occupation',
-                    '/admin/booking/activities-schedule',
-                    '/admin/booking/programmed-activities',
-                    '/admin/booking/day-activities',
-                    '/admin/booking/activity-detail'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.activity_bookings%></a>
-      <ul>
-        <li><a href='/admin/order/orders/new'><%=t.booking_console.new_order%></a></li>   
-        <li><a href='/admin/order/orders'><%=t.booking_console.orders%></a></li>
-        <li><a href='/admin/booking/activities-schedule'><%=t.booking_console.activities_schedule%></a></li>
-        <li><a href='/admin/booking/activities-occupation'><%=t.booking_console.activities_occupation%></a></li>
-        <li style="border-top: 1px dotted; border-color: #EEE"><a href='/admin/booking/reports/pending-confirmation-activities'><%=t.booking_console.pending_confirmation_activities%><%if pending_confirmation_activities>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation_activities%></span><%end%></a></li>
-        <li><a href='/admin/booking/day-activities'><%=t.booking_console.today_activities%><%if today_start_activities>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_start_activities%></span><%end%></a></li>
-        <li><a href='/admin/booking/programmed-activities'><%=t.booking_console.activities_summary%></a></li>
       </ul>
-   </li>   
-   <% end %>
-   <% if addon_crm %>
-   <li class='<%if ['/admin/order/information-requests'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.crm%></a>
-      <ul>
-        <li><a href='/admin/order/information-requests'><%=t.booking_console.information_requests%></a></li>  
-      </ul>
-   </li>
-   <% end %>
-   <li class='<%if ['/admin/charges',
-                    '/admin/booking/reports/charges',
-                    '/admin/booking/product-billing',
-                    '/admin/booking/extras-billing',
-                    '/admin/booking/summary'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
+    </li>
+    <% if booking_renting %>
+        <li class='<%if ['/admin/booking/new',
+                         '/admin/booking/customers',
+                         '/admin/booking/new',
+                         '/admin/booking/bookings',
+                         '/admin/booking/edit/pickup-return',
+                         '/admin/booking/planning2',
+                         '/admin/booking/monthly-occupation',
+                         '/admin/booking/reports/pickup-return',
+                         '/admin/booking/journal',
+                         '/admin/booking/reports/pending-confirmation',
+                         '/admin/booking/reports/in-progress',
+                         '/admin/booking/resources-occupation',
+                         '/admin/booking/assign-stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.bookings%></a>
+          <ul>
+            <li><a href='/admin/booking/new'><%=t.booking_console.new_booking%></a></li>
+            <li><a href='/admin/booking/customers'><%=t.booking_console.new_customer_booking%></a></li>
+            <li><a href='/admin/booking/bookings'><%=t.booking_console.reservations%></a></li>
+            <li><a href="/admin/booking/planning2?from=<%=Date.today.strftime('%Y-%m-%d')%>&to=<%=(Date.today + 180).strftime('%Y-%m-%d')%>"><%=t.booking_console.planning%></a></li>
+            <li><a href='/admin/booking/monthly-occupation'><%=t.booking_console.monthly_occupation%></a></li>
+            <li><a href='/admin/booking/resources-occupation'><%=t.booking_console.check_availability%></a></li>
+            <li style="border-top: 1px dotted; border-color: #EEE"><a href='/admin/booking/reports/pending-confirmation'><%=t.booking_console.report_pending_confirmation%><%if pending_confirmation>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation%></span><%end%></a></li>
+            <li><a href='/admin/booking/reports/pickup-return'><%=t.booking_console.report_pickup_return%><%if today_pickup>0 || today_return>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_pickup%>/<%=today_return%></span><%end%></a></li>
+            <% if addons.has_key?(:addon_journal) and addons[:addon_journal] %>
+                <li><a href='/admin/booking/journal'><%=t.booking_console.journal%></a></li>
+            <% end %>
+            <li><a href='/admin/booking/reports/in-progress'><%=t.booking_console.report_in_progress%></a></li>
+          </ul>
+        </li>
+    <% end %>
+    <% if booking_activities %>
+        <li class='<%if ['/admin/order/orders/new',
+                         '/admin/order/orders',
+                         '/admin/booking/reports/pending-confirmation-activities',
+                         '/admin/booking/activities-occupation',
+                         '/admin/booking/activities-schedule',
+                         '/admin/booking/programmed-activities',
+                         '/admin/booking/day-activities',
+                         '/admin/booking/activity-detail'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.activity_bookings%></a>
+          <ul>
+            <li><a href='/admin/order/orders/new'><%=t.booking_console.new_order%></a></li>
+            <li><a href='/admin/order/orders'><%=t.booking_console.orders%></a></li>
+            <li><a href='/admin/booking/activities-schedule'><%=t.booking_console.activities_schedule%></a></li>
+            <li><a href='/admin/booking/activities-occupation'><%=t.booking_console.activities_occupation%></a></li>
+            <li style="border-top: 1px dotted; border-color: #EEE"><a href='/admin/booking/reports/pending-confirmation-activities'><%=t.booking_console.pending_confirmation_activities%><%if pending_confirmation_activities>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=pending_confirmation_activities%></span><%end%></a></li>
+            <li><a href='/admin/booking/day-activities'><%=t.booking_console.today_activities%><%if today_start_activities>0%><span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -13px; left: -4px; color: white; text-decoration: none; font-size: 0.7em"><%=today_start_activities%></span><%end%></a></li>
+            <li><a href='/admin/booking/programmed-activities'><%=t.booking_console.activities_summary%></a></li>
+          </ul>
+        </li>
+    <% end %>
+    <% if addons.has_key?(:addon_crm) and addons[:addon_crm] %>
+        <li class='<%if ['/admin/order/information-requests'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.crm%></a>
+          <ul>
+            <li><a href='/admin/order/information-requests'><%=t.booking_console.information_requests%></a></li>
+          </ul>
+        </li>
+    <% end %>
+    <li class='<%if ['/admin/charges',
+                     '/admin/booking/reports/charges',
+                     '/admin/booking/product-billing',
+                     '/admin/booking/extras-billing',
+                     '/admin/booking/summary'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.finances%></a>
       <ul>
         <li><a href='/admin/charges'><%=t.booking_console.receipts%></a></li>
         <li><a href="/admin/booking/reports/charges">Listado de cobros</a></li>
-        <% if addon_finances %>
-        <li><a href='/admin/booking/product-billing'><%=t.booking_console.products_billing%></a></li>         
-        <li><a href='/admin/booking/extras-billing'><%=t.booking_console.extras_billing%></a></li>
-        <li><a href='/admin/booking/summary'><%=t.booking_console.summary%></a></li>
+        <% if addons.has_key?(:addon_finances) and addons[:addon_finances] %>
+            <li><a href='/admin/booking/product-billing'><%=t.booking_console.products_billing%></a></li>
+            <li><a href='/admin/booking/extras-billing'><%=t.booking_console.extras_billing%></a></li>
+            <li><a href='/admin/booking/summary'><%=t.booking_console.summary%></a></li>
         <% end %>
-      </ul>    
-   </li>     
-   <li class='<%if ['/admin/booking/reports/reservations',
-                    '/admin/booking/reports/resource-reservations',
-                    '/admin/booking/reports/customer-reservations',
-                    '/admin/booking/reports/prereservations',
-                    '/admin/booking/activities-summary',
-                    '/admin/booking/reports/customers',
-                    '/admin/booking/reports/stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.listing%></a>
-     <ul>
-        <% if booking_renting %>
-        <li><a href='/admin/booking/reports/stock'><%=t.booking_console.report_stock%></a></li>
-        <li><a href='/admin/booking/reports/prereservations'><%=t.booking_console.report_prereservations%></a></li>    
-        <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>
-        <li><a href='/admin/booking/reports/resource-reservations'><%=t.booking_console.report_resource_reservations%></a></li>        
-        <li><a href='/admin/booking/reports/customer-reservations'><%=t.booking_console.report_customer_reservations%></a></li>
-        <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>
-        <% end %>
-        <% if booking_activities %>
-        <li><a href='/admin/booking/activities-summary'><%=t.booking_console.activities_report%></a></li>
-        <% end %>
-     </ul>
-   </li>
-   <% if ((defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == '3.0')) || (!defined?MY_BOOKING_FRONTEND) %>
-   <li class='<%if ['/admin/booking/create-rates'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.utils%></a>
-      <ul>
-        <li><a href='/admin/booking/create-rates'><%=t.booking_console_configuration.create_rates%></a></li>           
-      </ul>
-   </li>
-   <% end %>
-    <% if defined?YsdPluginTryton %>
-    <li class='<%if ['/admin/tryton/setup',
-                     '/admin/integration/data',
-                     '/admin/integration/errors',
-                     '/admin/tryton/pending-charges'].index(request.path)%>active <%end%>has-sub'><a href='#'>Tryton</a>
-      <ul>
-        <li><a href='/admin/tryton/setup'>Configuración</a></li>
-        <li><a href='/admin/tryton/pending-charges'>Depósitos pendientes</a></li>
-        <li><a href='/admin/integration/data'>Datos traspasados</a></li>
-        <li><a href='/admin/integration/errors'>Errores de traspaso</a></li>
       </ul>
     </li>
+    <li class='<%if ['/admin/booking/reports/reservations',
+                     '/admin/booking/reports/resource-reservations',
+                     '/admin/booking/reports/customer-reservations',
+                     '/admin/booking/reports/prereservations',
+                     '/admin/booking/activities-summary',
+                     '/admin/booking/reports/customers',
+                     '/admin/booking/reports/stock'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.listing%></a>
+      <ul>
+        <% if booking_renting %>
+            <li><a href='/admin/booking/reports/stock'><%=t.booking_console.report_stock%></a></li>
+            <li><a href='/admin/booking/reports/prereservations'><%=t.booking_console.report_prereservations%></a></li>
+            <li><a href='/admin/booking/reports/reservations'><%=t.booking_console.report_reservations%></a></li>
+            <li><a href='/admin/booking/reports/resource-reservations'><%=t.booking_console.report_resource_reservations%></a></li>
+            <li><a href='/admin/booking/reports/customer-reservations'><%=t.booking_console.report_customer_reservations%></a></li>
+            <li><a href='/admin/booking/reports/customers'><%=t.booking_console.report_customers%></a></li>
+        <% end %>
+        <% if booking_activities %>
+            <li><a href='/admin/booking/activities-summary'><%=t.booking_console.activities_report%></a></li>
+        <% end %>
+      </ul>
+    </li>
+    <% if ((defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == '3.0')) || (!defined?MY_BOOKING_FRONTEND) %>
+        <li class='<%if ['/admin/booking/create-rates'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.utils%></a>
+          <ul>
+            <li><a href='/admin/booking/create-rates'><%=t.booking_console_configuration.create_rates%></a></li>
+          </ul>
+        </li>
+    <% end %>
+    <% if defined?YsdPluginTryton %>
+        <li class='<%if ['/admin/tryton/setup',
+                         '/admin/integration/data',
+                         '/admin/integration/errors',
+                         '/admin/tryton/pending-charges'].index(request.path)%>active <%end%>has-sub'><a href='#'>Tryton</a>
+          <ul>
+            <li><a href='/admin/tryton/setup'>Configuración</a></li>
+            <li><a href='/admin/tryton/pending-charges'>Depósitos pendientes</a></li>
+            <li><a href='/admin/integration/data'>Datos traspasados</a></li>
+            <li><a href='/admin/integration/errors'>Errores de traspaso</a></li>
+          </ul>
+        </li>
     <% end %>
     <li class='<%if [
-    '/admin/booking/config/general',
-    '/admin/postal/email-settings',
-    '/admin/booking/config/templates',
-    '/admin/booking/booking-place-defs',
-    '/admin/calendar/timetables',
-    '/admin/rates/seasons','/admin/booking/booking-places',
-    '/admin/rates/season-defs','/admin/rates/factor-defs',
-    '/admin/rates/promotion-codes','/admin'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.configuration%></a>
+        '/admin/booking/config/general',
+        '/admin/postal/email-settings',
+        '/admin/booking/config/templates',
+        '/admin/booking/booking-place-defs',
+        '/admin/calendar/timetables',
+        '/admin/rates/seasons','/admin/booking/booking-places',
+        '/admin/rates/season-defs','/admin/rates/factor-defs',
+        '/admin/rates/promotion-codes','/admin'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.configuration%></a>
       <ul>
         <li><a href='/admin/booking/config/general'><%=t.booking_console_configuration.general_configuration%></a></li>
         <li><a href='/admin/booking/config/templates'><%=t.booking_console_configuration.templates%></a></li>
         <li><a href='/admin/postal/email-settings'><%=t.booking_console_configuration.email_settings%></a></li>
         <li class='<%if ['/admin/booking/booking-place-defs','/admin/calendar/timetables'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.pickup_return%></a>
           <ul>
-             <li><a href='/admin/booking/booking-place-defs'><%=t.booking_console.places%></a></li>
-             <li><a href='/admin/calendar/timetables'><%=t.booking_console.timetables%></a></li>
+            <li><a href='/admin/booking/booking-place-defs'><%=t.booking_console.places%></a></li>
+            <li><a href='/admin/calendar/timetables'><%=t.booking_console.timetables%></a></li>
           </ul>
-        </li>      
+        </li>
         <li class='<%if ['/admin/rates/season-defs',
                          '/admin/rates/seasons',
                          '/admin/rates/factor-defs',
@@ -174,31 +174,31 @@
           <ul>
             <li><a href='/admin/rates/season-defs'><%=t.rates_console.seasons%></a></li>
             <li><a href='/admin/rates/factor-defs'><%=t.rates_console.factors%></a></li>
-            <% if addon_offer_promotion_code %>
-            <li><a href='/admin/rates/promotion-codes'><%=t.rates_console.promotion_codes%></a></li>     
-            <li><a href='/admin/rates/discounts'><%=t.rates_console.discounts%></a></li>
+            <% if addons.has_key?(:addon_offer_promotion_code) and addons[:addon_offer_promotion_code] %>
+                <li><a href='/admin/rates/promotion-codes'><%=t.rates_console.promotion_codes%></a></li>
+                <li><a href='/admin/rates/discounts'><%=t.rates_console.discounts%></a></li>
             <% end %>
-            <% if addon_massive_price_adjust %>
+            <% if addons.has_key?(:addon_massive_price_adjust) and addons[:addon_massive_price_adjust] %>
                 <li><a href='/admin/rates/adjust-prices'><%=t.booking_console.adjust_prices%></a></li>
             <% end %>
-          </ul>    
-        </li> 
+          </ul>
+        </li>
         <% if user && user.superuser? %>
-        <li><a href='/admin'><%=t.booking_console_configuration.admin%></a></li>
-        <% end %>                          
+            <li><a href='/admin'><%=t.booking_console_configuration.admin%></a></li>
+        <% end %>
       </ul>
-   </li>
-            
+    </li>
+
   </ul>
 </div>
 
 
 <script>
 
-require(["jquery","YSDCssMenu"],function($,YsdCssMenu){
-  $(document).ready(function(){
-    YsdCssMenu.buildMenu();
-  });
-});
+    require(["jquery","YSDCssMenu"],function($,YsdCssMenu){
+        $(document).ready(function(){
+            YsdCssMenu.buildMenu();
+        });
+    });
 
 </script>

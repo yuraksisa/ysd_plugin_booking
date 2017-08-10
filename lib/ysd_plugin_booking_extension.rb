@@ -116,12 +116,6 @@ module Huasi
            :module => :booking})      
 
       SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.reservation_starts_with'},
-        {:value => 'dates',
-         :description => 'Reservation start with: dates or category',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.min_days'},
         {:value => '1',
          :description => 'Minimum number of days you must book',
@@ -337,8 +331,47 @@ module Huasi
          :description => 'Adwords booking pay now conversion label',
          :module => :booking})
 
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car'},
+    {
+        :name => 'Rent a car',
+        :presentation_order => 1,
+        :frontend => :dates,
+        :driver => true,
+        :driver_date_of_birth => false,
+        :driver_license => true,
+        :guests => false,
+        :flight => true,
+        :pickup_return_place => true,
+        :time_to_from => true,
+        :start_date_literal => :pickup,
+        :cycle_of_24_hours => true} )
+
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'kayak'},
+    {
+        :name => 'Alquiler y/o excursiones en kayak',
+        :presentation_order => 2,
+        :frontend => :shopcart,
+        :driver => true,
+        :driver_date_of_birth => false,
+        :driver_license => false,
+        :guests => false,
+        :pickup_return_place => false,
+        :time_to_from => true,
+        :start_date_literal => :pickup,
+        :height => true,
+        :height_mandatory => true,
+        :height_values => '150-175,175-200',
+        :weight => true,
+        :weight_mandatory => true,
+        :weight_values => '<= 75Kg,75Kg',
+        :cycle_of_24_hours => false})
+
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
-        {:driver => false,
+        {
+         :name => 'Alojamientos (hotel, hostal, ...)',
+         :frontend => :categories,
+         :presentation_order => 3,
+         :driver => false,
          :guests => true,
          :flight => true,
          :pickup_return_place => false,
@@ -346,19 +379,12 @@ module Huasi
          :start_date_literal => :arrival,
          :cycle_of_24_hours => true} )
 
-      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car'},
-        {:driver => true,
-         :driver_date_of_birth => false,
-         :driver_license => true,
-         :guests => false,
-         :flight => true,
-         :pickup_return_place => true,
-         :time_to_from => true,
-         :start_date_literal => :pickup,
-         :cycle_of_24_hours => true} )
-
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'bike'},
-        {:driver => false,
+        {
+         :name => 'Alquiler y/o rutas en bicicleta',
+         :frontend => :shopcart,
+         :presentation_order => 4,
+         :driver => false,
          :guests => false,
          :flight => false,
          :pickup_return_place => false,
@@ -366,21 +392,18 @@ module Huasi
          :start_date_literal => :pickup,
          :cycle_of_24_hours => false} )
 
-      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'kayak'},
-        {:driver => true,
-         :driver_date_of_birth => false,
-         :driver_license => false,
-         :guests => false,
-         :pickup_return_place => false,
-         :time_to_from => true,
-         :start_date_literal => :pickup,
-         :height => true,
-         :height_mandatory => true,
-         :height_values => '150-175,175-200',
-         :weight => true,
-         :weight_mandatory => true,
-         :weight_values => '<= 75Kg,75Kg',
-         :cycle_of_24_hours => false})
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'other'},
+    {
+        :name => 'Otros',
+        :frontend => :dates,
+        :presentation_order => 99,
+        :driver => false,
+        :guests => false,
+        :flight => false,
+        :pickup_return_place => false,
+        :time_to_from => true,
+        :start_date_literal => :pickup,
+        :cycle_of_24_hours => false} )
 
       if Yito::Model::Calendar::EventType.count(:name => 'not_available') == 0
         Yito::Model::Calendar::EventType.create(:name => 'not_available', 
@@ -560,40 +583,13 @@ module Huasi
 
           booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
 
-          # Check Plan [First RequestStore (cloud) and then Sinatra settings (standalone)]
-          booking_renting = true
-          booking_activities = false
-          unless mybooking_plan = RequestStore.store[:mybooking_plan]
-            mybooking_plan = app.settings.respond_to?(:mybooking_plan) ? app.settings.mybooking_plan : nil
-          end
-          if mybooking_plan
-            booking_renting = [:pro_renting, :pro_plus].include?(mybooking_plan)
-            booking_activities = [:pro_activities, :pro_plus].include?(mybooking_plan)
-          end
-
-          # Complete with a request to the add-ons [First RequestStore (cloud) and the Sinatra settings (standalone)]
-          if RequestStore.store[:mybooking_addons]
-            addon_crm = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_crm)
-            addon_finances = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_finances)
-            addon_massive_price_adjust = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_massive_price_adjust)
-            addon_offer_promotion_code = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_offer_promotion_code)
-            addon_journal = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_journal)
-          else
-            addon_crm = (app.settings.respond_to?(:mybooking_addon_crm) ? app.settings.mybooking_addon_crm : false)
-            addon_finances = (app.settings.respond_to?(:mybooking_addon_finances) ? app.settings.mybooking_addon_finances : false)
-            addon_massive_price_adjust = (app.settings.respond_to?(:mybooking_addon_massive_price_adjust) ? app.settings.mybooking_addon_massive_price_adjust : false)
-            addon_offer_promotion_code = (app.settings.respond_to?(:mybooking_addon_offer_promotion_code) ? app.settings.mybooking_addon_offer_promotion_code : false)
-            addon_journal = (app.settings.respond_to?(:mybooking_addon_journal) ? app.settings.mybooking_addon_journal : false)
-          end
+          booking_renting, booking_activities = app.mybooking_plan
+          addons = app.mybooking_addons
 
           if booking_mode == 'rent'
-            menu_locals = {addon_crm: addon_crm,
-                           addon_finances: addon_finances,
-                           addon_massive_price_adjust: addon_massive_price_adjust,
-                           addon_offer_promotion_code: addon_offer_promotion_code,
-                           addon_journal: addon_journal}
-            menu_locals.store(:booking_activities, booking_activities) 
-            menu_locals.store(:booking_renting, booking_renting)
+            menu_locals = {booking_renting: booking_renting,
+                           booking_activities: booking_activities,
+                           addons: addons}
             if booking_renting
               menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
               menu_locals.store(:today_pickup, BookingDataSystem::Booking.count_pickup(today))

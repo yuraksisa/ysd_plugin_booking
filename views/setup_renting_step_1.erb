@@ -1,0 +1,26 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.setup_renting.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="setup_renting_step_1" action="/admin/booking/setup-renting-1" method="POST">
+        <h3><%=t.setup_renting_step_1.title%></h3>
+        <br>
+        <p><%=t.setup_renting_step_1.description%></p>
+        <br>
+        <% @types_of_business.each do |type_of_business| %>
+            <input type="radio" name="type_of_business" id="type_of_business" value="<%=type_of_business.code%>"
+             <%if type_of_business.code == @current_type_of_business%>checked<%end%>><%=type_of_business.name%></input>
+            <br><br>
+        <% end %>
+        <hr>
+        <div class="formrow-botonera">
+          <input type="submit" value="<%=t.setup_renting.next_step%>" class="button blue-button">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

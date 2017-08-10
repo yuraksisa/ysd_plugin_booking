@@ -1,0 +1,23 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.setup_renting.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="variables" action="/admin/booking/setup-renting-2" method="POST">
+        <h3><%=t.setup_renting_step_2.title%></h3>
+        <br>
+        <p><%=t.setup_renting_step_2.description%></p>
+         <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>
+         <div class="formrow-botonera top-separator top-space">
+           <input type="submit" value="<%=t.setup_renting.next_step%>" class="button blue-button">
+           <div class="form-button button blue-button right-float right-margin">
+              <a href="/admin/booking/setup-renting-1"><%=t.setup_renting.previous_step%></a>
+           </div>
+         </div>
+      </form>
+    </div>
+  </div>
+</div>
+

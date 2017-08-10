@@ -1,6 +1,55 @@
 module Sinatra
   module BookingHelpers
-    
+
+    #
+    # Get the plan
+    #
+    def mybooking_plan
+
+      booking_renting = true
+      booking_activities = false
+      unless mybooking_plan = RequestStore.store[:mybooking_plan]
+        mybooking_plan = settings.respond_to?(:mybooking_plan) ? settings.mybooking_plan : nil
+      end
+      if mybooking_plan
+        booking_renting = [:pro_renting, :pro_plus].include?(mybooking_plan)
+        booking_activities = [:pro_activities, :pro_plus].include?(mybooking_plan)
+      end
+
+      [booking_renting, booking_activities]
+
+    end
+
+    #
+    # Get the add-ons
+    #
+    def mybooking_addons
+
+      if RequestStore.store[:mybooking_addons]
+        addon_crm = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_crm)
+        addon_finances = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_finances)
+        addon_massive_price_adjust = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_massive_price_adjust)
+        addon_offer_promotion_code = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_offer_promotion_code)
+        addon_journal = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_journal)
+      else
+        addon_crm = (settings.respond_to?(:mybooking_addon_crm) ? settings.mybooking_addon_crm : false)
+        addon_finances = (settings.respond_to?(:mybooking_addon_finances) ? settings.mybooking_addon_finances : false)
+        addon_massive_price_adjust = (settings.respond_to?(:mybooking_addon_massive_price_adjust) ? settings.mybooking_addon_massive_price_adjust : false)
+        addon_offer_promotion_code = (settings.respond_to?(:mybooking_addon_offer_promotion_code) ? settings.mybooking_addon_offer_promotion_code : false)
+        addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+      end
+
+      {addon_crm: addon_crm,
+       addon_finances: addon_finances,
+       addon_massive_price_adjust: addon_massive_price_adjust,
+       addon_offer_promotion_code: addon_offer_promotion_code,
+       addon_journal: addon_journal}
+
+    end
+
+    #
+    # Request catalog
+    #
     def request_catalog
 
         catalog =  if params[:booking_catalog_code]

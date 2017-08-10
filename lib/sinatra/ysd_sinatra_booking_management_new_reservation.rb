@@ -37,8 +37,8 @@ module Sinatra
             catalog = ::Yito::Model::Booking::Catalog.get(params[:booking_catalog_code])
           end
 
-          reservation_mode = catalog ? catalog.selector.to_sym : SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym
           product_family = catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          reservation_mode = product_family.frontend
 
           locals.store(:booking_reservation_starts_with, reservation_mode)
           locals.store(:booking_item_family, product_family)

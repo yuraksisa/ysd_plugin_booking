@@ -1375,3 +1375,28 @@ new_journal:
     new_journal_creation_error: Error creando registro
 booking_journal:
   title: Diario
+setup_booking:
+  title: Configuración mybooking
+  welcome: >
+           <h3>Bienvido/a a mybooking!</h3>
+           <br>
+           <p>Desde aquí puede proceder a configurar su negocio para empezar a alquilar u organizar actividades.</p>
+  renting: Empezar la configuración del alquiler
+  activities: Empezar la configuración de las actividades
+setup_renting:
+  title: Configuración sistema de alquiler
+  next_step: Siguiente
+  previous_step: Anterior
+  finish: Finalizar
+setup_renting_step_1:
+  title: Tipo de negocio
+  description: Seleccione la opción que corresponde con su tipo de negocio
+setup_renting_step_2:
+  title: Tipo de negocio
+  description: Seleccione la opción que corresponde con su tipo de negocio
+setup_renting_step_3:
+  title: Tipo de negocio
+  description: Seleccione la opción que corresponde con su tipo de negocio
+setup_renting_step_4:
+  title: Tipo de negocio
+  description: Seleccione la opción que corresponde con su tipo de negocio

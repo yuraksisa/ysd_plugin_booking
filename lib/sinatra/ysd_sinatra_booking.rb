@@ -55,12 +55,12 @@ module Sinatra
 
             locals = {}
 
+            product_family = catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+
             locals.store(:admin_mode, false)
             locals.store(:confirm_booking_url, '/api/booking')
-            locals.store(:booking_reservation_starts_with,
-                         catalog ? catalog.selector.to_sym : SystemConfiguration::Variable.get_value('booking.reservation_starts_with', :dates).to_sym)
-            locals.store(:booking_item_family,
-                         catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+            locals.store(:booking_item_family, product_family)
+            locals.store(:booking_reservation_starts_with, product_family.frontend)
             locals.store(:booking_item_type,
                          SystemConfiguration::Variable.get_value('booking.item_type'))
             locals.store(:booking_payment,
@@ -89,11 +89,6 @@ module Sinatra
             locals.store(:promotion_codes_active, ::Yito::Model::Rates::PromotionCode.active?(Date.today))
             locals.store(:offer_discount, ::Yito::Model::Rates::Discount.active(Date.today).first)
 
-            #booking_js = catalog_template(catalog)
-            #
-            #if booking_js and not booking_js.text.empty?
-            #  locals.store(:booking_js, booking_js.text)
-            #end
             locals.store(:booking_js, '')
 
             load_page('reserva-online'.to_sym, options.merge(:locals => locals))
