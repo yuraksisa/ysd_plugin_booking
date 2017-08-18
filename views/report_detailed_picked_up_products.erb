@@ -1,0 +1,76 @@
+<style>
+  #table {
+    table-layout: fixed;
+    border: 1px solid #EEE;
+  }
+  #table .table-cell {
+    border-right: 1px solid #EEE;
+    width: 1.6em;
+    font-size: 0.85em;
+  }
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Listado detallado de productos entregados</h2>
+  <div class="form-button" style="float: right">
+    <a id="print_link" href="/admin/booking/reports/detailed-picked-up-products-csv" target="_blank">Excel</a>
+  </div>
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="report_reservations_form" action="/admin/booking/reports/detailed-picked-up-products" method="get">
+        <div class="formrow">
+          <div style="display: inline-block">
+            <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+          </div>
+          <div style="display: inline-block">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <% if @data.empty? %>
+        <div class="all-border-solid-light top-margin-1line">
+          <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+        </div>
+    <% else %>
+        <table id="table" class="table">
+          <thead class="table-header">
+          <tr>
+            <th class="table-cell" scope="col" style="width:2em">Localizador</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
+            <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
+            <th class="table-cell" scope="col" style="width:4em">Marca/Modelo/Color</th>
+            <th class="table-cell" scope="col" style="width:2em">Matrícula</th>
+            <th class="table-cell" scope="col" style="width:4.5em">Nombre usuario</th>
+            <th class="table-cell" scope="col" style="width:3em">Documento usuario</th>
+            <th class="table-cell" scope="col" style="width:3em">Permiso conducir</th>
+            <th class="table-cell" scope="col" style="width:8em">Dirección</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @data.each do |reservation| %>
+          <tr class="table-row">
+            <td class="table-cell"><%=reservation.id%></td>
+            <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <%=reservation.time_from%></td>
+            <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <%=reservation.time_to%></td>
+            <td class="table-cell"><%=reservation.booking_item_stock_model%></td>
+            <td class="table-cell"><%=reservation.booking_item_stock_plate%></td>
+            <td class="table-cell"><%=reservation.driver_name%> <%=reservation.driver_surname%></td>
+            <td class="table-cell"><%=reservation.driver_document_id%></td>
+            <td class="table-cell"><%=reservation.driver_driving_license_number%></td>
+            <td class="table-cell"><%=reservation.street%> <%=reservation.number%> <%=reservation.complement%> <%=reservation.city%> <%=reservation.state%> <%=reservation.country%> <%=reservation.zip%></td>
+          </tr>
+          <% end %>
+          </tbody>
+        </table>
+  <% end %>
+  </div>
+</div>

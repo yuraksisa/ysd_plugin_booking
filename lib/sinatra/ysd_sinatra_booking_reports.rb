@@ -1,0 +1,148 @@
+module Sinatra
+  module YitoExtension
+    #
+    # Reports
+    #
+    module BookingReports
+
+      def self.registered(app)
+
+
+        #
+        # Category traslation page
+        #
+        app.get "/admin/booking/reports/detailed-picked-up-products", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          from = DateTime.now
+          if params[:date_from]
+            begin
+              from = DateTime.strptime(params[:date_from], '%Y-%m-%d')
+            rescue
+              logger.error("pickup/return date from is not valid #{params[:date_from]}")
+            end
+          end
+
+          to = from
+          if params[:date_to]
+            begin
+              to = DateTime.strptime(params[:date_to], '%Y-%m-%d')
+            rescue
+              logger.error("pickup/return date to is not valid #{params[:date_to]}")
+            end
+          end
+
+          @data = BookingDataSystem::Booking.detailed_picked_up_products(from.to_date, to.to_date)
+
+          load_page(:report_detailed_picked_up_products)
+
+
+        end
+
+        app.get "/admin/booking/reports/detailed-picked-up-products-csv", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          from = DateTime.now
+          if params[:date_from]
+            begin
+              from = DateTime.strptime(params[:date_from], '%Y-%m-%d')
+            rescue
+              logger.error("pickup/return date from is not valid #{params[:date_from]}")
+            end
+          end
+
+          to = from
+          if params[:date_to]
+            begin
+              to = DateTime.strptime(params[:date_to], '%Y-%m-%d')
+            rescue
+              logger.error("pickup/return date to is not valid #{params[:date_to]}")
+            end
+          end
+
+          @data = BookingDataSystem::Booking.detailed_picked_up_products(from.to_date, to.to_date)
+
+          result = "localizador;fecha inicio;fecha fin;marca/modelo/color;matrícula;nombre usuario;documento usuario;permiso conducir;dirección"
+          result << "\n"
+          @data.each do |reservation|
+            result << "#{reservation.id};#{reservation.date_from.strftime('%Y-%m-%d')} #{reservation.time_from};#{reservation.date_to.strftime('%Y-%m-%d')} #{reservation.time_to};"
+            result << "#{reservation.booking_item_stock_model};#{reservation.booking_item_stock_plate};#{reservation.driver_name} #{reservation.driver_surname};"
+            result << "#{reservation.driver_document_id};#{reservation.driver_driving_license_number};"
+            result << "#{reservation.street} #{reservation.number} #{reservation.complement} #{reservation.city} #{reservation.state} #{reservation.country} #{reservation.zip}"
+            result << "\n"
+          end
+
+          content_type 'text/csv'
+          body result
+
+        end
+        
+        #
+        # Category traslation page
+        #
+        app.get "/admin/booking/reports/finances-finished-reservations", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          from = DateTime.now
+          if params[:date_from]
+            begin
+              from = DateTime.strptime(params[:date_from], '%Y-%m-%d')
+            rescue
+              logger.error("pickup/return date from is not valid #{params[:date_from]}")
+            end
+          end
+
+          to = from
+          if params[:date_to]
+            begin
+              to = DateTime.strptime(params[:date_to], '%Y-%m-%d')
+            rescue
+              logger.error("pickup/return date to is not valid #{params[:date_to]}")
+            end
+          end
+
+          @data = BookingDataSystem::Booking.finances_finished_reservations(from.to_date, to.to_date)
+
+          load_page(:report_finances_finished_reservations)
+
+
+        end
+
+        app.get "/admin/booking/reports/finances-finished-reservations-csv", :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          from = DateTime.now
+          if params[:date_from]
+            begin
+              from = DateTime.strptime(params[:date_from], '%Y-%m-%d')
+            rescue
+              logger.error("pickup/return date from is not valid #{params[:date_from]}")
+            end
+          end
+
+          to = from
+          if params[:date_to]
+            begin
+              to = DateTime.strptime(params[:date_to], '%Y-%m-%d')
+            rescue
+              logger.error("pickup/return date to is not valid #{params[:date_to]}")
+            end
+          end
+
+          @data = BookingDataSystem::Booking.finances_finished_reservations(from.to_date, to.to_date)
+
+          result = "matrícula;modelo;conductor;fecha inicio;fecha fin;importe total contrato"
+          result << "\n"
+          @data.each do |reservation|
+            result << "#{reservation.booking_item_stock_plate};#{reservation.booking_item_stock_model};#{reservation.driver_name} #{reservation.driver_surname};"
+            result << "#{reservation.date_from.strftime('%Y-%m-%d')} #{reservation.time_from};#{reservation.date_to.strftime('%Y-%m-%d')} #{reservation.time_to};"
+            result << "#{'%.2f' % reservation.total_cost}"
+            result << "\n"
+          end
+
+          content_type 'text/csv'
+          body result
+
+        end
+
+      end
+
+    end
+  end
+end  

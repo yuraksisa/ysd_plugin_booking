@@ -191,6 +191,8 @@ booking_console:
   report_resource_reservations: Reservas por recurso
   report_customer_reservations: Reservas (cliente)
   report_prereservations: Prereservas
+  report_picked_up_products: Productos entregados
+  report_finances_finished_reservations: Reservas finalizadas (finanzas)
   activities_report: Actividades  
   report_customers: Clientes
   journal: Diario
