@@ -600,7 +600,11 @@ module Huasi
               menu_locals.store(:today_start_activities, ::Yito::Model::Order::Order.count_start(today))
             end
             if block_name == 'booking_admin_menu'
-              app.partial(:booking_menu, :locals => menu_locals)
+              begin
+                app.partial(:booking_menu, :locals => menu_locals)
+              rescue => error
+                p "error: #{error.inspect}"
+              end
             else
               app.partial(:booking_operator_menu, :locals => menu_locals)
             end
