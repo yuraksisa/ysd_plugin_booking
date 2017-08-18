@@ -41,4 +41,5 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YitoExtension::BookingCustomers
    sinatra_extension Sinatra::YitoExtension::BookingTranslation
    sinatra_extension Sinatra::YitoExtension::BookingTranslationRESTApi
+   sinatra_extension Sinatra::YitoExtension::BookingReports
 end
