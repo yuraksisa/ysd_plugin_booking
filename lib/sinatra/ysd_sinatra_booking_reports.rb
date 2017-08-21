@@ -70,8 +70,11 @@ module Sinatra
             result << "\n"
           end
 
+          suffix = (to.to_date == from.to_date) ? to.strftime('%Y-%m-%d') : "#{from.strftime('%Y-%m-%d')}-#{to.strftime('%Y-%m-%d')}"
+
           content_type 'text/csv'
-          body result
+          attachment "pickup-return-#{suffix}.csv"
+          body result.force_encoding("utf-8")
 
         end
         
@@ -136,8 +139,11 @@ module Sinatra
             result << "\n"
           end
 
+          suffix = (to.to_date == from.to_date) ? to.strftime('%Y-%m-%d') : "#{from.strftime('%Y-%m-%d')}-#{to.strftime('%Y-%m-%d')}"
+
           content_type 'text/csv'
-          body result
+          attachment "finances-#{suffix}.csv"
+          body result.force_encoding("utf-8")
 
         end
 
