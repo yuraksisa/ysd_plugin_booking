@@ -58,7 +58,7 @@
           <tbody>
           <% @data.each do |reservation| %>
           <tr class="table-row">
-            <td class="table-cell"><%=reservation.id%></td>
+            <td class="table-cell"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
             <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <%=reservation.time_from%></td>
             <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <%=reservation.time_to%></td>
             <td class="table-cell"><%=reservation.booking_item_stock_model%></td>
