@@ -44,11 +44,15 @@
             <div class="grid_6">
               <form name="variables" action="/api/variables" method="PUT" 
                     data-remote="ajax" data-remote-method="PUT">
+                <h3><%=t.booking_settings.form.notifications%></h3>
                 <%= render_variable_textarea('booking.notification_email', t.booking_settings.form.notification_email) %>
                 <%= render_variable_checkbox_boolean('booking.send_notifications',
                                                      t.booking_settings.form.send_notifications) %>
                 <%= render_variable_checkbox_boolean('booking.send_notifications_backoffice_reservations',
                                                      t.booking_settings.form.send_notifications_backoffice_reservations) %>
+                <h3><%=t.booking_settings.form.business%></h3>
+                <%= render_variable_checkbox_boolean('booking.multiple_rental_locations',
+                                                     t.booking_settings.form.multiple_rental_locations) %>
                 <div class="formrow-botonera top-separator top-space">
                   <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
                 </div>

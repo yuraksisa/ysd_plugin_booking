@@ -1,0 +1,35 @@
+require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"],
+    function($, EntityManagement, EntityManagementComplementHooks) {
+
+        var rentalLocationsHook = {
+
+
+            entityKey : function(entity) {
+                return entity.id;
+            },
+
+            onEdit : function(entity) {
+                $('#name').focus();
+            },
+
+            onNew : function() {
+                $('#name').focus();
+            }
+
+
+        };
+
+        var urls = { query_url  : '/api/booking-rental-locations',
+            create_url : '/api/booking-rental-location',
+            update_url : '/api/booking-rental-location',
+            delete_url : '/api/booking-rental-location',
+            get_url    : '/api/booking-rental-location'
+        };
+
+        var hooks = [rentalLocationsHook];
+
+        var hooksManager = new EntityManagement(urls, 'booking-rental-location',
+            <%=booking_rental_locations%>, hooks, {prefix: '/admin/booking'});
+
+
+    });

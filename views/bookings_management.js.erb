@@ -443,6 +443,14 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
           self.nextExternalInvoiceNumber();
       })
 
+      // Configure rental
+      <% if multiple_rental_locations %>
+      var dataSourceRentalLocation = new RemoteDataSource('/api/booking-rental-locations?all=yes',{'id':'id','description':'name'});
+      var valueRentalLocation = entity.rental_location_id;
+      var selectorRentalLocation = new SelectSelector('rental_location',
+            dataSourceRentalLocation, valueRentalLocation, true );
+      <% end %>
+        
     }
 
     this.configForm = function(entity) {

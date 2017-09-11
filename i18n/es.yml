@@ -47,9 +47,12 @@ booking_configuration_templates:
 booking_settings:
   form:
     title: Configuración General
+    notifications: Notificaciones
     notification_email: Email de notificación
     send_notifications: Envía notificaciones por email
     send_notifications_backoffice_reservations: Envía notificaciones por mail (reservas del backoffice)
+    business: Negocio
+    multiple_rental_locations: Múltiples oficinas
     scheduler_start_time: Hora de inicio planificación
     scheduler_finish_time: Hora de fin planificación    
     booking_mode:
@@ -196,6 +199,7 @@ booking_console:
   activities_report: Actividades  
   report_customers: Clientes
   journal: Diario
+  rental_locations: Oficinas
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas
@@ -525,6 +529,7 @@ booking_management:
     external_invoicing_tab: Facturación externa
     other_tab: Otros datos
     deposit_received: Depósito
+    rental_location: Oficina / Centro
     confirm_button: 
       label: Confirmar
       message: ¿Desea confirmar la reserva?
@@ -1403,3 +1408,12 @@ setup_renting_step_3:
 setup_renting_step_4:
   title: Tipo de negocio
   description: Seleccione la opción que corresponde con su tipo de negocio
+booking_rental_locations_management:
+  title: Oficinas
+  description: Oficinas de alquiler/actividades
+  table:
+    id: Identificador
+    name: Nombre
+  form:
+    name:
+      label: Nombre

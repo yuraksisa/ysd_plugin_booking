@@ -444,6 +444,7 @@ module Sinatra
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
           locals.store(:booking_payment_enabled, SystemConfiguration::Variable.get_value('booking.payment', false))
           locals.store(:booking_front_end_prefix, SystemConfiguration::Variable.get_value('booking.front_end_prefix', ''))
+          locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
 
           addon_simple_invoicing = (settings.respond_to?(:mybooking_addon_simple_invoicing) ? settings.mybooking_addon_simple_invoicing : false)
           locals.store(:booking_addon_simple_invoicing, addon_simple_invoicing)

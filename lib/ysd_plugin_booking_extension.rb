@@ -331,6 +331,12 @@ module Huasi
          :description => 'Adwords booking pay now conversion label',
          :module => :booking})
 
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.multiple_rental_locations'},
+          {:value => 'false',
+           :description => 'There are multiple rental locations',
+           :module => :booking})
+
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car'},
     {
         :name => 'Rent a car',
@@ -599,6 +605,7 @@ module Huasi
               menu_locals.store(:pending_confirmation_activities, ::Yito::Model::Order::Order.count_pending_confirmation_orders(year))
               menu_locals.store(:today_start_activities, ::Yito::Model::Order::Order.count_start(today))
             end
+            menu_locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
             if block_name == 'booking_admin_menu'
               begin
                 app.partial(:booking_menu, :locals => menu_locals)
