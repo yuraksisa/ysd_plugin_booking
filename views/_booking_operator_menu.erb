@@ -47,7 +47,7 @@
       </ul>
    </li>   
    <% end %>
-   <% if addon_crm %>
+    <% if addons.has_key?(:addon_crm) and addons[:addon_crm] %>
    <li class='<%if ['/admin/order/information-requests'].index(request.path)%>active <%end%>has-sub'><a href='#'><%=t.booking_console.crm%></a>
       <ul>
         <li><a href='/admin/order/information-requests'><%=t.booking_console.information_requests%></a></li>  
