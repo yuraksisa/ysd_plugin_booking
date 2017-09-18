@@ -37,7 +37,7 @@ module Sinatra
         #
         # Get booking-rental-location
         #
-        app.get "/api/booking-rental-location" do
+        app.get "/api/booking-rental-locations" do
 
           data = ::Yito::Model::Booking::RentalLocation.all()
 

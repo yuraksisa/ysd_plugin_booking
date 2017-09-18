@@ -101,7 +101,7 @@
               <a name="prices_tab" href="#prices_tab">Tarifas</a>
           </li>
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
-              <a name="deposit_tab" href="#deposit_tab">Depósito</a>
+              <a name="deposit_tab" href="#deposit_tab">Fianza</a>
           </li>          
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
               <a name="calendar_tab" href="#calendar_tab">Calendario</a>
@@ -267,8 +267,7 @@
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_category_management.form.deposit.label%></label>
                 <input type="text" name="deposit" id="deposit" <%% if (entity){%>value="<%%=new Number(entity.deposit).toFixed(2)%>" <%%} else { %>value="0"<%%}%>/>
-                <p class="smaller_text less_contrast_text">Esta opción permite configurar el importe del depósito que se ha de 
-                abonar al realizar la reserva</p>
+                <p class="smaller_text less_contrast_text">Esta opción permite configurar el importe de la fianza para cubrir los desperfectos en el producto</p>
               </div>
               <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
                 <div class="navigation-bar-crud-buttons">

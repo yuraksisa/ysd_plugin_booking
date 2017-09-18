@@ -15,6 +15,9 @@
   <table id="elements_table" class="table">
      <thead class="table-header">
        <tr>
+         <% if multiple_rental_locations %>
+         <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_management.table.rental_location %></th>
+         <% end %>
          <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_management.table.id %></th>
          <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.booking_management.table.creation_date %></th>
          <th class="table-header-title" scope="col" style="width:24%"><%= t.booking_management.table.customer %></th>
@@ -50,6 +53,9 @@
         
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row element-navigation-detail" rel="<%%= index %>" id="element_row_<%%=index%>">
+      <% if multiple_rental_locations %>
+      <td class="table-cell"><%%= entity.rental_location_code %></td>
+      <% end %>
       <td class="table-cell"><%%= entity.id %></td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.creation_date) %></td>
       <td class="table-cell"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
@@ -136,7 +142,7 @@
                 <span class="entity-fieldvalue">
                   <form name="rental_location">
                       <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                      <select name="rental_location_id" id="rental_location"></select>
+                      <select name="rental_location_code" id="rental_location"></select>
                       <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
                   </form>
                 </span>

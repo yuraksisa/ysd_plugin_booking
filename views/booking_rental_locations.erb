@@ -16,7 +16,7 @@
      <thead class="table-header">
        <tr>
          <th class="table-header-title" scope="col" style="width:30%">
-            <%= t.booking_rental_locations_management.table.id %>
+            <%= t.booking_rental_locations_management.table.code %>
          </th>
          <th class="table-header-title" scope="col" style="width:30%">
             <%= t.booking_rental_locations_management.table.name %>
@@ -35,7 +35,7 @@
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row" id="element_row_<%%=index%>">
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
-        <%%= entity.id %>
+        <%%= entity.code %>
       </td>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
         <%%= entity.name %>
@@ -61,9 +61,10 @@
 
           <div class="container_12">
             <div class="grid_12">
-              <%% if (entity) { %>
-              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-              <%% } %>
+              <div class="formrow">
+                <label class="fieldtitle"><%=t.booking_rental_locations_management.form.code.label%></label>
+                <input type="text" maxlength="50" id="code" name="code" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.code%>" readonly style="background: #EEE" <%% } %> />
+              </div>
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_rental_locations_management.form.name.label %></label>
                 <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
