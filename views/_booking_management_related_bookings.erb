@@ -1,5 +1,5 @@
         <div class="overflow all-space" style="border:1px solid #EEE">
-          <div class="more_contrast_text bigger_text bottom-margin">Entrega y recogida real</div>
+          <div class="more_contrast_text bigger_text bottom-margin">Entrega y devolución real</div>
           <form name="real_pickup_return_form" class="all-space" style="border:1px solid #EEE; padding-bottom: 1.45em">
             <input type="hidden" name="id" value="<%%=entity.id%>"/>              
             <div class="container_12">
@@ -11,18 +11,38 @@
               <div class="formrow">
                 <label class="fieldtitle">Agente que realiza entrega</label>
                 <input type="text" name="pickup_agent" class="fieldcontrol" maxlength="80" value="<%%=entity.pickup_agent%>"/> 
-              </div>                              
+              </div>
+              <% if booking_item_family.fuel %>
+              <div class="formrow">
+                <label class="fieldtitle">Combustible entrega</label>
+                <select name="pickup_fuel" id="pickup_fuel">
+                  <% [''].concat(BookingDataSystem::BookingFuel::FUEL).each do |item| %>
+                      <option value="<%=item%>" <%% if ('<%=item%>' == entity.pickup_fuel) {%>selected<%%}%>><%=item == '' ? '---seleccionar---' : item%></option>
+                  <% end %>
+                </select>
+              </div>
+              <% end %>
              </div>
              <div class="grid_6">
               <div class="left-margin">
                 <div class="formrow">
-                  <label class="fieldtitle">Hora de recogida real (hh:mm)</label>
+                  <label class="fieldtitle">Hora de devolución real (hh:mm)</label>
                   <input type="text" name="return_time" class="fieldcontrol" maxlength="5" value="<%%=entity.return_time%>"/> 
                 </div>     
                 <div class="formrow">
-                  <label class="fieldtitle">Agente que realiza la recogida</label>
+                  <label class="fieldtitle">Agente que realiza la devolución</label>
                   <input type="text" name="return_agent" class="fieldcontrol" maxlength="80" value="<%%=entity.return_agent%>"/> 
-                </div>      
+                </div>
+                <% if booking_item_family.fuel %>
+                    <div class="formrow">
+                      <label class="fieldtitle">Combustible devolución</label>
+                      <select name="return_fuel" id="return_fuel">
+                        <% [''].concat(BookingDataSystem::BookingFuel::FUEL).each do |item| %>
+                            <option value="<%=item%>" <%% if ('<%=item%>' == entity.return_fuel) {%>selected<%%}%>><%=item == '' ? '---seleccionar---' : item%></option>
+                        <% end %>
+                      </select>
+                    </div>
+                <% end %>
               </div>                    
              </div>
             </div>

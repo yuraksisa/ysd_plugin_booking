@@ -138,7 +138,7 @@
           </ul>
         </li>
     <% end %>
-    <% if defined?YsdPluginTryton %>
+    <% if addons.has_key?(:addon_tryton) and addons[:addon_tryton] %>
         <li class='<%if ['/admin/tryton/setup',
                          '/admin/integration/data',
                          '/admin/integration/errors',

@@ -328,7 +328,7 @@
          </div>
 
          <div id="related_bookings_tab" class="top-margin-1line">
-           <%= partial :booking_management_related_bookings %>
+           <%= partial :booking_management_related_bookings, locals: {booking_item_family: booking_item_family} %>
          </div>
 
          <% if booking_addon_simple_invoicing %>

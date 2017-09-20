@@ -31,19 +31,22 @@ module Sinatra
         addon_massive_price_adjust = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_massive_price_adjust)
         addon_offer_promotion_code = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_offer_promotion_code)
         addon_journal = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_journal)
+        addon_tryton = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_tryton)
       else
         addon_crm = (settings.respond_to?(:mybooking_addon_crm) ? settings.mybooking_addon_crm : false)
         addon_finances = (settings.respond_to?(:mybooking_addon_finances) ? settings.mybooking_addon_finances : false)
         addon_massive_price_adjust = (settings.respond_to?(:mybooking_addon_massive_price_adjust) ? settings.mybooking_addon_massive_price_adjust : false)
         addon_offer_promotion_code = (settings.respond_to?(:mybooking_addon_offer_promotion_code) ? settings.mybooking_addon_offer_promotion_code : false)
         addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+        addon_tryton = (settings.respond_to?(:mybooking_addon_tryton) ? settings.mybooking_addon_tryton : false)
       end
 
       {addon_crm: addon_crm,
        addon_finances: addon_finances,
        addon_massive_price_adjust: addon_massive_price_adjust,
        addon_offer_promotion_code: addon_offer_promotion_code,
-       addon_journal: addon_journal}
+       addon_journal: addon_journal,
+       addon_tryton: addon_tryton}
 
     end
 

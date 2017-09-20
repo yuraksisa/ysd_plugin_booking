@@ -350,7 +350,8 @@ module Huasi
         :pickup_return_place => true,
         :time_to_from => true,
         :start_date_literal => :pickup,
-        :cycle_of_24_hours => true} )
+        :cycle_of_24_hours => true,
+        :fuel => true} )
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'kayak'},
     {
@@ -370,7 +371,8 @@ module Huasi
         :weight => true,
         :weight_mandatory => true,
         :weight_values => '<= 75Kg,75Kg',
-        :cycle_of_24_hours => false})
+        :cycle_of_24_hours => false,
+        :fuel => false})
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
         {
@@ -383,7 +385,8 @@ module Huasi
          :pickup_return_place => false,
          :time_to_from => false,
          :start_date_literal => :arrival,
-         :cycle_of_24_hours => true} )
+         :cycle_of_24_hours => true,
+         :fuel => false} )
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'bike'},
         {
@@ -396,7 +399,8 @@ module Huasi
          :pickup_return_place => false,
          :time_to_from => true,
          :start_date_literal => :pickup,
-         :cycle_of_24_hours => false} )
+         :cycle_of_24_hours => false,
+         :fuel => false} )
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'other'},
     {
@@ -409,7 +413,8 @@ module Huasi
         :pickup_return_place => false,
         :time_to_from => true,
         :start_date_literal => :pickup,
-        :cycle_of_24_hours => false} )
+        :cycle_of_24_hours => false,
+        :fuel => false} )
 
       if Yito::Model::Calendar::EventType.count(:name => 'not_available') == 0
         Yito::Model::Calendar::EventType.create(:name => 'not_available', 
