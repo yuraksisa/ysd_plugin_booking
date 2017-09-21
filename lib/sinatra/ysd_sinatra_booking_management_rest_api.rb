@@ -534,9 +534,25 @@ module Sinatra
              to = DateTime.strptime(params[:to], '%Y-%m-%d')
            end
 
-           addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+           # Rental Location
+           rental_location_code = nil
+           multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+           if multiple_locations
+             if params[:rental_location]
+               rental_location_code = params[:rental_location]
+             else
+               if rental_location_user = ::Yito::Model::Booking::RentalLocationUser.first('user.username'.to_sym => user.username)
+                 rental_location_code = rental_location_user.rental_location.code if rental_location_user.user.belongs_to?('booking_operator')
+               end
+             end
+           end
 
-           data = BookingDataSystem::Booking.pickup_list(from, to ,addon_journal)
+           # Journal addon
+           addons = mybooking_addons
+           addon_journal = (addons and addons.has_key?(:addon_journal) and addons[:addon_journal])
+
+           # Query
+           data = BookingDataSystem::Booking.pickup_list(from, to , rental_location_code,addon_journal)
 
            data.to_json
 
@@ -557,9 +573,24 @@ module Sinatra
              to = DateTime.strptime(params[:to], '%Y-%m-%d')
            end
 
-           addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+           # Rental location
+           rental_location_code = nil
+           multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+           if multiple_locations
+             if params[:rental_location]
+               rental_location_code = params[:rental_location]
+             else
+               if rental_location_user = ::Yito::Model::Booking::RentalLocationUser.first('user.username'.to_sym => user.username)
+                 rental_location_code = rental_location_user.rental_location.code if rental_location_user.user.belongs_to?('booking_operator')
+               end
+             end
+           end
 
-           data = BookingDataSystem::Booking.return_list(from, to, addon_journal)
+           # Journal addon
+           addons = mybooking_addons
+           addon_journal = (addons and addons.has_key?(:addon_journal) and addons[:addon_journal])
+
+           data = BookingDataSystem::Booking.return_list(from, to, rental_location_code, addon_journal)
 
            data.to_json
           

@@ -7,16 +7,30 @@ require(['jquery', 'ysdtemplate', 'datejs',
      pickupResult : null,
      returnResult : null,
 
-     loadData: function(dateFrom, dateTo) {
+     loadData: function(dateFrom, dateTo, rentalLocation) {
 
        var strDateFrom = dateFrom.toString("yyyy-MM-dd");
        var strDateTo = dateTo.toString("yyyy-MM-dd");
 
-       $('#print_link').attr('href', '/admin/booking/reports/pickup-return-pdf?from='+strDateFrom+'&to='+strDateTo);
+       var pickedUpURL = '/api/booking/pickedup?from='+strDateFrom+'&to='+strDateTo;
+       var returnedURL = '/api/booking/returned?from='+strDateFrom+'&to='+strDateTo;
+       var reportURL = '/admin/booking/reports/pickup-return-pdf?from='+strDateFrom+'&to='+strDateTo;
+
+       <% if multiple_rental_locations %>
+       if (rentalLocation != null && rentalLocation != '') {
+           pickedUpURL += '&rental_location='+rentalLocation;
+           returnedURL += '&rental_location='+rentalLocation;
+           reportURL += '&rental_location='+rentalLocation;
+       }
+       <% end %>
+
+
+         $('#print_link').attr('href', reportURL);
+
 
   	   $.ajax({
   	   	       type: 'GET',
-  	   	       url : '/api/booking/pickedup?from='+strDateFrom+'&to='+strDateTo,
+  	   	       url : pickedUpURL,
   	   	       contentType: 'application/json; charset=utf-8',
   		         dataType : 'json',
   		         success: function(data, textStatus, jqXHR) {
@@ -27,7 +41,7 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
        $.ajax({
                type: 'GET',
-               url : '/api/booking/returned?from='+strDateFrom+'&to='+strDateTo,
+               url : returnedURL,
                contentType: 'application/json; charset=utf-8',
                dataType : 'json',
                success: function(data, textStatus, jqXHR) {
@@ -43,6 +57,28 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
   bookingPickupedController = {
 
+    searchButtonClick: function() {
+
+        var dateFrom = $('#date_from').datepicker('getDate');
+        var dateTo = $('#date_to').datepicker('getDate');
+
+        var strDateFrom = dateFrom.toString("yyyy-MM-dd");
+        var strDateTo = dateTo.toString("yyyy-MM-dd");
+
+        var url = '/admin/booking/reports/pickup-return?from='+strDateFrom+'&to='+strDateTo;
+
+        <% if multiple_rental_locations %>
+        var rentalLocationCode = $('#rental_location').val();
+        if (rentalLocationCode != null && rentalLocationCode != '') {
+            url += '&rental_location='+rentalLocationCode;
+        }
+        <% end %>
+
+        window.location.href=url;
+
+
+    },
+
     dateFromChanged: function() {
 
       var dateFrom = $('#date_from').datepicker('getDate'); 
@@ -53,13 +89,14 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
     dateChanged : function() {
 
+      /*
       var dateFrom = $('#date_from').datepicker('getDate');
       var dateTo = $('#date_to').datepicker('getDate');
-      
-      //bookingPickedupModel.loadData(dateFrom, dateTo);
+
       var strDateFrom = dateFrom.toString("yyyy-MM-dd");
       var strDateTo = dateTo.toString("yyyy-MM-dd");      
       window.location.href='/admin/booking/reports/pickup-return?from='+strDateFrom+'&to='+strDateTo;
+      */
 
     }
 
@@ -85,11 +122,21 @@ require(['jquery', 'ysdtemplate', 'datejs',
          var url_vars = this.getUrlVars();
          var from = decodeURIComponent(url_vars['from']);        
          var to = decodeURIComponent(url_vars['to']);
+
+         <% if multiple_rental_locations %>
+         var rentalLocation = decodeURIComponent(url_vars['rental_location']);
+         $('#rental_location').val(rentalLocation);
+         <% end %>
+
          var date_from = $.datepicker.parseDate("yy-mm-dd", from);
          var date_to = $.datepicker.parseDate("yy-mm-dd", to);
 
          var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];             
          $.datepicker.setDefaults($.datepicker.regional["<%=session[:locale] || 'es'%>"]);
+
+         $('#search').bind('click', function(){
+             bookingPickupedController.searchButtonClick();
+         })
 
          $('#date_from').datepicker(
                  {controlType: 'select', 
@@ -152,6 +199,12 @@ require(['jquery', 'ysdtemplate', 'datejs',
   bookingPickedupView.init();
   var dateFrom = $('#date_from').datepicker('getDate');
   var dateTo = $('#date_to').datepicker('getDate');
-  bookingPickedupModel.loadData(dateFrom, dateTo);
+
+  <% if multiple_rental_locations %>
+    var rentalLocationCode = $('#rental_location').val();
+    bookingPickedupModel.loadData(dateFrom, dateTo, rentalLocationCode);
+  <% else %>
+    bookingPickedupModel.loadData(dateFrom, dateTo);
+  <% end %>
 
 });

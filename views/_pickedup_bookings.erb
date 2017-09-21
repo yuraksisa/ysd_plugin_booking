@@ -10,14 +10,27 @@
  }
 </style>
 <div class="container_12">
-  <div class="grid_6">
+  <div class="grid_12">
     <form>
       <div class="formrow">
         <div style="display: inline-block">
-        <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
+          <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
         </div>
         <div style="display: inline-block">
-        <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+          <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
+        </div>
+        <% if multiple_rental_locations and current_user_manager%>
+        <div style="display: inline-block">
+          <select name="rental_location_code" id="rental_location">
+            <option value="">Todas</option>
+            <% rental_locations.each do |rental_location| %>
+              <option value="<%=rental_location.code%>"><%=rental_location.name%></option>
+            <% end %>
+          </select>
+        </div>
+        <% end %>
+        <div style="display: inline-block">
+          <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
         </div>
       </div>
     </form>
@@ -62,11 +75,15 @@
            <% if product_family and product_family.flight %>          
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.flight%></th>       
            <% end %>
-           <th class="table-header-title left_text" scope="col"><%=t.booking_list.total_pending%></th>            
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.total_pending%></th>
+           <% if multiple_rental_locations %>
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.rental_location%></th>
+           <% end %>
            <th class="table-header-title centered_text" scope="col" style="width:4em"></th>
          </tr>
        </thead>
        <% colspan = 8 %>
+       <% colspan = colspan + 1 if multiple_rental_locations %>
        <% colspan = colspan + 1 if product_family and product_family.pickup_return_place %>
        <% colspan = colspan + 1 if product_family and product_family.flight %>
        <tbody id="elements_tbody" class="table-tbody">  
@@ -96,12 +113,18 @@
            <td class="table-cell left_text right-margin"><%%=data[i].flight%></td>
            <% end %>
            <td class="table-cell right_text right-margin"><%%=data[i].total_pending ? new Number(data[i].total_pending).toFixed(2) : new Number(0).toFixed()%></td>
-           <td class="table-cell"><div class="form-button"><a href="/admin/booking/contract/<%%=data[i].id%>" target="_blank"><%=t.booking_management.print_contract%></a></div></td>                
+           <% if multiple_rental_locations %>
+           <td class="table-cell left_text"><%%= data[i].rental_location_code %></td>
+           <% end %>
+           <td class="table-cell"><div class="form-button"><a href="/admin/booking/contract/<%%=data[i].id%>" target="_blank"><%=t.booking_management.print_contract%></a></div></td>
          </tr>
          <%% } %>
          <%% } %>
        </tbody>
     </table>
+   <div class="all-space">
+     <p class="more_contrast_text"><%= t.booking_list.pickup_count %>: <%%=data.length%></p>
+   </div>
 </div>
 <%% } %>
 </script>
@@ -125,8 +148,14 @@
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.extras%></th>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.notas%></th>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.customer%></th>
+           <% if multiple_rental_locations %>
+           <th class="table-header-title left_text" scope="col"><%=t.booking_list.rental_location%></th>
+           <% end %>
          </tr>
        </thead>
+       <% colspan = 5 %>
+       <% colspan = colspan + 1 if multiple_rental_locations %>
+       <% colspan = colspan + 1 if product_family and product_family.pickup_return_place %>
        <tbody id="elements_tbody" class="table-tbody">  
          <%% 
          var i=0;
@@ -134,7 +163,7 @@
          <%% if (data[i].id == '.') { %>
          <tr class="table-row">
            <td class="table-cell left_text right-margin"><%%=data[i].date_to.toString('yyyy.MM.dd')%> <% if product_family and product_family.time_to_from%> <%%=data[i].time_to%> <%end%> </td>
-           <td class="table-cell left_text" <% if product_family and product_family.pickup_return_place %>colspan="6"<%else%>colspan="5"<%end%>>
+           <td class="table-cell left_text" colspan="<%=colspan%>">
              <%%= data[i].product %>
            </td>
          </tr>
@@ -148,12 +177,18 @@
            <td class="table-cell left_text"><%%= data[i].product %></td>
            <td class="table-cell left_text"><%%= data[i].extras %></td>
            <td class="table-cell left_text"><%%= data[i].notes %></td>
-           <td class="table-cell left_text"><%%=data[i].customer%> <br><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%> <br><%%=data[i].customer_email%></td> 
+           <td class="table-cell left_text"><%%=data[i].customer%> <br><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%> <br><%%=data[i].customer_email%></td>
+           <% if multiple_rental_locations %>
+           <td class="table-cell left_text"><%%= data[i].rental_location_code %></td>
+           <% end %>
          </tr>
          <%% } %>
          <%% } %>
        </tbody>
     </table>
+   <div class="all-space">
+     <p class="more_contrast_text"><%= t.booking_list.return_count %>: <%%=data.length%></p>
+   </div>
 </div>
 <%% } %>
 </script>

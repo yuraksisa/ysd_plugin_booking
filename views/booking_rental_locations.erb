@@ -69,7 +69,15 @@
                 <label class="fieldtitle"><%= t.booking_rental_locations_management.form.name.label %></label>
                 <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
               </div>
-            </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%=t.booking_rental_locations_management.form.users.label%></label>
+                  <fieldset class="fieldcontrol">
+                    <div id="rental_location_users">
+                    </div>
+                  </fieldset>
+                  <div class="fielddescription"><%=t.booking_rental_locations_management.form.users.description%></div>
+                  </div>
+              </div>
           </div>
 
         </div>

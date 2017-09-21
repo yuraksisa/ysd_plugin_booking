@@ -81,7 +81,7 @@ module Sinatra
 
           data_request = body_as_json(::Yito::Model::Booking::RentalLocation)
 
-          if data = ::Yito::Model::Booking::RentalLocation.get(data_request.delete(:id))
+          if data = ::Yito::Model::Booking::RentalLocation.get(data_request.delete(:code))
             data.attributes=data_request
             data.save
           end
@@ -98,7 +98,7 @@ module Sinatra
 
           data_request = body_as_json(::Yito::Model::Booking::RentalLocation)
 
-          key = data_request.delete(:id).to_i
+          key = data_request.delete(:code).to_i
 
           if data = ::Yito::Model::Booking::RentalLocation.get(key)
             data.destroy

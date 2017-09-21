@@ -15,21 +15,25 @@
   <table id="elements_table" class="table">
      <thead class="table-header">
        <tr>
-         <th class="table-header-title" scope="col" style="width:20%">
+         <th class="table-header-title" scope="col" style="width:5%">
             <%= t.booking_places_management.table.id %>
          </th>
          <th class="table-header-title" scope="col" style="width:20%">
             <%= t.booking_places_management.table.name %>
          </th>
-         <th class="table-header-title" scope="col" style="width:20%">
+         <th class="table-header-title" scope="col" style="width:10%">
            <%= t.booking_places_management.table.is_pickup %>
          </th>
-         <th class="table-header-title" scope="col" style="width:20%">
+         <th class="table-header-title" scope="col" style="width:10%">
            <%= t.booking_places_management.table.is_return %>
          </th> 
-         <th class="table-header-title" scope="col" style="width:20%">
+         <th class="table-header-title" scope="col" style="width:10%">
            <%= t.booking_places_management.table.price %>
-         </th>                            
+         </th>
+         <% if multiple_rental_locations %>
+         <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_places_management.table.rental_location %></th>
+         <% end %>
+         <th class="table-header-title" scope="col" style="<%if multiple_rental_locations%>width:35%<%else%>width:45%<%end%>"></th>
        </tr>
      </thead>
      <tbody id="elements_tbody" class="table-tbody">             
@@ -55,7 +59,11 @@
       </td>
       <td class="table-cell">
         <%%= new Number(entity.price).toFixed(2)%>   
-      </td>            
+      </td>
+      <% if multiple_rental_locations %>
+        <td class="table-cell"><%%= entity.rental_location_code %></td>
+      <% end %>
+      <td class="table-cell"></td>
     </tr>
 </script>
 
@@ -93,7 +101,13 @@
               <div class="formrow">
                 <label class="fieldtitle"><%= t.booking_places_management.form.price.label %></label>
                 <input type="text" maxlength="5" id="price" name="price" class="fieldcontrol" <%% if (entity) { %> value="<%%= new Number(entity.price).toFixed(2) %>" <%% } else { %> value="0" <%% } %> />
-              </div>                               
+              </div>
+            <% if multiple_rental_locations %>
+            <div class="formrow">
+              <label class="fieldtitle"><%= t.booking_places_management.form.rental_location.label %></label>
+              <select class="fieldcontrol" name="rental_location_code" id="rental_location"></select>
+            </div>
+            <% end %>
             </div>
           </div>
                         

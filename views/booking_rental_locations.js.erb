@@ -1,5 +1,5 @@
-require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"],
-    function($, EntityManagement, EntityManagementComplementHooks) {
+require(["jquery", "YSDEntityManagement", "YSDRemoteDataSource", "YSDListSelector", "jquery.ui", "YSDjson2"],
+    function($, EntityManagement, RemoteDataSource, ListSelector) {
 
         var rentalLocationsHook = {
 
@@ -10,16 +10,43 @@ require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"],
 
             onEdit : function(entity) {
                 $('#name').focus();
+                this.configForm(entity);
             },
 
             onNew : function() {
                 $('#name').focus();
-            }
+                this.configForm(null);
+            },
 
+            configForm: function(entity) {
+                // Configure the users
+                var ugDataSource = new RemoteDataSource('/api/users',{id:'username', description:'full_name'});
+                var ugValue = (entity&&entity.rental_location_users)?entity.rental_location_users.map(function(item){return item.user_username;}):[];
+                var ugSelector = new ListSelector('rental_location_users', 'rental_location_users[]', ugDataSource, ugValue );
+            },
+
+            adaptFormData: function(data) {
+
+              data.rental_location_users = this.adaptUsers(data.rental_location_users);
+              return data;
+
+            },
+
+            adaptUsers: function(users) { /* It converts from an array of string (each is an usergroup group) to an array of ProfileGroup */
+
+                var adaptedUsers = [];
+
+                for (idx in users) {
+                    adaptedUsers.push({'user': {'username': users[idx]}});
+                }
+
+                return adaptedUsers;
+            }
 
         };
 
-        var urls = { query_url  : '/api/booking-rental-locations',
+        var urls = {
+            query_url  : '/api/booking-rental-locations',
             create_url : '/api/booking-rental-location',
             update_url : '/api/booking-rental-location',
             delete_url : '/api/booking-rental-location',

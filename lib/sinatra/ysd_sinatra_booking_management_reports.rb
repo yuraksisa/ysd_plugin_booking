@@ -55,17 +55,34 @@ module Sinatra
 
           locals = {}
 
-          addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
-          locals.store(:addon_journal, addon_journal)
-          
-          if addon_journal
+          # Multiple locations
+          multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          locals.store(:multiple_rental_locations, multiple_locations)
+
+          if multiple_locations
+            locals.store(:rental_locations, ::Yito::Model::Booking::RentalLocation.all)
+            rental_location_user = ::Yito::Model::Booking::RentalLocationUser.first('user.username'.to_sym => user.username)
+            locals.store(:current_user_rental_location, rental_location_user.nil? ? nil : rental_location_user.rental_location)
+            locals.store(:current_user_manager, user.belongs_to?('booking_manager'))
+          else
+            locals.store(:rental_locations, [])
+            locals.store(:current_user_rental_location, nil)
+            locals.store(:current_user_manager, false)
+          end
+
+          # Journal addon
+          addons = mybooking_addons
+          locals.store(:addons, addons)
+          if addons and addons.has_key?(:addon_journal) and addons[:addon_journal]
             locals.store(:booking_journal_calendar, ::Yito::Model::Calendar::Calendar.first(name: 'booking_journal'))
           end
 
+          # Product family
           if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
             product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
             locals.store(:product_family, product_family)
           end
+
           load_page(:report_pickup_return, :locals => locals)
         end
 
@@ -89,10 +106,26 @@ module Sinatra
             end
           end
 
-          addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
+          # Rental location
+          rental_location_code = nil
+          multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          if multiple_locations
+            if params[:rental_location]
+              rental_location_code = params[:rental_location]
+            else
+              if rental_location_user = ::Yito::Model::Booking::RentalLocationUser.first('user.username'.to_sym => user.username)
+                rental_location_code = rental_location_user.rental_location.code if rental_location_user.user.belongs_to?('booking_operator')
+              end
+            end
+          end
 
+          # Journal addon
+          addons = mybooking_addons
+          addon_journal = (addons and addons.has_key?(:addon_journal) and addons[:addon_journal])
+
+          # Build report
           content_type 'application/pdf'
-          pdf = ::Yito::Model::Booking::Pdf::PickupReturn.new(from, to, addon_journal).build.render
+          pdf = ::Yito::Model::Booking::Pdf::PickupReturn.new(from, to, rental_location_code,addon_journal).build.render
 
         end
 

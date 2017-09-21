@@ -1,6 +1,10 @@
-<%= partial('pickedup_bookings.js'.to_sym, :locals => {:product_family => product_family}) %>
+<%= partial('pickedup_bookings.js'.to_sym, :locals => {product_family: product_family,
+                                                       multiple_rental_locations: multiple_rental_locations,
+                                                       rental_locations: rental_locations,
+                                                       current_user_rental_location: current_user_rental_location,
+                                                       current_user_manager: current_user_manager}) %>
 
-<% if addon_journal %>
+<% if addons and addons.has_key?(:addon_journal) and addons[:addon_journal]  %>
 require(['jquery','YSDRemoteDataSource', 'YSDSelectSelector','YSDForms', 'YSDGui',
         'jquery.formparams', 'jquery.validate', 'jquery.ui.timepicker'],
          function($,RemoteDataSource, SelectSelector, YSDForms, YSDGui) {

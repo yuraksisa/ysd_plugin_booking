@@ -253,6 +253,9 @@ booking_list:
   extras: Extras
   notas: Notas
   days: Días
+  rental_location: Oficina
+  pickup_count: Número de entregas
+  return_count: Número de recogidas
 booking_status:
   pending_confirmation: Pendiente
   confirmed: Confirmado
@@ -916,7 +919,7 @@ booking_extra_management:
     description:
       label: Descripción    
     max_quantity:
-      label: Cantidad máxima
+      label: Stock
     price_definition:
       label: Precio  
     active:
@@ -988,9 +991,10 @@ booking_places_management:
   table:
     id: Id
     name: Nombre
-    is_pickup: Es lugar de entrega
-    is_return: Es lugar de recogida
+    is_pickup: Lugar de entrega
+    is_return: Lugar de recogida
     price: Precio
+    rental_location: Oficina de gestión
   form:
     name:
       label: Nombre
@@ -1000,7 +1004,9 @@ booking_places_management:
       label: Es lugar de recollida
     price:
       label: Precio                  
-    name_required: Nombre obligatorio                            
+    name_required: Nombre obligatorio
+    rental_location:
+      label: Oficina de gestión
 booking:
   days: !!pl
     1: 1 día
@@ -1440,3 +1446,6 @@ booking_rental_locations_management:
       label: Código
     name:
       label: Nombre
+    users:
+      label: Usuarios
+      description: Seleccione los usuarios de la oficina. Sólo los usuarios operadores, los usuarios gestores tienen acceso a la información de todas las oficinas

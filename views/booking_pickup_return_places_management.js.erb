@@ -1,5 +1,5 @@
-require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"], 
-         function($, EntityManagement, EntityManagementComplementHooks) {
+require(["jquery", "YSDEntityManagement", "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
+         function($, EntityManagement, RemoteDataSource, SelectSelector) {
     
   var placeDefinitionHook = {
      
@@ -10,10 +10,22 @@ require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"],
 
     onEdit : function(entity) {
       $('#name').focus();
+      this.configForm(entity);
     },
   
     onNew : function() {
       $('#name').focus();
+      this.configForm(entity);
+    },
+
+    configForm: function(entity) {
+        // Configure rental
+        <% if multiple_rental_locations %>
+        var dataSourceRentalLocation = new RemoteDataSource('/api/booking-rental-locations?all=yes',{'id':'code','description':'name'});
+        var valueRentalLocation = entity ? entity.rental_location_code : null;
+        var selectorRentalLocation = new SelectSelector('rental_location',
+            dataSourceRentalLocation, valueRentalLocation, true );
+        <% end %>
     },
         
     adaptFormData : function(data) {
