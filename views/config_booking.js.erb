@@ -62,6 +62,26 @@ require(['jquery','YSDForms'], function($, YSDForms) {
         }
       });      
 
+      $("#booking\\.driver_min_age\\.rules").bind('change', function(){
+         noDriverMinAgeRules(!$(this).is(':checked'));
+      });
+
+      noDriverMinAgeRules(!$("#booking\\.driver_min_age\\.rules").is(':checked'));
+
+      function noDriverMinAgeRules(disabled){
+          $('#booking\\.driver_min_age').prop("disabled", disabled);
+          $('#booking\\.driver_min_age').css('background', disabled ? '#EEE' : '#FFF');
+          $('#booking\\.driver_min_age\\.driving_license_years_min').prop("disabled", disabled);
+          $('#booking\\.driver_min_age\\.driving_license_years_min').css('background', disabled ? '#EEE' : '#FFF');
+          $('#booking\\.driver_min_age\\.cost').prop("disabled", disabled);
+          $('#booking\\.driver_min_age\\.cost').css('background', disabled ? '#EEE' : '#FFF');
+          $('#booking\\.driver_min_age\\.driving_license_years_max').prop("disabled", disabled);
+          $('#booking\\.driver_min_age\\.driving_license_years_max').css('background', disabled ? '#EEE' : '#FFF');
+          $('#booking\\.driver_min_age\\.deposit').prop("disabled", disabled);
+          $('#booking\\.driver_min_age\\.deposit').css('background', disabled ? '#EEE' : '#FFF');
+          $('#booking\\.driver_min_age\\.allowed').prop("disabled", disabled);
+      }
+
   });
 
 });

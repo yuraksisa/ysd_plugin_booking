@@ -12,10 +12,11 @@ module Sinatra
 
         # Prepare the shopping cart
         only = [:free_access_id, :date_from, :time_from, :date_to, :time_to, :pickup_place, :return_place, :days,
-                :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_cost,
+                :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_deposit, :total_cost,
                 :booking_amount, :pickup_place_cost, :return_place_cost,
                 :customer_name, :customer_surname, :customer_email, :customer_phone, :customer_mobile_phone, :customer_document_id,
-                :driver_under_age, :promotion_code, :comments ]
+                :driver_age, :driver_driving_license_years, :driver_under_age, :driver_age_allowed, :driver_age_cost, :driver_age_deposit,
+                :promotion_code, :comments ]
         relationships = {}
         relationships.store(:extras, {})
         relationships.store(:items, {:include => [:item_resources]})
@@ -60,17 +61,19 @@ module Sinatra
           end
 
           # TODO Check parameters
-          date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children = driver_under_age = nil
+          date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children =
+          driver_age_rule_id = nil
+
           if model_request[:date_from] && model_request[:date_to]
             date_from = DateTime.strptime(model_request[:date_from],"%d/%m/%Y")
             time_from = model_request[:time_from]
             date_to = DateTime.strptime(model_request[:date_to],"%d/%m/%Y")
             time_to = model_request[:time_to]
-            pickup_place = model_request[:pickup_place]
-            return_place = model_request[:return_place]
-            number_of_adults = model_request[:number_of_adults]
-            number_of_children = model_request[:number_of_children]
-            driver_under_age = ('on' == model_request[:driver_under_age])
+            pickup_place = model_request[:pickup_place] if model_request.has_key?(:pickup_place)
+            return_place = model_request[:return_place] if model_request.has_key?(:return_place)
+            number_of_adults = model_request[:number_of_adults] if model_request.has_key?(:number_of_adults)
+            number_of_children = model_request[:number_of_children] if model_request.has_key?(:number_of_childen)
+            driver_age_rule_id = model_request[:driver_age_rule] if model_request.has_key?(:driver_age_rule)
           else
             content_type :json
             status 422
@@ -90,14 +93,14 @@ module Sinatra
                                                 date_to, time_to,
                                                 pickup_place, return_place,
                                                 number_of_adults, number_of_children,
-                                                driver_under_age)
+                                                driver_age_rule_id)
           else
             shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.create(
                 date_from: date_from, time_from: time_from,
                 date_to: date_to, time_to: time_to,
                 pickup_place: pickup_place, return_place: return_place,
                 number_of_adults: number_of_adults, number_of_children: number_of_children,
-                driver_under_age: driver_under_age)
+                driver_age_rule_id: driver_age_rule_id)
             session['back_office_shopping_cart_renting_id'] = shopping_cart.id
           end
 

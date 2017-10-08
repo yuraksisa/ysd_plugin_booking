@@ -101,6 +101,20 @@
                           </tr>                 
                           <%% } %>   
 
+                          <% if booking_item_family.driver %>
+                          <%% if (entity.driver_age_cost > 0) { %>
+                            <tr class="table-row">
+                              <td class="table-cell uppercase_text"><%=t.new_booking.driver_age_cost%></td>
+                              <td class="table-cell"></td>
+                              <td class="table-cell"></td>
+                              <td class="table-cell"></td>
+                              <td class="table-cell"></td>
+                              <td class="table-cell right_text"><%%= new Number(entity.driver_age_cost).toFixed(2) %> </td>
+                            </tr>
+                          <%% } %>
+                          <% end %>
+
+                          <!-- Deposit -->
                           <%% if (entity.product_deposit_cost > 0 ) { %>
                           <tr class="table-row">
                             <td class="table-cell uppercase_text"><%=t.new_booking.product_deposit_cost%></td>
@@ -110,7 +124,18 @@
                             <td class="table-cell"></td>
                             <td class="table-cell right_text"><%%= new Number(entity.product_deposit_cost).toFixed(2) %> </td>
                           </tr>
-                          <%% } %>                          
+                          <%% } %>
+
+                          <%% if (entity.driver_age_deposit > 0 ) { %>
+                          <tr class="table-row">
+                            <td class="table-cell uppercase_text"><%=t.new_booking.driver_age_deposit%></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell"></td>
+                            <td class="table-cell right_text"><%%= new Number(entity.driver_age_deposit).toFixed(2) %> </td>
+                          </tr>
+                          <%% } %>
 
                            <tr class="table-row">
                                <td class="table-cell"><strong class="uppercase_text"><%= t.booking_management.form.total_cost %></strong></td>
@@ -151,8 +176,16 @@
                         </tbody>
                      </table>  
                      <div class="top-margin all-space top-separator">
+                        <% if booking_item_family.frontend == :shopcart %>
                         <button id="new_booking_line_button" class="form-button">Añadir producto</button>
+                        <% end %>
                         <button id="new_booking_extra_button" class="form-button">Añadir extra</button>
-                        <button id="booking_supplements_button" class="form-button">Suplementos entrega y devolución</button>
+                        <button id="booking_supplements_button" class="form-button">Suplementos reserva</button>
+                        <% if booking_item_family.driver and driver_min_age_rules%>
+                        <button id="booking_deposit_button" class="form-button">Fianza</button>
+                        <% end %>
+                        <% if booking_item_family.driver and driver_min_age_rules %>
+                        <button id="booking_driver_age_button" class="form-button">Fecha nacimiento conductor</button>
+                        <% end %>
                      </div>
                   </div>

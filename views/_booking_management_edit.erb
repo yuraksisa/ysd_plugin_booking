@@ -1,3 +1,4 @@
+<!-- Add new booking line -->
 <script type="text/tmpl" id="new_booking_line_script">
   <form name="new_booking_line" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Añadir producto</h3>
@@ -17,6 +18,8 @@
     </div>     
   </form>
 </script>
+
+<!-- Add new extra -->
 <script type="text/tmpl" id="new_booking_extra_script">
   <form name="new_booking_extra" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Añadir extra</h3>
@@ -36,6 +39,8 @@
     </div>     
   </form>
 </script>
+
+<!-- Edit booking line item id -->
 <script type="text/tmpl" id="edit_booking_line_item_id_script">
   <form name="update_booking_line_item_id" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Modificar producto</h3>
@@ -58,6 +63,8 @@
     </div>     
   </form>
 </script>
+
+<!-- Edit booking line item quantity -->
 <script type="text/tmpl" id="edit_booking_line_quantity_script">
   <form name="update_booking_line_quantity" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Modificar cantidad</h3>
@@ -73,6 +80,8 @@
     </div>     
   </form>
 </script>
+
+<!-- Edit booline line item cost -->
 <script type="text/tmpl" id="edit_booking_line_item_cost_script">
   <form name="update_booking_line_item_cost" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Modificar coste unitario</h3>
@@ -88,6 +97,9 @@
     </div>     
   </form>
 </script>
+
+<!-- Edit booline line item deposit cost -->
+
 <script type="text/tmpl" id="edit_booking_line_deposit_cost_script">
   <form name="update_booking_line_deposit_cost" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Modificar fianza</h3>
@@ -103,6 +115,8 @@
     </div>     
   </form>
 </script>
+
+<!-- Edit extra quantity -->
 <script type="text/tmpl" id="edit_booking_extra_quantity_script">
   <form name="update_booking_extra_quantity" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Modificar cantidad</h3>
@@ -118,6 +132,8 @@
     </div>     
   </form>
 </script>
+
+<!-- Edit extra item -->
 <script type="text/tmpl" id="edit_booking_extra_item_cost_script">
   <form name="update_booking_extra_item_cost" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Modificar coste unitario</h3>
@@ -133,6 +149,35 @@
     </div>     
   </form>
 </script>
+
+<!-- Edit booking deposits -->
+<script type="text/tmpl" id="edit_booking_deposits_script">
+  <form name="edit_booking_deposits" class="all-space" style="background: white; min-width: 300px">
+    <h3 class="guiblock">Fianza</h3>
+    <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
+    <div class="formrow">
+      <label class="fieldtitle">Fianza de los productos</label>
+      <input type="text" name="product_deposit_cost" class="fieldcontrol" maxlength="10" readonly style="background: #EEE" value="<%%=new Number(entity.product_deposit_cost).toFixed(2)%>"/>
+    </div>
+    <% if booking_item_family.driver and driver_min_age_rules%>
+    <div class="formrow">
+      <label class="fieldtitle">Fianza por edad del conductor y años de carnet</label>
+      <input type="text" name="driver_age_deposit" class="fieldcontrol" maxlength="10"
+             <%% if (entity.product_deposit_cost > 0 && !entity.driver_age_rule_apply_if_prod_deposit) { %>readonly style="background:#EEE"<%% } %>
+             value="<%%=new Number(entity.driver_age_deposit).toFixed(2)%>"/>
+    </div>
+    <% end %>
+    <%% if (entity.product_deposit_cost == 0 || entity.driver_age_rule_apply_if_prod_deposit) { %>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="update_booking_deposit_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>
+    <%% } %>
+  </form>
+</script>
+
+<!-- Edit booking suplements -->
 <script type="text/tmpl" id="edit_booking_supplements_script">
   <form name="edit_booking_supplements" class="all-space" style="background: white; min-width: 300px">
     <h3 class="guiblock">Suplementos</h3>
@@ -152,7 +197,13 @@
     <div class="formrow">
       <label class="fieldtitle">Lugar de devolución</label>
       <input type="text" name="return_place_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(entity.return_place_cost).toFixed(2)%>"/>
-    </div>    
+    </div>
+    <% if booking_item_family.driver %>
+    <div class="formrow">
+      <label class="fieldtitle">Edad del conductor y años de carnet</label>
+      <input type="text" name="driver_age_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(entity.driver_age_cost).toFixed(2)%>"/>
+    </div>
+    <% end %>
     <div class="navigation-bar bottom-margin">
       <div class="navigation-bar-crud-buttons right-float">
         <input id="update_booking_supplements_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
@@ -160,6 +211,32 @@
     </div>     
   </form>
 </script>
+
+<!-- Edit driver date of birth -->
+<script type="text/tmpl" id="booking_driver_age_of_birth_script">
+
+  <form name="driver_dates_form" class="all-space" style="background: white; min-width: 500px">
+      <h3 class="guiblock">Fechas del conductor</h3>
+      <input type="hidden" name="id" value="<%%=entity.id%>"/>
+      <div class="formrow">
+              <label class="fieldtitle"><%= t.booking_management.form.driver_date_of_birth %></label>
+              <input type="text" name="driver_date_of_birth" id="driver_date_of_birth" class="date_control fieldcontrol" size="15" maxlength="10"/>
+      </div>
+      <div class="formrow">
+            <label class="fieldtitle"><%= t.booking_management.form.driver_license_date %></label>
+            <input type="text" name="driver_driving_license_date" id="driver_driving_license_date" class="date_control fieldcontrol" size="15" maxlength="10"/>
+      </div>
+      <div class="navigation-bar bottom-margin">
+        <div id="driver_age_error_summary" class="alert alert-danger" style="display: none; margin: 10px"></div>
+        <div class="navigation-bar-crud-buttons right-float">
+          <input id="update_driver_age_of_birth_button" type="button" class="update-entity-button" value="<%=t.entitymanagement.update%>"/>
+        </div>
+      </div>
+  </form>
+
+</script>
+
+<!-- Resource detail -->
 <script type="text/tmpl" id="booking_line_resource_detail_script">
   <form name="update_booking_line_resource" class="all-space" style="background: white; min-width: 500px">
     <h3 class="guiblock">Detalle del recurso</h3>

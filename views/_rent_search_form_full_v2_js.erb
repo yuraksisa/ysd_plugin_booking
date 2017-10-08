@@ -14,12 +14,21 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       dateFromChanged: function() {
 
-      var dateFrom = $('#date_from').datepicker('getDate');
-      var dateTo = $('#date_from').datepicker('getDate');
-      dateTo.setDate(dateTo.getDate() + selectorModel.minDays)
-      $('#date_to').datepicker('setDate', dateTo );
-      $('#date_to').datepicker('option', 'minDate', dateFrom.add(selectorModel.minDays).days());
+        var dateFrom = $('#date_from').datepicker('getDate');
+        var dateTo = $('#date_from').datepicker('getDate');
+        dateTo.setDate(dateTo.getDate() + selectorModel.minDays)
+        $('#date_to').datepicker('setDate', dateTo );
+        $('#date_to').datepicker('option', 'minDate', dateFrom.add(selectorModel.minDays).days());
 
+      },
+      formSearchClick: function() {
+        <% if booking_item_family.driver and driver_age_rules and driver_age_rule_definition and !driver_age_rule_definition.driver_age_rules.empty?  %>
+        if ($('#driver_age_rule option:selected').attr('allowed') == 'false') {
+            alert($('#driver_age_rule option:selected').attr('not-allowed-message'));
+            return;
+        }
+        <% end %>
+        $('#formSearchSubmit')[0].form.submit();
       }
 
 
@@ -29,11 +38,18 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
   	init: function() {
 
-  		this.setupDateControls();
+  		this.setupForm();
+  	  this.setupDateControls();
   		this.loadPickupReturnPlaces();
   		this.loadPickupReturnTime();
 
   	},
+
+    setupForm: function() {
+  	  $('#formSearchSubmit').bind('click', function(){
+  	      selectorController.formSearchClick();
+      })
+    },
 
   	setupDateControls: function() {
       

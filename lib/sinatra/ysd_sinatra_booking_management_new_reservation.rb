@@ -39,8 +39,10 @@ module Sinatra
 
           product_family = catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           reservation_mode = product_family.frontend
-
-          locals.store(:booking_reservation_starts_with, reservation_mode)
+          min_days = SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i
+          
+          locals.store(:booking_min_days, min_days)
+          locals.store(:multiple_products, reservation_mode.to_sym == :shopcart)
           locals.store(:booking_item_family, product_family)
           locals.store(:booking_allow_custom_pickup_return_place,
                        SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
@@ -54,12 +56,14 @@ module Sinatra
           pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first if pickup_return_place_def.nil?
           locals.store(:booking_pickup_return_places, pickup_return_place_def.pickup_return_places)
 
-          locals.store(:booking_deposit,
-                       SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
-          locals.store(:booking_min_days,
-                       SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
 
 
+          young_driver_rules = SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool
+          young_driver_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
+
+          locals.store(:driver_age_rules, young_driver_rules)
+          locals.store(:driver_age_rule_definition, young_driver_rule_definition)
+          
 
           @shopping_cart = nil
 
@@ -72,16 +76,18 @@ module Sinatra
             @shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.new
           end
 
+          today = Date.today
+
           if product_family.cycle_of_24_hours
-            @shopping_cart.date_from = Date.today
-            @shopping_cart.date_to = Date.today + 1
+            @shopping_cart.date_from = today
+            @shopping_cart.date_to = today + min_days
             @shopping_cart.time_from = "10:00"
             @shopping_cart.time_to = "10:00"
           else
-            @shopping_cart.date_from = Date.today
-            @shopping_cart.date_to = Date.today
-            @shopping_cart.time_from = "10:00"
-            @shopping_cart.time_to = "20:00"
+            @shopping_cart.date_from = today
+            @shopping_cart.date_to = today + min_days - 1
+            @shopping_cart.time_from = product_family.time_start
+            @shopping_cart.time_to = product_family.time_end
           end
 
           if params[:customer_name] and params[:customer_surname] and

@@ -12,7 +12,7 @@
 
     <div class="row">
       <!-- CONTENT -->
-      <div class="col-md-9 content" id="content">
+      <div class="col-md-8 content" id="content">
 
         <!-- PRODUCT(S) INFORMATION -->
         <h3 class="block-title alt">
@@ -116,7 +116,7 @@
       <!-- /CONTENT -->
 
       <!-- SIDEBAR -->
-      <aside class="col-md-3 sidebar" id="sidebar">
+      <aside class="col-md-4 sidebar" id="sidebar">
         <!-- widget detail reservation -->
         <div class="widget shadow widget-details-reservation">
           <div id="reservation_detail">
@@ -160,10 +160,24 @@
                   <% if @booking.time_from_cost > 0 %>
                   <li>Suplemento lugar devolución: <span class="pull-right"><%='%.2f' % @booking.return_place_cost%>€</span></li>
                   <% end %>
+                  <% if total_cost_includes_deposit %>
+                      <% if @booking.total_deposit > 0 %>
+                          <li>Fianza*: <span class="pull-right"><%='%.2f' % @booking.total_deposit%>€</span></li>
+                      <% end %>
+                  <% end %>
                   <li><strong>TOTAL:</strong> <span class="pull-right"><strong><%='%.2f' % @booking.total_cost%>€</strong></span></li>
                   <li>Pagado: <span class="pull-right text-primary"><%='%.2f' % @booking.total_paid%>€</span></li>
                   <% if @booking.total_pending > 0 %>
                   <li>Pendiente:<span class="pull-right text-danger"><strong><%='%.2f' % @booking.total_pending%>€</strong></span></li>
+                  <% end %>
+                  <% if !total_cost_includes_deposit %>
+                      <% if @booking.total_deposit > 0 %>
+                          <hr>
+                          <li>Fianza*: <span class="pull-right"><%='%.2f' % @booking.total_deposit%>€</span></li>
+                      <% end %>
+                  <% end %>
+                  <% if @booking.total_deposit > 0 %>
+                  <li><small>* La fianza se devolverá tras las devolución del producto</small></li>
                   <% end %>
                 </ul>
               </div>

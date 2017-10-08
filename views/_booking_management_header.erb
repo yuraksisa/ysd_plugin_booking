@@ -1,0 +1,134 @@
+<div class="element-detail all-border-solid-light overflow bottom-margin-1line">
+
+  <div class="container_12">
+    <div class="grid_5">
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.id %></span>
+          <span class="entity-fieldvalue"><%%= entity.id %></span>
+        </div>
+      </div>
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.creation_date %></span>
+          <span class="entity-fieldvalue">
+                    <%%= self.formatDate(entity.creation_date,'dd.MM.yyyy')%>
+                    <span><%%= self.formatDate(entity.creation_date,'HH:mm')%></span>
+                  </span>
+        </div>
+      </div>
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.status %></span>
+          <span class="entity-fieldvalue">
+                    <span class="<%%=self.model.entityHooks[0].statusClass(entity)%> element-status">
+                      <%%= self.model.entityHooks[0].statusDescription[entity.status] %>
+                    </span>
+                  </span>
+        </div>
+      </div>
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.payment_status %></span>
+          <span class="entity-fieldvalue">
+                      <span class="<%%=self.model.entityHooks[0].paymentStatusClass(entity)%> element-status">
+                        <%%= self.model.entityHooks[0].paymentStatusDescription[entity.payment_status] %>
+                      </span>
+                   </span>
+        </div>
+      </div>
+      <% if multiple_rental_locations %>
+          <div class="element_template">
+            <div class="entity-field">
+              <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.rental_location %></span>
+              <span class="entity-fieldvalue">
+                    <form name="rental_location">
+                        <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                        <select name="rental_location_code" id="rental_location"></select>
+                        <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                    </form>
+                  </span>
+            </div>
+          </div>
+      <% end %>
+    </div>
+
+    <div class="grid_5">
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.date_from %></span>
+          <span class="entity-fieldvalue">
+                     <%%= self.formatDate(entity.date_from, 'dd.MM.yyyy') %> <% if booking_item_family.time_to_from%> <%%= entity.time_from?' , '+entity.time_from:'' %> <% end %>
+                 </span>
+        </div>
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.pickup_place %></span>
+          <span class="entity-fieldvalue">
+                     <% if booking_item_family.pickup_return_place %>
+                       <%%= entity.pickup_place %>
+                     <% else %>
+                        -
+                     <% end %>
+                 </span>
+        </div>
+      </div>
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.date_to %></span>
+          <span class="entity-fieldvalue">
+                    <%%= self.formatDate(entity.date_to, 'dd.MM.yyyy') %> <% if booking_item_family.time_to_from%> <%%= entity.time_to?' , '+entity.time_to:'' %> <% end %>
+                 </span>
+        </div>
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.return_place %></span>
+          <span class="entity-fieldvalue">
+                    <% if booking_item_family.pickup_return_place %>
+                    <%%= entity.return_place %>
+                    <% else %>
+                    -
+                    <% end %>
+                 </span>
+        </div>
+      </div>
+      <%% if (entity.number_of_adults > 0) { %>
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel"><%= t.booking_management.form.adults %></span>
+          <span class="entity-fieldvalue"><%%= entity.number_of_adults %></span>
+        </div>
+      </div>
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel"><%= t.booking_management.form.children %></span>
+          <span class="entity-fieldvalue"><%%= entity.number_of_children %></span>
+        </div>
+      </div>
+      <%% } %>
+      <div class="element_template">
+        <div class="entity-field">
+          <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.days %></span>
+          <span class="entity-fieldvalue"><%%= entity.days %></span>
+        </div>
+      </div>
+    </div>
+    <div class="grid_2">
+      <div class="container_12">
+        <div class="grid_12 smaller_text">
+          <%= partial :booking_management_actions %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if booking_item_family.driver and driver_min_age_rules %>
+    <%% if (entity.driver_age_rule_description && entity.driver_age_rule_description.length > 0) { %>
+    <div class="container_12">
+      <div class="highlight_block all-space centered_text" style="margin-top: 10px; margin-bottom: 10px">
+        <%%= entity.driver_age_rule_description %>
+      </div>
+    </div>
+    <%% } %>
+  <% end %>
+
+</div>
+

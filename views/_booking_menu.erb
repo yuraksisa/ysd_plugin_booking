@@ -153,7 +153,6 @@
     <% end %>
     <li class='<%if [
         '/admin/booking/config/general',
-        '/admin/postal/email-settings',
         '/admin/booking/config/templates',
         '/admin/booking/rental-locations',
         '/admin/booking/booking-place-defs',
@@ -164,7 +163,6 @@
       <ul>
         <li><a href='/admin/booking/config/general'><%=t.booking_console_configuration.general_configuration%></a></li>
         <li><a href='/admin/booking/config/templates'><%=t.booking_console_configuration.templates%></a></li>
-        <li><a href='/admin/postal/email-settings'><%=t.booking_console_configuration.email_settings%></a></li>
         <% if multiple_rental_locations %>
         <li><a href='/admin/booking/rental-locations'><%=t.booking_console.rental_locations%></a></li>
         <% end %>

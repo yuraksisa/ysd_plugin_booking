@@ -3,7 +3,7 @@
             <div class="container">
                 <div class="row">
                     <!-- CONTENT -->
-                    <div class="col-md-9 content" id="content" style="display: none">
+                    <div class="col-md-8 content" id="content" style="display: none">
 
                         <!-- Product -->
                         <div id="selected_product">
@@ -110,7 +110,7 @@
                     <!-- /CONTENT -->
 
                     <!-- SIDEBAR -->
-                    <aside class="col-md-3 sidebar" id="sidebar" style="display: none">
+                    <aside class="col-md-4 sidebar" id="sidebar" style="display: none">
                         <!-- widget detail reservation -->
                         <div class="widget shadow widget-details-reservation">
                             <div id="reservation_detail">
@@ -253,9 +253,35 @@
             <li>Suplemento lugar devolución: <span class="pull-right"><%%=new Number(shopping_cart.return_place_cost).toFixed(2)%>€</span></li>
             <%% } %>
 
+            <% if total_cost_includes_deposit %>
+            <%% if (shopping_cart.total_deposit > 0) { %>
+            <li>Fianza*: <span class="pull-right"><%%=new Number(shopping_cart.total_deposit).toFixed(2)%>€</span></li>
+            <%% } %>
+            <% end %>
+
             <li>TOTAL: <span class="pull-right"><%%=new Number(shopping_cart.total_cost).toFixed(2)%>€</span></li>
+
+            <% if !total_cost_includes_deposit %>
+            <%% if (shopping_cart.total_deposit > 0) { %>
+            <hr>
+            <li>Fianza*: <span class="pull-right"><%%=new Number(shopping_cart.total_deposit).toFixed(2)%>€</span></li>
+            <%% } %>
+            <% end %>
+
+
+            <%% if (shopping_cart.total_deposit > 0) { %>
+            <li><small>* La fianza se devolverá tras las devolución del producto</small></li>
+            <%% } %>
+
           </ul>
        </div>
+
+       <% if booking_item_family.driver and booking_driver_min_age_rules %>
+       <div>
+         <hr>
+         <span><strong><%%=shopping_cart.driver_age_rule_description%></strong></span>
+       </div>
+       <% end %>
 
        <div class="button">
          <a href="/reserva/producto" class="btn btn-block btn-theme btn-theme-dark">Modificar reserva</a>

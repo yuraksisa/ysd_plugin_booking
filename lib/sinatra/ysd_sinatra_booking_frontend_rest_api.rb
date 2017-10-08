@@ -10,10 +10,12 @@ module Sinatra
       
         # Prepare the shopping cart
         only = [:free_access_id, :date_from, :time_from, :date_to, :time_to, :pickup_place, :return_place, :days,
-                :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_cost,
+                :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_deposit, :total_cost,
                 :booking_amount, :pickup_place_cost, :return_place_cost,
                 :customer_name, :customer_surname, :customer_email, :customer_phone, :customer_mobile_phone, :customer_document_id,
-                :driver_under_age, :promotion_code, :comments ]
+                :driver_age, :driver_driving_license_years, :driver_under_age, :driver_age_allowed, :driver_age_cost, :driver_age_deposit,
+                :driver_age_rule_id, :driver_age_rule_description,
+                :promotion_code, :comments ]
         relationships = {}
         relationships.store(:extras, {})
         relationships.store(:items, {:include => [:item_resources]})      
@@ -84,8 +86,13 @@ module Sinatra
             driver_document_id: booking.driver_document_id,
             driver_date_of_birth: booking.driver_date_of_birth,
             driver_age: booking.driver_age,
+            driver_driving_license_years: booking.driver.driving_license_years,
             driver_under_age: booking.driver_under_age,
+            driver_age_allowed: booking.driver_age_allowed,
             driver_age_cost: booking.driver_age_cost,
+            driver_age_deposit: booking.driver_age_deposit,
+            driver_age_rule_id: booking.driver_age_rule_id,
+            driver_age_rule_description: booking.driver_age_rule_description,
             driver_driving_license_number: booking.driver_driving_license_number,
             driver_driving_license_date: booking.driver_driving_license_date,
             driver_driving_license_country: booking.driver_driving_license_country,
@@ -126,7 +133,8 @@ module Sinatra
                                })
 
         booking_summary.merge!({ # Product deposit cost
-            product_deposit_cost: booking.product_deposit_cost
+            product_deposit_cost: booking.product_deposit_cost,
+            total_deposit: booking.total_deposit
                               })
 
         # Lines (products)
@@ -317,8 +325,6 @@ module Sinatra
 
           # TODO : Validate it's a valid product
 
-          p "shopping cart : #{session[:shopping_cart_renting_id]}"
-
           # Retrieve the shopping cart
           if params[:free_access_id]
             shopping_cart = ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
@@ -357,8 +363,6 @@ module Sinatra
           extra_quantity = model_request[:quantity].to_i || 1
 
           # TODO : Validate it's a valid extra
-
-          p "shopping cart : #{session[:shopping_cart_renting_id]}"
 
           # Retrieve the shopping cart
           shopping_cart = if params[:free_access_id]
@@ -400,8 +404,6 @@ module Sinatra
 
           # TODO : Validate it's a valid extra and it's contained in the shopping cart
 
-          p "shopping cart : #{session[:shopping_cart_renting_id]}"
-
           # Retrieve the shopping cart
           shopping_cart = if params[:free_access_id]
                             ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
@@ -433,8 +435,6 @@ module Sinatra
           request.body.rewind
           request_data = JSON.parse(URI.unescape(request.body.read))
 
-          p "shopping cart : #{session[:shopping_cart_renting_id]}"
-
           # Retrieve the shopping cart
           shopping_cart = if params[:free_access_id]
                             ::Yito::Model::Booking::ShoppingCartRenting.get_by_free_access_id(params[:free_access_id])
@@ -444,8 +444,6 @@ module Sinatra
 
           # Do the process
           if shopping_cart
-
-            min_age = SystemConfiguration::Variable.get_value('booking.driver_min_age.allowed','0').to_i
 
             # Basic data: customer, payment and comments
             shopping_cart.customer_name = request_data['customer_name'] || request_data['driver_name']
@@ -466,12 +464,11 @@ module Sinatra
             shopping_cart.driver_surname = request_data['driver_surname']  if request_data.has_key?('driver_surname')
             shopping_cart.driver_document_id = request_data['driver_document_id'] if request_data.has_key?('driver_document_id')
             shopping_cart.driver_date_of_birth = parse_date(request_data['driver_date_of_birth'])  if request_data.has_key?('driver_date_of_birth')
-            shopping_cart.driver_age = age(Date.today, shopping_cart.driver_date_of_birth) if !shopping_cart.driver_date_of_birth.nil?
-            shopping_cart.driver_under_age = (min_age > 0 && !shopping_cart.driver_age.nil? && shopping_cart.driver_age > min_age) ? true : false
             shopping_cart.driver_driving_license_number = request_data['driver_driving_license_number'] if request_data.has_key?('driver_driving_license_number')
             shopping_cart.driver_driving_license_date = parse_date(request_data['driver_driving_license_date']) if request_data.has_key?('driver_driving_license_date')
             shopping_cart.driver_driving_license_country = request_data['driver_driving_license_country'] if request_data.has_key?('driver_driving_license_country')
             shopping_cart.driver_driving_license_expiration_date = parse_date(request_data['driver_driving_license_expiration_date']) if request_data.has_key?('driver_driving_license_expiration_date')
+            shopping_cart.calculate_cost # Calculate cost using driver real date of birth and driving license date
             if shopping_cart.driver_address.nil?
               shopping_cart.driver_address = LocationDataSystem::Address.new
             end
@@ -490,9 +487,7 @@ module Sinatra
             shopping_cart.additional_driver_1_document_id_expiration_date = parse_date(request_data['additional_driver_1_document_id_expiration_date']) if request_data.has_key?('additional_driver_1_document_id_expiration_date')
             shopping_cart.additional_driver_1_origin_country = request_data['additional_driver_1_origin_country'] if request_data.has_key?('additional_driver_1_origin_country')
             shopping_cart.additional_driver_1_date_of_birth = parse_date(request_data['additional_driver_1_date_of_birth']) if request_data.has_key?('additional_driver_1_date_of_birth')
-            shopping_cart.additional_driver_1_under_age = request_data['additional_driver_1_under_age'] if request_data.has_key?('additional_driver_1_under_age')
             shopping_cart.additional_driver_1_age = age(Date.today, shopping_cart.additional_driver_1_date_of_birth) if !shopping_cart.additional_driver_1_date_of_birth.nil?
-            shopping_cart.additional_driver_1_under_age = (min_age > 0 && !shopping_cart.additional_driver_1_age.nil? && shopping_cart.additional_driver_1_age > min_age) ? true : false
             shopping_cart.additional_driver_1_driving_license_number = request_data['additional_driver_1_driving_license_number'] if request_data.has_key?('additional_driver_1_driving_license_number')
             shopping_cart.additional_driver_1_driving_license_date = parse_date(request_data['additional_driver_1_driving_license_date']) if request_data.has_key?('additional_driver_1_driving_license_date')
             shopping_cart.additional_driver_1_driving_license_country = request_data['additional_driver_1_driving_license_country'] if request_data.has_key?('additional_driver_1_driving_license_country')
@@ -594,25 +589,25 @@ module Sinatra
           end
 
           # TODO Check parameters
-          date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children = driver_under_age = nil
+          date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children =
+          driver_age_rule_id = nil
+
           if model_request[:date_from] && model_request[:date_to]
             date_from = DateTime.strptime(model_request[:date_from],"%d/%m/%Y")
             time_from = model_request[:time_from]
             date_to = DateTime.strptime(model_request[:date_to],"%d/%m/%Y")
             time_to = model_request[:time_to]
-            pickup_place = model_request[:pickup_place]
-            return_place = model_request[:return_place]
-            number_of_adults = model_request[:number_of_adults]
-            number_of_children = model_request[:number_of_children]
-            driver_under_age = ('on' == model_request[:driver_under_age])
+            pickup_place = model_request[:pickup_place] if model_request.has_key?(:pickup_place)
+            return_place = model_request[:return_place] if model_request.has_key?(:return_place)
+            number_of_adults = model_request[:number_of_adults] if model_request.has_key?(:number_of_adults)
+            number_of_children = model_request[:number_of_children] if model_request.has_key?(:number_of_childen)
+            driver_age_rule_id = model_request[:driver_age_rule] if model_request.has_key?(:driver_age_rule)
           else
             content_type :json
             status 422
             {error: 'Invalid request. data_from and date_to are required.'}.to_json
             halt
           end
-
-          p "shopping cart : #{session[:shopping_cart_renting_id]}"
 
           # Retrieve the shopping cart
           shopping_cart = nil
@@ -628,14 +623,14 @@ module Sinatra
                                                 date_to, time_to,
                                                 pickup_place, return_place,
                                                 number_of_adults, number_of_children,
-                                                driver_under_age)
+                                                driver_age_rule_id)
           else
             shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.create(
                 date_from: date_from, time_from: time_from,
                 date_to: date_to, time_to: time_to,
                 pickup_place: pickup_place, return_place: return_place,
                 number_of_adults: number_of_adults, number_of_children: number_of_children,
-                driver_under_age: driver_under_age)
+                driver_age_rule_id: driver_age_rule_id)
             session[:shopping_cart_renting_id] = shopping_cart.id
             p "storing shopping cart : #{shopping_cart.id}"
           end

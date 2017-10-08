@@ -717,41 +717,6 @@ module Sinatra
 
         end
 
-        #
-        # Register a booking charge
-        #
-        app.post '/api/booking/charge', :allowed_usergroups => ['bookings_manager', 'booking_operator', 'staff'] do
-
-          request.body.rewind
-          data = JSON.parse(URI.unescape(request.body.read))
-          data.symbolize_keys! 
-
-          if booking = BookingDataSystem::Booking.get(data[:id])
-            
-            booking.transaction do  
-              charge = Payments::Charge.new
-              charge.date = data[:date]
-              charge.amount = data[:amount]
-              charge.payment_method_id = data[:payment_method_id]
-              charge.status = :pending
-              charge.currency = SystemConfiguration::Variable.get_value('payments.default_currency', 'EUR')
-              charge.save
-              booking_charge = BookingDataSystem::BookingCharge.new
-              booking_charge.booking = booking
-              booking_charge.charge = charge
-              booking_charge.save
-              charge.update(:status => :done)
-              booking.reload
-            end
-            content_type :json
-            status 200
-            booking.to_json
-          else
-            status 404
-          end
-
-        end
-
         # -------------------- Allow/Deny payment ----------------------------
 
         #
@@ -883,7 +848,7 @@ module Sinatra
 
         end
 
-        # --------------------------------------------------------------------------------------------
+        # ---------------------- Change pickup/return date/place -----------------------------------------------------
 
         #
         # Edit booking pickup-return place and/or date time
@@ -903,12 +868,19 @@ module Sinatra
           time_to = data[:time_to]
           return_place = data[:return_place]
           date_of_birth = DateTime.strptime(data[:date_of_birth],'%Y-%m-%d') if data.has_key?(:date_of_birth) && !data[:date_of_birth].nil? && !data[:date_of_birth].empty?
-          number_of_adults = data[:number_of_adults]
+          driver_driving_license_date = DateTime.strptime(data[:driver_driving_license_date],'%Y-%m-%d') if data.has_key?(:driver_driving_license_date) && !data[:driver_driving_license_date].nil? && !data[:driver_driving_license_date].empty?
+           number_of_adults = data[:number_of_adults]
           number_of_children = data[:number_of_children]
+          driver_rule_definition_id = SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition')
+          driver_rule_definition = driver_rule_definition_id ? ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(driver_rule_definition_id) : nil
 
           # Prepare the supplements
           calculator = ::Yito::Model::Booking::RentingCalculator.new(date_from, time_from, date_to, time_to, pickup_place,
-                                                                     return_place, date_of_birth)
+                                                                     return_place,
+                                                                     {driver_age_mode: :dates,
+                                                                      driver_date_of_birth: date_of_birth,
+                                                                      driver_driving_license_date: driver_driving_license_date,
+                                                                      driver_age_rule_definition: driver_rule_definition})
 
           # Prepare the products
           products = ::Yito::Model::Booking::RentingSearch.search(date_from, date_to, calculator.days)
@@ -932,8 +904,14 @@ module Sinatra
           extras_request = booking_request.delete(:booking_extras)
  
           booking = BookingDataSystem::Booking.get(params[:id])
-          booking.transaction do |transaction|
+          booking.transaction do
+            old_booking_pickup_place_cost = booking.pickup_place_cost
+            old_booking_return_place_cost = booking.return_place_cost
+            old_booking_time_from_cost = booking.time_from_cost
+            old_booking_time_to_cost = booking.time_to_cost
+            old_booking_total_cost = booking.total_cost
             booking.attributes = booking_request
+            booking.calculate_cost(false, false)
             booking.save
             lines_request.each do |line_booking| 
               booking_line = BookingDataSystem::BookingLine.get(line_booking[:id])
@@ -947,7 +925,26 @@ module Sinatra
               booking_extra.extra_unit_cost = extra_booking[:extra_unit_cost]
               booking_extra.save
             end
-            transaction.commit
+
+            product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+
+            # News feed
+            pickup_booking = booking.date_from.strftime('%Y-%m-%d')
+            pickup_booking << ' '
+            pickup_booking << booking.time_from if product_family.time_to_from
+            pickup_booking << ' '
+            #pickup_booking << booking.pickup_place if product_family.pickup_return_place
+            return_booking = booking.date_to.strftime('%Y-%m-%d')
+            return_booking << ' '
+            #return_booking << booking.time_to if product_family.time_to_from
+            return_booking << ' '
+            return_booking << booking.return_place if product_family.pickup_return_place
+            ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                     action: 'change_dates',
+                                                     identifier: booking.id.to_s,
+                                                     description: BookingDataSystem.r18n.t.booking_news_feed.change_dates(pickup_booking,
+                                                                      return_booking, "%.2f" % booking.total_cost, "%.2f" % old_booking_total_cost),
+                                                     attributes_updated: booking_request.merge({booking: booking.newsfeed_summary}).to_json)
           end
 
         end
@@ -1023,14 +1020,25 @@ module Sinatra
               end
             end
             data.attributes=data_request
+            # Prepare updated attributes
+            updated_attributes = {}
+            data.dirty_attributes.each do |key, value|
+              updated_attributes.store(key.name, value) unless value.nil?
+            end
             data.save
+            # Newsfeed
+            ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                     action: 'updated_booking',
+                                                     identifier: data.id.to_s,
+                                                     description: BookingDataSystem.r18n.t.booking_news_feed.updated_booking,
+                                                     attributes_updated: updated_attributes.to_json)
           end
       
           content_type :json
           data.to_json        
 
         end
-        
+
         #
         # Update booking supplements
         #
@@ -1044,24 +1052,53 @@ module Sinatra
           time_from_cost = data_request[:time_from_cost]
           time_to_cost = data_request[:time_to_cost]
           pickup_place_cost = data_request[:pickup_place_cost]
-          return_place_cost = data_request[:return_place_cost]                              
+          return_place_cost = data_request[:return_place_cost]
+          driver_age_cost = data_request[:driver_age_cost] || 0
+
+          product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
 
           if booking = BookingDataSystem::Booking.get(id)
             if data_request[:time_from_cost] or data_request[:time_to_cost] or
                data_request[:pickup_place_cost] or data_request[:return_place_cost] 
-              booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-              old_total_supplements = booking.time_from_cost + booking.time_to_cost +
-                                      booking.pickup_place_cost + booking.return_place_cost
-              booking.time_from_cost = time_from_cost 
+              # Prepare information for newsfeed
+              updated_attributes = {}
+              supplements_detail = []
+              if booking.time_from_cost != time_from_cost
+                updated_attributes.store(:time_from_cost, time_from_cost)
+                supplements_detail << BookingDataSystem.r18n.t.booking_news_feed.updated_time_from_cost("%.2f" % time_from_cost, "%.2f" % booking.time_from_cost)
+              end
+              if booking.time_to_cost != time_to_cost
+                updated_attributes.store(:time_to_cost, time_to_cost)
+                supplements_detail << BookingDataSystem.r18n.t.booking_news_feed.updated_time_to_cost("%.2f" % time_to_cost, "%.2f" % booking.time_to_cost)
+              end
+              if booking.pickup_place_cost != pickup_place_cost
+                updated_attributes.store(:pickup_place_cost, pickup_place_cost)
+                supplements_detail << BookingDataSystem.r18n.t.booking_news_feed.updated_pickup_place_cost("%.2f" % pickup_place_cost, "%.2f" % booking.pickup_place_cost)
+              end
+              if booking.return_place_cost != return_place_cost
+                updated_attributes.store(:return_place_cost, return_place_cost)
+                supplements_detail << BookingDataSystem.r18n.t.booking_news_feed.updated_return_place_cost("%.2f" % return_place_cost, "%.2f" % booking.return_place_cost)
+              end
+              if booking.driver_age_cost != driver_age_cost
+                updated_attributes.store(:driver_age_cost, driver_age_cost)
+                supplements_detail << BookingDataSystem.r18n.t.booking_news_feed.updated_driver_age_cost("%.2f" % driver_age_cost, "%.2f" % booking.driver_age_cost)
+              end
+              # Update booking
+              booking.time_from_cost = time_from_cost
               booking.time_to_cost = time_to_cost 
               booking.pickup_place_cost = pickup_place_cost 
               booking.return_place_cost = return_place_cost
-              total_supplements = booking.time_from_cost + booking.time_to_cost +
-                                  booking.pickup_place_cost + booking.return_place_cost
-              booking.total_cost += (total_supplements - old_total_supplements)
-              booking.total_pending += (total_supplements - old_total_supplements)
-              booking.booking_amount += ((total_supplements - old_total_supplements) * booking_deposit / 100).round unless booking_deposit == 0 
+              booking.driver_age_cost = driver_age_cost if product_family and product_family.driver
+              booking.calculate_cost(false, false)
               booking.save
+              # Newsfeed
+              unless updated_attributes.empty?
+                ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                         action: 'updated_supplements',
+                                                         identifier: booking.id.to_s,
+                                                         description: BookingDataSystem.r18n.t.booking_news_feed.updated_supplements(supplements_detail.join('. ')),
+                                                         attributes_updated: updated_attributes.to_json)
+              end
               booking.reload
               content_type :json
               booking.to_json
@@ -1089,55 +1126,10 @@ module Sinatra
             if data_request[:item_id] and data_request[:quantity]
               item_id = data_request[:item_id]
               quantity = data_request[:quantity].to_i
-              product_lines = booking.booking_lines.select do |booking_line|
-                                booking_line.item_id == item_id
-                              end
-              if product_lines.empty?
-                if product = ::Yito::Model::Booking::BookingCategory.get(item_id)
-                  booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-                  product_unit_cost = product.unit_price(booking.date_from, booking.days)
-                  product_deposit_cost = product.deposit
-                  booking.transaction do 
-                    # Create booking line
-                    booking_line = BookingDataSystem::BookingLine.new
-                    booking_line.booking = booking
-                    booking_line.item_id = item_id 
-                    booking_line.item_description = product.name 
-                    booking_line.item_unit_cost_base = product_unit_cost
-                    booking_line.item_unit_cost = product_unit_cost
-                    booking_line.item_cost = product_unit_cost * quantity
-                    booking_line.quantity = quantity
-                    booking_line.product_deposit_unit_cost = product_deposit_cost
-                    booking_line.product_deposit_cost = product_deposit_cost * quantity
-                    booking_line.save
-                    # Create booking line resources
-                    (1..quantity).each do |resource_number|
-                      booking_line_resource = BookingDataSystem::BookingLineResource.new 
-                      booking_line_resource.booking_line = booking_line
-                      booking_line_resource.save
-                    end
-                    # Update booking cost
-                    item_cost_increment = product_unit_cost * quantity
-                    deposit_cost_increment = product_deposit_cost * quantity
-                    total_cost_increment = item_cost_increment + deposit_cost_increment
-                    booking.item_cost += item_cost_increment
-                    booking.product_deposit_cost += deposit_cost_increment
-                    booking.total_cost += total_cost_increment
-                    booking.total_pending += total_cost_increment
-                    booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
-                    booking.save
-                  end
-                  booking.reload
-                  content_type :json
-                  booking.to_json
-                else
-                  body "Producto no existe"
-                  status 500 
-                end
-              else
-                body "Ya existe el producto en la reserva. Por favor, modifique la cantidad"
-                status 500
-              end
+              booking.add_booking_line(item_id, quantity)
+              booking.reload
+              content_type :json
+              booking.to_json
             else 
               body "Producto o cantidad no especificadas"
               status 500
@@ -1162,43 +1154,10 @@ module Sinatra
             if data_request[:extra_id] and data_request[:quantity]
               extra_id = data_request[:extra_id]
               quantity = data_request[:quantity].to_i
-              booking_extras = booking.booking_extras.select do |booking_extra|
-                                 booking_extra.extra_id == extra_id
-                               end
-              if booking_extras.empty?
-                if extra = ::Yito::Model::Booking::BookingExtra.get(extra_id)
-                  booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-                  extra_unit_cost = extra.unit_price(booking.date_from, booking.days)
-                  booking.transaction do 
-                    # Create the booking extra line
-                    booking_extra = BookingDataSystem::BookingExtra.new
-                    booking_extra.booking = booking
-                    booking_extra.extra_id = extra_id
-                    booking_extra.extra_description = extra.name
-                    booking_extra.quantity = quantity
-                    booking_extra.extra_unit_cost = extra_unit_cost
-                    booking_extra.extra_cost = extra_unit_cost * quantity
-                    booking_extra.save
-                    # Updates the booking
-                    extra_cost_increment = extra_unit_cost * quantity
-                    total_cost_increment = extra_cost_increment
-                    booking.extras_cost += extra_cost_increment
-                    booking.total_cost += total_cost_increment
-                    booking.total_pending += total_cost_increment
-                    booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
-                    booking.save
-                  end
-                  booking.reload
-                  content_type :json
-                  booking.to_json
-                else
-                  body "Extra no existe"
-                  status 500 
-                end
-              else
-                body "Ya existe el extra en la reserva. Por favor, modifique la cantidad"
-                status 500
-              end
+              booking.add_booking_extra(extra_id, quantity)
+              booking.reload
+              content_type :json
+              booking.to_json
             else 
               body "Extra o cantidad no especificadas"
               status 500
@@ -1220,50 +1179,11 @@ module Sinatra
           if booking_line = BookingDataSystem::BookingLine.get(id)
             if data_request[:item_id] && data_request[:item_id] != booking_line.item_id
               item_id = data_request[:item_id]
-              if product = ::Yito::Model::Booking::BookingCategory.get(item_id)
-                booking = booking_line.booking 
-                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-                item_description = product.name
-                old_price = new_price = booking_line.item_unit_cost
-                old_product_deposit = new_product_deposit = booking_line.product_deposit_unit_cost
-                if data_request[:price_modification] and data_request[:price_modification] == 'update'                 
-                  new_price = product.unit_price(booking.date_from, booking.days).round
-                  new_product_deposit = product.deposit
-                end
-                # Update the booking line and the booking
-                booking_line.transaction do
-                  item_cost_increment = new_price - old_price
-                  deposit_cost_increment = new_product_deposit - old_product_deposit
-                  total_cost_increment = item_cost_increment + deposit_cost_increment              
-                  # Update booking line
-                  booking_line.item_id = item_id
-                  booking_line.item_description = item_description
-                  if item_cost_increment != 0
-                    booking_line.item_unit_cost += item_cost_increment
-                    booking_line.item_cost = booking_line.item_unit_cost * booking_line.quantity
-                  end
-                  if deposit_cost_increment != 0
-                    booking_line.product_deposit_unit_cost += deposit_cost_increment
-                    booking_line.product_deposit_cost = booking_line.product_deposit_unit_cost * booking_line.quantity
-                  end
-                  booking_line.save
-                  # Update booking
-                  if item_cost_increment > 0 || deposit_cost_increment > 0
-                    booking.item_cost += item_cost_increment
-                    booking.product_deposit_cost += deposit_cost_increment
-                    booking.total_cost += total_cost_increment
-                    booking.total_pending += total_cost_increment
-                    booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
-                    booking.save
-                  end
-                  booking.reload
-                  content_type :json
-                  booking.to_json                                    
-                end
-              else
-                body "Producto no existe"
-                status 500
-              end
+              booking_line.change_item(item_id)
+              booking = booking_line.booking
+              booking.reload
+              content_type :json
+              booking.to_json
             else
               body "Producto no especificado"
               status 500
@@ -1286,51 +1206,11 @@ module Sinatra
           if booking_line = BookingDataSystem::BookingLine.get(id)
             if data_request[:quantity]
               quantity = data_request[:quantity]
-              if product = ::Yito::Model::Booking::BookingCategory.get(booking_line.item_id)
-                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-                booking = booking_line.booking
-                #product_unit_cost = product.unit_price(booking.date_from, booking.days)
-                product_deposit_cost = product.deposit
-                old_quantity = booking_line.quantity
-                old_booking_line_item_cost = booking_line.item_cost
-                old_booking_line_product_deposit_cost = booking_line.product_deposit_cost
-                booking_line.transaction do 
-                  booking_line.quantity = quantity
-                  #booking_line.item_unit_cost = product_unit_cost
-                  booking_line.item_cost = booking_line.item_unit_cost * quantity
-                  booking_line.product_deposit_unit_cost = product_deposit_cost
-                  booking_line.product_deposit_cost = product_deposit_cost * quantity                  
-                  booking_line.save
-                  # Add or remove booking line resources
-                  if quantity < old_quantity
-                    (quantity..(old_quantity-1)).each do |resource_number|
-                      booking_line.booking_line_resources[quantity].destroy unless booking_line.booking_line_resources[quantity].nil?
-                    end  
-                  elsif quantity > old_quantity
-                    (old_quantity..(quantity-1)).each do |resource_number|
-                      booking_line_resource = BookingDataSystem::BookingLineResource.new 
-                      booking_line_resource.booking_line = booking_line
-                      booking_line_resource.save
-                    end
-                  end
-                  # Update the booking (cost)
-                  item_cost_increment = booking_line.item_cost - old_booking_line_item_cost
-                  deposit_cost_increment = booking_line.product_deposit_cost - old_booking_line_product_deposit_cost
-                  total_cost_increment = item_cost_increment + deposit_cost_increment
-                  booking.item_cost += item_cost_increment
-                  booking.product_deposit_cost += deposit_cost_increment
-                  booking.total_cost += total_cost_increment
-                  booking.total_pending += total_cost_increment
-                  booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
-                  booking.save
-                end
-                booking.reload
-                content_type :json
-                booking.to_json
-              else
-                body "Producto no existe. Imposible recalcular precio"
-                status 500
-              end  
+              booking_line.update_quantity(quantity)
+              booking = booking_line.booking
+              booking.reload
+              content_type :json
+              booking.to_json
             else 
               body "Cantidad no especificada"
               status 500
@@ -1354,30 +1234,11 @@ module Sinatra
           if booking_line = BookingDataSystem::BookingLine.get(id)
             if data_request[:item_unit_cost]
               item_unit_cost = data_request[:item_unit_cost]
-              if product = ::Yito::Model::Booking::BookingCategory.get(booking_line.item_id)
-                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-                booking = booking_line.booking
-                old_booking_line_item_cost = booking_line.item_cost
-                booking_line.transaction do 
-                  booking_line.item_unit_cost = item_unit_cost
-                  booking_line.item_cost = booking_line.item_unit_cost * booking_line.quantity
-                  booking_line.save
-                  # Update the booking (cost)
-                  item_cost_increment = booking_line.item_cost - old_booking_line_item_cost
-                  total_cost_increment = item_cost_increment
-                  booking.item_cost += item_cost_increment
-                  booking.total_cost += total_cost_increment
-                  booking.total_pending += total_cost_increment
-                  booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
-                  booking.save
-                end
-                booking.reload
-                content_type :json
-                booking.to_json
-              else
-                body "Producto no existe. Imposible recalcular precio"
-                status 500
-              end  
+              booking_line.update_item_cost(item_unit_cost)
+              booking = booking_line.booking
+              booking.reload
+              content_type :json
+              booking.to_json
             else 
               body "Coste no especificado"
               status 500
@@ -1402,20 +1263,8 @@ module Sinatra
             if data_request[:item_deposit]
               booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
               item_deposit = data_request[:item_deposit]
+              booking_line.update_item_deposit(item_deposit)
               booking = booking_line.booking
-              old_booking_line_product_deposit_cost = booking_line.product_deposit_cost
-              booking_line.transaction do 
-                booking_line.product_deposit_unit_cost = (item_deposit / booking_line.quantity).round
-                booking_line.product_deposit_cost = item_deposit
-                booking_line.save
-                # Update the booking (cost)
-                deposit_cost_increment = booking_line.product_deposit_cost - old_booking_line_product_deposit_cost
-                total_cost_increment = deposit_cost_increment
-                booking.total_cost += total_cost_increment
-                booking.total_pending += total_cost_increment
-                booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
-                booking.save
-              end
               booking.reload
               content_type :json
               booking.to_json
@@ -1428,7 +1277,59 @@ module Sinatra
           end
 
         end
-        
+
+        #
+        # Update booking deposit(s)
+        #
+        app.post '/api/booking/booking-deposits', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_id]
+          driver_age_deposit = data_request[:driver_age_deposit]
+
+          if booking = BookingDataSystem::Booking.get(id)
+            if data_request[:driver_age_deposit]
+              booking.update_driver_age_deposit(driver_age_deposit)
+              booking.reload
+              content_type :json
+              booking.to_json
+            end
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Update booking driver dates (date of birth and driving license date)
+        #
+        app.post '/api/booking/booking-driver-dates', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          if data_request.has_key?(:id)
+             data_request.has_key?(:driver_date_of_birth) and
+             data_request.has_key?(:driver_driving_license_date) and
+            id = data_request[:id]
+            driver_date_of_birth = data_request[:driver_date_of_birth]
+            driver_driving_license_date = data_request[:driver_driving_license_date]
+            if booking = BookingDataSystem::Booking.get(id)
+              booking.update_driver_dates(driver_date_of_birth, driver_driving_license_date)
+              content_type :json
+              booking.to_json
+            else
+              status 404
+            end
+          else
+            status 404
+          end
+
+        end
 
         #
         # Update booking line item
@@ -1451,33 +1352,11 @@ module Sinatra
           if booking_extra = BookingDataSystem::BookingExtra.get(id)
             if data_request[:quantity]
               quantity = data_request[:quantity]
-              if extra = ::Yito::Model::Booking::BookingExtra.get(booking_extra.extra_id)
-                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-                booking = booking_extra.booking
-                #extra_unit_cost = extra.unit_price(booking.date_from, booking.days)
-                old_quantity = booking_extra.quantity
-                old_booking_extra_extra_cost = booking_extra.extra_cost
-                booking_extra.transaction do 
-                  booking_extra.quantity = quantity
-                  #booking_extra.extra_unit_cost = extra_unit_cost
-                  booking_extra.extra_cost = booking_extra.extra_unit_cost * quantity
-                  booking_extra.save
-                  # Update the booking (cost)
-                  extra_cost_increment = booking_extra.extra_cost - old_booking_extra_extra_cost
-                  total_cost_increment = extra_cost_increment 
-                  booking.extras_cost += extra_cost_increment
-                  booking.total_cost += total_cost_increment
-                  booking.total_pending += total_cost_increment
-                  booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
-                  booking.save
-                end
-                booking.reload
-                content_type :json
-                booking.to_json
-              else
-                body "Extra no existe. Imposible recalcular precio"
-                status 500
-              end  
+              booking_extra.update_quantity(quantity)
+              booking = booking_extra.booking
+              booking.reload
+              content_type :json
+              booking.to_json
             else 
               body "Cantidad no especificada"
               status 500
@@ -1501,30 +1380,11 @@ module Sinatra
           if booking_extra = BookingDataSystem::BookingExtra.get(id)
             if data_request[:extra_unit_cost]
               extra_unit_cost = data_request[:extra_unit_cost]
-              if extra = ::Yito::Model::Booking::BookingExtra.get(booking_extra.extra_id)
-                booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-                booking = booking_extra.booking
-                old_booking_extra_extra_cost = booking_extra.extra_cost
-                booking_extra.transaction do 
-                  booking_extra.extra_unit_cost = extra_unit_cost
-                  booking_extra.extra_cost = booking_extra.extra_unit_cost * booking_extra.quantity
-                  booking_extra.save
-                  # Update the booking (cost)
-                  extra_cost_increment = booking_extra.extra_cost - old_booking_extra_extra_cost
-                  total_cost_increment = extra_cost_increment
-                  booking.extras_cost += extra_cost_increment
-                  booking.total_cost += total_cost_increment
-                  booking.total_pending += total_cost_increment
-                  booking.booking_amount += (total_cost_increment * booking_deposit / 100).round unless booking_deposit == 0
-                  booking.save
-                end
-                booking.reload
-                content_type :json
-                booking.to_json
-              else
-                body "Extra no existe. Imposible recalcular precio"
-                status 500
-              end  
+              booking_extra.update_cost(extra_unit_cost)
+              booking = booking_extra.booking
+              booking.reload
+              content_type :json
+              booking.to_json
             else 
               body "Coste no especificado"
               status 500
@@ -1546,6 +1406,7 @@ module Sinatra
 
           if booking_line_resource = BookingDataSystem::BookingLineResource.get(data.delete(:id).to_i)
             booking_item_reference = data.delete(:booking_item_reference)
+            # Assign booking item information
             if !booking_item_reference.nil? && !booking_item_reference.empty? &&
                 booking_item_reference != booking_line_resource.booking_item_reference
               if booking_item = ::Yito::Model::Booking::BookingItem.get(booking_item_reference) 
@@ -1559,16 +1420,60 @@ module Sinatra
                 booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4              
               end
             end
-            booking_line_resource.booking_item_stock_model = data[:booking_item_stock_model] if data.has_key?(:booking_item_stock_model) and (!data[:booking_item_stock_model].nil? and !data[:booking_item_stock_model].empty?)
-            booking_line_resource.booking_item_stock_plate = data[:booking_item_stock_plate] if data.has_key?(:booking_item_stock_plate) and (!data[:booking_item_stock_plate].nil? and !data[:booking_item_stock_plate].empty?)
-            booking_line_resource.booking_item_characteristic_1 = data[:booking_item_characteristic_1] if data.has_key?(:booking_item_characteristic_1) and (!data[:booking_item_characteristic_1].nil? and !data[:booking_item_characteristic_1].empty?)
-            booking_line_resource.booking_item_characteristic_2 = data[:booking_item_characteristic_2] if data.has_key?(:booking_item_characteristic_2) and (!data[:booking_item_characteristic_2].nil? and !data[:booking_item_characteristic_2].empty?)
-            booking_line_resource.booking_item_characteristic_3 = data[:booking_item_characteristic_3] if data.has_key?(:booking_item_characteristic_3) and (!data[:booking_item_characteristic_3].nil? and !data[:booking_item_characteristic_3].empty?)
-            booking_line_resource.booking_item_characteristic_4 = data[:booking_item_characteristic_4] if data.has_key?(:booking_item_characteristic_4) and (!data[:booking_item_characteristic_4].nil? and !data[:booking_item_characteristic_4].empty?)
-            booking_line_resource.km_miles_on_pickup = data[:km_miles_on_pickup] if data.has_key?(:km_miles_on_pickup) and (!data[:km_miles_on_pickup].nil? and !data[:km_miles_on_pickup].empty?)
-            booking_line_resource.km_miles_on_return = data[:km_miles_on_return] if data.has_key?(:km_miles_on_return) and (!data[:km_miles_on_return].nil? and !data[:km_miles_on_return].empty?)
+            # Assign from booking request
+            updated_summary = []
+            updated_attributes = {}
+            if data.has_key?(:booking_item_stock_model) and (!data[:booking_item_stock_model].nil? and !data[:booking_item_stock_model].empty?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_stock_model(data[:booking_item_stock_model], booking_line_resource.booking_item_stock_model) if booking_line_resource.booking_item_stock_model != data[:booking_item_stock_model]
+              updated_attributes.store(:stock_model, data[:booking_item_stock_model]) if booking_line_resource.booking_item_stock_model != data[:booking_item_stock_model]
+              booking_line_resource.booking_item_stock_model = data[:booking_item_stock_model]
+            end
+            if data.has_key?(:booking_item_stock_plate) and (!data[:booking_item_stock_plate].nil? and !data[:booking_item_stock_plate].empty?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_stock_plate(data[:booking_item_stock_plate], booking_line_resource.booking_item_stock_plate) if booking_line_resource.booking_item_stock_plate != data[:booking_item_stock_plate]
+              updated_attributes.store(:stock_plate, data[:booking_item_stock_plate]) if booking_line_resource.booking_item_stock_plate != data[:booking_item_stock_plate]
+              booking_line_resource.booking_item_stock_plate = data[:booking_item_stock_plate]
+            end
+            if data.has_key?(:booking_item_characteristic_1) and (!data[:booking_item_characteristic_1].nil? and !data[:booking_item_characteristic_1].empty?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_characteristic_1(data[:booking_item_characteristic_1], booking_line_resource.booking_item_characteristic_1) if booking_line_resource.booking_item_characteristic_1 != data[:booking_item_characteristic_1]
+              updated_attributes.store(:characteristic_1, data[:booking_item_characteristic_1]) if booking_line_resource.booking_item_characteristic_1 != data[:booking_item_characteristic_1]
+              booking_line_resource.booking_item_characteristic_1 = data[:booking_item_characteristic_1]
+            end
+            if data.has_key?(:booking_item_characteristic_2) and (!data[:booking_item_characteristic_2].nil? and !data[:booking_item_characteristic_2].empty?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_characteristic_2(data[:booking_item_characteristic_2], booking_line_resource.booking_item_characteristic_2) if booking_line_resource.booking_item_characteristic_2 != data[:booking_item_characteristic_2]
+              updated_attributes.store(:characteristic_2, data[:booking_item_characteristic_2]) if booking_line_resource.booking_item_characteristic_2 != data[:booking_item_characteristic_2]
+              booking_line_resource.booking_item_characteristic_2 = data[:booking_item_characteristic_2]
+            end
+            if data.has_key?(:booking_item_characteristic_3) and (!data[:booking_item_characteristic_3].nil? and !data[:booking_item_characteristic_3].empty?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_characteristic_3(data[:booking_item_characteristic_3], booking_line_resource.booking_item_characteristic_3) if booking_line_resource.booking_item_characteristic_3 != data[:booking_item_characteristic_3]
+              updated_attributes.store(:characteristic_3, data[:booking_item_characteristic_3]) if booking_line_resource.booking_item_characteristic_3 != data[:booking_item_characteristic_3]
+              booking_line_resource.booking_item_characteristic_3 = data[:booking_item_characteristic_3]
+            end
+            if data.has_key?(:booking_item_characteristic_4) and (!data[:booking_item_characteristic_4].nil? and !data[:booking_item_characteristic_4].empty?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_characteristic_4(data[:booking_item_characteristic_4], booking_line_resource.booking_item_characteristic_4) if booking_line_resource.booking_item_characteristic_4 != data[:booking_item_characteristic_4]
+              updated_attributes.store(:characteristic_4, data[:booking_item_characteristic_4]) if booking_line_resource.booking_item_characteristic_4 != data[:booking_item_characteristic_4]
+              booking_line_resource.booking_item_characteristic_4 = data[:booking_item_characteristic_4]
+            end
+            if data.has_key?(:km_miles_on_pickup) and (!data[:km_miles_on_pickup].nil? and data[:km_miles_on_pickup].to_i > 0)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_km_on_pickup(data[:km_miles_on_pickup], booking_line_resource.km_miles_on_pickup || '-') if booking_line_resource.km_miles_on_pickup != data[:km_miles_on_pickup]
+              updated_attributes.store(:km_miles_on_pickup, data[:km_miles_on_pickup]) if booking_line_resource.km_miles_on_pickup != data[:km_miles_on_pickup]
+              booking_line_resource.km_miles_on_pickup = data[:km_miles_on_pickup]
+            end
+            if data.has_key?(:km_miles_on_return) and (!data[:km_miles_on_return].nil? and data[:km_miles_on_return].to_i > 0)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_km_on_return(data[:km_miles_on_return], booking_line_resource.km_miles_on_return || '-') if booking_line_resource.km_miles_on_return != data[:km_miles_on_return]
+              updated_attributes.store(:km_miles_on_return, data[:km_miles_on_return]) if booking_line_resource.km_miles_on_return != data[:km_miles_on_return]
+              booking_line_resource.km_miles_on_return = data[:km_miles_on_return]
+            end
             begin
-              booking_line_resource.save
+              booking_line_resource.transaction do 
+                booking_line_resource.save
+                # Newsfeed
+                ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                         action: 'updated_booking_resource',
+                                                         identifier: booking_line_resource.booking_line.booking.id.to_s,
+                                                         description: BookingDataSystem.r18n.t.booking_news_feed.updated_booking_resource(booking_line_resource.booking_line.id, booking_line_resource.booking_line.item_id, updated_summary.join('. ')),
+                                                         attributes_updated: updated_attributes.to_json)
+                
+              end
             rescue DataMapper::SaveFailureError => error
               logger.error "Error updating booking_line_resource #{error.resource.errors.full_messages.inspect}"
               raise error
@@ -1596,22 +1501,63 @@ module Sinatra
             booking = booking_extra.booking
             booking_extra.transaction do 
               booking.extras_cost -= booking_extra.extra_cost
-              booking.total_cost -= booking_extra.extra_cost
-              if booking.total_pending < booking_extra.extra_cost
-                booking.total_pending = 0
-              else
-                booking.total_pending -= booking_extra.extra_cost
-              end
-              booking_deposit = SystemConfiguration::Variable.get_value('booking.deposit', 0).to_i
-              booking.booking_amount -= (booking_extra.extra_cost * booking_deposit / 100).round unless booking_deposit == 0
+              booking.calculate_cost(false, false)
               booking.save
-              booking_extra.destroy 
+              booking_extra.destroy
+              # Newsfeed
+              ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                       action: 'destroyed_booking_extra',
+                                                       identifier: booking.id.to_s,
+                                                       description: BookingDataSystem.r18n.t.booking_news_feed.destroyed_booking_extra(booking_extra.extra_id, booking_extra.quantity),
+                                                       attributes_updated: {extras_cost: booking.extras_cost, total_cost: booking.total_cost}.merge({booking: booking.newsfeed_summary}).to_json)
             end
             booking.reload
             content_type :json
             booking.to_json
           else
             logger.error("Booking extra #{params[:id]} not found")
+            status 404
+          end
+
+        end
+
+        #
+        # Register a booking charge
+        #
+        app.post '/api/booking/charge', :allowed_usergroups => ['bookings_manager', 'booking_operator', 'staff'] do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys!
+
+          if booking = BookingDataSystem::Booking.get(data[:id])
+
+            booking.transaction do
+              charge = Payments::Charge.new
+              charge.date = data[:date]
+              charge.amount = data[:amount]
+              charge.payment_method_id = data[:payment_method_id]
+              charge.status = :pending
+              charge.currency = SystemConfiguration::Variable.get_value('payments.default_currency', 'EUR')
+              charge.save
+              booking_charge = BookingDataSystem::BookingCharge.new
+              booking_charge.booking = booking
+              booking_charge.charge = charge
+              booking_charge.save
+              charge.update(:status => :done)
+              # Newsfeed
+              ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                       action: 'add_booking_charge',
+                                                       identifier: booking.id.to_s,
+                                                       description: BookingDataSystem.r18n.t.booking_news_feed.added_booking_charge("%.2f" % charge.amount, charge.payment_method_id),
+                                                       attributes_updated: {date: charge.date, amount: charge.amount,
+                                                                            payment_method_id: charge.payment_method_id}.merge({booking: booking.newsfeed_summary}).to_json)
+              booking.reload
+            end
+            content_type :json
+            status 200
+            booking.to_json
+          else
             status 404
           end
 
@@ -1625,6 +1571,8 @@ module Sinatra
           if booking_charge = BookingDataSystem::BookingCharge.first(:booking_id => params[:booking_id],
                                                                      :charge_id => params[:charge_id])
             booking = booking_charge.booking
+            old_total_paid = booking.total_paid
+            old_total_pending = booking.total_pending
             charge = booking_charge.charge
             booking_charge.transaction do
               if charge.status == :done 
@@ -1634,6 +1582,12 @@ module Sinatra
               end
               charge.destroy
               booking_charge.destroy
+              # Newsfeed
+              ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                       action: 'destroyed_booking_charge',
+                                                       identifier: booking.id.to_s,
+                                                       description: BookingDataSystem.r18n.t.booking_news_feed.destroyed_booking_charge("%.2f" % charge.amount, charge.payment_method_id),
+                                                       attributes_updated: {total_paid: booking.total_paid, total_pending: booking.total_pending}.merge({booking: booking.newsfeed_summary}).to_json)
             end
             booking.reload
             content_type :json

@@ -3,7 +3,7 @@
             <div class="container">
                 <div class="row">
                     <!-- CONTENT -->
-                    <div class="col-md-9 content car-listing" id="content">
+                    <div class="col-md-8 content car-listing" id="content">
 
                         <!-- Car Listing -->
                         <div id="product_listing">
@@ -14,7 +14,7 @@
                     <!-- /CONTENT -->
 
                     <!-- SIDEBAR -->
-                    <aside class="col-md-3 sidebar" id="sidebar" style="display: none">
+                    <aside class="col-md-4 sidebar" id="sidebar" style="display: none">
                         <!-- widget -->
                         <div class="widget shadow widget-find-car">
                             <h4 class="widget-title">Producto</h4>
@@ -33,10 +33,10 @@
 
                                         <div class="form-group has-icon has-label">
                                             <label for="formSearchOffLocation3">Lugar devolución</label>
-                            <select name="return_place" id="return_place"
-                                class="selectpicker input-price" data-live-search="true" data-width="100%"
-                                data-toggle="tooltip" title="Select">
-                            </select>
+                                              <select name="return_place" id="return_place"
+                                                      class="selectpicker input-price" data-live-search="true" data-width="100%"
+                                                      data-toggle="tooltip" title="Select">
+                                              </select>
                                             <span class="form-control-icon"><i class="fa fa-map-marker"></i></span>
                                         </div>
 
@@ -69,6 +69,13 @@
                                             </select>
                                             <span class="form-control-icon"><i class="fa fa-clock-o"></i></span>
                                         </div>
+
+                                        <% if booking_item_family.driver and booking_driver_min_age_rules %>
+                                          <hr>
+                                          <div class="form-group has-icon has-label">
+                                            <label id="driver_age_rule"></label>
+                                          </div>
+                                        <% end %>
 
                                         <button type="submit" id="formSearchSubmit3" class="btn btn-submit btn-theme btn-theme-dark btn-block">Actualizar</button>
 

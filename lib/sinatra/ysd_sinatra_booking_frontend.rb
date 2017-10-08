@@ -29,12 +29,11 @@ module Sinatra
       	  	  return_place = params[:return_place]
 							number_of_adults = params[:number_of_adults]
 							number_of_children = params[:number_of_children]
-							driver_under_age = ('on' == params[:driver_under_age])
+							driver_age_rule_id = params[:driver_age_rule]
 							booking_parameters = true
 						end
 
       	  	# Retrieve or create a new shopping cart
-						#p "shopping cart : #{session[:shopping_cart_renting_id]}"
       	  	@shopping_cart = nil
 
 						if session.has_key?(:shopping_cart_renting_id)
@@ -48,12 +47,11 @@ module Sinatra
       	  	  					date_to: date_to, time_to: time_to,
       	  	  					pickup_place: pickup_place, return_place: return_place,
 								        number_of_adults: number_of_adults, number_of_children: number_of_children,
-								        driver_under_age: driver_under_age)
+												driver_age_rule_id: driver_age_rule_id)
 							else
 								# TODO create default values or redirect home?
 							end
       	  	  session[:shopping_cart_renting_id] = @shopping_cart.id
-							#p "storing shopping cart : #{@shopping_cart.id}"
 						else
 							if booking_parameters
 								@shopping_cart.change_selection_data(
@@ -61,7 +59,7 @@ module Sinatra
 										date_to, time_to,
 										pickup_place, return_place,
 										number_of_adults, number_of_children,
-										driver_under_age)
+										driver_age_rule_id)
 							end
 						end
 
@@ -75,6 +73,8 @@ module Sinatra
               SystemConfiguration::Variable.get_value('booking.item_type')) 
             locals.store(:booking_allow_custom_pickup_return_place,
               SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+						locals.store(:booking_driver_min_age_rules,
+						  SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
 
       	  	# Load the page
       	    load_page(:rent_reservation_choose_product, {page_title: 'Seleccionar producto', locals: locals})
@@ -92,6 +92,10 @@ module Sinatra
 												 ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
 						locals.store(:booking_item_type,
 												 SystemConfiguration::Variable.get_value('booking.item_type'))
+						locals.store(:total_cost_includes_deposit,
+												 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
+						locals.store(:booking_driver_min_age_rules,
+												 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
 
       	  	load_page(:rent_reservation_complete, {page_title: 'Completar datos', locals: locals})
 
@@ -132,7 +136,12 @@ module Sinatra
 					app.get endpoint do
 
 						if @booking = BookingDataSystem::Booking.get_by_free_access_id(params[:id])
-							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}"}
+							locals = {}
+							locals.store(:total_cost_includes_deposit,
+													 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
+							locals.store(:booking_driver_min_age_rules,
+													 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
+							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}", locals: locals}
 						else
 							status 404
 						end
@@ -151,7 +160,12 @@ module Sinatra
 
 						if session.has_key?(:charge_id)
 							@booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
-							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}"}
+							locals = {}
+							locals.store(:total_cost_includes_deposit,
+													 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
+							locals.store(:booking_driver_min_age_rules,
+													 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
+							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}", locals: locals}
 						else
 							status 404
 						end
@@ -166,7 +180,12 @@ module Sinatra
 					app.get endpoint do
 						if session.has_key?(:charge_id)
 							@booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
-							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}"}
+							locals = {}
+							locals.store(:total_cost_includes_deposit,
+													 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
+							locals.store(:booking_driver_min_age_rules,
+													 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
+							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}", locals: locals}
 						else
 							status 404
 						end
@@ -180,7 +199,12 @@ module Sinatra
 					app.get endpoint do
 						if session.has_key?(:charge_id)
 							@booking = BookingDataSystem::BookingCharge.booking_from_charge(session[:charge_id])
-							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}"}
+							locals = {}
+							locals.store(:total_cost_includes_deposit,
+													 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
+							locals.store(:booking_driver_min_age_rules,
+													 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
+							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}", locals: locals}
 						else
 							status 404
 						end

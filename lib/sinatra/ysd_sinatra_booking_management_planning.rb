@@ -116,15 +116,32 @@ module Sinatra
           if type == 'booking'
             if booking_line_resource = BookingDataSystem::BookingLineResource.get(id)
               if booking_item = ::Yito::Model::Booking::BookingItem.get(resource)
-                booking_line_resource.booking_item_category = booking_item.category.code if booking_item.category
-                booking_line_resource.booking_item_reference = booking_item.reference
-                booking_line_resource.booking_item_stock_model = booking_item.stock_model
-                booking_line_resource.booking_item_stock_plate = booking_item.stock_plate
-                booking_line_resource.booking_item_characteristic_1 = booking_item.characteristic_1
-                booking_line_resource.booking_item_characteristic_2 = booking_item.characteristic_2
-                booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3
-                booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4
-                booking_line_resource.save
+                  booking_line_resource.transaction do
+                  booking_line_resource.booking_item_category = booking_item.category.code if booking_item.category
+                  booking_line_resource.booking_item_reference = booking_item.reference
+                  booking_line_resource.booking_item_stock_model = booking_item.stock_model
+                  booking_line_resource.booking_item_stock_plate = booking_item.stock_plate
+                  booking_line_resource.booking_item_characteristic_1 = booking_item.characteristic_1
+                  booking_line_resource.booking_item_characteristic_2 = booking_item.characteristic_2
+                  booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3
+                  booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4
+                  booking_line_resource.save
+                  # Newsfeed
+                  ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                           action: 'assign_booking_resource',
+                                                           identifier: booking_line_resource.booking_line.booking.id.to_s,
+                                                           description: BookingDataSystem.r18n.t.booking_news_feed.assign_booking_resource(booking_line_resource.booking_item_reference,
+                                                                                                                                           booking_line_resource.booking_line.id,
+                                                                                                                                           booking_line_resource.booking_line.item_id),
+                                                           attributes_updated: {category: booking_line_resource.booking_item_category,
+                                                                                reference: booking_line_resource.booking_item_reference,
+                                                                                stock_model: booking_line_resource.booking_item_stock_model,
+                                                                                stock_plate: booking_line_resource.booking_item_stock_plate,
+                                                                                characteristic_1: booking_line_resource.booking_item_characteristic_1,
+                                                                                characteristic_2: booking_line_resource.booking_item_characteristic_2,
+                                                                                characteristic_3: booking_line_resource.booking_item_characteristic_3,
+                                                                                characteristic_4: booking_line_resource.booking_item_characteristic_4}.to_json)
+                end
                 status 200
               else
                 status 404

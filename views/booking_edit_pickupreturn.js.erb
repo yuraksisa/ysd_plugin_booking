@@ -15,28 +15,28 @@
         pickup_places : {
           <%  booking_pickup_return_places.each do |item| %>
              <% if item.is_pickup %>
-            '<%=item.name%>' : '<%=item.name%>',
+            "<%=item.name%>" : "<%=item.name%>",
             <% end %>
           <% end %>
         },
         pickup_placesRates: {
             <%  booking_pickup_return_places.each do |item| %>
               <% if item.is_pickup %>
-                '<%=item.name%>' : new Number('<%=item.price%>'),
+            "<%=item.name%>" : new Number('<%=item.price%>'),
               <% end %>
             <% end %>
         },
         return_places: {
             <%  booking_pickup_return_places.each do |item| %>
               <% if item.is_return %>
-                '<%=item.name%>' : '<%=item.name%>',
+            "<%=item.name%>" : "<%=item.name%>",
               <% end %>
             <% end %>
         },
         return_placesRates: {
             <%  booking_pickup_return_places.each do |item| %>
               <% if item.is_return %>
-                '<%=item.name%>' : new Number('<%=item.price%>'),
+            "<%=item.name%>" : new Number('<%=item.price%>'),
               <% end %>
             <% end %>
         },
@@ -48,8 +48,8 @@
           time_from: '<%=booking.time_from%>',
           date_to: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to.strftime('%d/%m/%y')%>"),
           time_to: '<%=booking.time_to%>',
-          pickup_place: '<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : ""%>',
-          return_place: '<%=booking.return_place ? booking.return_place.gsub("\n","<br/>") : ""%>',
+          pickup_place: "<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : ''%>",
+          return_place: "<%=booking.return_place ? booking.return_place.gsub("\n","<br/>") : ''%>",
           days: <%=booking.days%>,
           date_to_price_calculation: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to_price_calculation.strftime('%d/%m/%y')%>"),
           item_cost: <%=booking.item_cost%>,
@@ -59,14 +59,15 @@
           pickup_place_cost: <%=booking.pickup_place_cost%>,
           return_place_cost: <%=booking.return_place_cost%>,
           product_deposit_cost: <%=booking.product_deposit_cost%>,           
-          total_cost: <%=booking.total_cost%>,
-          total_paid: <%=booking.total_paid%>,
-          total_pending: <%=booking.total_pending%>,
-          booking_amount: <%=booking.booking_amount%>,
-          driver_date_of_birth: <%if !booking.driver_date_of_birth.nil? %> 
+          driver_date_of_birth: <%if !booking.driver_date_of_birth.nil? %>
                                 $.datepicker.parseDate("dd/mm/yy", "<%= booking.driver_date_of_birth.strftime('%d/%m/%y')%>"),
                                 <% else %>
                                 null,
+                                <% end %>
+          driver_driving_license_date: <%if !booking.driver_driving_license_date.nil? %>
+                                $.datepicker.parseDate("dd/mm/yy", "<%= booking.driver_driving_license_date.strftime('%d/%m/%y')%>"),
+                                <% else %>
+                                 null,
                                 <% end %>
           number_of_adults: <%= booking.number_of_adults || 0 %> ,
           number_of_children: <%= booking.number_of_children || 0 %> ,
@@ -127,7 +128,8 @@
                                           time_to: time_to,
                                           pickup_place: pickup_place,
                                           return_place: return_place,
-                                          date_of_birth: this.booking.driver_date_of_birth ? this.booking.driver_date_of_birth.toString("yyyy-MM-dd") : null});
+                                          date_of_birth: this.booking.driver_date_of_birth ? this.booking.driver_date_of_birth.toString("yyyy-MM-dd") : null,
+                                          driver_driving_license_date: this.booking.driver_driving_license_date  ? this.booking.driver_driving_license_date.toString("yyyy-MM-dd") : null });
 
             $.ajax(
                 {
@@ -191,8 +193,6 @@
                             self.booking.pickup_place_cost = new Number(self.calculator.pickup_place_cost);
                             self.booking.return_place_cost = new Number(self.calculator.return_place_cost);
 
-                            self.updateTotal();
-
                             bookingEditView.showNewPrices();
                             $('.price').autoNumeric('init',{aSep:''});
                             $('#situation_change').fadeIn();
@@ -217,8 +217,6 @@
 
           this.booking.item_cost = this.booking.item_cost - oldValue + this.booking.booking_lines[index].item_cost;
 
-          this.updateTotal();
-
           bookingEditView.showNewPrices();
        },
 
@@ -228,8 +226,6 @@
        	  this.booking.booking_extras[index].extra_cost = value * this.booking.booking_extras[index].quantity;
 
           this.booking.extras_cost = this.booking.extras_cost - oldValue + this.booking.booking_extras[index].extra_cost;
-
-          this.updateTotal();
 
           bookingEditView.showNewPrices();       	
        },
@@ -242,8 +238,6 @@
           else {
             this.booking.pickup_place_cost = this.custom_pickup_return_place_price;
           }
-
-          this.updateTotal();          
 
           this.booking.pickup_place = pickupPlace;
           bookingEditView.showNewPrices(); 
@@ -261,8 +255,6 @@
             this.booking.return_place_cost = this.custom_pickup_return_place_price;
           }
 
-          this.updateTotal();
-
           this.booking.return_place = returnPlace;
           bookingEditView.showNewPrices(); 
           $('#situation_change').fadeIn();
@@ -270,41 +262,17 @@
        
        },
 
-       updateTotal : function() {
-
-          this.booking.total_cost = this.booking.item_cost +
-                                    this.booking.time_from_cost + 
-                                    this.booking.time_to_cost +          
-                                    this.booking.pickup_place_cost +
-                                    this.booking.return_place_cost +
-                                    this.booking.product_deposit_cost +
-                                    this.booking.extras_cost;
-          this.booking.total_pending = this.booking.total_cost - this.booking.total_paid;
-          this.booking.booking_amount = new Number(this.booking.total_cost * <%=booking_deposit%> / 100).toFixed(0);
-
-       }
-
-
   }
 
-  bookingEditController = { 
+  bookingEditController = {
 
-     dateFromChanged: function() { // date from changed -> calculate price
-       bookingEditModel.calculatePrice($('#date_from').datepicker("getDate"), 
-                                       $('#time_from').val(),
-                                       $('#date_to').datepicker("getDate"), 
-                                       $('#time_to').val(),
-                                       $('#pickup_place_value').val(),
-                                       $('#return_place_value').val());
-     },
-
-     dateToChanged: function() { // date to changed -> calculate price
-        bookingEditModel.calculatePrice($('#date_from').datepicker("getDate"), 
-                                        $('#time_from').val(),
-                                        $('#date_to').datepicker("getDate"), 
-                                        $('#time_to').val(),
-                                        $('#pickup_place_value').val(),
-                                        $('#return_place_value').val());
+     recalculateButtonClick: function() {
+       bookingEditModel.calculatePrice($('#date_from').datepicker("getDate"),
+             $('#time_from').val(),
+             $('#date_to').datepicker("getDate"),
+             $('#time_to').val(),
+             $('#pickup_place_value').val(),
+             $('#return_place_value').val());
      },
 
      change_pickup_place_select : function(pickup_place) { /* change pickup place */
@@ -321,7 +289,7 @@
           $('#pickup_place_value').val(pickup_place);
         }
 
-        bookingEditModel.updatePickupPlace($('#pickup_place_value').val());
+        //bookingEditModel.updatePickupPlace($('#pickup_place_value').val());
         
      },
       
@@ -329,7 +297,7 @@
       
         if ($('#pickup_place_other').val() != $('#pickup_place_value').val()) {
           $('#pickup_place_value').val(pickup_place);
-          bookingEditModel.updatePickupPlace(pickup_place);
+          //bookingEditModel.updatePickupPlace(pickup_place);
         }
                 
      },
@@ -348,7 +316,7 @@
           $('#return_place_value').val(return_place);
         }          
 
-        bookingEditModel.updateReturnPlace($('#return_place_value').val());
+        //bookingEditModel.updateReturnPlace($('#return_place_value').val());
 
      },
       
@@ -356,7 +324,7 @@
         
         if ($('#return_place_other').val() != $('return_place_value').val()) {
           $('return_place_value').val(return_place);
-          bookingEditModel.updateReturnPlace(return_place);        
+          //bookingEditModel.updateReturnPlace(return_place);
         }
         
      },
@@ -387,18 +355,10 @@
       $('#date_from').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_from.strftime('%d/%m/%y')%>")); 
       $('#date_to').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to.strftime('%d/%m/%y')%>"));
 
-      $('#date_from').bind('change', function() {
-         bookingEditController.dateFromChanged();
+      $('#recalculate_button').bind('click', function() {
+         bookingEditController.recalculateButtonClick();
       });
-      $('#time_from').bind('change', function(){
-      	 bookingEditController.dateFromChanged();
-      })
-      $('#date_to').bind('change', function() {
-         bookingEditController.dateToChanged();
-      });
-      $('#time_to').bind('change', function() {
-      	 bookingEditController.dateToChanged();
-      });
+
       $('#update_button').bind('click', function() {
          bookingEditController.updateButtonClick();
       });
@@ -410,7 +370,7 @@
           function() {
              bookingEditController.blur_pickup_place_input($(this).val());
           });
-      $('#pickup_place_value').val('<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : "" %>');  
+      $('#pickup_place_value').val("<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : "" %>");
            
       $('#return_place').bind('change',
           function() {
@@ -420,7 +380,7 @@
           function() {
             bookingEditController.blur_return_place_input($(this).val());
           });
-      $('#return_place_value').val('<%=booking.return_place ? booking.return_place.gsub("\n","<br/>"): "" %>');  
+      $('#return_place_value').val("<%=booking.return_place ? booking.return_place.gsub("\n","<br/>"): "" %>");
 
 
       // Add the new options

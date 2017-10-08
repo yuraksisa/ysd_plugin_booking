@@ -26,9 +26,9 @@
                 <span class="entity-fieldvalue">
                    <input type="text" name="date_from" id="date_from" class="date_control" size="15" maxlength="10"/>
                    <% if booking_item_family.time_to_from %>
-                      <input type="text" name="time_from" id="time_from" maxlength="5" size="5" value="10:00"/>
+                      <input type="text" name="time_from" id="time_from" maxlength="5" size="5" value="<%=@shopping_cart.time_from%>"/>
                    <% else %>
-                      <input type="hidden" name="time_from" id="time_from" value="10:00"/>
+                      <input type="hidden" name="time_from" id="time_from" value="<%=@shopping_cart.time_from%>"/>
                    <% end %>
                 </span>
               </div>
@@ -69,9 +69,9 @@
                 <span class="entity-fieldvalue">
                   <input type="text" name="date_to" id="date_to" class="date_control" size="15" maxlength="10"/>
                   <% if booking_item_family.time_to_from %>
-                     <input type="text" name="time_to" id="time_to" maxlength="5" size="5" value="20:00"/>
+                     <input type="text" name="time_to" id="time_to" maxlength="5" size="5" value="<%=@shopping_cart.time_to%>"/>
                   <% else %>
-                     <input type="hidden" name="time_from" id="time_to" value="20:00"/>
+                     <input type="hidden" name="time_to" id="time_to" value="<%=@shopping_cart.time_to%>"/>
                   <% end %>
                 </span>
               </div>
@@ -97,6 +97,29 @@
                     </div>
                     <input type="hidden" name="return_place_value" id="return_place_value"/>
                  </span>
+              </div>
+            </div>
+          </div>
+          <% end %>
+
+          <!-- Driver age -->
+          <% if booking_item_family and booking_item_family.driver and driver_age_rules %>
+          <div class="formrow">
+            <div class="element_template">
+              <div class="entity-field">
+                <span class="entity-fieldlabel less_contrast_text">
+                 <%=t.new_booking.driver_age%>
+                </span>
+                <span class="entity-fieldvalue">
+                  <select name="driver_age_rule" id="driver_age_rule" class="fieldcontrol">
+                    <% driver_age_rule_definition.driver_age_rules.each do |driver_age_rule|%>
+                      <option value="<%=driver_age_rule.id%>" allowed="<%=driver_age_rule.allowed%>"
+                                      deposit="<%=driver_age_rule.deposit > 0%>"
+                                      supplement="<%=driver_age_rule.suplement > 0%>"
+                                      <%if !driver_age_rule.allowed and driver_age_rule.description.size == 2%>not-allowed-message="<%=driver_age_rule.description.last%>"<%end%>><%=driver_age_rule.description.first%></option>
+                    <% end %>
+                  </select>
+                </span>
               </div>
             </div>
           </div>
@@ -192,14 +215,14 @@
         <%% for (var idx=0;idx<products.length;idx++) { %>
           <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
             <td class="table-cell centered_text">
-              <% if booking_reservation_starts_with == :dates %>
-                <input type="radio" name="item_id" value="<%%=products[idx].code%>" class="product_chooser"></input>
-              <% elsif booking_reservation_start_with == :shopcart %>
+              <% if multiple_products %>
                 <select name="item_id_<%%=products[idx].code%>" rel="<%%=products[idx].code%>" class="product_selector">
-                  <%% for (var idxStock=0; idxStock < products[idx].stock; idxStock++) { %>
+                  <%% for (var idxStock=0; idxStock <= products[idx].stock; idxStock++) { %>
                      <option value="<%%=idxStock%>"><%%=idxStock%></option>
                   <%% } %>
                 </select>
+              <% else %>
+                <input type="radio" name="item_id" value="<%%=products[idx].code%>" class="product_chooser"></input>
               <% end %>
            </td>
            <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
@@ -299,6 +322,18 @@
 
         <%% if (shopping_cart.driver_age_cost > 0) { %>
         <li><%= t.admin_new_reservation.form.driver_age_cost %>: <span class="pull-right"><%%=new Number(shopping_cart.driver_age_cost).toFixed(2)%>€</span></li>
+        <%% } %>
+
+        <%% if (shopping_cart.product_deposit_cost > 0) { %>
+        <li><%= t.admin_new_reservation.form.product_deposit_cost %>: <span class="pull-right"><%%=new Number(shopping_cart.product_deposit_cost).toFixed(2)%>€</span></li>
+        <%% } %>
+
+        <%% if (shopping_cart.driver_age_deposit > 0) { %>
+        <li><%= t.admin_new_reservation.form.driver_age_deposit %>: <span class="pull-right"><%%=new Number(shopping_cart.driver_age_deposit).toFixed(2)%>€</span></li>
+        <%% } %>
+
+        <%% if (shopping_cart.total_deposit > 0) { %>
+        <li><%= t.admin_new_reservation.form.total_deposit %>: <span class="pull-right"><%%=new Number(shopping_cart.total_deposit).toFixed(2)%>€</span></li>
         <%% } %>
 
         <li><%= t.admin_new_reservation.form.total_cost %>: <span class="pull-right"><strong><%%=new Number(shopping_cart.total_cost).toFixed(2)%>€</strong></span></li>

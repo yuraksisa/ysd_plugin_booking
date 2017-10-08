@@ -242,7 +242,7 @@ module Sinatra
           
           pickup_return_timetables = {"" => t.booking_settings.form.no_pickup_return_timetable}.merge(Hash[ *::Yito::Model::Calendar::Timetable.all.collect { |tt| [tt.id.to_s, tt.name] }.flatten])
 
-          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.code]}.flatten ],
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :pickup_return_timetables => pickup_return_timetables,
                     :booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
                     :booking_modes => {
@@ -252,11 +252,15 @@ module Sinatra
                     :calendar_modes => {
                       :first_day =>  t.booking_settings.form.calendar_mode.first_day,
                       :default => t.booking_settings.form.calendar_mode.default
-                    },
-                    :reservation_starts_with => {
-                       :dates => t.booking_settings.form.reservation_starts_with.dates, 
-                       :categories => t.booking_settings.form.reservation_starts_with.categories,
-                       :shopcart => t.booking_settings.form.reservation_starts_with.shoppingcart} }
+                    }}
+
+          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          locals.store(:booking_item_family, booking_item_family)
+
+          if booking_item_family and booking_item_family.driver
+            locals.store(:booking_driver_age_rule_definition, SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
+            locals.store(:booking_driver_age_rule_definitions, Hash[ *::Yito::Model::Booking::BookingDriverAgeRuleDefinition.all.collect { |v| [v.id.to_s, v.name]}.flatten])
+          end
 
           booking_renting, booking_activities = mybooking_plan
 
@@ -445,8 +449,11 @@ module Sinatra
           locals.store(:booking_payment_enabled, SystemConfiguration::Variable.get_value('booking.payment', false))
           locals.store(:booking_front_end_prefix, SystemConfiguration::Variable.get_value('booking.front_end_prefix', ''))
           locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
+          locals.store(:driver_min_age_rules, SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool)
 
-          addon_simple_invoicing = (settings.respond_to?(:mybooking_addon_simple_invoicing) ? settings.mybooking_addon_simple_invoicing : false)
+          # Simple invoicing addon
+          addons = mybooking_addons
+          addon_simple_invoicing = (addons and addons.has_key?(:addon_simple_invoicing) and addons[:addon_simple_invoicing])
           locals.store(:booking_addon_simple_invoicing, addon_simple_invoicing)
           
           load_em_page :bookings_management, :booking, false, {:locals => locals}

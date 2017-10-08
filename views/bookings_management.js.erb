@@ -395,6 +395,14 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         self.prepareFormBookingSupplements(entity);
       });
 
+      $('#booking_deposit_button').bind('click', function() {
+         self.prepareFormBookingDeposit(entity);
+      });
+
+      $('#booking_driver_age_button').bind('click', function() {
+         self.prepareFormEditDriverDateOfBirth(entity);
+      });
+
       $('.booking-line-item-id').bind('click', function() {
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');
@@ -893,7 +901,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
     }
 
-    this.prepareFormBookingSupplements = function(entity) { /* Show the form to create a new booking line */
+    this.prepareFormBookingSupplements = function(entity) { /* Show the form to edit deposit */
 
       var html = tmpl('edit_booking_supplements_script', {entity: entity});
       $("#dialogs_container").html(html);
@@ -921,6 +929,132 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       YSDGui.showElement(document.getElementById('dialogs_container'), true);
 
     }    
+
+    this.prepareFormBookingDeposit = function(entity) { /* Show the form to edit deposit */
+
+        var html = tmpl('edit_booking_deposits_script', {entity: entity});
+        $("#dialogs_container").html(html);
+        $('#update_booking_deposit_button').unbind('click');
+        $('#update_booking_deposit_button').bind('click', function(){
+
+            var formdata = $('form[name="edit_booking_deposits"]').formParams(true);
+            var json_request = JSON.stringify(formdata);
+            $.ajax({
+                type: 'POST',
+                data : json_request,
+                url : '/api/booking/booking-deposits',
+                success: function(data, textStatus, jqXHR) {
+                    bookingManager.model.synchronizeCurrentEntity(data);
+                    bookingManager.model.change_state('entity_updated_successfully');
+                    alert('Fianza actualizada');
+                    YSDGui.hideElement(document.getElementById('dialogs_container'));
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('Error actualizando fianza: ' + data.responseText);
+                }
+            });
+
+        });
+        YSDGui.showElement(document.getElementById('dialogs_container'), true);
+
+    }
+
+    this.prepareFormEditDriverDateOfBirth = function (entity) {
+
+        var html = tmpl('booking_driver_age_of_birth_script', {entity: entity});
+        $("#dialogs_container").html(html);
+
+        $('#driver_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.driver_date_of_birth != null) {
+            $('#driver_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_date_of_birth, 'dd/MM/yyyy')));
+        }
+
+        $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.driver_driving_license_date != null) {
+            $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
+        }
+
+        $('form[name="driver_dates_form"]').validate({
+
+            submitHandler: function(form)
+            {
+                $('#driver_age_error_summary').html('');
+                $('#driver_age_error_summary').hide();
+                return false;
+            },
+
+            invalidHandler : function (form, validator) {
+                $('#driver_age_error_summary').html('<%=t.booking_management.form.validations.driver_errors_summary%>');
+                $('#driver_age_error_summary').show();
+            },
+
+            rules : {
+                'driver_date_of_birth': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date().add(-18).years(),
+                },
+                'driver_driving_license_date': {
+                    validDate: true,
+                    minDate: new Date().add(-100).years(),
+                    maxDate: new Date()
+                }
+
+            },
+
+            messages : {
+                'driver_date_of_birth': {
+                    validDate: '<%=t.booking_management.form.validations.driver_date_of_birth_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.driver_date_of_birth_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.driver_date_of_birth_max((d=Date.today;Date.new(d.year-18,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                },
+                'driver_driving_license_date': {
+                    validDate: '<%=t.booking_management.form.validations.driver_driving_license_date_invalid_date%>',
+                    minDate: '<%=t.booking_management.form.validations.driver_driving_license_date_min((d=Date.today;Date.new(d.year-100,d.month,d.day)).strftime('%d-%m-%Y'))%>',
+                    maxDate: '<%=t.booking_management.form.validations.driver_driving_license_date_max(Date.today.strftime('%d-%m-%Y'))%>'
+                }
+            },
+
+            errorPlacement : function(error, element) {
+
+                if (element.attr('name') === 'driver_date_of_birth')  {
+                    error.insertAfter('#driver_date_of_birth');
+                }
+
+                if (element.attr('name') === 'driver_driving_license_date')  {
+                    error.insertAfter('#driver_driving_license_date');
+                }
+
+            }
+
+        });
+
+        $('#update_driver_age_of_birth_button').unbind('click');
+        $('#update_driver_age_of_birth_button').bind('click', function(){
+
+            if ($('form[name="driver_dates_form"]').validate()) {
+                var formdata = $('form[name="driver_dates_form"]').formParams(true);
+                var json_request = JSON.stringify(formdata);
+                $.ajax({
+                    type: 'POST',
+                    data: json_request,
+                    url: '/api/booking/booking-driver-dates',
+                    success: function (data, textStatus, jqXHR) {
+                        bookingManager.model.synchronizeCurrentEntity(data);
+                        bookingManager.model.change_state('entity_updated_successfully');
+                        alert('Fechas del conductor actualizadas');
+                        YSDGui.hideElement(document.getElementById('dialogs_container'));
+                    },
+                    error: function (data, textStatus, jqXHR) {
+                        alert('Error actualizando fechas del conductor: ' + data.responseText);
+                    }
+                });
+            }
+
+        });
+        YSDGui.showElement(document.getElementById('dialogs_container'), true);
+
+    }
 
     this.prepareFormNewBookingExtra = function(entity) { /* Show the form to create a new booking line */
 
@@ -1272,6 +1406,16 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       return className;
     }    
 
+    this.adaptFormData = function(data) {
+
+        <% if booking_item_family.driver and driver_min_age_rules %>
+        delete data.driver_date_of_birth;
+        delete data.driver_driving_license_date;
+        <% end %>
+
+        return data;
+
+    }
 
   };
   

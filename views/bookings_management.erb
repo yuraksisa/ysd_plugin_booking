@@ -97,135 +97,18 @@
      <div id="dialogs_container">
      </div> 
 
-     <div class="element-detail all-border-solid-light overflow bottom-margin-1line">
-
-        <div class="grid_5">
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.id %></span>
-                <span class="entity-fieldvalue"><%%= entity.id %></span>
-              </div>
-            </div>  
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.creation_date %></span>
-                <span class="entity-fieldvalue">
-                  <%%= self.formatDate(entity.creation_date,'dd.MM.yyyy')%> 
-                  <span><%%= self.formatDate(entity.creation_date,'HH:mm')%></span>
-                </span>
-              </div>
-            </div>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.status %></span>
-                <span class="entity-fieldvalue">
-                  <span class="<%%=self.model.entityHooks[0].statusClass(entity)%> element-status">
-                    <%%= self.model.entityHooks[0].statusDescription[entity.status] %>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div class="element_template">
-               <div class="entity-field">
-                 <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.payment_status %></span>
-                 <span class="entity-fieldvalue">
-                    <span class="<%%=self.model.entityHooks[0].paymentStatusClass(entity)%> element-status">
-                      <%%= self.model.entityHooks[0].paymentStatusDescription[entity.payment_status] %>
-                    </span>
-                 </span>
-               </div>
-            </div>
-            <% if multiple_rental_locations %>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.rental_location %></span>
-                <span class="entity-fieldvalue">
-                  <form name="rental_location">
-                      <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                      <select name="rental_location_code" id="rental_location"></select>
-                      <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                  </form>
-                </span>
-              </div>
-            </div>
-            <% end %>
-        </div>
-      
-        <div class="grid_5">
-           <div class="element_template">
-             <div class="entity-field">
-               <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.date_from %></span>
-               <span class="entity-fieldvalue">
-                   <%%= self.formatDate(entity.date_from, 'dd.MM.yyyy') %> <% if booking_item_family.time_to_from%> <%%= entity.time_from?' , '+entity.time_from:'' %> <% end %>
-               </span>
-             </div>
-             <div class="entity-field">
-               <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.pickup_place %></span>
-               <span class="entity-fieldvalue">
-                   <% if booking_item_family.pickup_return_place %>
-                     <%%= entity.pickup_place %>
-                   <% else %>
-                      -
-                   <% end %>
-               </span>
-             </div>         
-           </div>
-           <div class="element_template">
-             <div class="entity-field">
-               <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.date_to %></span>
-               <span class="entity-fieldvalue">
-                  <%%= self.formatDate(entity.date_to, 'dd.MM.yyyy') %> <% if booking_item_family.time_to_from%> <%%= entity.time_to?' , '+entity.time_to:'' %> <% end %>
-               </span>
-             </div> 
-             <div class="entity-field">
-               <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.return_place %></span>
-               <span class="entity-fieldvalue">
-                  <% if booking_item_family.pickup_return_place %>
-                  <%%= entity.return_place %>
-                  <% else %>
-                  -
-                  <% end %>
-               </span>
-             </div>             
-           </div>         
-           <%% if (entity.number_of_adults > 0) { %>
-             <div class="element_template">
-               <div class="entity-field">
-                 <span class="entity-fieldlabel"><%= t.booking_management.form.adults %></span>
-                 <span class="entity-fieldvalue"><%%= entity.number_of_adults %></span>
-               </div>
-             </div>        
-             <div class="element_template">
-               <div class="entity-field">
-                 <span class="entity-fieldlabel"><%= t.booking_management.form.children %></span>
-                 <span class="entity-fieldvalue"><%%= entity.number_of_children %></span>
-               </div>
-            </div>        
-          <%% } %>           
-           <div class="element_template">
-             <div class="entity-field">
-               <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.days %></span>
-               <span class="entity-fieldvalue"><%%= entity.days %></span>
-             </div>
-           </div>
-        </div>
-        <div class="grid_2">
-          <div class="container_12">
-            <div class="grid_12 smaller_text">      
-               <%= partial :booking_management_actions %>
-            </div>
-          </div>
-        </div>
-
-     </div>  
+     <%= partial :booking_management_header, locals: {booking_item_family: booking_item_family,
+                                                      multiple_rental_locations: multiple_rental_locations,
+                                                      driver_min_age_rules: driver_min_age_rules} %>
 
      <div class="container_12">
           <div class="grid_12">
-            <%= partial :booking_management_detail %>
+            <%= partial :booking_management_detail, locals: {booking_item_family: booking_item_family,
+                                                             driver_min_age_rules: driver_min_age_rules} %>
           </div>
      </div>
 
-      <ul id="content_tabs" class="no-border no-background"class="no-border no-background">
+     <ul id="content_tabs" class="no-border no-background"class="no-border no-background">
           <li class="no-border no-background top-space" style="border: none; background: none">
             <a name="customer_tab" href="#customer_tab"><%=t.booking_management.form.customer_tab%></a>
           </li>
@@ -270,9 +153,9 @@
           <li class="no-border no-background top-space" style="border:none; backgrond:none">
               <a name="other_tab" href="#other_tab"><%=t.booking_management.form.other_tab%></a>
           </li>          
-      </ul>
+     </ul>
 
-      <div id="content">
+     <div id="content">
 
          <div id="customer_tab" class="top-margin bottom-margin">
            <div class="container_12">
@@ -281,6 +164,7 @@
              </div>
            </div>
          </div>
+
          <div id="comments_tab" class="top-margin bottom-margin">
            <div class="container_12">
              <div class="grid_6">
@@ -296,7 +180,8 @@
 
          <% if booking_item_family.driver %>
          <div id="driver_tab"  class="top-margin bottom-margin">
-            <%= partial :booking_management_driver, :locals => {:booking_item_family => booking_item_family} %>
+            <%= partial :booking_management_driver, :locals => {:booking_item_family => booking_item_family,
+                                                                :driver_min_age_rules => driver_min_age_rules} %>
          </div>
          <div id="additional_drivers_tab"  class="top-margin bottom-margin">
             <%= partial :booking_management_additional_drivers, :locals => {:booking_item_family => booking_item_family} %>
@@ -320,7 +205,7 @@
          <%% } %>
 
          <div id="resources_tab" class="top-margin-1line">
-             <%= partial :booking_management_resources, :locals => {:booking_item_family => booking_item_family} %>
+           <%= partial :booking_management_resources, :locals => {:booking_item_family => booking_item_family} %>
          </div>
 
          <div id="notifications_tab" class="top-margin-1line">
@@ -357,7 +242,7 @@
 
          </div>
 
-       </div>
+     </div>
 
      </form>
 
@@ -393,6 +278,6 @@
 
 </script>
 
-<%= partial :booking_management_edit, locals: {booking_item_family: booking_item_family}%>
+<%= partial :booking_management_edit, locals: {booking_item_family: booking_item_family, driver_min_age_rules: driver_min_age_rules}%>
 <%= element_form_extension %>
 <%= element_action_extension %>

@@ -18,6 +18,13 @@ bookingNewModel = {
 
    search: function() {
 
+       <% if booking_item_family.driver and driver_age_rules and driver_age_rule_definition and !driver_age_rule_definition.driver_age_rules.empty?  %>
+       if ($('#driver_age_rule option:selected').attr('allowed') == 'false') {
+           alert($('#driver_age_rule option:selected').attr('not-allowed-message'));
+           return;
+       }
+       <% end %>
+
        var data = $('form[name=reservation]').formParams(false);
        var requestData = JSON.stringify(data);
 
@@ -43,7 +50,7 @@ bookingNewModel = {
    setProduct: function(productCode, quantity) { /** Sets the product **/
 
        var data = {product: productCode,
-                   quantity: quantity};
+                   quantity: parseInt(quantity)};
        var requestData = JSON.stringify(data);
 
        $.ajax({
@@ -123,9 +130,15 @@ bookingNewController = {
 
         var dateFrom = $('#date_from').datepicker('getDate');
         var dateTo = $('#date_from').datepicker('getDate');
-        dateTo.setDate(dateTo.getDate() + bookingNewModel.minDays)
+
+        <% if booking_item_family.cycle_of_24_hours %>
+        dateTo.add(bookingNewModel.minDays).days();
+        <% else %>
+        dateTo.add(bookingNewModel.minDays-1).days();
+        <% end %>
+
         $('#date_to').datepicker('setDate', dateTo );
-        $('#date_to').datepicker('option', 'minDate', dateFrom.add(bookingNewModel.minDays).days());
+        $('#date_to').datepicker('option', 'minDate', dateTo);
 
     },
 
@@ -174,7 +187,7 @@ bookingNewController = {
     onChangeProductSelector: function(data) {
         productCode = $(data[0]).attr('rel');
         quantity = $(data[0]).val();
-        bookingModel.setProduct(productCode, quantity);
+        bookingNewModel.setProduct(productCode, quantity);
     },
 
     onChangeExtraChooser: function(data) {
@@ -219,21 +232,22 @@ bookingNewView = {
         $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
         var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
 
+        var dateFrom = Date.parse('<%=@shopping_cart.date_from%>');
+        var dateTo = Date.parse('<%=@shopping_cart.date_to%>');
+
         $('#date_from').datepicker({numberOfMonths:1,
-                minDate: new Date(),
-                maxDate: new Date().add(365).days(),
+                minDate: dateFrom,
+                maxDate: new Date(dateFrom.getTime()).add(365).days(),
                 dateFormat: 'dd/mm/yy',
                 firstDay: 1},
             locale);
-        //$('#date_from').datepicker('setDate', '+0');
-        $('#date_from').datepicker('setDate', Date.parse('<%=@shopping_cart.date_from%>'));
+        $('#date_from').datepicker('setDate', dateFrom);
 
         $('#date_to').datepicker({numberOfMonths:1,
-            minDate: new Date().add(bookingNewModel.minDays).days(),
-            maxDate: new Date().add(365).days(),
+            minDate: dateTo,
+            maxDate: new Date(dateFrom.getTime()).add(365).days(),
             dateFormat: 'dd/mm/yy'}, locale);
-        //$('#date_to').datepicker('setDate', '+'+bookingNewModel.minDays);
-        $('#date_to').datepicker('setDate', Date.parse('<%=@shopping_cart.date_to%>'));
+        $('#date_to').datepicker('setDate', dateTo);
 
         $('#date_from').bind('change', function() {
             bookingNewController.dateFromChanged();
@@ -247,7 +261,7 @@ bookingNewView = {
     setupPickupReturnPlaces: function() {
         var dataSourcePickupPlaces = new RemoteDataSource('/api/booking/frontend/pickup-places',
                                                           {'id':'name','description':'name'});
-        var pickupPlaceValue = '<%=@shopping_cart.pickup_place%>';
+        var pickupPlaceValue = "<%=@shopping_cart.pickup_place%>";
         var pickupPlace = new SelectSelector('pickup_place',
             dataSourcePickupPlaces, pickupPlaceValue, false, '');
 
@@ -258,7 +272,7 @@ bookingNewView = {
 
         var dataSourceReturnPlaces = new RemoteDataSource('/api/booking/frontend/return-places',
                                                           {'id':'name','description':'name'});
-        var returnPlaceValue = '<%=@shopping_cart.return_place%>';
+        var returnPlaceValue = "<%=@shopping_cart.return_place%>";
         var returnPlace = new SelectSelector('return_place',
             dataSourceReturnPlaces, returnPlaceValue, false, '');
         $('#return_place').bind('change',

@@ -18,7 +18,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     time_to : null,
     pickup_place: null,
     return_place: null,
-    driver_under_age: null,
+    driver_age_rule: null,
     loading : true, // control the loading process
     loadedPickupPlaces: false,
     loadedReturnPlaces: false,
@@ -66,9 +66,9 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       if (this.return_place == null || this.return_place == 'undefined') {
         this.return_place = '<%= @return_place %>';
       }
-      this.driver_under_age = decodeURIComponent(url_vars['driver_under_age']);
-      if (this.driver_under_age == null || this.driver_under_age == 'undefined') {
-        this.driver_under_age = '<%= (@driver_under_age ? "on" : "") || "on" %>';
+      this.driver_age_rule = decodeURIComponent(url_vars['driver_age_rule']);
+      if (this.driver_age_rule == null || this.driver_age_rule == 'undefined') {
+        this.driver_age_rule = '<%= @driver_age_rule  %>';
       }
     },
 
@@ -97,7 +97,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
               this.time_to != 'undefined' && this.time_to != '' &&
               this.pickup_place != 'undefined' && this.pickup_place != '' &&
               this.return_place != 'undefined' && this.return_place != '' &&
-              this.driver_under_age != 'undefined');
+              this.driver_age_rule != 'undefined');
     
     },
 
@@ -110,7 +110,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
         time_to : this.time_to,
         pickup_place: this.pickup_place,
         return_place: this.return_place,
-        driver_under_age: this.driver_under_age
+        driver_age_rule: this.driver_age_rule
       };
 
       var jsonData = encodeURIComponent(JSON.stringify(data));
@@ -368,6 +368,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
             result += tmpl('script_detailed_product')({product:model.products[idx]});
         }
         $('#product_listing').html(result);
+
+        <% if booking_item_family.driver and booking_driver_min_age_rules %>
+        $('#driver_age_rule').html(model.shopping_cart.driver_age_rule_description);
+        <% end %>
 
         // Prepare onclick event to select the product
         $('.btn-choose-product').bind('click', function() {

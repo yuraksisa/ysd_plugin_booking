@@ -48,6 +48,13 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+          {name: 'booking.assignation.automatic_resource_assignation'},
+          {value: 'true',
+           description: 'It assigns automatically an available item on confirm the reservation',
+           module: :booking}
+      )
+
+      SystemConfiguration::Variable.first_or_create(
          {name: 'booking.assignation.allow_different_category'},
          {value: 'true',
                    description: 'It allows to assign a different category resource to a reservation',
@@ -72,6 +79,19 @@ module Huasi
         {:value => '40',
          :description => 'Deposit percentage or 0 if no deposit management',
          :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.booking_amount_includes_deposit'},
+          {:value => 'true',
+           :description => 'The deposit (booking amount) to confirm the reservation includes the deposit',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.total_cost_includes_deposit'},
+          {:value => 'false',
+           :description => 'The deposit is included in the total cost',
+           :module => :booking})
+
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.allow_total_payment'},
@@ -164,20 +184,19 @@ module Huasi
         {:value => '0',
          :description => 'Price if the pickup/return is not on pickup/return timetable'})
 
+      #
+      # Indicates that are rules for young drivers
+      #
       SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.driver_min_age'},
-          {:value => '23',
-           :description => 'Driver min age'})
+          {:name => 'booking.driver_min_age.rules'},
+          {:value => 'false',
+           :description => 'Young driver rules'})
 
       SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.driver_min_age.allowed'},
-          {:value => '0',
-           :description => 'Driver min age cost'})
-
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.driver_min_age.cost'},
-          {:value => '0',
-           :description => 'Driver min age cost'})
+          {:name => 'booking.driver_min_age.rule_definition'},
+          {:value => '',
+           :description => 'Driver rule definition id for reservation form'}
+      )
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.renting'},
@@ -571,6 +590,12 @@ module Huasi
       locals.store(:booking_allow_custom_pickup_return_place,
         SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
 
+      young_driver_rules = SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool
+      young_driver_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
+
+      locals.store(:driver_age_rules, young_driver_rules)
+      locals.store(:driver_age_rule_definition, young_driver_rule_definition)
+
       #if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
       #   not booking_js.text.empty?
       #  locals.store(:booking_js, booking_js.text) 
@@ -603,8 +628,8 @@ module Huasi
                            addons: addons}
             if booking_renting
               menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
-              menu_locals.store(:today_pickup, BookingDataSystem::Booking.count_pickup(today))
-              menu_locals.store(:today_return, BookingDataSystem::Booking.count_delivery(today))
+              menu_locals.store(:today_pickup, BookingDataSystem::Booking.pickup_list(today, today, nil, true).size) #BookingDataSystem::Booking.count_pickup(today))
+              menu_locals.store(:today_return, BookingDataSystem::Booking.return_list(today, today, nil, true).size)#BookingDataSystem::Booking.count_delivery(today))
             end
             if booking_activities
               menu_locals.store(:pending_confirmation_activities, ::Yito::Model::Order::Order.count_pending_confirmation_orders(year))
