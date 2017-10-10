@@ -86,7 +86,7 @@ module Sinatra
             driver_document_id: booking.driver_document_id,
             driver_date_of_birth: booking.driver_date_of_birth,
             driver_age: booking.driver_age,
-            driver_driving_license_years: booking.driver.driving_license_years,
+            driver_driving_license_years: booking.driver_driving_license_years,
             driver_under_age: booking.driver_under_age,
             driver_age_allowed: booking.driver_age_allowed,
             driver_age_cost: booking.driver_age_cost,
