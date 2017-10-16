@@ -7,98 +7,179 @@
                       <i class="fa fa-globe"></i>
                       <h2><%=t.front_end_reservation.search_title%></h2>
                     </div>
-                    <div class="row row-inputs">
-                      <div class="container-fluid">
-                        <div class="col-sm-6">
-                          <div class="form-group has-icon has-label">
-                            <label for="pickup_place"><%=t.front_end_reservation.pickup_place%></label>
-                            <select name="pickup_place" id="pickup_place"
-                                class="selectpicker input-price" data-live-search="true" data-width="100%"
-                                data-toggle="tooltip" title="Select">
-                            </select>
-                            <span class="form-control-icon"><i class="fa fa-map-marker"></i></span>
+
+                    <!-- Date from (+ time from) - Date to (+ time to) - pickup/return place -->
+                    <% if booking_item_family and booking_item_family.pickup_return_place and booking_item_family.time_to_from %>
+                      <div class="row row-inputs">
+                        <div class="container-fluid">
+                          <div class="col-sm-6">
+                            <div class="form-group has-icon has-label">
+                              <label for="pickup_place"><%=t.front_end_reservation.pickup_place%></label>
+                              <select name="pickup_place" id="pickup_place"
+                                  class="selectpicker input-price" data-live-search="true" data-width="100%"
+                                  data-toggle="tooltip" title="Select" data-container="body">
+                              </select>
+                              <span class="form-control-icon"><i class="fa fa-map-marker"></i></span>
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group has-icon has-label">
-                            <label for="date_from"><%=t.front_end_reservation.date_from%></label>
-                            <input type="text" class="form-control" id="date_from" name="date_from" placeholder="dd/mm/yyyy">
-                            <span class="form-control-icon"><i class="fa fa-calendar"></i></span>
+                          <div class="col-sm-3">
+                            <div class="form-group has-icon has-label">
+                              <label for="date_from"><%=t.front_end_reservation.date_from%></label>
+                              <input type="text" class="form-control" id="date_from" name="date_from" placeholder="dd/mm/yyyy">
+                              <span class="form-control-icon"><i class="fa fa-calendar"></i></span>
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group has-icon has-label selectpicker-wrapper">
-                            <label><%=t.front_end_reservation.time_from%></label>
-                            <select name="time_from" id="time_from"
-                                class="selectpicker input-price" data-live-search="true" data-width="100%"
-                                data-toggle="tooltip" title="Select">
-                            </select>
-                            <span class="form-control-icon"><i class="fa fa-clock-o"></i></span>
+                          <div class="col-sm-3">
+                            <div class="form-group has-icon has-label selectpicker-wrapper">
+                              <label><%=t.front_end_reservation.time_from%></label>
+                              <select name="time_from" id="time_from"
+                                  class="selectpicker input-price" data-live-search="true" data-width="100%"
+                                  data-toggle="tooltip" title="Select" data-container="body">
+                              </select>
+                              <span class="form-control-icon"><i class="fa fa-clock-o"></i></span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div class="row row-inputs">
-                      <div class="container-fluid">
-                        <div class="col-sm-6">
-                          <div class="form-group has-icon has-label">
-                            <label for="return_place"><%=t.front_end_reservation.return_place%></label>
-                            <select name="return_place" id="return_place"
-                                class="selectpicker input-price" data-live-search="true" data-width="100%"
-                                data-toggle="tooltip" title="Select">
-                            </select>
-                            <span class="form-control-icon"><i class="fa fa-map-marker"></i></span>
+                      <div class="row row-inputs">
+                        <div class="container-fluid">
+                          <div class="col-sm-6">
+                            <div class="form-group has-icon has-label">
+                              <label for="return_place"><%=t.front_end_reservation.return_place%></label>
+                              <select name="return_place" id="return_place"
+                                  class="selectpicker input-price" data-live-search="true" data-width="100%"
+                                  data-toggle="tooltip" title="Select" data-container="body">
+                              </select>
+                              <span class="form-control-icon"><i class="fa fa-map-marker"></i></span>
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group has-icon has-label">
-                            <label for="date_to"><%=t.front_end_reservation.date_to%></label>
-                            <input type="text" class="form-control" id="date_to" name="date_to" placeholder="dd/mm/yyyy">
-                            <span class="form-control-icon"><i class="fa fa-calendar"></i></span>
+                          <div class="col-sm-3">
+                            <div class="form-group has-icon has-label">
+                              <label for="date_to"><%=t.front_end_reservation.date_to%></label>
+                              <input type="text" class="form-control" id="date_to" name="date_to" placeholder="dd/mm/yyyy">
+                              <span class="form-control-icon"><i class="fa fa-calendar"></i></span>
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group has-icon has-label selectpicker-wrapper">
-                            <label><%=t.front_end_reservation.time_to%></label>
-                            <select name="time_to" id="time_to"
-                               class="selectpicker input-price" data-live-search="true" data-width="100%" data-toggle="tooltip" title="Select">
-                            </select>
-                            <span class="form-control-icon"><i class="fa fa-clock-o"></i></span>
+                          <div class="col-sm-3">
+                            <div class="form-group has-icon has-label selectpicker-wrapper">
+                              <label><%=t.front_end_reservation.time_to%></label>
+                              <select name="time_to" id="time_to"
+                                 class="selectpicker input-price" data-live-search="true" data-width="100%" data-toggle="tooltip" title="Select" data-container="body">
+                              </select>
+                              <span class="form-control-icon"><i class="fa fa-clock-o"></i></span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                      <%= partial :rent_search_form_full_v2_driver, locals: {booking_item_family: booking_item_family, driver_age_rules: driver_age_rules,
+                                                                               driver_age_rule_definition: driver_age_rule_definition} %>
 
-                    <% if booking_item_family.driver and driver_age_rules and driver_age_rule_definition and !driver_age_rule_definition.driver_age_rules.empty? %>
-                    <div class="row row-inputs">
-                      <div class="container-fluid">
-                        <div class="col-sm-6">
-                          <div class="form-group has-icon has-label selectpicker-wrapper">
-                            <label>Edad del conductor</label>
-                            <select name="driver_age_rule" id="driver_age_rule"
-                                    class="selectpicker input-price" data-live-search="true" data-width="100%" data-toggle="tooltip" title="Select">
-                              <% driver_age_rule_definition.driver_age_rules.each do |driver_age_rule|%>
-                              <option value="<%=driver_age_rule.id%>" allowed="<%=driver_age_rule.allowed%>"
-                                      deposit="<%=driver_age_rule.deposit > 0%>"
-                                      supplement="<%=driver_age_rule.suplement > 0%>"
-                                      <%if !driver_age_rule.allowed and driver_age_rule.description.size == 2%>not-allowed-message="<%=driver_age_rule.description.last%>"<%end%>><%=driver_age_rule.description.first%></option>
-                              <% end %>
-                            </select>
-                            <span class="form-control-icon"><i class="fa fa-clock-o"></i></span>
+                      <div class="row row-submit">
+                        <div class="container-fluid">
+                          <div class="inner">
+                            <button type="button" id="formSearchSubmit" class="btn btn-submit btn-theme pull-right"><%=t.front_end_reservation.search_button%></button>
                           </div>
                         </div>
-                      </div>  
-                    </div>
-                    <% end %>
+                      </div>
 
-                    <div class="row row-submit">
-                      <div class="container-fluid">
-                        <div class="inner">
-                           <button type="button" id="formSearchSubmit" class="btn btn-submit btn-theme pull-right"><%=t.front_end_reservation.search_button%></button>
+                    <!-- Date from - Date to - pickup/return place -->
+                    <% elsif booking_item_family and booking_item_family.pickup_return_place and !booking_item_family.time_to_from %>
+                      <div class="row row-inputs">
+                        <div class="container-fluid">
+                          <div class="col-sm-6">
+                            <div class="form-group has-icon has-label">
+                              <label for="pickup_place"><%=t.front_end_reservation.pickup_place%></label>
+                              <select name="pickup_place" id="pickup_place"
+                                      class="selectpicker input-price" data-live-search="true" data-width="100%"
+                                      data-toggle="tooltip" title="Select">
+                              </select>
+                              <span class="form-control-icon"><i class="fa fa-map-marker"></i></span>
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                            <div class="form-group has-icon has-label">
+                              <label for="date_from"><%=t.front_end_reservation.date_from%></label>
+                              <input type="text" class="form-control" id="date_from" name="date_from" placeholder="dd/mm/yyyy">
+                              <span class="form-control-icon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                          </div>
+                          <input type="hidden" name="time_from" value="<%=booking_item_family.time_start%>"/>
                         </div>
                       </div>
-                    </div>
+
+                      <div class="row row-inputs">
+                        <div class="container-fluid">
+                          <div class="col-sm-6">
+                            <div class="form-group has-icon has-label">
+                              <label for="return_place"><%=t.front_end_reservation.return_place%></label>
+                              <select name="return_place" id="return_place"
+                                      class="selectpicker input-price" data-live-search="true" data-width="100%"
+                                      data-toggle="tooltip" title="Select">
+                              </select>
+                              <span class="form-control-icon"><i class="fa fa-map-marker"></i></span>
+                            </div>
+                          </div>
+                          <div class="col-sm-3">
+                            <div class="form-group has-icon has-label">
+                              <label for="date_to"><%=t.front_end_reservation.date_to%></label>
+                              <input type="text" class="form-control" id="date_to" name="date_to" placeholder="dd/mm/yyyy">
+                              <span class="form-control-icon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                          </div>
+                          <input type="hidden" name="time_to" value="<%=booking_item_family.time_end%>"/>
+                        </div>
+                      </div>
+
+                      <%= partial :rent_search_form_full_v2_driver, locals: {booking_item_family: booking_item_family, driver_age_rules: driver_age_rules,
+                                                                               driver_age_rule_definition: driver_age_rule_definition} %>
+
+                      <div class="row row-submit">
+                        <div class="container-fluid">
+                          <div class="inner">
+                            <button type="button" id="formSearchSubmit" class="btn btn-submit btn-theme pull-right"><%=t.front_end_reservation.search_button%></button>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- Date from - Date to -->
+                    <% elsif booking_item_family and !booking_item_family.pickup_return_place and !booking_item_family.time_to_from %>
+
+                      <div class="row row-inputs">
+                        <div class="container-fluid">
+                          <div class="col-sm-offset-3 col-sm-3">
+                            <div class="form-group has-icon has-label">
+                              <label for="date_from"><%=t.front_end_reservation.date_from%></label>
+                              <input type="text" class="form-control" id="date_from" name="date_from" placeholder="dd/mm/yyyy">
+                              <span class="form-control-icon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                          </div>
+                          <input type="hidden" name="time_from" value="<%=booking_item_family.time_start%>"/>
+                          <div class="col-sm-3">
+                            <div class="form-group has-icon has-label">
+                              <label for="date_to"><%=t.front_end_reservation.date_to%></label>
+                              <input type="text" class="form-control" id="date_to" name="date_to" placeholder="dd/mm/yyyy">
+                              <span class="form-control-icon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                          </div>
+                          <input type="hidden" name="time_to" value="<%=booking_item_family.time_end%>"/>
+                        </div>
+                      </div>
+
+                      <%= partial :rent_search_form_full_v2_driver, locals: {booking_item_family: booking_item_family, driver_age_rules: driver_age_rules,
+                                                                               driver_age_rule_definition: driver_age_rule_definition} %>
+
+                      <div class="row row-submit">
+                        <div class="container-fluid">
+                          <div class="inner">
+                            <div class="col-sm-9" style="padding-right: 5px">
+                              <button type="button" id="formSearchSubmit" class="btn btn-submit btn-theme pull-right"><%=t.front_end_reservation.search_button%></button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                  <% end %>
+
                   </form>
                 </div>
               </div>

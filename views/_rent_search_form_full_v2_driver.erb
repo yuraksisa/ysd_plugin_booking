@@ -1,0 +1,21 @@
+<% if booking_item_family.driver and driver_age_rules and driver_age_rule_definition and !driver_age_rule_definition.driver_age_rules.empty? %>
+    <div class="row row-inputs">
+      <div class="container-fluid">
+        <div class="col-sm-6">
+          <div class="form-group has-icon has-label selectpicker-wrapper">
+            <label><%=t.front_end_reservation.driver_age%></label>
+            <select name="driver_age_rule" id="driver_age_rule"
+                    class="selectpicker input-price" data-live-search="true" data-width="100%" data-toggle="tooltip" title="Select" data-container="body">
+              <% driver_age_rule_definition.driver_age_rules.each do |driver_age_rule|%>
+                  <option value="<%=driver_age_rule.id%>" allowed="<%=driver_age_rule.allowed%>"
+                          deposit="<%=driver_age_rule.deposit > 0%>"
+                          supplement="<%=driver_age_rule.suplement > 0%>"
+                          <%if !driver_age_rule.allowed and driver_age_rule.description.size == 2%>not-allowed-message="<%=driver_age_rule.description.last%>"<%end%>><%=driver_age_rule.description.first%></option>
+              <% end %>
+            </select>
+            <span class="form-control-icon"><i class="fa fa-clock-o"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+<% end %>

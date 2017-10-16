@@ -16,9 +16,14 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
         var dateFrom = $('#date_from').datepicker('getDate');
         var dateTo = $('#date_from').datepicker('getDate');
-        dateTo.setDate(dateTo.getDate() + selectorModel.minDays)
+        <% if booking_item_family.cycle_of_24_hours %>
+        dateTo.setDate(dateFrom.getDate() + selectorModel.minDays);
+        <% else %>
+          dateTo.setDate(dateFrom.getDate() + (selectorModel.minDays - 1));
+        <% end %>
+
         $('#date_to').datepicker('setDate', dateTo );
-        $('#date_to').datepicker('option', 'minDate', dateFrom.add(selectorModel.minDays).days());
+        $('#date_to').datepicker('option', 'minDate', dateTo);
 
       },
       formSearchClick: function() {
@@ -65,10 +70,10 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       $('#date_from').datepicker('setDate', '+0'); 
 
       $('#date_to').datepicker({numberOfMonths:1, 
-          minDate: new Date().add(selectorModel.minDays).days(),
-            maxDate: new Date().add(365).days(), 
-            dateFormat: 'dd/mm/yy'}, locale);
-      $('#date_to').datepicker('setDate', '+'+selectorModel.minDays);
+          minDate: <% if booking_item_family.cycle_of_24_hours %>new Date().add(selectorModel.minDays).days()<%else%>new Date().add(selectorModel.minDays-1).days()<%end%>,
+          maxDate: new Date().add(365).days(),
+          dateFormat: 'dd/mm/yy'}, locale);
+      $('#date_to').datepicker('setDate', <% if booking_item_family.cycle_of_24_hours %>'+'+selectorModel.minDays<%else%>'+'+(selectorModel.minDays-1)<%end%>);
 
       $('#date_from').bind('change', function() {
            selectorController.dateFromChanged();

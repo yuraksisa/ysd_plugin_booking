@@ -56,6 +56,7 @@ booking_settings:
     send_notifications: Envía notificaciones por email
     send_notifications_backoffice_reservations: Envía notificaciones por mail (reservas del backoffice)
     business: Otros
+    front_end_title: Front-end
     multiple_rental_locations: Múltiples oficinas
     multiple_rental_locations_description: El negocio tiene múltiples oficinas o centros de gestión. Las reservas de material o las actividades son gestionadas por un centro.
     scheduler_start_time: Hora de inicio planificación
@@ -89,6 +90,9 @@ booking_settings:
       allow_busy_resource_description: Permitir que desde el planning pueda realizarse la asignación de un recurso ocupado a una reserva
       automatic_resource_assignation: Asignación automática
       automatic_resource_assignation_description: Realiza la asignación automática de uno de los recursos disponibles al confirmar la reserva
+    front_end:
+      multilanguage_site: Sitio multi idioma
+      multilanguage_site_description: Permite que la página web de reservas se muestre en múltiples idiomas
     renting: Gestión de alquileres
     activities: Gestión de actividades o eventos
     deposit_payment_group: Paga y señal
@@ -1370,6 +1374,10 @@ booking_activities_scheduler:
   pax: >
        %1 plazas
 front_end_reservation:
+  choose_product_page_title: Seleccionar producto
+  choose_products_page_title: Seleccionar productos
+  complete_reservation_page_title: Completar datos
+  summary_page_title: Reserva %1
   search_title: Buscar 
   search_button: Buscar  
   pickup_place: Lugar de entrega
@@ -1379,6 +1387,30 @@ front_end_reservation:
   date_to: Fecha de devolución
   time_to: Hora de devolución
   driver_age: Edad del conductor
+  update: Actualizar
+  select: Seleccionar
+  next: Siguiente
+  extras_title: Extras
+  customer_title: Información del cliente
+  not_available: No disponible
+  field_customer_name: Nombre
+  field_customer_name_mandatory: El nombre del cliente es obligatorio
+  field_customer_surname: Apellidos
+  field_customer_surname_mandatory: Los apellidos del cliente son obligatorios
+  field_customer_email: Correo electrónico
+  field_customer_email_mandatory: El correo electrónico del cliente es obligatorio
+  field_customer_email_confirm: Confirmar correo electrónico
+  field_customer_main_phone_number: Teléfono principal
+  field_customer_alternative_phone_number: Teléfono alternativo
+  additional_information_title: Información adicional
+  field_comments: Comentarios
+  conditions_read: He leído y acepto las <a href="/renting_conditions" target="blank">condiciones</a> del alquiler
+  request_reservation: Solicitar reserva
+  conditions_not_read: Lo sentimos. No ha marcado que ha leído las condiciones de alquiler
+  form_errors: Por favor, revise el formulario. Contiene datos no válidos.
+  product_information_title: Información del producto
+  products_information_title: Información de los productos
+  reservation_detail_title: Detalle de la reserva
 admin_new_reservation:
   title: Nueva reserva
   description: Desde aquí puede registrar una nueva reserva de cliente

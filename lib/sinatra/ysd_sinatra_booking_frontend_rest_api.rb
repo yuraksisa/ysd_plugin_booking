@@ -7,7 +7,9 @@ module Sinatra
       # Build the shopping cart (with products and extras) to be served
       #
       def shopping_cart_to_json(shopping_cart)
-      
+
+        booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+
         # Prepare the shopping cart
         only = [:free_access_id, :date_from, :time_from, :date_to, :time_to, :pickup_place, :return_place, :days,
                 :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_deposit, :total_cost,
@@ -24,7 +26,7 @@ module Sinatra
 
         # Prepare the products
         p_json = ::Yito::Model::Booking::RentingSearch.search(shopping_cart.date_from,
-                                            shopping_cart.date_to, shopping_cart.days).to_json
+                                            shopping_cart.date_to, shopping_cart.days, booking_item_family.frontend == :shopcart).to_json
 
         # Prepare the extras
         e_json = ::Yito::Model::Booking::RentingExtraSearch.search(shopping_cart.date_from,
@@ -321,8 +323,10 @@ module Sinatra
             halt 422, {error: 'Invalid request. Expected a JSON with data params'}.to_json
           end
           product_code = model_request[:product]
-          quantity = model_request[:quantity] || 1
-
+          quantity = model_request.has_key?(:quantity) ? model_request[:quantity].to_i : 1
+          
+          p "product_code: #{product_code} quantity: #{quantity}"
+          
           # TODO : Validate it's a valid product
 
           # Retrieve the shopping cart
@@ -334,7 +338,8 @@ module Sinatra
 
           # Do the process
           if shopping_cart
-            shopping_cart.set_item(product_code, quantity)
+            booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+            shopping_cart.set_item(product_code, quantity, booking_item_family.multiple_items?)
             content_type 'json'
             shopping_cart_to_json(shopping_cart)
           else

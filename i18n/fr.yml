@@ -1,22 +1,22 @@
 front_end_reservation:
-  choose_product_page_title: Seleccionar producte
-  choose_products_page_title: Seleccionar productes
-  complete_reservation_page_title: Completar dades
+  choose_product_page_title: Seleccionar producto
+  choose_products_page_title: Seleccionar productos
+  complete_reservation_page_title: Completar datos
   summary_page_title: Reserva %1
-  search_title: Cerca
-  search_button: Cerca
-  pickup_place: Punt de lliurament
-  date_from: Data lliurament
-  time_from: Hora lliurament
-  return_place: Lloc de devolució
-  date_to: Data de devolució
-  time_to: Hora de devolució
-  driver_age: Edat del conductor
-  update: Actualitzar
+  search_title: Buscar
+  search_button: Buscar
+  pickup_place: Lugar de entrega
+  date_from: Fecha de entrega
+  time_from: Hora de entrega
+  return_place: Lugar de devolución
+  date_to: Fecha de devolución
+  time_to: Hora de devolución
+  driver_age: Edad del conductor
+  update: Actualizar
   select: Seleccionar
-  next: Següent
-  extras_title: Extres
-  customer_title: Informació del client
+  next: Siguiente
+  extras_title: Extras
+  customer_title: Información del cliente
   not_available: No disponible
   field_customer_name: Nombre
   field_customer_name_mandatory: El nombre del cliente es obligatorio

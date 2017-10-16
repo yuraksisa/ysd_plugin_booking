@@ -47,6 +47,9 @@
           <a name="smtp_tab" href="#smtp_tab"><%=t.booking_settings.form.notificacion_smtp_setup%></a>
         </li>
         <li class="no-border no-background top-space" style="border:none;background:none">
+          <a name="front_end_tab" href="#front_end_tab"><%=t.booking_settings.form.front_end_title%></a>
+        </li>
+        <li class="no-border no-background top-space" style="border:none;background:none">
           <a name="business_tab" href="#business_tab"><%=t.booking_settings.form.business%></a>
         </li>
       </ul>
@@ -279,6 +282,22 @@
                 </form>
             </div>
           </div>
+        </div>
+
+        <div id="front_end_tab" class="top-margin bottom-margin all-border-solid all-space" style="color: #EEE">
+          <form name="variables" action="/api/variables" method="PUT"
+                data-remote="ajax" data-remote-method="PUT">
+            <div class="container_12">
+              <div class="grid_6">
+                <%= render_variable_checkbox_boolean('language.multilanguage_site',
+                                                     t.booking_settings.form.front_end.multilanguage_site) %>
+                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.front_end.multilanguage_site_description%></p>
+                <div class="formrow-botonera top-separator top-space">
+                  <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
 
         <div id="business_tab" class="top-margin bottom-margin all-border-solid all-space" style="color: #EEE">

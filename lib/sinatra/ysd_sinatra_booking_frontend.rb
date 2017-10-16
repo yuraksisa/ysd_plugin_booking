@@ -64,11 +64,11 @@ module Sinatra
 						end
 
 						# Prepare response
+						booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
             locals = {}
             locals.store(:booking_min_days,
               SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
-            locals.store(:booking_item_family, 
-              ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+            locals.store(:booking_item_family, booking_item_family)
             locals.store(:booking_item_type,
               SystemConfiguration::Variable.get_value('booking.item_type')) 
             locals.store(:booking_allow_custom_pickup_return_place,
@@ -77,7 +77,8 @@ module Sinatra
 						  SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
 
       	  	# Load the page
-      	    load_page(:rent_reservation_choose_product, {page_title: 'Seleccionar producto', locals: locals})
+						title = booking_item_family.multiple_items? ? t.front_end_reservation.choose_products_page_title : t.front_end_reservation.choose_product_page_title
+      	    load_page(:rent_reservation_choose_product, {page_title: title, locals: locals})
 
         end
 
@@ -97,7 +98,7 @@ module Sinatra
 						locals.store(:booking_driver_min_age_rules,
 												 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
 
-      	  	load_page(:rent_reservation_complete, {page_title: 'Completar datos', locals: locals})
+      	  	load_page(:rent_reservation_complete, {page_title: t.front_end_reservation.complete_reservation_page_title , locals: locals})
 
       	  end
       	end
@@ -141,7 +142,7 @@ module Sinatra
 													 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
 							locals.store(:booking_driver_min_age_rules,
 													 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
-							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}", locals: locals}
+							load_page :rent_reservation_summary, {page_title: t.front_end_reservation.summary_page_title(@booking.id), locals: locals}
 						else
 							status 404
 						end
@@ -165,7 +166,7 @@ module Sinatra
 													 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
 							locals.store(:booking_driver_min_age_rules,
 													 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
-							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}", locals: locals}
+							load_page :rent_reservation_summary, {page_title: t.front_end_reservation.summary_page_title(@booking.id), locals: locals}
 						else
 							status 404
 						end
@@ -185,7 +186,7 @@ module Sinatra
 													 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
 							locals.store(:booking_driver_min_age_rules,
 													 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
-							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}", locals: locals}
+							load_page :rent_reservation_summary, {page_title: t.front_end_reservation.summary_page_title(@booking.id), locals: locals}
 						else
 							status 404
 						end
@@ -204,7 +205,7 @@ module Sinatra
 													 SystemConfiguration::Variable.get_value('booking.total_cost_includes_deposit', 'false').to_bool)
 							locals.store(:booking_driver_min_age_rules,
 													 SystemConfiguration::Variable.get_value('booking.driver_min_age.rules','false').to_bool)
-							load_page :rent_reservation_summary, {page_title: "Reserva #{@booking.id}", locals: locals}
+							load_page :rent_reservation_summary, {page_title: t.front_end_reservation.summary_page_title(@booking.id), locals: locals}
 						else
 							status 404
 						end

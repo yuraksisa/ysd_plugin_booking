@@ -11,6 +11,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
     products: null,
     extras: null,
     sales_process: null,
+    firstTimeConditions: true,
 
     // ------------ Product information detail ------------------------
 
@@ -30,6 +31,20 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 		  }
 
     	return null;
+
+    },
+
+    getShoppingCartProducts: function() { /** Get an object representation of products **/
+
+      shoppingCartProducts = {};
+
+      if (this.shopping_cart != null) {
+          for (var idx=0;idx<this.shopping_cart.items.length;idx++) {
+              shoppingCartProducts[this.shopping_cart.items[idx].item_id] = this.products[idx];
+          }
+      }
+
+      return shoppingCartProducts;
 
     },
 
@@ -241,6 +256,22 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
       sendReservationButtonClick: function() {
           model.sendBookingRequest();
+      },
+
+      conditionsReadClick: function() {
+          if ($('#accept').is(':checked') && model.firstTimeConditions) {
+              model.firstTimeConditions = false;
+              window.open('/renting_conditions', '_blank');
+          }
+      },
+
+      submitReservationForm: function() {
+          if ($('#accept').is(':checked')) {
+              $('form[name=reservation_form]').submit();
+          }
+          else {
+              alert('<%=t.front_end_reservation.conditions_not_read%>');
+          }
       }
 
   };
@@ -256,8 +287,12 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     setupEvents: function() {
 
+  	    $('#accept').bind('click', function(){
+  	       controller.conditionsReadClick();
+        });
+
         $('#btn_reservation').bind('click', function() {
-           $('form[name=reservation_form]').submit();
+           controller.submitReservationForm();
         });
 
     },
@@ -282,7 +317,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 },
 
                 invalidHandler : function (form, validator) {
-                    $('#reservation_error').html('<%=t.new_booking.form_errors.description%>');
+                    $('#reservation_error').html('<%=t.front_end_reservation.form_errors%>');
                     $('#reservation_error').show();
                 },
 
@@ -305,9 +340,6 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                     },
                     'driver_date_of_birth': {
                         required: "#fs_driver:visible"
-                    },
-                    'conditions_read' :  {
-                        required: '#conditions_read:visible'
                     }
                 },
 
@@ -330,14 +362,13 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                     },
                     'driver_date_of_birth': {
                         'required': '<%=t.new_driving_booking.driver_date_of_birth.required%>'
-                    },
-                    'conditions_read': '<%=t.new_booking.conditions.required%>'
+                    }
 
                 },
 
                 errorPlacement: function (error, element) {
 
-                    if (element.attr('name') == 'conditions_read')
+                    if (element.attr('name') == 'accept')
                     {
                         error.insertAfter(element.parent());
                     }
@@ -357,17 +388,26 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     updateShoppingCart: function() { // Updates the shopping cart
     	
-    	// Show the product information
-	  	var productInfo = tmpl('script_product_detail')(
-                    {product: model.getShoppingCartProduct(),
-										 shopping_cart: model.shopping_cart});
-		  $('#selected_product').html(productInfo);
-
-      // Update the summary
+      this.updateShoppingCartProducts();
       this.updateShoppingCartSummary();
       this.updateExtras();
       this.updatePayment();
 
+    },
+
+    updateShoppingCartProducts: function() { // Updates the shopping cart product
+
+        <% if booking_item_family and booking_item_family.multiple_items? %>
+        var productInfo = tmpl('script_products_detail')(
+            {products: model.getShoppingCartProducts(),
+             shopping_cart: model.shopping_cart});
+        $('#selected_product').html(productInfo);
+        <% else %>
+          var productInfo = tmpl('script_product_detail')(
+              {product: model.getShoppingCartProduct(),
+               shopping_cart: model.shopping_cart});
+          $('#selected_product').html(productInfo);
+        <% end %>
     },
 
     updateShoppingCartSummary: function() { // Updates the shopping cart summary (total)
@@ -379,31 +419,37 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
 
     updateExtras: function() { // Updates the extras (included the selected by the transaction)
 
-        // Show the extras
-        var result = '';
-        for (var idx=0;idx<model.extras.length;idx++) {
-            result += tmpl('script_detailed_extra')({extra:model.extras[idx],
-                extrasInShoppingCart: model.getShoppingCartExtras()});
-        }
-        $('#extras_listing').html(result);
+        if (model.extras.length > 0) {
 
-        // Setup events
-        $('.extra-select').selectpicker();
-        $('.extra-checkbox').bind('change', function() {
-            var extraCode = $(this).attr('data-value');
-            var checked = $(this).is(':checked');
-            if (checked) {
-                controller.extraChecked(extraCode);
+            // Show the extras
+            var result = '';
+            for (var idx = 0; idx < model.extras.length; idx++) {
+                result += tmpl('script_detailed_extra')({
+                    extra: model.extras[idx],
+                    extrasInShoppingCart: model.getShoppingCartExtras()
+                });
             }
-            else {
-                controller.extraUnchecked(extraCode);
-            }
-        });
-        $('.extra-select').bind('change', function() {
-            var extraCode = $(this).attr('data-value');
-            var extraQuantity = $(this).val();
-            controller.extraQuantityChanged(extraCode, extraQuantity);
-        });
+            $('#extras_listing').html(result);
+
+            // Setup events
+            $('.extra-select').selectpicker();
+            $('.extra-checkbox').bind('change', function () {
+                var extraCode = $(this).attr('data-value');
+                var checked = $(this).is(':checked');
+                if (checked) {
+                    controller.extraChecked(extraCode);
+                }
+                else {
+                    controller.extraUnchecked(extraCode);
+                }
+            });
+            $('.extra-select').bind('change', function () {
+                var extraCode = $(this).attr('data-value');
+                var extraQuantity = $(this).val();
+                controller.extraQuantityChanged(extraCode, extraQuantity);
+            });
+            $('#extras_container').show();
+        }
 
     },
 

@@ -595,11 +595,7 @@ module Huasi
 
       locals.store(:driver_age_rules, young_driver_rules)
       locals.store(:driver_age_rule_definition, young_driver_rule_definition)
-
-      #if booking_js=ContentManagerSystem::Template.find_by_name('booking_js') and 
-      #   not booking_js.text.empty?
-      #  locals.store(:booking_js, booking_js.text) 
-      #end
+      
       locals.store(:booking_js, '')      
 
       case block_name
