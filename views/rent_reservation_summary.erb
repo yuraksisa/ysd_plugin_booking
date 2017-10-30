@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col-md-12">
 
-        <h2 class="text-center"><%=@booking.customer_name%> <%=@booking.customer_surname%>, <strong><%=t.booking.title("#{t[:booking][:state][@booking.status.to_sym]}").to_s.downcase%></strong></h2>
+        <h2 class="text-center"><%=@booking.customer_name%> <%=@booking.customer_surname%>, <strong><%=t.front_end_reservation.booking_detail_title("#{t[:front_end_reservation][:booking_detail_state][@booking.status.to_sym]}").to_s.downcase%></strong></h2>
 
       </div>
     </div>
@@ -16,7 +16,7 @@
 
         <!-- PRODUCT(S) INFORMATION -->
         <h3 class="block-title alt">
-          <i class="fa fa-angle-down"></i>Producto contratado
+          <i class="fa fa-angle-down"></i><%=t.front_end_reservation.booking_detail_product_title%>
         </h3>
 
         <% @booking.booking_lines.each do |booking_item| %>
@@ -52,7 +52,7 @@
         <!--EXTRAS INFORMATION -->
         <% if @booking.booking_extras.size > 0 %>
         <h3 class="block-title alt">
-          <i class="fa fa-angle-down"></i>Extras
+          <i class="fa fa-angle-down"></i><%=t.front_end_reservation.booking_detail_extras_title%>
         </h3>
         <div class="car-big-card alt">
           <div class="row">
@@ -78,7 +78,7 @@
 
         <!-- CUSTOMER INFORMATION -->
         <h3 class="block-title alt">
-          <i class="fa fa-angle-down"></i>Datos del cliente
+          <i class="fa fa-angle-down"></i><%=t.front_end_reservation.booking_detail_customer_title%>
         </h3>
 
         <div class="form-delivery">
@@ -86,7 +86,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <div class="form-control alt">
-                  <strong>Nombre</strong>
+                  <strong><%=t.front_end_reservation.booking_detail_customer_name%></strong>
                   <div><%=@booking.customer_name%> <%=@booking.customer_surname%></div>
                 </div>
               </div>
@@ -94,7 +94,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <div class="form-control alt">
-                  <strong>Correo electrónico</strong>
+                  <strong><%=t.front_end_reservation.booking_detail_customer_email%></strong>
                   <p><%=@booking.customer_email%></p>
                 </div>
               </div>
@@ -102,7 +102,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <div class="form-control alt">
-                  <strong>Teléfono(s)</strong>
+                  <strong><%=t.front_end_reservation.booking_detail_customer_phone_number%></strong>
                   <p><%=@booking.customer_phone%> <%=@booking.customer_mobile_phone%></p>
                 </div>
               </div>
@@ -121,9 +121,9 @@
         <div class="widget shadow widget-details-reservation">
           <div id="reservation_detail">
 
-            <h4 class="widget-title">Detalle de la reserva</h4>
+            <h4 class="widget-title"><%=t.front_end_reservation.reservation_summary_title%></h4>
             <div class="widget-content">
-              <h5 class="widget-title-sub">Entrega</h5>
+              <h5 class="widget-title-sub"><%=t.front_end_reservation.reservation_summary_pickup%></h5>
               <div class="media">
                 <span class="media-object pull-left"><i class="fa fa-calendar"></i></span>
                 <div class="media-body"><p><%=l(@booking.date_from,'%d %B %Y')%> / <%=@booking.time_from%></p></div>
@@ -132,7 +132,7 @@
                 <span class="media-object pull-left"><i class="fa fa-location-arrow"></i></span>
                 <div class="media-body"><p><%=@booking.pickup_place%></p></div>
               </div>
-              <h5 class="widget-title-sub">Recogida</h5>
+              <h5 class="widget-title-sub"><%=t.front_end_reservation.reservation_summary_return%></h5>
               <div class="media">
                 <span class="media-object pull-left"><i class="fa fa-calendar"></i></span>
                 <div class="media-body"><p><%=l(@booking.date_to,'%d %B %Y')%> / <%=@booking.time_to%></p></div>
@@ -141,43 +141,43 @@
                 <span class="media-object pull-left"><i class="fa fa-location-arrow"></i></span>
                 <div class="media-body"><p><%=@booking.return_place%></p></div>
               </div>
-              <h5 class="widget-title-sub">Precio</h5>
+              <h5 class="widget-title-sub"><%=t.front_end_reservation.reservation_summary_price%></h5>
               <div class="list">
                 <ul>
-                  <li>Productos: <span class="pull-right"><%='%.2f' % @booking.item_cost%>€</span></li>
+                  <li><%=t.front_end_reservation.reservation_summary_total_product%>: <span class="pull-right"><%='%.2f' % @booking.item_cost%>€</span></li>
                   <% if @booking.extras_cost > 0 %>
-                  <li>Extras: <span class="pull-right"><%='%.2f' % @booking.extras_cost%>€</span></li>
+                  <li><%=t.front_end_reservation.reservation_summary_total_extras%>: <span class="pull-right"><%='%.2f' % @booking.extras_cost%>€</span></li>
                   <% end %>
                   <% if @booking.time_from_cost > 0 %>
-                  <li>Suplemento hora entrega: <span class="pull-right"><%= '%.2f' % @booking.extras_cost%>€</span></li>
+                  <li><%=t.front_end_reservation.reservation_summary_pickup_time_supplement%>: <span class="pull-right"><%= '%.2f' % @booking.extras_cost%>€</span></li>
                   <% end %>
                   <% if @booking.time_from_cost > 0 %>
-                  <li>Suplemento lugar entrega: <span class="pull-right"><%='%.2f' % @booking.pickup_place_cost%>€</span></li>
+                  <li><%=t.front_end_reservation.reservation_summary_pickup_place_supplement%>: <span class="pull-right"><%='%.2f' % @booking.pickup_place_cost%>€</span></li>
                   <% end %>
                   <% if @booking.time_to_cost > 0 %>
-                  <li>Suplemento hora devolución: <span class="pull-right"><%='%.2f' % @booking.time_to_cost%>€</span></li>
+                  <li><%=t.front_end_reservation.reservation_summary_return_time_supplement%>: <span class="pull-right"><%='%.2f' % @booking.time_to_cost%>€</span></li>
                   <% end %>
                   <% if @booking.time_from_cost > 0 %>
-                  <li>Suplemento lugar devolución: <span class="pull-right"><%='%.2f' % @booking.return_place_cost%>€</span></li>
+                  <li><%=t.front_end_reservation.reservation_summary_return_place_supplement%>: <span class="pull-right"><%='%.2f' % @booking.return_place_cost%>€</span></li>
                   <% end %>
                   <% if total_cost_includes_deposit %>
                       <% if @booking.total_deposit > 0 %>
-                          <li>Fianza*: <span class="pull-right"><%='%.2f' % @booking.total_deposit%>€</span></li>
+                          <li><%=t.front_end_reservation.reservation_summary_deposit%>*: <span class="pull-right"><%='%.2f' % @booking.total_deposit%>€</span></li>
                       <% end %>
                   <% end %>
-                  <li><strong>TOTAL:</strong> <span class="pull-right"><strong><%='%.2f' % @booking.total_cost%>€</strong></span></li>
-                  <li>Pagado: <span class="pull-right text-primary"><%='%.2f' % @booking.total_paid%>€</span></li>
+                  <li><strong><%=t.front_end_reservation.reservation_summary_total%>:</strong> <span class="pull-right"><strong><%='%.2f' % @booking.total_cost%>€</strong></span></li>
+                  <li><%=t.front_end_reservation.booking_detail_summary_paid%>: <span class="pull-right text-primary"><%='%.2f' % @booking.total_paid%>€</span></li>
                   <% if @booking.total_pending > 0 %>
-                  <li>Pendiente:<span class="pull-right text-danger"><strong><%='%.2f' % @booking.total_pending%>€</strong></span></li>
+                  <li><%=t.front_end_reservation.booking_detail_summary_pending%>:<span class="pull-right text-danger"><strong><%='%.2f' % @booking.total_pending%>€</strong></span></li>
                   <% end %>
                   <% if !total_cost_includes_deposit %>
                       <% if @booking.total_deposit > 0 %>
                           <hr>
-                          <li>Fianza*: <span class="pull-right"><%='%.2f' % @booking.total_deposit%>€</span></li>
+                          <li><%=t.front_end_reservation.reservation_summary_deposit%>*: <span class="pull-right"><%='%.2f' % @booking.total_deposit%>€</span></li>
                       <% end %>
                   <% end %>
                   <% if @booking.total_deposit > 0 %>
-                  <li><small>* La fianza se devolverá tras las devolución del producto</small></li>
+                  <li><small>* <%=t.front_end_reservation.reservation_summary_deposit_detail%></small></li>
                   <% end %>
                 </ul>
               </div>

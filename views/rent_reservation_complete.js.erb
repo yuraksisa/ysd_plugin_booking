@@ -226,7 +226,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
                 }
             },
             error: function(data, textStatus, jqXHR) {
-                alert('Lo sentimos. Se ha producido un error registrando la reserva');
+                alert('<%=t.front_end_reservation.conditions_not_read%>');
             },
             beforeSend: function(jqXHR) {
                 $('#full_loader').show();
@@ -261,7 +261,7 @@ require(['jquery', 'YSDRemoteDataSource','YSDSelectSelector',
       conditionsReadClick: function() {
           if ($('#accept').is(':checked') && model.firstTimeConditions) {
               model.firstTimeConditions = false;
-              window.open('/renting_conditions', '_blank');
+              window.open('<%=format_url_with_language("/renting_conditions")%>', '_blank');
           }
       },
 

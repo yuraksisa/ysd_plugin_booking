@@ -1374,6 +1374,8 @@ booking_activities_scheduler:
   pax: >
        %1 plazas
 front_end_reservation:
+  home: Inicio
+  conditions: Condiciones
   choose_product_page_title: Seleccionar producto
   choose_products_page_title: Seleccionar productos
   complete_reservation_page_title: Completar datos
@@ -1387,6 +1389,7 @@ front_end_reservation:
   date_to: Fecha de devolución
   time_to: Hora de devolución
   driver_age: Edad del conductor
+  product: Producto
   update: Actualizar
   select: Seleccionar
   next: Siguiente
@@ -1404,13 +1407,47 @@ front_end_reservation:
   field_customer_alternative_phone_number: Teléfono alternativo
   additional_information_title: Información adicional
   field_comments: Comentarios
-  conditions_read: He leído y acepto las <a href="/renting_conditions" target="blank">condiciones</a> del alquiler
+  payment_title: Pago
+  payment_to_confirm_reservation: Para confirmar la reserva se requiere una paga y señal del %1% del importe total de la reserva
   request_reservation: Solicitar reserva
+  conditions_read: He leído y acepto las <a href="%1" target="blank">condiciones</a> del alquiler
+  request_reservation: Solicitar reserva
+  credit_card_payment: Tarjeta de crédito (20% de paga y señal para confirmar reserva)
+  paypal_payment: PayPal (20% de paga y señal para confirmar reserva)
   conditions_not_read: Lo sentimos. No ha marcado que ha leído las condiciones de alquiler
   form_errors: Por favor, revise el formulario. Contiene datos no válidos.
   product_information_title: Información del producto
   products_information_title: Información de los productos
-  reservation_detail_title: Detalle de la reserva
+  reservation_summary_title: Detalle de la reserva
+  reservation_summary_pickup: Entrega
+  reservation_summary_return: Devolución
+  reservation_summary_price: Precio
+  reservation_summary_total_product: Total producto
+  reservation_summary_total_extras: Total extras
+  reservation_summary_pickup_place_supplement: Suplemento lugar entrega
+  reservation_summary_pickup_time_supplement: Suplemento hora entrega
+  reservation_summary_return_place_supplement: Suplemento lugar recogida
+  reservation_summary_return_time_supplement: Suplemento hora recogida
+  reservation_summary_total: Total
+  reservation_summary_deposit: Fianza
+  reservation_summary_deposit_detail: La fianza se devolverá tras las devolución del producto
+  modify_reservation: Modificar reserva
+  booking_detail_title: su reserva está %1
+  booking_detail_state:
+    pending_confirmation: Pendiente de confirmación
+    confirming: Confirmando
+    confirmed: Confirmada
+    in_progress: En progreso
+    done: Finalizada
+    cancelled: Cancelada
+  booking_detail_product_title: Producto contratado
+  booking_detail_extras_title: Extras
+  booking_detail_customer_title: Datos del cliente
+  booking_detail_customer_name: Nombre
+  booking_detail_customer_phone_number: Teléfono(s)
+  booking_detail_customer_email: Correo electrónico
+  booking_detail_summary_paid: Pagado
+  booking_detail_summary_pending: Pendiente
 admin_new_reservation:
   title: Nueva reserva
   description: Desde aquí puede registrar una nueva reserva de cliente
