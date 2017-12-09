@@ -2,11 +2,7 @@
   <h2 class="entity-title">Traducir categoría</h2>
 </div>
 <div id="page_wrapper" class="all-space">
-  <div class="container_12">
-    <div class="grid_8">
-      <div id="booking_category">
-      </div>
-    </div>
+  <div id="booking_category">
   </div>
 </div>
 
@@ -14,46 +10,51 @@
 
 <script type="text/tmpl" id="booking_category_translation_template_form">
 
-  <form name="booking_category_translation" id="booking_category_translation">
+  <form name="booking_category_translation" class="form-horizontal" id="booking_category_translation">
 
    <input type="hidden" name="category_id" value="<%%=categoryId%>"/>
    <input type="hidden" name="language" value="<%%=language%>"/>
 
-    <div class="form-fields">
 
-      <div class="formrow">
-        <label for="language" class="fieldtitle">Idioma <span class="mandatoryfield">*</span></label>
-        <select name="language" id="language" class="fieldcontrol"/>
+    <div class="form-group">
+      <label for="language" class="col-md-3 control-label">Idioma <span class="mandatoryfield">*</span></label>
+      <div class="col-md-8">
+        <select name="language" id="language" class="form-control"/>
       </div>
-
-      <div class="formrow">
-         <label for="name" class="fieldtitle">Nombre</label>
-         <input type="text" id="name" name="name" class="fieldcontrol" maxlength="80"
-            <%% if (entity) { %> value="<%%= entity.name %>" <%% } %>/>
-      </div>
-
-      <div class="formrow">
-        <label for="short_description" class="fieldtitle">Descripción corta</label>
-        <input type="text" maxlength="80" id="short_description" name="short_description" class="fieldcontrol"
-            <%% if (entity) { %> value="<%%= entity.short_description %>" <%% } %> />
-      </div>
-
-      <div class="formrow">
-        <label for="description" class="fieldtitle">Descripción</label>
-        <textarea rows="5" id="description" name="description" class="fieldcontrol texteditor">
-           <%% if (entity) {%><%%=entity.description %><%% } %>
-        </textarea>
-      </div>
-
     </div>
 
-    <div class="bottom-navigation-bar navigation-bar">
-      <div class="navigation-bar-crud-buttons">
+    <div class="form-group">
+       <label for="name" class="col-md-3 control-label">Nombre</label>
+       <div class="col-md-9">
+         <input type="text" id="name" name="name" class="form-control" maxlength="80"
+            <%% if (entity) { %> value="<%%= entity.name %>" <%% } %>/>
+       </div>
+    </div>
+
+    <div class="form-group">
+      <label for="short_description" class="col-md-3 control-label">Descripción corta</label>
+      <div class="col-md-9">
+        <input type="text" maxlength="80" id="short_description" name="short_description" class="form-control"
+            <%% if (entity) { %> value="<%%= entity.short_description %>" <%% } %> />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description" class="col-md-3 control-label">Descripción</label>
+      <div class="col-md-9">
+        <textarea rows="5" id="description" name="description" class="form-control texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <div class="col-md-9 col-md-offset-3">
          <input id="update_button" type="button"
-                class="update-entity-button action-button entity-management-button"
+                class="btn btn-sm btn-primary update-entity-button action-button entity-management-button"
                 value="<%=t.entitymanagement.update%>"/>
       </div>
     </div>
+
   </form>
 
 </script>

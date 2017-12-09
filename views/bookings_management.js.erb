@@ -13,18 +13,18 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
     this.stockDetail = [];
 
     this.statusDescription = {
-       'pending_confirmation' : '<%= t.booking_status.pending_confirmation%>',
-       'confirmed' : '<%= t.booking_status.confirmed%>',
-       'in_progress' : '<%= t.booking_status.in_progress%>',
-       'done' : '<%= t.booking_status.done%>',
-       'cancelled' : '<%= t.booking_status.cancelled%>'
+       'pending_confirmation' : '<span class="label label-warning"><%= t.booking_status.pending_confirmation%></span>',
+       'confirmed' : '<span class="label label-success"><%= t.booking_status.confirmed%></span>',
+       'in_progress' : '<span class="label label-info"><%= t.booking_status.in_progress%></span>',
+       'done' : '<span class="label label-primary"><%= t.booking_status.done%></span>',
+       'cancelled' : '<span class="label label-danger"><%= t.booking_status.cancelled%></span>'
     }
  	   
     this.paymentStatusDescription = {
        'none' : '<%= t.booking_payment_status.none%>',
-       'deposit' : '<%= t.booking_payment_status.deposit%>',
-       'total' : '<%= t.booking_payment_status.total%>',
-       'refunded': '<%= t.booking_payment_status.refunded%>'
+       'deposit' : '<span class="label label-primary"><%= t.booking_payment_status.deposit%></span>',
+       'total' : '<span class="label label-success"><%= t.booking_payment_status.total%></span>',
+       'refunded': '<span class="label label-danger"><%= t.booking_payment_status.refunded%></span>'
     }
 
     this.chargeStatusDescription = {
@@ -516,13 +516,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                 },
                 'customer_surname': {
                     required: true
-                },
-                'customer_phone' : {
-                    required: true
-                },
-                'customer_email' : {
-                    required: true
-                },
+                }
             },
 
             messages : {
@@ -531,12 +525,6 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                 },
                 'customer_surname': {
                     required: '<%=t.booking_management.form.validations.customer_surname_required%>'
-                },
-                'customer_phone': {
-                    required: '<%=t.booking_management.form.validations.customer_phone_required%>'
-                },
-                'customer_email': {
-                    required: '<%=t.booking_management.form.validations.customer_email_required%>'
                 }
             },
 

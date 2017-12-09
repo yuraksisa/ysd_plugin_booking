@@ -9,41 +9,68 @@
    font-size: 0.85em;
  }
 </style>
-<div class="container_12">
-  <div class="grid_12">
-    <form>
-      <div class="formrow">
-        <div style="display: inline-block">
-          <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10"/>
-        </div>
-        <div style="display: inline-block">
-          <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10"/>
-        </div>
-        <% if multiple_rental_locations and current_user_manager%>
-        <div style="display: inline-block">
-          <select name="rental_location_code" id="rental_location">
-            <option value="">Todas</option>
-            <% rental_locations.each do |rental_location| %>
-              <option value="<%=rental_location.code%>"><%=rental_location.name%></option>
-            <% end %>
-          </select>
-        </div>
-        <% end %>
-        <div style="display: inline-block">
-          <input id="search" type="button" class="form-button blue-button" value="<%=t.entitymanagement.search%>"/>
-        </div>
+
+<div class="row">
+  <div class="col-sm-6 col-md-12">
+    <div class="block block-bordered">
+      <div class="block-header bg-gray-lighter">
+        <h3 class="block-title">Seleccionar fechas</h3>
       </div>
-    </form>
+      <div class="block-content block-content-narrow">
+        <form class="form-horizontal push-5-t">
+          <div class="form-group">
+            <label class="col-xs-10" for="login1-username">Desde</label>
+            <div class="col-xs-10">
+              <input class="form-control date_control" type="text" id="date_from" name="date_from" placeholder="Introduzca fecha desde">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-xs-10" for="login1-password">Hasta</label>
+            <div class="col-xs-10">
+              <input class="form-control date_control" type="text" id="date_to" name="date_to" placeholder="Introduzca fecha hasta">
+            </div>
+          </div>
+          <% if multiple_rental_locations and current_user_manager%>
+          <div class="form-group">
+            <label class="col-xs-10" for="rental_location_code">Oficina</label>
+            <div class="col-xs-10">
+              <select name="rental_location_code" id="rental_location" class="form-control col-xs-12">
+                <option value="" selected>Todas</option>
+                <% rental_locations.each do |rental_location| %>
+                    <option value="<%=rental_location.code%>"><%=rental_location.name%></option>
+                <% end %>
+              </select>
+            </div>
+          </div>
+          <% end %>
+          <div class="form-group">
+            <div class="col-xs-10">
+              <button id="search" class="btn btn-sm btn-primary pull-right" type="button"><i class="fa fa-arrow-right push-5-r"></i> <%=t.entitymanagement.search%></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
-<h3><%= t.booking_pickup.title%></h3>
+<div class="row">
+  <div class="col-sm-6 col-md-6">
+    <div id="pickedup_summary">
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-6">
+    <div id="return_summary">
+    </div>
+  </div>
+</div>
+
 <div class="container_12">
   <div class="grid_12">
     <div id="pickedup_booking_data">
     </div>
   </div>
 </div>
-<h3><%= t.booking_return.title%></h3>
+
 <div class="container_12">
   <div class="grid_12">
     <div id="returned_booking_data">
@@ -51,15 +78,33 @@
   </div>
 </div>
 
-<script type="text/template" id="pickedup_bookings_table">
- <%% if (data.length == 0) { %>
-    <div class="all-border-solid-light">
-         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
-    </div>
- <%% } else { %> 
+<script type="text/template" id="pickedup_summary_tmpl">
+    <a class="block block-link-hover3 text-center block block-themed" href="javascript:void(0)">
+      <div class="block-content block-content-full bg-gray-lighter">
+        <div class="h1 font-w700" data-toggle="countTo" data-to="<%%=picked_up_count%>"><%%=picked_up_count%></div>
+      </div>
+      <div class="block-content block-content-full block-content-mini bg-success text-muted font-w600 text-white">Entregas</div>
+    </a>
+</script>
 
- <div class="table-container">
-    <table id="table" class="table">
+<script type="text/template" id="return_summary_tmpl">
+    <a class="block block-link-hover3 text-center block block-themed" href="javascript:void(0)">
+      <div class="block-content block-content-full bg-gray-lighter">
+        <div class="h1 font-w700" data-toggle="countTo" data-to="<%%=return_count%>"><%%=return_count%></div>
+      </div>
+      <div class="block-content block-content-full block-content-mini bg-warning text-muted font-w600 text-white">Devoluciones</div>
+    </a>
+</script>
+
+<script type="text/template" id="pickedup_bookings_table">
+
+ <%% if (data.length > 0) { %>
+ <div class="block block-bordered">
+    <div class="block-header">
+      <h3 class="block-title"><%= t.booking_pickup.title%></h3>
+    </div>
+    <div class="block-content">
+    <table id="table" class="table table-striped">
        <thead class="table-header">
          <tr>
            <th class="table-header-title left_text" scope="col" style="width:3em"><%=t.booking_list.date_from%></th>
@@ -79,7 +124,7 @@
            <% if multiple_rental_locations %>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.rental_location%></th>
            <% end %>
-           <th class="table-header-title centered_text" scope="col" style="width:4em"></th>
+           <th class="table-header-title centered_text" scope="col" style="width:1.5em"></th>
          </tr>
        </thead>
        <% colspan = 8 %>
@@ -116,27 +161,25 @@
            <% if multiple_rental_locations %>
            <td class="table-cell left_text"><%%= data[i].rental_location_code %></td>
            <% end %>
-           <td class="table-cell"><div class="form-button"><a href="/admin/booking/contract/<%%=data[i].id%>" target="_blank"><%=t.booking_management.print_contract%></a></div></td>
+           <td class="table-cell"><div class="btn btn-default"><a href="/admin/booking/contract/<%%=data[i].id%>" target="_blank"><i class="fa fa-print"></i></a></div></td>
          </tr>
          <%% } %>
          <%% } %>
        </tbody>
     </table>
-   <div class="all-space">
-     <p class="more_contrast_text"><%= t.booking_list.pickup_count %>: <%%=data.length%></p>
-   </div>
+    </div>
 </div>
 <%% } %>
 </script>
 
 <script type="text/template" id="returned_bookings_table">
- <%% if (data.length == 0) { %>
-    <div class="all-border-solid-light">
-         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+ <%% if (data.length > 0) { %>
+  <div class="block block-bordered">
+    <div class="block-header">
+      <h3 class="block-title">Devoluciones</h3>
     </div>
- <%% } else { %> 
- <div class="table-container">
-    <table id="table" class="table">
+    <div class="block-content">
+    <table id="table" class="table  table-striped">
        <thead class="table-header">
          <tr>
            <th class="table-header-title left_text" scope="col"><%=t.booking_list.date_to%></th>
@@ -186,9 +229,7 @@
          <%% } %>
        </tbody>
     </table>
-   <div class="all-space">
-     <p class="more_contrast_text"><%= t.booking_list.return_count %>: <%%=data.length%></p>
-   </div>
+  </div>
 </div>
 <%% } %>
 </script>

@@ -1,24 +1,31 @@
-    <div id="select_resource" class="highlight_block"
+    <div id="select_resource"
          data-date-from="<%=booking.date_from.strftime('%Y-%m-%d')%>"
          data-date-to="<%=booking.date_to.strftime('%Y-%m-%d')%>"
          data-planning-color="<%=booking.planning_color%>">
-      <p id="select_resource_help" class="smaller_text bottom-margin">Seleccione el recurso al que desea reasignar la reserva pulsando sobre cualquier celda de la fila del recurso</p>
       <div>
-        <button type="button" id="cancel_resource_button" class="form-button red-button"
-        style="margin: 0 auto; display: block; width: 100%">Salir reserva seleccionada</button>
-        <div id="reassign_resource" style="display:none">
-          <div class="guiblock">
-            <div><strong style="width: 90px; display:inline-block">Recurso actual:</strong> <span id="original_resource"></span></div>
-            <div><strong style="width: 90px; display:inline-block">Recurso nuevo:</strong> <span id="resource"></span></div>
-          </div>
-          <form name="reassign_form" class="bottom-margin">
-            <input type="hidden" name="id" value="<%=booking.id2%>"/>
-            <input type="hidden" name="origin" value="<%=booking.origin%>">
-            <input type="hidden" name="resource"/>
-            <button id="reassign_button" type="button" class="form-button green-button centered_text" style="margin: 0 auto; display: block; width: 100%">Reasignar recurso</button>
+        <div id="reassign_resource" class=" all-space">
+          <form name="reassign_form" class="form-horizontal">
+            <% if booking.booking_item_reference %>
+            <div>
+              <div>Recurso actual: <span id="original_resource"></span></div>
+            </div>
+            <div>
+              <div>Recurso nuevo:  <span id="resource"></span></div>
+            </div>
+            <% else %>
+              <div>
+                <div>Recurso:  <span id="resource"></span></div>
+              </div>
+            <% end %>
+            <br>
+            <div>
+              <input type="hidden" name="id" value="<%=booking.id2%>"/>
+              <input type="hidden" name="origin" value="<%=booking.origin%>">
+              <input type="hidden" name="resource"/>
+              <button id="reassign_button" type="button" class="btn btn-sm btn-primary"><% if booking.booking_item_reference %>Reasignar<%else%>Asignar<%end%></button>
+              <button id="cancel_select_resource_button" type="button" class="btn btn-sm btn-danger">Cancelar</button>
+            </div>
           </form>
-          <button type="button" id="cancel_select_resource_button" class="top-margin form-button red-button" style="margin: 0 auto; width: 100%">Salir reasignar recurso</button>
-        </div>    
+        </div>
       </div>
-      <div id="select_resource_detail" class="smaller_text"></div>  
     </div>

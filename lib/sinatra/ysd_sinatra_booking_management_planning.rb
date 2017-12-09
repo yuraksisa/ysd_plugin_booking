@@ -1,7 +1,7 @@
 module Sinatra
   module YSD
     #
-    # Sinatra extension to manage bookings
+    # Sinatra extension to manage booking planning
     #
     module BookingPlanning
 
@@ -11,35 +11,10 @@ module Sinatra
         # Bookings planning
         #
         app.get '/admin/booking/planning', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          load_page(:bookings_planning)
-        end
-
-        #
-        # Bookings planning V2
-        #
-        app.get '/admin/booking/planning2', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           today = Date.today
 
-          @date_from = Date.civil(today.year, today.month, 1)
-          @date_to = Date.civil(today.year, today.month, -1)
-
-          if params[:from]
-            begin
-              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:from]}")
-            end
-          end
-
-          if params[:to]
-            begin
-              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:to]}")
-            end
-          end
+          @date_from = today
 
           if params[:mode] and ['stock','product'].include?(params[:mode])
             @mode = params[:mode].to_sym
@@ -55,8 +30,9 @@ module Sinatra
 
           @assignation_allow_diferent_categories = SystemConfiguration::Variable.get_value('booking.assignation.allow_different_category', 'true').to_bool
           @assignation_allow_busy_resource = SystemConfiguration::Variable.get_value('booking.assignation.allow_busy_resource', 'true').to_bool
-
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          #@pending_of_asignation_bookings = BookingDataSystem::Booking.pending_of_assignation
+          
           load_page(:bookings_planning_v2)
 
         end
@@ -105,7 +81,7 @@ module Sinatra
         end
 
         #
-        # Reassign reservation / prereservation
+        # (re)Assign reservation / prereservation
         #
         app.post '/admin/booking/planning-reassign-reservation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -168,85 +144,17 @@ module Sinatra
         end
 
         #
-        # The user selects a cell in the planning
-        #
-        app.get '/admin/booking/planning2-select', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          @bookings = BookingDataSystem::Booking.resource_occupation_detail(params[:date], params[:reference])
-          load_page(:booking_planning_select, :layout => false)
-        end
-
-        #
-        # The user selects a reservation
-        #
-        app.get '/admin/booking/planning2-search', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
-        end
-
-        #
         # The user select the reservations not asigned
         #
-        app.get '/admin/booking/planning2-pending-assignation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
-          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-
-          @bookings = BookingDataSystem::Booking.pending_of_assignation
-          load_page(:booking_planning_pending_assignation, :layout => false)
-
-        end
-
+        #app.get '/admin/booking/planning-pending-assignation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
         #
-        # The user selects prereservations
+        #  @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
         #
-        app.get '/admin/booking/planning2-prereservations', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+        #  @bookings = BookingDataSystem::Booking.pending_of_assignation
+        #  load_page(:booking_planning_pending_assignation, :layout => false)
+        #
+        #end
 
-          year = Date.today.year
-
-          date_from = Date.civil(year,1,1)
-          date_to = Date.civil(year,12,31)
-
-          if params[:from]
-            begin
-              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
-            rescue
-              logger.error("prereservation from date not valid #{params[:from]}")
-            end
-          end
-
-          if params[:to]
-            begin
-              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
-            rescue
-              logger.error("prereservation from date not valid #{params[:to]}")
-            end
-          end
-
-          condition = Conditions::JoinComparison.new('$or',
-                                                     [Conditions::JoinComparison.new('$and',
-                                                                                     [Conditions::Comparison.new(:date_from,'$lte', date_from),
-                                                                                      Conditions::Comparison.new(:date_to,'$gte', date_from)
-                                                                                     ]),
-                                                      Conditions::JoinComparison.new('$and',
-                                                                                     [Conditions::Comparison.new(:date_from,'$lte', date_to),
-                                                                                      Conditions::Comparison.new(:date_to,'$gte', date_to)
-                                                                                     ]),
-                                                      Conditions::JoinComparison.new('$and',
-                                                                                     [Conditions::Comparison.new(:date_from,'$lte', date_from),
-                                                                                      Conditions::Comparison.new(:date_to,'$gte', date_to)
-                                                                                     ]),
-                                                      Conditions::JoinComparison.new('$and',
-                                                                                     [Conditions::Comparison.new(:date_from, '$gte', date_from),
-                                                                                      Conditions::Comparison.new(:date_to, '$lte', date_to)])
-                                                     ]
-          )
-
-          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          @prereservations = condition.build_datamapper(BookingDataSystem::BookingPrereservation).all(
-              :order => [:date_from, :time_from])
-
-          load_page(:booking_planning_prereservations, :layout => false)
-
-        end
 
       end
     end

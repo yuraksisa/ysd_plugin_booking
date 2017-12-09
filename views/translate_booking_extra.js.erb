@@ -114,7 +114,7 @@ require(['jquery','ysdhtmleditor','ysdtemplate','YSDGui',
 
             setupForm: function() {
 
-                htmlEditor('.texteditor'); // HTML editor
+                htmlEditor('form[name=booking_extra_translation] .texteditor'); // HTML editor
 
                 var selector = new SelectSelector('language', this.dataSource,
                     bookingExtraTranslationModel.language);

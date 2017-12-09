@@ -1,11 +1,11 @@
 <div class="top-navigation-bar">
   <h2 class="entity-title"><%=t.booking_console.title%></h2>
-  <div class="form-button" style="float: right">
+  <div class="btn btn-default" style="float: right">
   	 <a id="print_link" href="/admin/booking/reports/pickup-return-pdf" target="_blank">Imprimir</a>
   </div>
   <% if addons and addons.has_key?(:addon_journal) and addons[:addon_journal] %>
-      <button id="add_journal_button" class="form-button right-margin" style="float: right">Añadir diario</button>
-      <div class="form-button right-margin" style="float: right">
+      <button id="add_journal_button" class="btn btn-default right-margin" style="float: right">Añadir diario</button>
+      <div class="btn btn-default right-margin" style="float: right">
         <a id="show_journal" href="/admin/booking/journal">Gestión diario</a>
       </div>
   <% end %>

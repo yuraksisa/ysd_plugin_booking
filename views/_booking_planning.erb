@@ -1,11 +1,93 @@
 <style type="text/css">
-  #parent, #operation_area {
-	height: 500px;
+
+  #parent {
+    position: relative;
   }
-			
+
+  .popover {
+    width: 350px;
+  }
+
+  .popover-title {
+    text-align: center;
+  }
+
+  #planning_table_header {
+    width: 861px;
+    table-layout: fixed;
+    position :fixed;
+    font-size: 0.9em;
+    left: 244px;
+    top: 150px;
+    right: 0;
+    z-index:1000;
+  }
+
   #planning_table {
-  	font-size: 0.7em;
-	  width: 1800px !important;
+    width: 861px;
+    table-layout: fixed;
+    position: relative;
+    top: 153px;
+    left: 16px; /* 1px */
+    z-index: 10;
+  }
+
+  @media screen and (min-width: 992px) {
+    #planning_table_header {
+      left: 244px;
+    }
+    .sidebar-mini #planning_table_header {
+      left: 74px;
+    }
+  }
+
+  @media screen and (max-width: 991px) {
+    #planning_table_header {
+      left: 14px;
+    }
+  }
+
+  .planning_reference {
+    font-weight: 600;
+    color: #0a535e;
+    background: #eeeeee;
+  }
+
+  .planning_item_category {
+    font-weight: 400;
+    font-size: smaller;
+    display: block;
+    line-height: 12px;
+  }
+
+  .planning_header_day_of_week {
+    font-weight: 400;
+    display: block;
+    line-height: 12px;
+  }
+
+  .planning_header_day {
+    font-size: 20px;
+    font-weight: 600;
+    display: block;
+    position: relative;
+    top: 5px;
+  }
+
+  .planning_header_month {
+    font-size: 1em;
+    font-weight: 600;
+    position: relative;
+    top: 5px;
+    line-height: 12px;
+  }
+
+  .date_header {
+    border: 1px solid #cccccc;
+  }
+
+  .planning_reservation {
+    z-index: 999;
   }
 
   #planning_table .data.filled {
@@ -13,17 +95,17 @@
     cursor: pointer;
   }
 
-  #planning_table tr:first th {
+  #planning_table tr:first th, #planning_table_header tr:first th  {
   	background: #EEE;
   }
 
-  #planning_table th {
+  #planning_table th, #planning_table_header th {
     background: #EEE;
     padding: 5px 2px;
     font-size: 0.90em;
   } 
 
-  #planning_table td {
+  #planning_table td, #planning_table_header td {
   	border: 1px solid #DDD;
   	padding: 5px 2px;
   }
@@ -31,86 +113,115 @@
   #planning_table .data {
   	text-align: center;
   }
-
-  .available {
-    color: green;
-  }
-
-  .unavailable {
-    color: red;
-  }
-
-  @keyframes selected {
-    from { background-color: red; }
-    to { background-color: inherit; }
-  }
-
-  .selected {
-    animation: selected 1s infinite; /* IE 10+ */
-  }  
-
-.pending-assignation-table {
-  table-layout: fixed;
-  border: 1px solid #DDD;
-  background-color: #EEE;
-}
-.pending-assignation-table .table-cell {
-   border-right: 1px solid #DDD;
-   width: 1.6em;
-   font-size: 0.85em;
- }
- #operation_area {
-   max-height: 450px; 
-   overflow-y: scroll;
- }
- .working_area {
-    max-height: 295px;
-    overflow-y: scroll;
- }
 </style>
-<div class="container_12">
-  <div class="grid_9">
-    <div id="parent" style="overflow: auto">
-      <table id="planning_table">
+
+<div class="row">
+  <div id="col-xs-12 col-md-12 col-lg-12">
+    <div id="parent">
+      <table id="planning_table_header">
         <thead>
         </thead>
+      </table>
+      <table id="planning_table">
         <tbody>
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="grid_3">
-    <div id="operation_container" class="left-margin smaller_text">
-      <div id="operation_header">
-        <form name="assign_pending_search">
-          <div class="formrow">
-            <select id="planning_views" class="uppercase_text smaller_text" style="width:99%">
-              <option value="home">Inicio</option>
-              <option value="assign_pending">Ver reservas pendientes de asignar</option>
-              <option value="prereservations">Ver prereservas (bloqueos stock)</option>
-            </select>  
-          </div>
-        </form>
-        <form name="reservation_search" style="display: none">
-          <div class="formrow">
-            <input type="text" id="reservation_search_text" maxlength="40"
-              placeholder="buscar reserva" style="width: 60%"/>
-            <input type="button" id="reservation_search_button" class="form-button search-entity-button" value="Buscar"  style="width: 25%"/>
-          </div>
-        </form>
-      </div>
-      <div id="operation_area">
-      </div>
-      <div id="operation_bottom">
-      </div>
-    </div>
-    <div id="prereservation_container" class="left-margin smaller_text" style="display:none; max-height: 350px; overflow-y: scroll">
-      <%= partial :prereservation_form %> 
-    </div>    
+    <!-- Used to allow drag and drop to the end of the table -->
+    <div style="height: 100px; margin-bottom: 100px"></div>
   </div>
 </div>
 
-<script type="text/template">
-   
+<!-- ======================================== -->
+<!-- Stock blocking (pre-reservation) modal   -->
+<!-- ======================================== -->
+<div class="modal fade" id="prereservation_container" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul class="block-options">
+          <li>
+            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+          </li>
+        </ul>
+        <h3 class="modal-title">Bloqueo de stock</h3>
+      </div>
+      <div class="modal-body">
+        <%= partial :prereservation_form %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ======================================================= -->
+<!-- Template that represents a reservation in the planning  -->
+<!-- ======================================================= -->
+<script type="text/template" id="planning_reservation">
+  <div id="<%%=origin%><%%=id%>" data-origin="<%%=origin%>"
+                     data-id="<%%=id%>"
+                     data-category="<%%=category%>"
+                     data-date-from="<%%=dateFrom%>" data-time-from="<%%=timeFrom%>"
+                     data-date-to="<%%=dateTo%>" data-time-to="<%%=timeTo%>"
+                     data-resource="<%%=resource%>"
+                     data-id-resource="<%%=idResource%>"
+                     data-title="<%%=title%>"
+                     data-planning-color="<%%=backgroundColor%>"
+                     class="planning_reservation"
+                     style="padding: 5px; position: absolute; color: <%%=color%>; background-color: <%%=backgroundColor%>; overflow:hidden; opacity: 0.75">
+    <%%= title %>
+  </div>
 </script>
 
+<!-- ======================================================== -->
+<!-- Template that represents a reservation detail (pullover) -->
+<!-- ======================================================== -->
+<script type="text/template" id="planning_reservation_detail">
+
+  <div class="block">
+    <div class="block-content block-content-full">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="push-5">
+            <%% if (booking.origin == 'booking') { %>
+                #<a href="/admin/booking/bookings/<%%=booking.id%>"><%%=booking.id%></a>
+            <%% } else { %>
+            <%% if (booking.origin == 'prereservation') {%>
+                #<%%=booking.id%>
+            <%% } %>
+            <%% } %>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="font-size:12px">
+        <div class="col-sm-12">
+          <div class="push-5">
+            <%%=booking.title%>
+          </div>
+          <% if @product_family.time_to_from %>
+              <div class="push-5">
+                <i class="fa fa-calendar-o"></i>&nbsp;<%%=booking.date_from%> <%if @product_family.time_to_from%><%%=booking.time_from%><%end%>
+              </div>
+              <div class="push-5">
+                <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=booking.date_to%> <%if @product_family.time_to_from%><%%=booking.time_to%><%end%>
+              </div>
+          <% else %>
+          <div class="push-5">
+            <i class="fa fa-calendar-o"></i>&nbsp;<%%=booking.date_from%>&nbsp;&nbsp;&nbsp;
+            <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=booking.date_to%>
+          </div>
+          <% end %>
+          <form name="color" style="display: inline-block; position: relative; top: 3px">
+            <input type="hidden" name="id" value="<%%=booking.id%>"/>
+            <input type="hidden" name="type" value="<%%=booking.origin%>"/>
+            <input type="color" name="planning_color" class="color" value="<%%=booking.planning_color%>" style="width:32px; height: 32px"/>
+            <%% if (booking.origin == 'prereservation') { %>
+            <button type="button" class="destroy_prereservation_button btn btn-danger left-margin"
+                    style="position:relative; top: -6px" rel="<%%=booking.id%>">Eliminar</button>
+            <%% } %>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>

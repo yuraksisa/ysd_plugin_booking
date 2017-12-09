@@ -23,13 +23,16 @@ module Sinatra
 
         sc_json = shopping_cart.to_json(only: only, relationships: relationships)
 
+        locale = locale_to_translate_into
+        
         # Prepare the products
         p_json = ::Yito::Model::Booking::RentingSearch.search(shopping_cart.date_from,
-                                                              shopping_cart.date_to, shopping_cart.days, true).to_json
+                                                              shopping_cart.date_to, shopping_cart.days, 
+                                                              locale,true).to_json
 
         # Prepare the extras
         e_json = ::Yito::Model::Booking::RentingExtraSearch.search(shopping_cart.date_from,
-                                                                   shopping_cart.date_to, shopping_cart.days).to_json
+                                                                   shopping_cart.date_to, shopping_cart.days, locale).to_json
 
         # Join all the data togheter
         "{\"shopping_cart\": #{sc_json}, \"products\": #{p_json}, \"extras\": #{e_json} }"

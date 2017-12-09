@@ -15,48 +15,64 @@
 <div class="admin_content_wrapper">
   <div>
     <% if @reservations.empty? %>
-    <div class="all-border-solid-light top-margin-1line">
-         <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
+    <div class="alert alert-warning">
+         <h3 class="no-data-message"><%= t.entitymanagement.no_data %></h3>
     </div>
-    <% end %>    
-      <table id="table" class="table">
-        <thead class="table-header">
-          <tr>
-            <th class="table-cell" scope="col" style="width:2em">Fecha recepción</th>
-            <th class="table-cell" scope="col" style="width:1.2em">Localizador</th>
-            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
-            <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
-            <th class="table-cell" scope="col" style="width:3.5em">Cliente</th>
-            <th class="table-cell" scope="col" style="width:2em">Teléfono</th>
-            <th class="table-cell" scope="col" style="width:4.5em">Email</th>
-            <th class="table-cell" scope="col" style="width:1em">Productos</th>
-            <th class="table-cell" scope="col" style="width:1em">Total</th>    
-            <th class="table-cell" scope="col" style="width:1em">Web</th>         
-          </tr>
-        </thead>
-        <tbody>      
-        <% @reservations.each do |reservation| %>  
-        <tr class="table-row">
-          <td class="table-cell"><%=reservation.creation_date.strftime('%Y-%m-%d %H:%M')%></td>          
-          <td class="table-cell right_text"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
-          <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_from%><% end %></td>
-          <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_to%><%end%></td>
-          <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
-          <td class="table-cell"><%=reservation.customer_phone%> <%=reservation.customer_mobile_phone%></td>
-          <td class="table-cell"><%=reservation.customer_email%></td>
-          <td class="table-cell">
-            <% reservation.booking_lines.each do |booking_line| %>
-              <div><%= booking_line.item_id %><%if booking_reservation_starts_with == :shopcart%>: <%=booking_line.quantity%><%end%></div>
+    <% else %>
+        <div class="row">
+          <div class="col-sm-6 col-md-6">
+            <a class="block block-link-hover3 text-center block block-themed" href="javascript:void(0)">
+              <div class="block-content block-content-full bg-gray-lighter">
+                <div class="h1 font-w700" data-toggle="countTo" data-to="<%=@reservations.size%>"><%=@reservations.size%></div>
+              </div>
+              <div class="block-content block-content-full block-content-mini bg-warning text-muted font-w600 text-white">Pendientes</div>
+            </a>
+          </div>
+        </div>
+
+      <div class="block block-bordered">
+        <!--div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Listado de reservas pendientes de confirmación</h3>
+        </div-->
+        <div class="block-content">
+          <table id="table" class="table table-striped">
+            <thead class="table-header">
+              <tr>
+                <th class="table-cell" scope="col" style="width:100px">Recepción</th>
+                <th class="table-cell" scope="col" style="width:100px">Localizador</th>
+                <th class="table-cell" scope="col" style="width:100px">Inicio</th>
+                <th class="table-cell" scope="col" style="width:100px">Fin</th>
+                <th class="table-cell" scope="col" style="width:100px">Cliente</th>
+                <th class="table-cell" scope="col" style="width:100px">Teléfono</th>
+                <!--th class="table-cell" scope="col" style="width:4.5em">Email</th-->
+                <th class="table-cell" scope="col" style="width:100px">Productos</th>
+                <th class="table-cell right_text" scope="col" style="width:100px">Total</th>
+                <th class="table-cell centered_text" scope="col" style="width:100px">Web</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% @reservations.each do |reservation| %>
+            <tr class="table-row">
+              <td class="table-cell"><%=reservation.creation_date.strftime('%Y-%m-%d %H:%M')%></td>
+              <td class="table-cell"><a href="/admin/booking/bookings/<%=reservation.id%>"><%=reservation.id%></a></td>
+              <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_from%><% end %></td>
+              <td class="table-cell"><%=reservation.date_to.strftime('%Y-%m-%d')%> <% if defined?product_family and product_family.time_to_from%><%=reservation.time_to%><%end%></td>
+              <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
+              <td class="table-cell"><%=reservation.customer_phone%> <%=reservation.customer_mobile_phone%></td>
+              <!--td class="table-cell"><%=reservation.customer_email%></td-->
+              <td class="table-cell">
+                <% reservation.booking_lines.each do |booking_line| %>
+                  <div><%= booking_line.item_id %><%if booking_reservation_starts_with == :shopcart%>: <%=booking_line.quantity%><%end%></div>
+                <% end %>
+              </td>
+              <td class="table-cell right_text"><%="%.2f" % reservation.total_cost%></td>
+              <td class="table-cell centered_text"><%= reservation.created_by_manager ? '' : '<i class="fa fa-times"></i>' %></td>
+            </tr>
             <% end %>
-          </td>
-          <td class="table-cell right_text"><%="%.2f" % reservation.total_cost%></td>
-          <td class="table-cell centered_text"><%= reservation.created_by_manager ? 'N' : 'S' %></td>
-        </tr>
-        <% end %>
-        </tbody>
-      </table>
-      <div class="all-space">
-        <p class="right_text"><%=t.report_pending_confirmation.summary(@reservations.size)%></p>
+            </tbody>
+          </table>
+        </div>
       </div>
+    <%end %>
   </div>
 </div>

@@ -12,28 +12,28 @@
 
 <!-- Renders the elements container -->
 <script type="text/tmpl" id="elements_container_template">
-  <table id="elements_table" class="table">
+  <table id="elements_table" class="table table-striped">
      <thead class="table-header">
        <tr>
+         <th class="table-header-title" scope="col" style="width:80px">#</th>
+         <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.creation_date %></th>
+         <th class="table-header-title" scope="col" style="width:150px"><%= t.booking_management.table.customer %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.status %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.payment_status %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.category %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.date_from %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.date_to %></th>
+         <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.created_by_manager %></th>
+         <!--th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.notifications %></th-->
          <% if multiple_rental_locations %>
-         <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_management.table.rental_location %></th>
+         <th class="table-header-title" scope="col" style="width:120px"><%= t.booking_management.table.rental_location %></th>
          <% end %>
-         <th class="table-header-title" scope="col" style="width:10%"><%= t.booking_management.table.id %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:15%"><%= t.booking_management.table.creation_date %></th>
-         <th class="table-header-title" scope="col" style="width:24%"><%= t.booking_management.table.customer %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.booking_management.table.status %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.payment_status %></th>  
-         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.category %></th>                
-         <th class="table-header-title centered_text" scope="col" style="width:12%"><%= t.booking_management.table.date_from %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:12%"><%= t.booking_management.table.date_to %></th>
-         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.created_by_manager %></th>         
-         <th class="table-header-title centered_text" scope="col" style="width:5%"><%= t.booking_management.table.notifications %></th>
        </tr>
      </thead>
      <tbody id="elements_tbody" class="table-tbody">             
      </tbody>
   </table>
-  <div class="guiblock smaller_text all-space left-margin right-margin">
+  <!--div class="guiblock smaller_text all-space left-margin right-margin">
     <p><%=t.booking_management.footer.title%>:</p>
     <div>
     <span class="more_contrast_text">c1:</span><span class="less_contrast_text"><%=t.booking_management.footer.c1_notification%></span>&nbsp;
@@ -46,34 +46,39 @@
     <span class="more_contrast_text">m2:</span><span class="less_contrast_text"><%=t.booking_management.footer.m2_notification%></span>&nbsp;    
     <span class="more_contrast_text">m2:</span><span class="less_contrast_text"><%=t.booking_management.footer.m3_notification%></span>&nbsp;     
     </div>
-  </div>
+  </div-->
 </script>
 
 <!-- Renders one element in the elements list view -->
         
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row element-navigation-detail" rel="<%%= index %>" id="element_row_<%%=index%>">
-      <% if multiple_rental_locations %>
-      <td class="table-cell"><%%= entity.rental_location_code %></td>
-      <% end %>
-      <td class="table-cell"><%%= entity.id %></td>
-      <td class="table-cell centered_text"><%%= self.formatDate(entity.creation_date) %></td>
-      <td class="table-cell"><%%= entity.customer_name %> <%%=entity.customer_surname%></td>
+      <td class="table-cell"><strong class="text-primary"><%%= entity.id %></strong></td>
+      <td class="table-cell centered_text"><%%= self.formatDate(entity.creation_date,'dd.MM.yyyy') %></td>
+      <td class="table-cell"><strong><%%= entity.customer_name %> <%%=entity.customer_surname%></strong></td>
       <td class="table-cell centered_text">
-        <span class="smaller_text <%%=self.model.entityHooks[0].statusClass(entity)%> element-status">
+        <span class="<%%=self.model.entityHooks[0].statusClass(entity)%> element-status">
           <%%= self.model.entityHooks[0].statusDescription[entity.status] %>
         </span>
       </td>
       <td class="table-cell centered_text">
-         <%% if (entity.payment_status == 'deposit') { %><span class="element-status doing-status smaller_text">d</span> <%% } %>
-         <%% if (entity.payment_status == 'total') { %><span class="element-status done-status smaller_text">t</span> <%%}%>
-         <%% if (entity.payment_status == 'refunded') { %><span class="element-status error-status smaller_text">c</span> <%%}%>            
+         <%% if (entity.payment_status == 'deposit') { %><span class="label label-info smaller_text">Depósito</span> <%% } %>
+         <%% if (entity.payment_status == 'total') { %><span class="label label-success smaller_text">Total</span> <%%}%>
+         <%% if (entity.payment_status == 'refunded') { %><span class="label label-danger smaller_text">Devuelto</span> <%%}%>
       </td>       
-      <td class="table-cell centered_text"><%%= entity.booking_lines[0].item_id %> </td>
+      <td class="table-cell centered_text">
+         <% if booking_item_family.multiple_items? %>
+           <%% for (var idx=0;idx<entity.booking_lines.length;idx++) { %>
+           <%%= entity.booking_lines[idx].item_id %> (<%%= entity.booking_lines[idx].quantity %> u.)<br>
+           <%% } %>
+         <% else %>
+           <%%= entity.booking_lines[0].item_id %>
+         <% end %>
+      </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_from,'dd.MM.yyyy') %> </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_to,'dd.MM.yyyy') %> </td>
-      <td class="table-cell centered_text"><%%= entity.created_by_manager ? '<%=t.booking_management.table.created_by_manager_no%>' : '<%=t.booking_management.table.created_by_manager_yes%>' %>
-      <td class="table-cell centered_text">
+      <td class="table-cell centered_text"><%%= entity.created_by_manager ? '' : '<i class="fa fa-times"></i>' %>
+      <!--td class="table-cell centered_text">
          <%% if (entity.customer_req_notification_sent) { %><span class="element-status pending-status smaller_text">c1</span> <%% } %>
          <%% if (entity.customer_notification_sent) { %><span class="element-status confirmed-status smaller_text">c2</span> <%%}%>
          <%% if (entity.customer_req_notification_p_sent) { %><span class="element-status confirmed-status smaller_text">c3</span> <%%}%>
@@ -81,7 +86,10 @@
          <%% if (entity.manager_notification_sent) { %><span class="element-status confirmed-status smaller_text">m</span><%%}%>
          <%% if (entity.manager_notification_p_n_sent) { %><span class="element-status confirmed-status smaller_text">m2</span><%%}%>
          <%% if (entity.manager_confirm_notification_sent) { %><span class="element-status confirmed-status smaller_text">m3</span><%%}%>         
-      </td> 
+      </td-->
+      <% if multiple_rental_locations %>
+      <td class="table-cell"><%%= entity.rental_location_code %></td>
+      <% end %>
     </tr>
 </script>
 

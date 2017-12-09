@@ -1,6 +1,6 @@
-      <form id="prereservation_form" name="element" class="form-element all-space" style="background: white">
-        <h3 id="prereservation_title" class="highlight_block smaller_text"><%=t.bookings_planning.prereservation.create_title%></h3>
+      <form id="prereservation_form" name="element" class="form-element all-space" style="background: #ffffff">
         <input type="hidden" name="id" id="id"/>
+        <input type="hidden" name="planning_color" value="#cccccc"/>
         <div class="formrow">
           <label class="fieldtitle"><%=t.bookings_planning.prereservation.from%></label>
           <input type="text" name="date_from" id="date_from" class="date_control <% unless @product_family.time_to_from %>fieldcontrol<%end%>" size="15" maxlength="10"/>

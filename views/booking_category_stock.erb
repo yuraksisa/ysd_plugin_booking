@@ -1,11 +1,10 @@
 <div id="page_wrapper">
-  <h4 class="guiblock">Detalle del stock</h4>
 <% if @items.empty? %>
     <div class="all-border-solid-light top-margin-1line">
       <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
     </div>
 <% else %>
-  <table class="table">
+  <table class="table table-striped">
     <thead>
     <tr>
       <th class="table-header-title" scope="col" style="width:15%">
@@ -18,7 +17,7 @@
         <%= t.booking_item_management.form.model.label %>
       </th>
       <th class="table-header-title" scope="col" style="width:15%">
-        <%= t.booking_item_management.form.plate.label %>
+        Referencia
       </th>
       <th class="table-header-title centered_text" scope="col" style="width:100px">
         <%= t.booking_item_management.table.own_property %>
@@ -44,10 +43,10 @@
           <%= entity.stock_plate %>
         </td>
         <td class="table-cell centered_text">
-          <%= entity.own_property ? t.booking_item_management.table.own_property_yes : t.booking_item_management.table.own_property_no %>
+          <%= entity.own_property ? '<i class="fa fa-times"></i>' : '' %>
         </td>
         <td class="table-cell centered_text">
-          <%= entity.assignable ? t.booking_item_management.table.assignable_yes : t.booking_item_management.table.assignable_no %>
+          <%= entity.assignable ? '<i class="fa fa-times"></i>' : ''  %>
         </td>
       </tr>
       <% end %>

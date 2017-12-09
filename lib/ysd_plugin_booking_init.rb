@@ -48,9 +48,6 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlacesManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingRentalLocationsManagement
    sinatra_extension Sinatra::YitoExtension::BookingRentalLocationsManagementRESTApi
-   sinatra_extension Sinatra::YitoExtension::BookingFrontend
-   sinatra_helper Sinatra::YitoExtension::BookingFrontendRESTApiHelper
-   sinatra_extension Sinatra::YitoExtension::BookingFrontendRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingTranslation
    sinatra_extension Sinatra::YitoExtension::BookingTranslationRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingReports

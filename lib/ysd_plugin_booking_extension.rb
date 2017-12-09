@@ -34,6 +34,10 @@ module Huasi
     #
     def install(context={})
 
+      #
+      # Common settings
+      #
+
       SystemConfiguration::Variable.first_or_create(
         {name: 'booking.front_end_prefix'},
         {value: '',
@@ -91,7 +95,6 @@ module Huasi
           {:value => 'false',
            :description => 'The deposit is included in the total cost',
            :module => :booking})
-
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.allow_total_payment'},
@@ -184,9 +187,6 @@ module Huasi
         {:value => '0',
          :description => 'Price if the pickup/return is not on pickup/return timetable'})
 
-      #
-      # Indicates that are rules for young drivers
-      #
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.driver_min_age.rules'},
           {:value => 'false',
@@ -356,9 +356,60 @@ module Huasi
            :description => 'There are multiple rental locations',
            :module => :booking})
 
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.use_factors_in_rates'},
+          {:value => 'false',
+           :description => 'Use factors in rates definition',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create({:name => 'site.booking_manager_front_page'},
+                                                    {:value => '',
+                                                     :description => 'Booking manager front page (dashboard)',
+                                                     :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create({:name => 'site.booking_operator_front_page'},
+                                                    {:value => '',
+                                                     :description => 'Booking operator front page (dashboard)',
+                                                     :module => :booking})
+
+      #
+      # Rates setup : Seasons (general), factors (general)
+      #
+      unless season_definition = Yito::Model::Rates::SeasonDefinition.first(name: 'general')
+        season_definition = Yito::Model::Rates::SeasonDefinition.create(name: 'general', description: 'Temporadas generales')
+        season = Yito::Model::Rates::Season.create(season_definition: season_definition, name: '1',
+          from_day: 1, from_month: 1, to_day: 31, to_month: 12)
+      end
+
+      unless factor_definition = Yito::Model::Rates::FactorDefinition.first(name: 'general')
+        factor_definition = Yito::Model::Rates::FactorDefinition.create(name: 'general', description: 'Factores generales')
+        factor_1 = Yito::Model::Rates::Factor.create(factor_definition: factor_definition, from: 1, to: 1, factor: 2)
+        factor_2 = Yito::Model::Rates::Factor.create(factor_definition: factor_definition, from: 2, to: 2, factor: 1.5)
+        factor_3 = Yito::Model::Rates::Factor.create(factor_definition: factor_definition, from: 3, to: 3, factor: 1.1)
+      end
+
+      #
+      # Calendars : Three types of events for this business : not_available, payment_enabled and activity
+      #
+      if Yito::Model::Calendar::EventType.count(:name => 'not_available') == 0
+        Yito::Model::Calendar::EventType.create(:name => 'not_available',
+                                              :description => 'Not available')
+      end
+      if Yito::Model::Calendar::EventType.count(:name => 'payment_enabled') == 0
+        Yito::Model::Calendar::EventType.create(:name => 'payment_enabled',
+                                                :description => 'Payment enabled')
+      end
+      if Yito::Model::Calendar::EventType.count(:name => 'activity') == 0
+        Yito::Model::Calendar::EventType.create(:name => 'activity',
+                                                :description => 'Programmed activity')
+      end
+
+      #
+      # Products families (types of business)
+      #
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car'},
     {
-        :name => 'Rent a car',
+        :name => 'Alquiler de vehículos (coches, motos, ...)',
         :presentation_order => 1,
         :frontend => :dates,
         :driver => true,
@@ -370,7 +421,19 @@ module Huasi
         :time_to_from => true,
         :start_date_literal => :pickup,
         :cycle_of_24_hours => true,
-        :fuel => true} )
+        :fuel => true,
+        :product_type => :category_of_resources,
+        :product_price_definition_type => :season,
+        :product_price_definition_season_definition => season_definition,
+        :product_price_definition_factor_definition => factor_definition,
+        :product_price_definition_units_management => :detailed,
+        :product_price_definition_units_management_value => 7,
+        :extras_price_definition_type => :no_season,
+        :extras_price_definition_season_definition => season_definition,
+        :extras_price_definition_factor_definition => factor_definition,
+        :extras_price_definition_units_management => :unitary,
+        :extras_price_definition_units_management_value => 1
+      })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'kayak'},
     {
@@ -391,7 +454,19 @@ module Huasi
         :weight_mandatory => true,
         :weight_values => '<= 75Kg,75Kg',
         :cycle_of_24_hours => false,
-        :fuel => false})
+        :fuel => false,
+        :product_type => :category_of_resources,
+        :product_price_definition_type => :season,
+        :product_price_definition_season_definition => season_definition,
+        :product_price_definition_factor_definition => factor_definition,
+        :product_price_definition_units_management => :detailed,
+        :product_price_definition_units_management_value => 7,
+        :extras_price_definition_type => :no_season,
+        :extras_price_definition_season_definition => season_definition,
+        :extras_price_definition_factor_definition => factor_definition,
+        :extras_price_definition_units_management => :unitary,
+        :extras_price_definition_units_management_value => 1
+      })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
         {
@@ -405,7 +480,19 @@ module Huasi
          :time_to_from => false,
          :start_date_literal => :arrival,
          :cycle_of_24_hours => true,
-         :fuel => false} )
+         :fuel => false,
+         :product_type => :category_of_resources,
+         :product_price_definition_type => :season,
+         :product_price_definition_season_definition => season_definition,
+         :product_price_definition_factor_definition => factor_definition,
+         :product_price_definition_units_management => :detailed,
+         :product_price_definition_units_management_value => 7,
+         :extras_price_definition_type => :no_season,
+         :extras_price_definition_season_definition => season_definition,
+         :extras_price_definition_factor_definition => factor_definition,
+         :extras_price_definition_units_management => :unitary,
+         :extras_price_definition_units_management_value => 1
+        })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'bike'},
         {
@@ -419,7 +506,19 @@ module Huasi
          :time_to_from => true,
          :start_date_literal => :pickup,
          :cycle_of_24_hours => false,
-         :fuel => false} )
+         :fuel => false,
+         :product_type => :category_of_resources,
+         :product_price_definition_type => :season,
+         :product_price_definition_season_definition => season_definition,
+         :product_price_definition_factor_definition => factor_definition,
+         :product_price_definition_units_management => :detailed,
+         :product_price_definition_units_management_value => 7,
+         :extras_price_definition_type => :no_season,
+         :extras_price_definition_season_definition => season_definition,
+         :extras_price_definition_factor_definition => factor_definition,
+         :extras_price_definition_units_management => :unitary,
+         :extras_price_definition_units_management_value => 1
+        })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'other'},
     {
@@ -433,22 +532,23 @@ module Huasi
         :time_to_from => true,
         :start_date_literal => :pickup,
         :cycle_of_24_hours => false,
-        :fuel => false} )
+        :fuel => false,
+        :product_type => :category_of_resources,
+        :product_price_definition_type => :season,
+        :product_price_definition_season_definition => season_definition,
+        :product_price_definition_factor_definition => factor_definition,
+        :product_price_definition_units_management => :detailed,
+        :product_price_definition_units_management_value => 7,
+        :extras_price_definition_type => :no_season,
+        :extras_price_definition_season_definition => season_definition,
+        :extras_price_definition_factor_definition => factor_definition,
+        :extras_price_definition_units_management => :unitary,
+        :extras_price_definition_units_management_value => 1
+      })
 
-      if Yito::Model::Calendar::EventType.count(:name => 'not_available') == 0
-        Yito::Model::Calendar::EventType.create(:name => 'not_available', 
-          :description => 'Not available')
-      end
-
-      if Yito::Model::Calendar::EventType.count(:name => 'payment_enabled') == 0
-        Yito::Model::Calendar::EventType.create(:name => 'payment_enabled', 
-          :description => 'Payment enabled')
-      end
-
-      if Yito::Model::Calendar::EventType.count(:name => 'activity') == 0
-        Yito::Model::Calendar::EventType.create(:name => 'activity', 
-          :description => 'Programmed activity')
-      end
+      #
+      # Users groups : booking manager - booking operator - charge supplier
+      #
 
       Users::Group.first_or_create({:group => 'booking_manager'},
           {:name => 'Booking manager', :description => 'Booking manager'})
@@ -459,17 +559,9 @@ module Huasi
       Users::Group.first_or_create({:group => 'booking_charge_supplier'},
                                    {:name => 'Booking charge supplier', :description => 'Booking charge supplier'})
 
-      SystemConfiguration::Variable.first_or_create({:name => 'site.booking_manager_front_page'},
-                                                    {:value => '', 
-                                                     :description => 'Booking manager front page (dashboard)', 
-                                                     :module => :booking})
-      
-      SystemConfiguration::Variable.first_or_create({:name => 'site.booking_operator_front_page'},
-                                                    {:value => '', 
-                                                     :description => 'Booking operator front page (dashboard)', 
-                                                     :module => :booking})
-
-
+      #
+      # Notification templates
+      #
       ContentManagerSystem::Template.first_or_create({:name => 'booking_manager_notification'},
           {:description=>'Mensaje que se envía al gestor de reservas al recibir una nueva solicitud',
            :text => BookingDataSystem::Booking.manager_notification_template})
@@ -506,7 +598,9 @@ module Huasi
           {:description=>'Mensaje al finalizar la reserva',
            :text => ::Yito::Model::Booking::Templates.summary_message})
 
+      #
       # Creates the calendar and the events for the booking journal (pickup/return integration)
+      #
       unless booking_journal_calendar = Yito::Model::Calendar::Calendar.first(:name => 'booking_journal')
         booking_journal_calendar = Yito::Model::Calendar::Calendar.create({:name => 'booking_journal', :description => 'Booking journal calendar'})
       end  
@@ -557,10 +651,7 @@ module Huasi
         :theme => Themes::ThemeManager.instance.selected_theme.name},
        {:name => 'booking_activities_shopping_cart',
         :module_name => :booking,
-        :theme => Themes::ThemeManager.instance.selected_theme.name},
-       {:name => 'booking_selector_full_v2',
-        :module_name => :booking,
-        :theme => Themes::ThemeManager.instance.selected_theme.name}        
+        :theme => Themes::ThemeManager.instance.selected_theme.name}       
       ]
         
     end
@@ -606,14 +697,12 @@ module Huasi
           app.partial(:booking_selector, :locals => locals)
         when 'booking_selector_inline'         
           app.partial(:booking_selector_inline, :locals => locals)
-        when 'booking_selector_full_v2'
-          result = app.partial(:rent_search_form_full_v2, :locals => locals)
-          result << app.partial(:rent_search_form_full_v2_js, :locals => locals)
         when 'booking_operator_menu', 'booking_admin_menu'
           today = Date.today
           year = today.year
 
           booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
+          use_factors = SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool
 
           booking_renting, booking_activities = app.mybooking_plan
           addons = app.mybooking_addons
@@ -621,7 +710,8 @@ module Huasi
           if booking_mode == 'rent'
             menu_locals = {booking_renting: booking_renting,
                            booking_activities: booking_activities,
-                           addons: addons}
+                           addons: addons,
+                           use_factors: use_factors}
             if booking_renting
               menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
               menu_locals.store(:today_pickup, BookingDataSystem::Booking.pickup_list(today, today, nil, true).size) #BookingDataSystem::Booking.count_pickup(today))
@@ -666,6 +756,32 @@ module Huasi
 
     # ========= Page Building ============
 
+    #
+    # Page process
+    #
+    # @param [Context]
+    #
+    # @return [Hash]
+    #
+    #  A Hash where each key represents a variable, the region to insert the content, and the value is an array of blocks
+    #
+    def page_preprocess(page, context={})
+
+      app = context[:app]
+
+      result = {}
+
+      if page.admin_page
+        if app.user and app.user.belongs_to?('booking_manager')
+          menu = block_view(context, 'booking_admin_menu')
+          result.store(:sidebar_menu, [menu])
+        end
+      end
+
+      return result
+
+    end
+    
     #
     # It gets the scripts used by the module
     #

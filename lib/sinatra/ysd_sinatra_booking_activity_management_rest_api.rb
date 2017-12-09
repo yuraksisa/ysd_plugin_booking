@@ -108,7 +108,7 @@ module Sinatra
 
           data = conditions.build_datamapper(::Yito::Model::Booking::Activity).all.map do |item|
             {value: item.code,
-             label: item.short_description}
+             label: item.name}
           end
 
           status 200

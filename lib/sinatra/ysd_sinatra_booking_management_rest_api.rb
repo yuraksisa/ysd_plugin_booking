@@ -489,8 +489,6 @@ module Sinatra
             @options = {mode: :product, product: params[:product]}
           end
 
-          p "from: #{params[:from]} #{@date_from} to: #{params[:to]} #{@date_to}"
-
           result = BookingDataSystem::Booking.planning(@date_from, @date_to, @options)
 
           content_type :json
@@ -882,12 +880,17 @@ module Sinatra
                                                                       driver_driving_license_date: driver_driving_license_date,
                                                                       driver_age_rule_definition: driver_rule_definition})
 
+          locale = locale_to_translate_into
+          
           # Prepare the products
-          products = ::Yito::Model::Booking::RentingSearch.search(date_from, date_to, calculator.days)
+          products = ::Yito::Model::Booking::RentingSearch.search(date_from, 
+                                                                  date_to, 
+                                                                  calculator.days,
+                                                                   locale)
 
           # Prepare the extras
           extras = ::Yito::Model::Booking::RentingExtraSearch.search(date_from,
-                                                                     date_to, calculator.days)
+                                                                     date_to, calculator.days, locale)
 
           content_type :json
           {calculator: calculator, products: products, extras: extras}.to_json
@@ -1462,6 +1465,76 @@ module Sinatra
               updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_km_on_return(data[:km_miles_on_return], booking_line_resource.km_miles_on_return || '-') if booking_line_resource.km_miles_on_return != data[:km_miles_on_return]
               updated_attributes.store(:km_miles_on_return, data[:km_miles_on_return]) if booking_line_resource.km_miles_on_return != data[:km_miles_on_return]
               booking_line_resource.km_miles_on_return = data[:km_miles_on_return]
+            end
+            if data.has_key?(:resource_user_name) and (!data[:resource_user_name].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_name(data[:resource_user_name], booking_line_resource.resource_user_name || '-') if booking_line_resource.resource_user_name != data[:resource_user_name]
+              updated_attributes.store(:resource_user_name, data[:resource_user_name]) if booking_line_resource.resource_user_name != data[:resource_user_name]
+              booking_line_resource.resource_user_name = data[:resource_user_name]
+            end
+            if data.has_key?(:resource_user_surname) and (!data[:resource_user_surname].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_surname(data[:resource_user_surname], booking_line_resource.resource_user_surname || '-') if booking_line_resource.resource_user_surname != data[:resource_user_surname]
+              updated_attributes.store(:resource_user_surname, data[:resource_user_surname]) if booking_line_resource.resource_user_surname != data[:resource_user_surname]
+              booking_line_resource.resource_user_surname = data[:resource_user_surname]
+            end
+            if data.has_key?(:resource_user_document_id) and (!data[:resource_user_document_id].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_document_id(data[:resource_user_document_id], booking_line_resource.resource_user_document_id || '-') if booking_line_resource.resource_user_document_id != data[:resource_user_document_id]
+              updated_attributes.store(:resource_user_document_id, data[:resource_user_document_id]) if booking_line_resource.resource_user_document_id != data[:resource_user_document_id]
+              booking_line_resource.resource_user_document_id = data[:resource_user_document_id]
+            end
+            if data.has_key?(:resource_user_phone) and (!data[:resource_user_phone].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_phone(data[:resource_user_phone], booking_line_resource.resource_user_phone || '-') if booking_line_resource.resource_user_phone != data[:resource_user_phone]
+              updated_attributes.store(:resource_user_phone, data[:resource_user_phone]) if booking_line_resource.resource_user_phone != data[:resource_user_phone]
+              booking_line_resource.resource_user_phone = data[:resource_user_phone]
+            end
+            if data.has_key?(:resource_user_email) and (!data[:resource_user_email].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_email(data[:resource_user_email], booking_line_resource.resource_user_email || '-') if booking_line_resource.resource_user_email != data[:resource_user_email]
+              updated_attributes.store(:resource_user_email, data[:resource_user_email]) if booking_line_resource.resource_user_email != data[:resource_user_email]
+              booking_line_resource.resource_user_email = data[:resource_user_email]
+            end
+            if data.has_key?(:customer_height) and (!data[:customer_height].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_customer_height(data[:customer_height], booking_line_resource.customer_height || '-') if booking_line_resource.customer_height != data[:customer_height]
+              updated_attributes.store(:customer_height, data[:customer_height]) if booking_line_resource.customer_height != data[:customer_height]
+              booking_line_resource.customer_height = data[:customer_height]
+            end
+            if data.has_key?(:customer_weight) and (!data[:customer_weight].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_customer_weight(data[:customer_weight], booking_line_resource.customer_weight || '-') if booking_line_resource.customer_weight != data[:customer_weight]
+              updated_attributes.store(:customer_weight, data[:customer_weight]) if booking_line_resource.customer_weight != data[:customer_weight]
+              booking_line_resource.customer_weight = data[:customer_weight]
+            end
+            if data.has_key?(:resource_user_2_name) and (!data[:resource_user_2_name].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_2_name(data[:resource_user_2_name], booking_line_resource.resource_user_2_name || '-') if booking_line_resource.resource_user_2_name != data[:resource_user_2_name]
+              updated_attributes.store(:resource_user_2_name, data[:resource_user_2_name]) if booking_line_resource.resource_user_2_name != data[:resource_user_2_name]
+              booking_line_resource.resource_user_2_name = data[:resource_user_2_name]
+            end
+            if data.has_key?(:resource_user_2_surname) and (!data[:resource_user_2_surname].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_2_surname(data[:resource_user_2_surname], booking_line_resource.resource_user_2_surname || '-') if booking_line_resource.resource_user_2_surname != data[:resource_user_2_surname]
+              updated_attributes.store(:resource_user_2_surname, data[:resource_user_2_surname]) if booking_line_resource.resource_user_2_surname != data[:resource_user_2_surname]
+              booking_line_resource.resource_user_2_surname = data[:resource_user_2_surname]
+            end
+            if data.has_key?(:resource_user_2_document_id) and (!data[:resource_user_2_document_id].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_2_document_id(data[:resource_user_2_document_id], booking_line_resource.resource_user_2_document_id || '-') if booking_line_resource.resource_user_2_document_id != data[:resource_user_2_document_id]
+              updated_attributes.store(:resource_user_2_document_id, data[:resource_user_2_document_id]) if booking_line_resource.resource_user_2_document_id != data[:resource_user_2_document_id]
+              booking_line_resource.resource_user_2_document_id = data[:resource_user_2_document_id]
+            end
+            if data.has_key?(:resource_user_2_phone) and (!data[:resource_user_2_phone].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_2_phone(data[:resource_user_2_phone], booking_line_resource.resource_user_2_phone || '-') if booking_line_resource.resource_user_2_phone != data[:resource_user_2_phone]
+              updated_attributes.store(:resource_user_2_phone, data[:resource_user_2_phone]) if booking_line_resource.resource_user_2_phone != data[:resource_user_2_phone]
+              booking_line_resource.resource_user_2_phone = data[:resource_user_2_phone]
+            end
+            if data.has_key?(:resource_user_2_email) and (!data[:resource_user_2_email].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_resource_user_2_email(data[:resource_user_2_email], booking_line_resource.resource_user_2_email || '-') if booking_line_resource.resource_user_2_email != data[:resource_user_2_email]
+              updated_attributes.store(:resource_user_2_email, data[:resource_user_2_email]) if booking_line_resource.resource_user_2_email != data[:resource_user_2_email]
+              booking_line_resource.resource_user_2_email = data[:resource_user_2_email]
+            end
+            if data.has_key?(:customer_2_height) and (!data[:customer_2_height].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_customer_2_height(data[:customer_2_height], booking_line_resource.customer_2_height || '-') if booking_line_resource.customer_2_height != data[:customer_2_height]
+              updated_attributes.store(:customer_2_height, data[:customer_2_height]) if booking_line_resource.customer_2_height != data[:customer_2_height]
+              booking_line_resource.customer_2_height = data[:customer_2_height]
+            end
+            if data.has_key?(:customer_2_weight) and (!data[:customer_2_weight].nil?)
+              updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_customer_2_weight(data[:customer_2_weight], booking_line_resource.customer_2_weight || '-') if booking_line_resource.customer_2_weight != data[:customer_2_weight]
+              updated_attributes.store(:customer_2_weight, data[:customer_2_weight]) if booking_line_resource.customer_2_weight != data[:customer_2_weight]
+              booking_line_resource.customer_2_weight = data[:customer_2_weight]
             end
             begin
               booking_line_resource.transaction do 

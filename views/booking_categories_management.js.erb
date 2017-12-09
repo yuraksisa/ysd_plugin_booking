@@ -13,10 +13,13 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     },
 
     onEdit : function(entity) {
+
       $('#code').attr('code', true);
       $('#name').focus();
-      $('#type').prop('disabled', 'true');
       this.configForm(entity);
+
+      // Setup popover (TODO move to YSDEntityManagementView)
+      $('[data-toggle="popover"]').popover();
 
       // Embed prices
       $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_id, dataType: 'text'}).done(function(html) {
@@ -26,17 +29,20 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       });
       
       // Embed stock
-      $.ajax({url: '/admin/booking/stock/'+ entity.code, dataType: 'text'}).done(function(html) {
-        var dom = $('<html />').prop('innerHTML', html);
-        $('#stock_detail_container').html(dom.find('body #page_wrapper'));
-        $('head').append(dom.find('script:not([src])'));
-      });
+      if (entity.type == 'category_of_resources') {
+          $.ajax({url: '/admin/booking/stock/' + entity.code, dataType: 'text'}).done(function (html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('#stock_detail_container').html(dom.find('body #page_wrapper'));
+              $('head').append(dom.find('script:not([src])'));
+          });
+      }
 
-      // Embed stock
-      $.ajax({url: '/admin/booking/stock/'+ entity.code, dataType: 'text'}).done(function(html) {
-        var dom = $('<html />').prop('innerHTML', html);
-        $('#stock_detail_container').html(dom.find('body #page_wrapper'));
-        $('head').append(dom.find('script:not([src])'));
+      // Embed calendar
+      $.ajax({url: '/admin/calendar/events/'+entity.calendar_id, dataType: 'text'}).done(function(html) {
+          var dom = $('<html />').prop('innerHTML', html);
+          $('#calendar_container').html(dom.find('body #page_wrapper'));
+          $('head').append(dom.find('script:not([src])'));
+          $('#calendar').fullCalendar('render');
       });
 
       // Embed translations
@@ -54,19 +60,40 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     onNew : function() {
       $('#code').focus();
       this.configForm(null);
+
       $('#code').bind('input', function(){
         $(this).val(function(_, v){
           return v.replace(/\s+/g, '');
         });
-      });      
-      $('#create_category_calendar').bind('change', function() {
-         if ($('#create_category_calendar').prop('checked')) {
-           $('#calendar\\[id\\]').prop('disabled', true);
-         }
-         else {
-           $('#calendar\\[id\\]').prop('disabled', false);
-         }
-       });
+      });
+
+      // Validation
+      $('form[name=element]').validate({
+            submitHandler: function(form)
+            {
+                return false;
+            },
+
+            rules : { // rules
+                'code': {
+                    required: true
+                },
+                'name': {
+                    required: true
+                },
+            },
+
+            messages : { // messages
+                'code': {
+                    required : '<%=t.booking_category_management.form.code.validation.required%>'
+                },
+                'name': {
+                    required : '<%=t.booking_category_management.form.name.validation.required%>'
+                },
+            }
+
+      });
+
     },          
 
     onRenderEntities: function() {
@@ -76,62 +103,14 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     },
 
     configForm: function(entity) {
-      $('#calendar_container').empty();
-      $('#calendar_element_template_form').remove();
-      $("#content > div").hide(); // Initially hide all content
-      $("#content_tabs li:first").attr("id","current"); // Activate first tab
-      $("#content > div:first").fadeIn(); // Show first tab content
-      $('#content_tabs a').click(function(e) {
-        e.preventDefault();
-        if ($(this).attr("name")=='calendar_tab') {
-          $('#calendar_container').empty();
-          $('#calendar_element_template_form').remove();
-          if (entity && entity.calendar_id) {
-            $.ajax({url: '/admin/calendar/events/'+entity.calendar_id, dataType: 'text'}).done(function(html) {
-              var dom = $('<html />').prop('innerHTML', html);
-              $('#calendar_container').html(dom.find('body #page_wrapper'));
-              $('head').append(dom.find('script:not([src])'));
-              $('#calendar').fullCalendar('render');
-            });
-          }
-        }
-        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
-         return;       
-        }
-        else{             
-          $("#content > div").hide(); //Hide all content
-          $("#content_tabs li").attr("id",""); //Reset id's
-          $(this).parent().attr("id","current"); // Activate this
-          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
-        }
-      });
+
 
     },
 
     adaptFormData : function(data) {
-            
-      if (data.calendar && data.calendar.id == '') {
-        data.calendar = null;
-      }
-
-      switch (data.type) {
-         case 1:
-           data.type = 'category_of_resources';
-           break;
-         case 2:
-           data.type = 'activity_or_show';
-           break;         
-         case 3:
-           data.type = 'resource';
-           break;         
-      }
 
       if (data.booking_catalog && data.booking_catalog.code =='') {
         data.booking_catalog = null;
-      }
-
-      if (data.create_calendar) {
-        data.calendar = {'name' : data.code, 'description': data.name};
       }
 
       if ($('#stock_control').prop('checked')) {
@@ -177,7 +156,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
   // Add the complement hooks
   hooks = hooks.concat(EntityManagementComplementHooks.complements);
                  
-  var contentsManager = new EntityManagement(urls, 'booking_category', <%= booking_category_page_size %>, hooks,
+  var contentsManager = new EntityManagement(urls, '<%=t.booking_category_management.item%>', <%= booking_category_page_size %>, hooks,
     {prefix: '/admin/booking',hold_form_after_action:true});  
 
   

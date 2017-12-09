@@ -1,7 +1,16 @@
 <style>
-.html_editor {
-  min-height: 250px;
-}
+  .html_editor {
+    min-height: 300px;
+  }
+  .ui-tabs-nav {
+    display: none;
+  }
+  #gallery_form {
+    width: 100%;
+  }
+  .element-container {
+    border:none;
+  }
 </style>
 <%= include('entity-management') %>
 
@@ -17,7 +26,7 @@
 
 <!-- Renders the elements container -->
 <script type="text/tmpl" id="elements_container_template">
-  <table id="elements_table" class="table">
+  <table id="elements_table" class="table table-striped">
      <thead class="table-header">
        <tr>
          <th class="table-header-title" scope="col" style="width:30%">
@@ -26,7 +35,13 @@
          <th class="table-header-title" scope="col" style="width:30%">
             <%= t.booking_extra_management.table.name %>
          </th>
-         <th class="table-header-title" scope="col" style="width:40%">
+         <th class="table-header-title centered_text" scope="col" style="width:20%">
+            Stock
+         </th>
+         <th class="table-header-title centered_text" scope="col" style="width:20%">
+            Cantidad máxima
+         </th>
+         <th class="table-header-title" scope="col" style="width:20%">
          </th>         
        </tr>
      </thead>
@@ -40,10 +55,16 @@
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row" id="element_row_<%%=index%>">
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
-        <%%= entity.code %>
+        <strong><%%= entity.code %></strong>
       </td>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
         <%%= entity.name %>
+      </td>
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+        <%%= entity.stock %>
+      </td>
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+        <%%= entity.max_quantity %>
       </td>
       <td class="table-cell">
       </td>
@@ -61,167 +82,235 @@
 <script type="text/tmpl" id="element_template_form">
               
   <%% if (entity) { %>
-    <h3 class="bottom-separator bottom-margin" style="display:inline-block"><%%=entity.code%> - <%%=entity.name%></h3>
-    <div class="container_12">
-      <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="basic_data_tab" href="#basic_data_tab">Datos básicos</a>
-          </li> 
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="description_tab" href="#description_tab">Descripción</a>
-          </li>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="configuration_tab" href="#configuration_tab">Stock</a>
-          </li>                      
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="photos_tab" href="#photos_tab">Fotos</a>
-          </li>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-              <a name="prices_tab" href="#prices_tab">Tarifas</a>
-          </li>
-          <% if @show_translations %>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-              <a name="translation_tab" href="#translation_tab">Traducciones</a>
-          </li>
-          <% end %>
-      </ul>
-      <div id="content">
-        <div id="basic_data_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_6">
-              <form name="element" method="POST">
-                <input type="hidden" id="code" name="code" value="<%%=entity.code%>"/>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_extra_management.form.name.label %></label>
-                  <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
-                </div>      
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_extra_management.form.active.label%></label>
-                  <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
-                </div>                         
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.web_public.label%></label>
-                  <input type="checkbox" name="web_public" value="true" id="web_public" <%% if (entity && entity.web_public) { %>checked="checked"<%%}%>/>
-                </div>                
-                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                  <div class="navigation-bar-crud-buttons">
-                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                  </div>
-                </div>                
-              </form>
-            </div>
-          </div>
-        </div>
-        <div id="description_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_12">
-              <form name="element" method="POST">
-                <input type="hidden" id="code" name="code" value="<%%=entity.code%>"/>              
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_extra_management.form.description.label %></label>
-                  <textarea rows="5" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
-                </div>
 
-                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                  <div class="navigation-bar-crud-buttons">
-                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                  </div>
-                </div> 
-              </form>
-            </div>
-          </div>
-        </div>
-        <div id="configuration_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_6">
-              <form name="element" method="POST">
-                <input type="hidden" id="code" name="code" value="<%%=entity.code%>"/>              
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_extra_management.form.max_quantity.label %></label>
-                  <input type="text" maxlength="2" id="max_quantity" name="max_quantity" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.max_quantity%>" <%% } else { %> value="0"<%% }%>/>
-                </div>  
-                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                  <div class="navigation-bar-crud-buttons">
-                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                  </div>
-                </div>               
-              </form>
-            </div>
-          </div>
-        </div>  
-        <div id="photos_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_12">
-              <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
-                                            :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
-                                            :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
-                                            :new_element_form_above => new_element_form_above,
-                                            :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
-                                            :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
+        <!-- Summary -->
 
-              <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
-                                            :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
-                                            :edit_element_form_ingroup => edit_element_form_ingroup,
-                                            :new_element_form => new_element_form,
-                                            :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
-                                            :new_element_form_ingroup => new_element_form_ingroup}) %>              
-            </div>
-          </div>
-        </div>  
-        <div id="prices_tab" class="top-margin bottom-margin">
-          <%% if (entity.price_definition_id == null) { %>
-          <div class="container_12">
-            <div class="grid_6">        
-              <form name="element" method="POST">    
-                  <input type="hidden" name="code" value="<%%=entity.code%>"/>
-                  <div id="category_price" class="element-form-detail">
-                    <%= partial(:price_definition_creation)%>
-                  </div>
-                  <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                    <div class="navigation-bar-crud-buttons">
-                       <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_rates.label%>"/>
+        <div class="row">
+            <div class="col-xs-4 col-sm-5 col-md-offset-1">
+                <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                    <div class="block-content block-content-full">
+                        <form name="element" class="form-horizontal" method="POST">
+                            <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                            <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label class="css-input switch switch-sm switch-primary">
+                                    <input type="checkbox" class="auto-submit-change-control" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/><span></span>
+                                  </label>
+                              </div>
+                            </div>
+                        </form>
                     </div>
-                  </div>                       
-              </form>
+                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Activo</div>
+                </a>
+            </div>
+            <div class="col-xs-4 col-sm-5">
+                <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                    <div class="block-content block-content-full">
+                        <form name="element" class="form-horizontal" method="POST">
+                            <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                            <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label class="css-input switch switch-sm switch-primary">
+                                    <input type="checkbox" name="web_public" class="auto-submit-change-control" value="true" id="web_public" <%% if (entity && entity.web_public) { %>checked="checked"<%%}%>/><span></span>
+                                  </label>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Público</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main information -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Datos básicos</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_category_management.form.code.label %></label>
+                         <div class="col-md-9">
+                         <span class="form-control"><%%=entity.code%></span>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_category_management.form.name.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="name" name="name" class="form-control" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_category_management.form.description.label %></label>
+                        <div class="col-md-9">
+                         <textarea rows="5" cols="50" id="description" name="description" class="form-control texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>
+              </div>
             </div>
           </div>
-          <%% } %> 
-          <div id="prices_container">
+        </div>
+
+        <!-- Media -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Imágenes</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                 <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
+                                                   :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
+                                                   :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
+                                                   :new_element_form_above => new_element_form_above,
+                                                   :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
+                                                   :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
+
+                 <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
+                                    :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
+                                    :edit_element_form_ingroup => edit_element_form_ingroup,
+                                    :new_element_form => new_element_form,
+                                    :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
+                                    :new_element_form_ingroup => new_element_form_ingroup}) %>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- Prices -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Tarifas</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <%% if (entity.price_definition_id == null) { %>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-8 col-lg-8">
+                      <form name="element" method="POST">
+                          <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                          <div id="category_price">
+                            <%= partial(:price_definition_creation)%>
+                          </div>
+                          <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                            <div class="navigation-bar-crud-buttons">
+                               <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_rates.label%>"/>
+                            </div>
+                          </div>
+                      </form>
+                    </div>
+                  </div>
+                  <%% } %>
+                  <div id="prices_container">
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stock -->
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Stock</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                      <div class="form-group">
+                            <label class="col-md-3 control-label"><%= t.booking_extra_management.form.stock.label%></label>
+                            <div class="col-md-9">
+                            <input type="text" class="form-control" name="stock" id="stock" <%% if (entity){%>value="<%%=entity.stock%>" <%%} else { %>value="0"<%%}%>/>
+                            </div>
+                      </div>
+                      <div class="form-group">
+                            <label class="col-md-3 control-label"><%= t.booking_extra_management.form.max_quantity.label%></label>
+                            <div class="col-md-9">
+                            <input type="text" class="form-control" name="max_quantity" id="max_quantity" <%% if (entity){%>value="<%%=entity.max_quantity%>" <%%} else { %>value="0"<%%}%>/>
+                            </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Translations -->
+
         <% if @show_translations %>
-        <div id="translation_tab">
-          <div id="translation_container">
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Traducciones</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                <div id="translation_tab">
+                  <div id="translation_container">
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <% end %>
-      </div>
-    </div> 
+
+
   <%% } else { %>
 
-     <form name="element" method="POST">
-        <div class="form-fields">
-          <div class="container_12"> 
-            <div class="grid_6">
-              <h3>Nuevo extra</h3>
-              <p class="less_contrast_text">Introduzca los datos básicos de su nuevo extra.</p>            
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_extra_management.form.code.label %></label>
-                <input type="text" maxlength="20" id="code" name="code" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.code %>" <%% } %>/>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block block-content-full">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Nuevo producto</h3>
               </div>
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_extra_management.form.name.label %></label>
-                <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
-              </div>                                     
-              <div class="bottom-navigation-bar navigation-bar">
-                <div class="navigation-bar-crud-buttons">
-                  <input type="submit" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
-                </div>
+              <div class="block-content block-content-narrow">
+                <form name="element" method="POST" class="form-horizontal">
+                  <div class="form-group">
+                    <label class="col-xs-12"><%= t.booking_extra_management.form.code.label %></label>
+                    <div class="col-sm-9">
+                      <input type="text" maxlength="20" id="code" name="code" class="form-control" <%% if (entity) {%> value="<%%=entity.code %>" <%% } %>/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-xs-12"><%= t.booking_extra_management.form.name.label %></label>
+                    <div class="col-sm-9">
+                      <input type="text" maxlength="80" id="name" name="name" class="form-control" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-9">
+                        <input type="button" class="btn btn-sm btn-primary create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
-     </form>
+
   <%% } %>
      
 </script>

@@ -12,15 +12,18 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     },
 
     onEdit : function(entity) {
+
       $('#code').attr('code', true);
       $('#name').focus();
       this.configForm(entity);
+
       // Embed prices
       $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_id, dataType: 'text'}).done(function(html) {
         var dom = $('<html />').prop('innerHTML', html);
         $('#prices_container').html(dom.find('body #page_wrapper'));
         $('head').append(dom.find('script'));
       });
+
       // Embed translations
       <% if @show_translations %>
         $.ajax({url: '/admin/booking/translate/extra/'+ entity.code, dataType: 'text'}).done(function(html) {
@@ -47,30 +50,6 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     },
 
     configForm: function(entity) {
-
-      $("#content > div").hide(); // Initially hide all content
-      $("#content_tabs li:first").attr("id","current"); // Activate first tab
-      $("#content > div:first").fadeIn(); // Show first tab content
-      $('#content_tabs a').click(function(e) {
-        e.preventDefault();
-        if ($(this).attr("name") == 'preview') {
-          ($('#home_frame')[0]).contentWindow.location.reload();
-        }
-        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
-         return;       
-        }
-        else{             
-          $("#content > div").hide(); //Hide all content
-          $("#content_tabs li").attr("id",""); //Reset id's
-          $(this).parent().attr("id","current"); // Activate this
-          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
-        }
-      });
-
-      var priceDefinitionDataSource= new RemoteDataSource('/api/rate-price-defs',
-          {'id':'id','description':'name'});
-      var priceDefinitionValue = (entity && entity.price_definition_id)?entity.price_definition_id:null; 
-      var priceDefinitionSelector = new SelectSelector('price_definition[id]', priceDefinitionDataSource, priceDefinitionValue, true);   
 
     },
       
@@ -112,7 +91,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
   // Add the complement hooks
   hooks = hooks.concat(EntityManagementComplementHooks.complements);
                  
-  var hooksManager = new EntityManagement(urls, 'booking-extra', 20, hooks,
+  var hooksManager = new EntityManagement(urls, 'Extra', 20, hooks,
     {prefix: '/admin/booking',hold_form_after_action:true});
 
   

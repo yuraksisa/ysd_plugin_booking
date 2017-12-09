@@ -1,7 +1,92 @@
+<style  type="text/css">
+
+  #main-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  #prior_day_button, #next_day_button, #prior_week_button, #next_week_button {
+    position: relative;
+    top: -1px;
+  }
+
+  #planning_date {
+    text-align: center;
+  }
+
+  .admin_content_wrapper {
+    margin: 10px 10px 10px 13px;
+  }
+
+  .entity-title {
+    position: relative;
+    top: -5px;
+  }
+
+  .top-navigation-bar {
+    position: fixed;
+    left: 230px;
+    left: 0;
+    right: 0;
+    margin-bottom: 0;
+    top: 60px;
+    z-index: 1000;
+  }
+
+  .gap { /* Used to avoid transparences when scrolling planning table */
+    position: fixed;
+    left: 230px;
+    right: 0;
+    margin-bottom: 0;
+    top: 110px;
+    height: 40px;
+    background-color: white;
+    z-index: 1000;
+  }
+
+  @media screen and (min-width: 992px) {
+    .top-navigation-bar {
+      left: 230px;
+    }
+    .sidebar-mini .top-navigation-bar {
+      left: 60px;
+    }
+    .gap {
+      left: 230px;
+    }
+    .sidebar-mini .gap {
+      left: 60px;
+    }
+  }
+
+  @media screen and (max-width: 991px) {
+    .gap {
+      left: 14px;
+    }
+  }
+
+</style>
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.bookings_planning.title%></h2>
-  <div id="notification_container" class="highlight_block smaller_text right-float" style="position:relative; top: -10px; display: none">Notificación</div>
+  <div class="row">
+    <div class="col-xs-4 col-md-4 col-lg-4">
+      <h2 class="entity-title"><%=t.bookings_planning.title%></h2>
+    </div>
+    <div class="col-xs-8 col-md-6 col-lg-6">
+      <form>
+        <div class="form-row">
+          <button id="prior_week_button" type="button" class="btn btn-default"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i></button>
+          <button id="prior_day_button" type="button" class="btn btn-default"><i class="fa fa-angle-left"></i></button>
+          <input type="text" id="planning_date">
+          <button id="next_day_button" type="button" class="btn btn-default"><i class="fa fa-angle-right"></i></button>
+          <button id="next_week_button" type="button" class="btn btn-default"><i class="fa fa-angle-right"></i><i class="fa fa-angle-right"></i></button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+<!-- Used to hide the planning table scroll -->
+<div class="gap">
+</div>
+<!-- Wraps the planning table -->
 <div class="admin_content_wrapper">
   <%= partial :booking_planning %>
 </div>

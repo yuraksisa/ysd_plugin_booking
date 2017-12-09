@@ -235,7 +235,7 @@ booking_console:
   availability: Calendarios
   summary: Resumen
   pickup_return: Entrega y devolución
-  places: Lugares
+  places: Entrega y devolución
   create_rates: Preparar tarifas
   adjust_prices: Ajustes masivos precios    
   calendars: Calendarios
@@ -258,6 +258,7 @@ booking_console:
   report_customers: Clientes
   journal: Diario
   rental_locations: Oficinas
+  media_settings: Medios
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas
@@ -277,10 +278,10 @@ booking_return:
   title: Recogidas
   title_checkout: Salidas
 booking_list:
-  id: Localizador
+  id: "#"
   item: Producto
-  date_from: Fecha entrega
-  date_to: Fecha devolución
+  date_from: Entrega
+  date_to: Devolución
   place: Lugar
   customer: Cliente
   customer_phone: Teléfono
@@ -560,12 +561,12 @@ booking_management:
   table:
     rental_location: Centro
     id: Localizador
-    creation_date: Fecha recepción
+    creation_date: Recepción
     customer: Cliente
     status: Estado
     payment_status: Pago
-    date_from: Fecha inicio
-    date_to: Fecha fin
+    date_from: Inicio
+    date_to: Fin
     notifications: Notificaciones
     category: Categoría
     created_by_manager: Web
@@ -732,9 +733,9 @@ booking_management:
       item: Producto
       days: Días
       quantity: Cantidad
-      unit_cost: Coste unitario
+      unit_cost: Coste
       deposit: Fianza
-      cost: Coste total
+      cost: Total
     booking_resources:
       title: Recursos
       item: Producto
@@ -826,6 +827,11 @@ booking_management:
     bank_transfer: Transferencia bancaria
     cash: Efectivo
     credit_card: Tarjeta crédito/débito
+    cecabank: TPV Virtual Ceca
+    redsys256: TPV Virtual Redsys
+    pi4b: TPV Virtual 4B
+    santander: TPV Virtual Santander
+    paypal_standard: Paypal
     done: Cobro registrado
 simple_booking_management:
    table:
@@ -857,13 +863,15 @@ catalog_management:
       label: Extras      
     code_required: Código obligatorio      
 booking_category_management:
+  item: Producto
+  title: Productos
   table:
     calendar: Calendario
     prices: Precios  
     scheduler: Agenda
   form:
     stock_not_match: El stock del producto con coincide con el stock definido.
-    product_not_ready: El producto no está listo para la venta. Revise si informó código, nombre, descripción corta, descripción y tarifas
+    product_not_ready: El producto no está listo para la venta. Se necesita código, nombre y tarifa
     new_product_detail: >
                         <h3>Nuevo producto</h3>
                         <p>Está creando un nuevo producto que ofrecerá en alquiler a sus clientes.
@@ -879,15 +887,22 @@ booking_category_management:
                         <p>Un <em>recurso en alquiler</em> suele refererirse a solo bien, normalmente
                         con unas características que le hacen único. Un sala de ensayo, una sala de
                         conciertos, una casa suelen ser casos de recursos en alquiler.</p>
-    title: Productos
     type:
       label: Tipo
     code:
       label: Código
+      validation:
+        required: El código del producto es obligatorio
     name:
       label: Nombre
+      validation:
+        required: El nombre del producto es obligatorio
     short_description:
       label: Descripción corta
+    title:
+      label: Título
+    subtitle:
+      label: Subtítulo
     description:
       label: Descripción
     type:
@@ -907,7 +922,7 @@ booking_category_management:
     sort_order:
       label: Orden
     deposit:
-      label: Depósito
+      label: Fianza
     active:
       label: Activo
     web_public:
@@ -960,6 +975,8 @@ booking_extra_management:
     description:
       label: Descripción    
     max_quantity:
+      label: Cantidad máxima
+    stock:
       label: Stock
     price_definition:
       label: Precio  
@@ -975,9 +992,10 @@ booking_item_management:
     assignable: Asignable
     assignable_yes: S
     assignable_no: N
-    own_property: Stock propio
+    own_property: Propio
     own_property_yes: S
     own_property_no: N
+    plate: Matrícula
   form:
     title: Stock
     reference: 
@@ -1018,7 +1036,7 @@ booking_item_management:
     assignable:
       label: Asignable
 booking_places_definition_management:
-  title: Lugares entrega y devolución
+  title: Entrega y devolución
   table:
     id: Id
     name: Nombre
@@ -1111,7 +1129,7 @@ restaurant_booking:
     1: 1 persona
     n: "%1 personas"
 bookings_planning:
-  title: Planning de recursos 
+  title: Planning
   new_preservation: Nueva prereserva
   bookings_and_prereservations: Reservas y prereservas (o bloqueos de stock)
   bookings: Reservas
@@ -1224,6 +1242,14 @@ booking_dashboard:
 booking_activity_management:
   title: Actividades 
   form:
+    code:
+      label: Código
+      validation:
+        required: El código de la actividad es obligatorio
+    name:
+      label: Código
+      validation:
+        required: El nombre de la actividad es obligatorio
     multiple_prices_title: Múltiples tarifas basadas en
     none: Sólo 1 tarifa
     duration: Duración
@@ -1302,12 +1328,12 @@ activity:
   item_customer: Cliente
   item_customer_name: Nombre
   item_customer_surname: Apellidos
-  item_customer_document_id: DNI/ID/Pasaporte
+  item_customer_document_id: Documento
   item_customer_phone: Teléfono
-  item_customer_email: Correo electrónico
+  item_customer_email: Email
   item_customer_height: Altura
   item_customer_weight: Peso
-  item_customer_allergies_intolerances: Alergias o Intolerancias
+  item_customer_allergies_intolerances: Alergias
 activity_checkout:
   make_order: Realizar pedido
   order_summary: Resumen del pedido
@@ -1461,7 +1487,7 @@ admin_new_reservation:
   products_table:
     photo: Photo
     product: Producto
-    stock: Stock disponible (total)
+    stock: Stock
     price: Precio
   extras_table:
     extra: Extra

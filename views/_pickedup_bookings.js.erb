@@ -125,7 +125,9 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
          <% if multiple_rental_locations %>
          var rentalLocation = decodeURIComponent(url_vars['rental_location']);
-         $('#rental_location').val(rentalLocation);
+         if (rentalLocation != 'undefined') {
+             $('#rental_location').val(rentalLocation);
+         }
          <% end %>
 
          var date_from = $.datepicker.parseDate("yy-mm-dd", from);
@@ -184,10 +186,12 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
         switch(status) {
         	case 'pickup_data_available':
-        	  $("#pickedup_booking_data").html(tmpl('pickedup_bookings_table', {data: bookingPickedupModel.pickupResult}));
+            $("#pickedup_booking_data").html(tmpl('pickedup_bookings_table', {data: bookingPickedupModel.pickupResult}));
+        	  $("#pickedup_summary").html(tmpl('pickedup_summary_tmpl', {picked_up_count: bookingPickedupModel.pickupResult.length}));
         	  break;
           case 'return_data_available':
             $("#returned_booking_data").html(tmpl('returned_bookings_table', {data: bookingPickedupModel.returnResult}));
+            $("#return_summary").html(tmpl('return_summary_tmpl', {return_count: bookingPickedupModel.returnResult.length}));
             break;            
         }
 

@@ -21,20 +21,18 @@ module Sinatra
         # Booking dashboard
         #
         app.get '/admin/booking/dashboard', :allowed_usergroups => ['booking_manager', 'staff'] do
-          
-          @booking_renting = true
-          @booking_activities = false
-          if settings.respond_to?(:mybooking_plan)  
-            @booking_renting = [:pro_renting,:pro_plus].include?(settings.mybooking_plan)
-            @booking_activities = [:pro_activities, :pro_plus].include?(settings.mybooking_plan)
-          end
+
+          @booking_renting, @booking_activities = mybooking_plan
 
           @today = Date.today
           @year = DateTime.now.year
           @total_billing = 0
           @first_day_today_month = Date.civil(@today.year, @today.month, 1)
-          @first_day_next_year = Date.civil(@today.year + 1, @today.month, 1)  
-    
+          @first_day_next_year = Date.civil(@today.year + 1, @today.month, 1)
+
+          @total_charged = {total: 0, detail: {}}
+          @forecast_charged = {total: 0, detail: {}}
+
           if @booking_renting 
             @pickup_today = BookingDataSystem::Booking.count_pickup(@today)
             @transit_today = BookingDataSystem::Booking.count_transit(@today)
@@ -42,7 +40,7 @@ module Sinatra
             @received_reservations = BookingDataSystem::Booking.count_received_reservations(@year)
             @pending_confirmation_reservations = BookingDataSystem::Booking.count_pending_confirmation_reservations(@year)
             @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
-            @reservations_by_category = BookingDataSystem::Booking.reservations_by_category(@year)
+            @reservations_by_category = BookingDataSystem::Booking.reservations_by_category(@year).first(5)
             @reservations_by_status = BookingDataSystem::Booking.reservations_by_status(@year)
             @reservations_by_weekday = BookingDataSystem::Booking.reservations_by_weekday(@year)
             @last_30_days_reservations = BookingDataSystem::Booking.last_30_days_reservations
@@ -55,6 +53,9 @@ module Sinatra
                                       Date.civil(@year, 1, 1),
                                       @today)
             @forecast_charged_reservations = BookingDataSystem::Booking.forecast_charged(@first_day_today_month, @first_day_next_year)
+            #
+            @total_charged = @total_charged_reservations.clone
+            @forecast_charged = @forecast_charged_reservations.clone
           end
 
           if @booking_activities
@@ -62,7 +63,7 @@ module Sinatra
             @received_orders = ::Yito::Model::Order::Order.count_received_orders(@year)
             @pending_confirmation_orders = ::Yito::Model::Order::Order.count_pending_confirmation_orders(@year)
             @confirmed_orders = ::Yito::Model::Order::Order.count_confirmed_orders(@year)
-            @activities_by_category = ::Yito::Model::Order::Order.activities_by_category(@year)
+            @activities_by_category = ::Yito::Model::Order::Order.activities_by_category(@year).first(5)
             @activities_by_status = ::Yito::Model::Order::Order.activities_by_status(@year)
             @activities_by_weekday = ::Yito::Model::Order::Order.activities_by_weekday(@year)
             @last_30_days_activities = ::Yito::Model::Order::Order.last_30_days_activities
@@ -74,20 +75,41 @@ module Sinatra
                                       @today)
             @forecast_charged_activities = ::Yito::Model::Order::Order.forecast_charged(@first_day_today_month, @first_day_next_year)
 
+            if @total_charged.has_key?(:total)
+              @total_charged[:total] += @total_charged_activities[:total] if @total_charged_activities.has_key?(:total)
+            else
+              @total_charged[:total] = @total_charged_activities[:total]
+            end
+            @total_charged_activities[:detail].each do |k,v|
+              if @total_charged[:detail].has_key?(k)
+                @total_charged[:detail][k][:value] += v[:value]
+              else
+                @total_charged[:detail][k] = v
+              end
+            end
+
+            if @forecast_charged.has_key?(:total)
+              @forecast_charged[:total] += @forecast_charged_activities[:total] if @forecast_charged_activities.has_key?(:total)
+            else
+              @forecast_charged[:total] = @forecast_charged_activities[:total]
+            end
+
+            if @forecast_charged.has_key?(:detail)
+              @forecast_charged_activities[:detail].each do |k,v|
+                if @forecast_charged[:detail].has_key?(k)
+                  @forecast_charged[:detail][k] += v
+                else
+                  @forecast_charged[:detail][k] = v
+                end
+              end
+            else
+              @forecast_charged[:detail] = @forecast_charged_activities[:detail]
+            end
           end
 
           @product_total_cost = BookingDataSystem::Booking.stock_cost_total || 0
 
           load_page(:booking_dashboard)
-        end
-
-        # ------------------------ Create Rates (TO REMOVE) -------------------------------------------
-
-        #
-        # Booking create rates
-        #
-        app.get "/admin/booking/create-rates", :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:booking_create_rates)
         end
 
         # ----------------------------------------------------------------------------------------------

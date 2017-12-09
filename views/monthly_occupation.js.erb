@@ -1,5 +1,5 @@
 require(['YSDGui','jquery', 
-         'jquery.ui', 'jquery.ui.datepicker-es','datejs'], function(YSDGui, $) {
+         'jquery.ui', 'jquery.ui.datepicker-es','jquery.fixedtable','datejs'], function(YSDGui, $) {
 
   monthlyOccupationModel = {
 
@@ -16,7 +16,8 @@ require(['YSDGui','jquery',
              $('#occupation-detail').load($(this).attr('data-url') + ' .admin_content_wrapper');
              YSDGui.showElement(document.getElementById('occupation-detail'), true);
            }
-         });		
+         });
+      $("#monthly_occupation_table").tableHeadFixer({"left" : 1});
 	}
   };
 

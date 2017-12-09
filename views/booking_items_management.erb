@@ -11,11 +11,11 @@
 
 <!-- Renders the search -->
 <script type="text/tmpl" id="elements_search">
-  <form name="contents_search" id="contents_search" style="overflow:visible">
+  <form name="contents_search" id="contents_search" style="overflow:visible" class="form-inline">
      <div class="form-row">
-       <input type="text" name="search" class="search-entity-input"
+       <input type="text" name="search" class="search-entity-input form-control"
               maxlength="60" size="20" placeholder="<%=t.entitymanagement.search%>"/>
-       <select name="active" class="search-entity-control">
+       <select name="active" class="search-entity-control form-control">
          <option value="only"><%=t.booking_item_management.form.active_filter.only%></option>
          <option value="all"><%=t.booking_item_management.form.active_filter.all%></option>
        </select>
@@ -25,7 +25,7 @@
 
 <!-- Renders the elements container -->
 <script type="text/tmpl" id="elements_container_template">
-  <table id="elements_table" class="table">
+  <table id="elements_table" class="table table-striped">
      <thead class="table-header">
        <tr>
          <th class="table-header-title" scope="col" style="width:10%">
@@ -41,9 +41,9 @@
             <%= t.booking_item_management.form.model.label %>
          </th>
          <th class="table-header-title" scope="col" style="width:15%">
-            <%= t.booking_item_management.form.plate.label %>
+            <%= t.booking_item_management.table.plate %>
          </th>
-         <th class="table-header-title" scope="col" style="width:100px">
+         <th class="table-header-title centered_text" scope="col" style="width:100px">
             <%= t.booking_item_management.table.own_property %>
          </th>
          <th class="table-header-title" scope="col" style="width:100px">
@@ -66,7 +66,7 @@
          <%%= entity.category_code %>
       </td>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
-         <%%= entity.reference %>
+         <strong><%%= entity.reference %></strong>
       </td>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
          <%%= entity.name %>
@@ -78,10 +78,10 @@
          <%%= entity.stock_plate %>
       </td>
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
-         <%%= entity.own_property ? '<%=t.booking_item_management.table.own_property_yes%>' : '<%=t.booking_item_management.table.own_property_no%>' %>
+         <%%= entity.own_property ? '<i class="fa fa-times"></i>' : '' %>
       </td>
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
-         <%%= entity.assignable ? '<%=t.booking_item_management.table.assignable_yes%>' : '<%=t.booking_item_management.table.assignable_no%>'  %>
+         <%%= entity.assignable ? '<i class="fa fa-times"></i>' : ''  %>
       </td>
       <td class="table-cell">
       </td>
@@ -99,118 +99,241 @@
 <script type="text/tmpl" id="element_template_form">
         
      <%% if (entity) { %>
-       <h3 class="bottom-separator bottom-margin" style="display:inline-block"><%%=entity.reference%> - <%%=entity.name%></h3>
-       <div class="container_12">
-         <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="basic_data_tab" href="#basic_data_tab">Datos básicos</a>
-          </li>         
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="description_tab" href="#description_tab">Descripción</a>
-          </li> 
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="characteristics_tab" href="#characteristics_tab">Características</a>
-          </li>                                                  
-      </ul>
-     <div id="content">
 
-        <div id="basic_data_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_6">   
-              <form name="element" method="POST">
-                <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
-                <div class="formrow">
-                  <label for="category[code]" class="fieldtitle"><%=t.booking_item_management.form.category.label%></label>
-                  <select name="category[code]" id="category[code]" class="fieldcontrol"/>
-                </div>              
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.name.label %></label>
-                  <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
-                </div> 
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.active.label%></label>
-                  <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
-                </div>                   
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.own_property.label%></label>
-                  <input type="checkbox" name="own_property" value="true" id="own_property" <%% if (entity && entity.own_property) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.assignable.label%></label>
-                  <input type="checkbox" name="assignable" value="true" id="assignable" <%% if (entity && entity.assignable) { %>checked="checked"<%%}%>/>
-                </div>                                   
-                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                  <div class="navigation-bar-crud-buttons">
-                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                  </div>
-                </div>                   
-              </form>                          
+        <!-- Summary -->
+
+        <div class="row">
+            <div class="col-xs-4 col-sm-3 col-md-offset-1">
+                <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                    <div class="block-content block-content-full">
+                        <form name="element" class="form-horizontal" method="POST">
+                            <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                            <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label class="css-input switch switch-sm switch-primary">
+                                    <input type="checkbox" class="auto-submit-change-control" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/><span></span>
+                                  </label>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Activo</div>
+                </a>
+            </div>
+            <div class="col-xs-4 col-sm-4">
+                <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                    <div class="block-content block-content-full">
+                        <form name="element" class="form-horizontal" method="POST">
+                            <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                            <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label class="css-input switch switch-sm switch-primary">
+                                    <input type="checkbox" name="own_property" class="auto-submit-change-control" value="true" id="web_public" <%% if (entity && entity.own_property) { %>checked="checked"<%%}%>/><span></span>
+                                  </label>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Stock propio</div>
+                </a>
+            </div>
+            <div class="col-xs-4 col-sm-3">
+                <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                    <div class="block-content block-content-full">
+                        <form name="element" class="form-horizontal" method="POST">
+                            <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                            <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label class="css-input switch switch-sm switch-primary">
+                                    <input type="checkbox" name="assignable" class="auto-submit-change-control" value="true" id="web_public" <%% if (entity && entity.assignable) { %>checked="checked"<%%}%>/><span></span>
+                                  </label>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Asignable</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main information -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Datos básicos</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_item_management.form.reference.label %></label>
+                         <div class="col-md-9">
+                           <span class="form-control"><%%=entity.reference%></span>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.category.label %></label>
+                        <div class="col-md-8">
+                          <select name="category[code]" id="category[code]" class="form-control"/>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.name.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="name" name="name" class="form-control" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.description.label %></label>
+                        <div class="col-md-9">
+                         <textarea rows="5" cols="50" id="description" name="description" class="form-control"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>
+              </div>
             </div>
           </div>
         </div>
 
-        <div id="description_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_6">  
-              <form name="element" method="POST">
-                <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
-                <div class="formrow">
-                   <label class="fieldtitle"><%= t.booking_item_management.form.description.label %></label>
-                   <textarea rows="3" cols="50" id="description" name="description" class="fieldcontrol"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
-                </div>                  
-                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                  <div class="navigation-bar-crud-buttons">
-                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                  </div>
-                </div>                   
-              </form>                                
+        <!-- Reference - Product -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Referencia</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.model.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="stock_model" name="stock_model" class="form-control" <%% if (entity) { %> value="<%%=entity.stock_model%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.plate.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="characteristic_1" name="stock_plate" class="form-control" <%% if (entity) { %> value="<%%=entity.stock_plate%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>
+              </div>
             </div>
           </div>
-        </div>        
+        </div>
 
-        <div id="characteristics_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_6">   
-              <form name="element" method="POST">
-                <input type="hidden" name="reference" value="<%%=entity.reference%>"/>           
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.model.label %></label>
-                  <input type="text" maxlength="80" id="stock_model" name="stock_model" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.stock_model%>" <%% } %>/>
-                </div> 
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.plate.label %></label>
-                  <input type="text" maxlength="80" id="stock_plate" name="stock_plate" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.stock_plate%>" <%% } %>/>
-                </div> 
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_1.label %></label>
-                  <input type="text" maxlength="80" id="characteristic_1" name="characteristic_1" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_1%>" <%% } %>/>
-                </div>  
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_2.label %></label>
-                  <input type="text" maxlength="80" id="characteristic_2" name="characteristic_2" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_2%>" <%% } %>/>
-                </div>       
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_3.label %></label>
-                  <input type="text" maxlength="80" id="characteristic_3" name="characteristic_3" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_3%>" <%% } %>/>
-                </div>    
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.characteristic_4.label %></label>
-                  <input type="text" maxlength="80" id="characteristic_4" name="characteristic_4" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.characteristic_4%>" <%% } %>/>
-                </div>                                                         
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.cost.label %></label>
-                  <input type="text" maxlength="80" id="cost" name="cost" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.cost).toFixed(2)%>" <%% } %>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_item_management.form.planning_order.label %></label>
-                  <input type="text" maxlength="10" id="planning_order" name="planning_order" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.planning_order%>" <%% } %>/>
-                </div>                                    
-                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                  <div class="navigation-bar-crud-buttons">
-                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                  </div>
-                </div>                   
-              </form>                          
+        <!-- Characteristics -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Características</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.characteristic_1.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="characteristic_1" name="characteristic_1" class="form-control" <%% if (entity) { %> value="<%%=entity.characteristic_1%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.characteristic_2.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="characteristic_1" name="characteristic_2" class="form-control" <%% if (entity) { %> value="<%%=entity.characteristic_2%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.characteristic_3.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="characteristic_1" name="characteristic_3" class="form-control" <%% if (entity) { %> value="<%%=entity.characteristic_3%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.characteristic_4.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="characteristic_4" name="characteristic_4" class="form-control" <%% if (entity) { %> value="<%%=entity.characteristic_4%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Other information -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Referencia</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.planning_order.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="10" id="planning_order" name="planning_order" class="form-control" <%% if (entity) { %> value="<%%=entity.planning_order%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cost -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Costes</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.cost.label %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="10" id="cost" name="cost" class="form-control" <%% if (entity) { %> value="<%%=new Number(entity.cost).toFixed(2)%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>
+              </div>
             </div>
           </div>
         </div>
@@ -219,32 +342,44 @@
     </div>
 
     <%% } else { %> 
-     <h3>Nuevo stock</h3>
-     <form name="element" method="POST">
-        <div class="form-fields">
-          <div class="container_12"> 
-            <div class="grid_6">
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.reference.label %></label>
-                <input type="text" maxlength="50" id="reference" name="reference" class="fieldcontrol" <%% if (entity) {%> value="<%%=entity.reference %>" <%% } %>/>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block block-content-full">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Nuevo stock</h3>
               </div>
-              <div class="formrow">
-                <label for="category[code]" class="fieldtitle"><%=t.booking_item_management.form.category.label%></label>
-                <select name="category[code]" id="category[code]" class="fieldcontrol"/>
-              </div>              
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_item_management.form.name.label %></label>
-                <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
-              </div>
-              <div class="bottom-navigation-bar navigation-bar">
-                 <div class="navigation-bar-crud-buttons" style="padding-right:0px">
-                    <input type="submit" class="create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
-                 </div>
+              <div class="block-content block-content-narrow">
+                <form name="element" method="POST" class="form-horizontal">
+                  <div class="form-group">
+                    <label class="col-xs-12"><%= t.booking_item_management.form.reference.label %></label>
+                    <div class="col-sm-9">
+                      <input type="text" maxlength="50" id="reference" name="reference" class="form-control" <%% if (entity) {%> value="<%%=entity.reference %>" <%% } %>/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-xs-12"><%= t.booking_item_management.form.category.label %></label>
+                    <div class="col-md-8">
+                      <select name="category[code]" id="category[code]" class="form-control"/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-xs-12"><%= t.booking_extra_management.form.name.label %></label>
+                    <div class="col-sm-9">
+                      <input type="text" maxlength="80" id="name" name="name" class="form-control" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-9">
+                        <input type="button" class="btn btn-sm btn-primary create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
-      </form>
+
     <%% } %>
      
 </script>

@@ -143,6 +143,34 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     onNew : function() {
       $('#code').focus();
       this.configForm(null);
+
+      // Validation
+      $('form[name=element]').validate({
+          submitHandler: function(form)
+          {
+              return false;
+          },
+
+          rules : { // rules
+              'code': {
+                  required: true
+              },
+              'name': {
+                  required: true
+              },
+          },
+
+          messages : { // messages
+              'code': {
+                  required : '<%=t.booking_activity_management.form.code.validation.required%>'
+              },
+              'name': {
+                  required : '<%=t.booking_activity_management.form.name.validation.required%>'
+              },
+          }
+
+      });
+
       $('#create_category_calendar').bind('change', function() {
          if ($('#create_category_calendar').prop('checked')) {
            $('#calendar\\[id\\]').prop('disabled', true);
