@@ -11,6 +11,14 @@ require(["jquery", "YSDEntityManagement", "YSDRemoteDataSource", "YSDSelectSelec
     onEdit : function(entity) {
       $('#name').focus();
       this.configForm(entity);
+        // Embed translations
+        <% if @show_translations %>
+        $.ajax({url: '/admin/booking/translate/pickup-return-place/'+ entity.id, dataType: 'text'}).done(function(html) {
+            var dom = $('<html />').prop('innerHTML', html);
+            $('#translation_container').html(dom.find('body #page_wrapper'));
+            $('head').append(dom.find('script:not([src])'));
+        });
+        <% end %>
     },
   
     onNew : function() {

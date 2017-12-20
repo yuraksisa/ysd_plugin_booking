@@ -23,7 +23,7 @@ module Sinatra
 
         sc_json = shopping_cart.to_json(only: only, relationships: relationships)
 
-        locale = locale_to_translate_into
+        locale = session[:locale]#locale_to_translate_into
         
         # Prepare the products
         p_json = ::Yito::Model::Booking::RentingSearch.search(shopping_cart.date_from,
@@ -103,7 +103,8 @@ module Sinatra
                 date_to: date_to, time_to: time_to,
                 pickup_place: pickup_place, return_place: return_place,
                 number_of_adults: number_of_adults, number_of_children: number_of_children,
-                driver_age_rule_id: driver_age_rule_id)
+                driver_age_rule_id: driver_age_rule_id,
+                customer_language: settings.default_language)
             session['back_office_shopping_cart_renting_id'] = shopping_cart.id
           end
 

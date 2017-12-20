@@ -103,6 +103,45 @@ module Sinatra
 
         end
 
+        # ------------------------ Pickup / return place translation --------------------------------
+
+        #
+        # Retrieve a booking pickup/return place translation
+        #
+        app.get "/api/translation/:language/booking/pickup-return-place/:id" do
+
+          result = {:language => params[:language], :id => params[:id] }
+
+          if pickup_return_place_translation=::Yito::Model::Booking::Translation::BookingPickupReturnPlaceTranslation.get(params[:id])
+            result.merge!(prepare_translation(pickup_return_place_translation, params[:language]))
+          end
+
+          status 200
+          content_type :json
+          result.to_json
+
+        end
+
+        #
+        # Updates booking pickup/return place translation
+        #
+        app.put "/api/translation/booking/pickup-return-place" do
+
+          request.body.rewind
+          translation_request = JSON.parse(URI.unescape(request.body.read))
+
+          language_code = translation_request.delete('language')
+          id = translation_request.delete('id')
+
+          pickup_return_place_translation = ::Yito::Model::Booking::Translation::BookingPickupReturnPlaceTranslation.create_or_update(
+              id, language_code, translation_request)
+
+          status 200
+          content_type :json
+          prepare_translation(pickup_return_place_translation, language_code).to_json
+
+        end
+
         # ------------------------ Activity translation -----------------------------
 
         #

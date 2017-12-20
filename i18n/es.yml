@@ -1050,10 +1050,10 @@ booking_places_management:
   table:
     id: Id
     name: Nombre
-    is_pickup: Lugar de entrega
-    is_return: Lugar de devolución
+    is_pickup: Entrega
+    is_return: Devolución
     price: Precio
-    rental_location: Oficina de gestión
+    rental_location: Oficina
   form:
     name:
       label: Nombre

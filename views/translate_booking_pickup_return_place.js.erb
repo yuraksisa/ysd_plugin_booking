@@ -1,0 +1,136 @@
+require(['jquery','ysdtemplate','YSDGui',
+        'YSDRemoteDataSource', 'YSDSelectSelector','jquery.formparams'],
+    function($, tmpl, YSDGui, RemoteDataSource, SelectSelector) {
+
+
+        bookingPickupReturnPlaceTranslationModel = { /** The model **/
+
+        language: '<%=language%>',
+            id: '<%=id%>',
+            firstLoad: true,
+            data: null,
+
+            loadTranslation: function (language) {
+                if (language) {
+                    this.language = language;
+                }
+                var self = this;
+                if (YSDGui.lockBackground) {
+                    YSDGui.lockBackground("#000000", false);
+                }
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/translation/' + this.language + '/booking/pickup-return-place/' + this.id,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data, textStatus, jqXHR) {
+                        self.data = data;
+                        bookingPickupReturnPlaceTranslationView.updateData('loaded');
+                    },
+                    error: function (data, textStatus, jqXHR) {
+                        alert('Error cargando traducción');
+                    },
+                    complete: function (jqXHR, textStatus) {
+                        if (YSDGui.unLockBackground) {
+                            YSDGui.unLockBackground();
+                        }
+                    }
+                });
+            },
+
+            updateTranslation: function (data) {
+
+                var self = this;
+                var the_data = encodeURIComponent(JSON.stringify(data));
+                if (YSDGui.lockBackground) {
+                    YSDGui.lockBackground("#000000", false);
+                }
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/translation/booking/pickup-return-place',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: the_data,
+                    success: function (data, textStatus, jqXHR) {
+                        self.data = data;
+                        bookingPickupReturnPlaceTranslationView.updateData('updated');
+                    },
+                    error: function (data, textStatus, jqXHR) {
+                        alert('Error actualizando traducción');
+                    },
+                    complete: function (jqXHR, textStatus) {
+                        if (YSDGui.unLockBackground) {
+                            YSDGui.unLockBackground();
+                        }
+                    }
+                });
+
+            }
+
+        };
+
+        bookingPickupReturnPlaceTranslationController = { /** The controller **/
+
+        languageChanged: function (language) {
+            bookingPickupReturnPlaceTranslationModel.loadTranslation(language);
+        },
+
+            updateTranslationClick: function () {
+                var data = $('#booking_pickup_return_place_translation').formParams(true);
+                bookingPickupReturnPlaceTranslationModel.updateTranslation(data);
+            }
+
+        };
+
+        bookingPickupReturnPlaceTranslationView = { /** The view **/
+
+        dataSource: null,
+
+            init: function () {
+                this.dataSource = new RemoteDataSource('/api/translationlanguages', {
+                    id: 'code', description: 'description' });
+                bookingPickupReturnPlaceTranslationModel.loadTranslation();
+            },
+
+            updateData: function (event) {
+
+                switch (event) {
+                    case 'loaded':
+                        $('#language').unbind('change');
+                        var html = tmpl('booking_pickup_return_place_translation_template_form',
+                            {
+                                entity: bookingPickupReturnPlaceTranslationModel.data,
+                                id: bookingPickupReturnPlaceTranslationModel.id,
+                                language: bookingPickupReturnPlaceTranslationModel.language
+                            });
+                        $('#booking_pickup_return_place').html(html);
+                        this.setupForm();
+                        break;
+                    case 'updated':
+                        break;
+                }
+
+            },
+
+            setupForm: function() {
+
+                var selector = new SelectSelector('language', this.dataSource,
+                    bookingPickupReturnPlaceTranslationModel.language);
+
+                $('#language').change(function (event) {
+                    if ($(this).val() != bookingPickupReturnPlaceTranslationModel.language) {
+                        bookingPickupReturnPlaceTranslationController.languageChanged($(this).val());
+                    }
+                });
+
+                $('#update_button').bind('click', function () {
+                    bookingPickupReturnPlaceTranslationController.updateTranslationClick();
+                });
+
+            }
+
+        };
+
+        bookingPickupReturnPlaceTranslationView.init();
+    }
+);

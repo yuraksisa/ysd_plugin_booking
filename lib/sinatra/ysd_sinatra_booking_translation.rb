@@ -47,6 +47,17 @@ module Sinatra
 
         end
 
+        #
+        # Pickup / return place translation
+        #
+        app.get "/admin/booking/translate/pickup-return-place/:id" do
+          language_code = if language = ::Model::Translation::TranslationLanguage.find_translatable_languages.first
+                            language.code
+                          end
+          load_page :translate_booking_pickup_return_place, locals: {id: params[:id],
+                                                                     language: language_code}
+        end
+
       end
 
     end

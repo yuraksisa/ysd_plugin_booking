@@ -10,6 +10,7 @@ module Sinatra
         app.get '/admin/booking/booking-places/:place_def_id?*', :allowed_usergroups => ['booking_manager','staff'] do 
           
           if pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(params[:place_def_id])
+            @show_translations = settings.multilanguage_site
             locals = {:booking_pickup_return_places => 20,
                       :pickup_return_place_definition => pickup_return_place_def,
                       :multiple_rental_locations => SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool}

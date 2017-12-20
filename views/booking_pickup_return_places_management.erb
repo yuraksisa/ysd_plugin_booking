@@ -12,7 +12,7 @@
 
 <!-- Renders the elements container -->
 <script type="text/tmpl" id="elements_container_template">
-  <table id="elements_table" class="table">
+  <table id="elements_table" class="table table-striped">
      <thead class="table-header">
        <tr>
          <th class="table-header-title" scope="col" style="width:5%">
@@ -21,13 +21,13 @@
          <th class="table-header-title" scope="col" style="width:20%">
             <%= t.booking_places_management.table.name %>
          </th>
-         <th class="table-header-title" scope="col" style="width:10%">
+         <th class="table-header-title text-center" scope="col" style="width:10%">
            <%= t.booking_places_management.table.is_pickup %>
          </th>
-         <th class="table-header-title" scope="col" style="width:10%">
+         <th class="table-header-title text-center" scope="col" style="width:10%">
            <%= t.booking_places_management.table.is_return %>
          </th> 
-         <th class="table-header-title" scope="col" style="width:10%">
+         <th class="table-header-title text-center" scope="col" style="width:10%">
            <%= t.booking_places_management.table.price %>
          </th>
          <% if multiple_rental_locations %>
@@ -51,13 +51,13 @@
       <td class="table-cell">
         <%%= entity.name %>
       </td>
-      <td class="table-cell">
-        <%%= entity.is_pickup%>           
+      <td class="table-cell text-center">
+        <%%= entity.is_pickup ? '<i class="fa fa-times"></i>' : '' %>
       </td>
-      <td class="table-cell">
-        <%%= entity.is_return%>           
+      <td class="table-cell text-center">
+        <%%= entity.is_return ? '<i class="fa fa-times"></i>' : '' %>
       </td>
-      <td class="table-cell">
+      <td class="table-cell text-center">
         <%%= new Number(entity.price).toFixed(2)%>   
       </td>
       <% if multiple_rental_locations %>
@@ -125,6 +125,26 @@
         </div>
      
      </form>
+
+        <!-- Translations -->
+
+        <% if @show_translations %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Traducciones</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                <div id="translation_tab">
+                  <div id="translation_container">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
      
 </script>
 

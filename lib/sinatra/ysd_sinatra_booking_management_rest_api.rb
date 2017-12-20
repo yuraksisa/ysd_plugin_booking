@@ -880,7 +880,7 @@ module Sinatra
                                                                       driver_driving_license_date: driver_driving_license_date,
                                                                       driver_age_rule_definition: driver_rule_definition})
 
-          locale = locale_to_translate_into
+          locale = session[:locale]#locale_to_translate_into
           
           # Prepare the products
           products = ::Yito::Model::Booking::RentingSearch.search(date_from, 
