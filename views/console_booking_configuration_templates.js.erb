@@ -1,7 +1,9 @@
-require(['jquery'], function($) {
+require(['jquery', 'YSDForms'], function($, YSDForms) {
 
   $(document).ready(function() {
-    
+
+      YSDForms.improve();
+/*
       $("#content > div").hide(); // Initially hide all content
       $("#content_tabs li:first").attr("id","current"); // Activate first tab
       $("#content > div:first").fadeIn(); // Show first tab content
@@ -20,5 +22,6 @@ require(['jquery'], function($) {
           $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
         }
       });
+ */
   });
 });

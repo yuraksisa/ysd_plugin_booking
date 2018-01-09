@@ -37,10 +37,10 @@ booking_configuration_templates:
   template: Plantilla
   customer_emails: Se envían al cliente
   manager_emails: Se envían al gestor de las reservas
-  email_customer_request_received: Cuando se recibe una solicitud
-  email_customer_payment_request_received: Cuando se recibe una solicitud con pago online
-  email_customer_reservation_confirmed: Cuando se confirma la reserva
-  email_customer_payment_enabled: Cuando se habilita el pago de la reserva
+  email_customer_request_received: "Cliente : Recepción de solicitud"
+  email_customer_payment_request_received: "Cliente : Solicitud de reserva con pago online"
+  email_customer_reservation_confirmed: "Cliente: Reserva confirmada"
+  email_customer_payment_enabled: "Cliente: Pago de reserva habilitado"
   email_manager_request_received: Cuando se recibe una nueva solucitud
   email_manager_payment_request_received: Cuando se recibe una nueva solicitud con pago online
   email_manager_confirmation: Cuando se confirma una solicitud
@@ -76,7 +76,7 @@ booking_settings:
     planning:
       title: Planning y recursos
     rates:
-      title: Cálculo de los precios
+      title: Cálculo de las tarifas
       description: En el caso de que las tarifas sean por temporadas, determina la forma en la que se calculará el precio cuando las fechas de la reserva incluyen varias temporadas
     reservation_starts_with:
       title: Tipo formulario de reserva
@@ -97,12 +97,12 @@ booking_settings:
     activities: Gestión de actividades o eventos
     deposit_payment_group: Paga y señal
     total_payment_group: Total
-    deposit: "% de paga y señal sobre el total de la reserva (0 si no se quiere permitir)"
+    deposit: "% de paga y señal sobre el total de la reserva"
     deposit_description: En el caso de que se quiera permitir recibir una cantidad en concepto de paga y señal, indicar el porcentaje. Utilizar 0 si sólo se desea recibir el pago total.
-    deposit_includes_product_deposit: "El % de paga y señal incluye la fianza"
-    deposit_includes_product_deposit_description: Marque esta opción si desea que el importe de paga y señal se calcule incluyendo la fianza.
+    deposit_includes_product_deposit: "La paga y señal incluye la fianza"
+    deposit_includes_product_deposit_description: Marque esta opción si desea que el importe de paga y señal se calcule incluyendo la fianza de los productos contratados.
     total_cost_includes_deposit: "El total incluye la fianza"
-    total_cost_includes_deposit_description: Marque esta opción si desea que el importe total de la reserva incluya la fianza.
+    total_cost_includes_deposit_description: Marque esta opción si desea que el importe total de la reserva incluya la fianza de los productos contratatados.
     allow_total_payment: Permitir pagar el total de la reserva
     min_days: Numero mínimo de días
     min_days_description: Permite indicar el número mínimo de días que se puede alquilar un producto

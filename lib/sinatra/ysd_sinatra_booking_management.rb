@@ -292,6 +292,21 @@ module Sinatra
           load_page(:config_booking, {:locals => locals})
         end
 
+
+        #
+        # Booking configuration (general)
+        #
+        app.get '/admin/booking/config/payment', :allowed_usergroups => ['booking_manager', 'staff'] do
+          booking_renting, booking_activities = mybooking_plan
+          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
+                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
+          locals.store(:booking_item_family, booking_item_family)
+          locals.store(:booking_renting, booking_renting)
+          locals.store(:booking_activities, booking_activities)
+          load_page(:config_booking_payment, {:locals => locals})
+        end
+
         # --------------------- Configuration : Templates --------------------------------------------
 
         app.get '/admin/booking/config/templates', :allowed_usergroups => ['booking_manager', 'staff'] do

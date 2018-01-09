@@ -23,9 +23,6 @@
           <li class="no-border no-background top-space" style="border:none;background:none">
               <a name="renting_tab" href="#renting_tab"><%=t.booking_settings.form.rent_group%></a>
           </li>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="planning_resources_tab" href="#planning_resources_tab"><%=t.booking_settings.form.planning_resources%></a>
-          </li>
         <% end %>
         <% if booking_activities %>
           <li class="no-border no-background top-space" style="border:none;background:none">
@@ -38,9 +35,6 @@
           </li>
         <% end %>
         <li class="no-border no-background top-space" style="border:none;background:none">
-          <a name="online_payment_tab" href="#online_payment_tab"><%=t.booking_settings.form.online_payment%></a>
-        </li>
-        <li class="no-border no-background top-space" style="border:none;background:none">
           <a name="notifications_tab" href="#notifications_tab"><%=t.booking_settings.form.notifications%></a>
         </li>
         <li class="no-border no-background top-space" style="border:none;background:none">
@@ -49,6 +43,11 @@
         <li class="no-border no-background top-space" style="border:none;background:none">
           <a name="front_end_tab" href="#front_end_tab"><%=t.booking_settings.form.front_end_title%></a>
         </li>
+        <% if booking_renting and booking_mode == 'rent' %>
+          <li class="no-border no-background top-space" style="border:none;background:none">
+            <a name="planning_resources_tab" href="#planning_resources_tab"><%=t.booking_settings.form.planning_resources%></a>
+          </li>
+        <% end %>
         <li class="no-border no-background top-space" style="border:none;background:none">
           <a name="business_tab" href="#business_tab"><%=t.booking_settings.form.business%></a>
         </li>
@@ -57,7 +56,7 @@
         <% if booking_renting and booking_mode == 'rent' %>
         <div id="renting_tab" class="top-margin bottom-margin">
 
-              <div id="rent_general_tab" class="content top-margin all-border-solid all-space" style="color: #EEE">
+              <div id="rent_general_tab" class="content top-margin all-border-solid all-space" style="border-color: #EEE">
                 <form name="variables" action="/api/variables" method="PUT"
                         data-remote="ajax" data-remote-method="PUT">
                   <div class="container_12">
@@ -70,34 +69,17 @@
                       <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.min_days_description%></p>
                       <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2) %>
                       <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.item_hold_time_description%></p>
-                      <h3 class="bottom-border-solid" style="font-size:1.2em"><%=t.booking_settings.form.rates.title%></h3>
-                      <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.form.calendar_mode.title, calendar_modes) %>
-                      <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.rates.description%></p>
-                      <% if booking_item_family and booking_item_family.pickup_return_place %>
-                      <h3 class="bottom-border-solid" style="font-size:1.2em">Lugares de entrega y recogida</h3>
-                      <%= render_variable_checkbox_boolean('booking.allow_custom_pickup_return_place', t.booking_settings.form.custom_pickup_return_place) %>
-                      <%= render_variable_input_text('booking.custom_pickup_return_place_price', t.booking_settings.form.custom_pickup_return_place_price, 3, 3) %>
-                      <% end %>
                     </div>
                     <div class="grid_6">
                       <div class="left-margin" style="border-left: 1px solid #EEE; padding-left: 10px">
-                        <% if booking_item_family and booking_item_family.time_to_from %>
-                        <h3 class="bottom-border-solid" style="font-size:1.2em">Horarios de entrega y recogida</h3>
-                        <%= render_variable_select('booking.pickup_return_timetable', t.booking_settings.form.pickup_return_timetable, pickup_return_timetables) %>
-                        <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.pickup_return_timetable_description%></p>
-                        <%= render_variable_input_text('booking.pickup_return_timetable_out_price', t.booking_settings.form.pickup_return_timetable_out_price, 3, 3) %>
-                        <% end %>
+                        <h3 class="bottom-border-solid" style="font-size:1.2em"><%=t.booking_settings.form.rates.title%></h3>
+                        <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.form.calendar_mode.title, calendar_modes) %>
+                        <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.rates.description%></p>
                         <h3 class="bottom-border-solid" style="font-size:1.2em">Fianza</h3>
                         <%= render_variable_checkbox_boolean('booking.booking_amount_includes_deposit', t.booking_settings.form.deposit_includes_product_deposit) %>
                         <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.deposit_includes_product_deposit_description%></p>
                         <%= render_variable_checkbox_boolean('booking.total_cost_includes_deposit', t.booking_settings.form.total_cost_includes_deposit) %>
                         <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.total_cost_includes_deposit_description%></p>
-                        <% if booking_item_family and booking_item_family.driver %>
-                        <h3 class="bottom-border-solid" style="font-size:1.2em">Conductor joven</h3>
-                        <%= render_variable_checkbox_boolean('booking.driver_min_age.rules', t.booking_settings.form.driver_min_age_rules) %>
-                        <%= render_variable_select('booking.driver_min_age.rule_definition', t.booking_settings.form.driver_min_age_reservation_rule, booking_driver_age_rule_definitions) %>
-                        <% end %>
-
                       </div>
                     </div>
                   </div>
@@ -109,30 +91,10 @@
                 </form>
               </div>
         </div>
-
-        <div id="planning_resources_tab" class="top-margin bottom-margin all-border-solid all-space" style="color: #EEE">
-              <div class="container_12">
-                <div class="grid_6">
-                  <form name="variables" action="/api/variables" method="PUT"
-                        data-remote="ajax" data-remote-method="PUT">
-                    <%= render_variable_checkbox_boolean('booking.assignation.allow_different_category', t.booking_settings.form.assignation.allow_different_category) %>
-                    <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.assignation.allow_different_category_description%></p>
-                    <%= render_variable_checkbox_boolean('booking.assignation.allow_busy_resource', t.booking_settings.form.assignation.allow_busy_resource) %>
-                    <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.assignation.allow_different_category_description%></p>
-                    <%= render_variable_checkbox_boolean('booking.assignation.automatic_resource_assignation', t.booking_settings.form.assignation.automatic_resource_assignation) %>
-                    <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.assignation.automatic_resource_assignation_description%></p>
-                    <div class="formrow-botonera top-separator top-space">
-                      <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
-                    </div>
-                  </form>
-                </div>
-              </div>
-        </div>
-
         <% end %> 
 
         <% if booking_activities %>
-        <div id="activities_tab" class="content top-margin all-border-solid all-space" style="color: #EEE">
+        <div id="activities_tab" class="content top-margin all-border-solid all-space" style="border-color: #EEE">
           <div class="container_12">
             <div id="activities_content" >
               <div id="activities_online_payment_tab">
@@ -157,91 +119,7 @@
         </div>
         <% end %>
 
-        <% if booking_mode == 'restaurant' %> 
-        <div id="turns_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-            <div class="grid_6">
-              <form name="variables" action="/api/variables" method="PUT" 
-                    data-remote="ajax" data-remote-method="PUT">
-                <%= render_variable_input_text('booking.morning_turns', t.booking_settings.form.morning_turns, 255, 30) %>
-                <%= render_variable_input_text('booking.afternoon_turns', t.booking_settings.form.afternoon_turns, 255, 30) %>
-                <%= render_variable_input_text('booking.night_turns', t.booking_settings.form.night_turns, 255, 30) %>
-                <%= render_variable_input_text('booking.duration_of_service', t.booking_settings.form.duration_of_service, 10, 10) %>
-                <%= render_variable_input_text('booking.duration_of_service_extra', t.booking_settings.form.duration_of_service_extra, 10, 10) %>
-                <%= render_variable_input_text('booking.duration_of_service_extra_turns', t.booking_settings.form.duration_of_service_extra_turns, 255, 30) %>
-                <%= render_variable_input_text('booking.scheduler_start_time', t.booking_settings.form.scheduler_start_time, 5, 5) %>
-                <%= render_variable_input_text('booking.scheduler_finish_time', t.booking_settings.form.scheduler_finish_time, 5, 5) %>
-                <h3><%=t.booking_settings.form.people_group%></h3>
-                <%= render_variable_input_text('booking.min_children', t.booking_settings.form.min_children, 2, 2) %>
-                <%= render_variable_input_text('booking.max_children', t.booking_settings.form.max_children, 2, 2) %>
-                <%= render_variable_input_text('booking.max_children_extra', t.booking_settings.form.max_children_extra, 2, 2) %>
-                <%= render_variable_input_text('booking.min_adults', t.booking_settings.form.min_adults, 2, 2) %>
-                <%= render_variable_input_text('booking.max_adults', t.booking_settings.form.max_adults, 2, 2) %>
-                <%= render_variable_input_text('booking.max_adults_extra', t.booking_settings.form.max_adults_extra, 2, 2) %>
-                <%= render_variable_textarea('booking.people_resources', t.booking_settings.form.people_resources) %>
-                <div class="formrow-botonera top-separator top-space">
-                  <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
-                </div>
-              </form>                                  
-            </div>
-          </div>
-        </div> 
-        <% end %>
-
-        <div id="online_payment_tab" class="top-margin bottom-margin all-border-solid all-space" style="color: #EEE">
-          <div class="container_12">
-            <% if booking_renting %>
-            <div class="grid_6">
-              <% if booking_activities %>
-              <h3><%=t.booking_settings.form.rent_group%></h3>
-              <% end %>
-              <form name="variables" action="/api/variables" method="PUT"
-                    data-remote="ajax" data-remote-method="PUT">
-                <%= render_variable_checkbox_boolean('booking.payment', t.booking_settings.form.payment) %>
-                <%= render_variable_input_text('booking.payment_cadence', t.booking_settings.form.payment_cadence, 2, 2) %>
-                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.payment_cadence_description%></p>
-                <h3><%=t.booking_settings.form.deposit_payment_group%></h3>
-                <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
-                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.deposit_description%></p>
-                <h3><%=t.booking_settings.form.total_payment_group%></h3>
-                <%= render_variable_checkbox_boolean('booking.allow_total_payment', t.booking_settings.form.allow_total_payment) %>
-
-                <div class="formrow-botonera  top-separator top-space">
-                  <input type="submit" value="<%=t.entitymanagement.update%>"
-                         class="button blue-button">
-                </div>
-              </form>
-            </div>
-            <% end %>
-            <% if booking_activities %>
-            <div class="grid_6">
-              <div class="left-margin" style="border-left: 1px solid #EEE; padding-left: 10px">
-                <% if booking_renting %>
-                <h3><%=t.booking_settings.form.activities_group%></h3>
-                <% end %>
-                <form name="variables" action="/api/svariables" method="PUT"
-                      data-remote="ajax" data-remote-method="PUT">
-                  <%= render_variable_checkbox_boolean('order.payment', t.booking_settings.form.activities_payment) %>
-                  <%= render_variable_input_text('order.payment_cadence', t.booking_settings.form.activities_payment_cadence, 2, 2) %>
-                  <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.activities_payment_cadence_description%></p>
-                  <h3><%=t.booking_settings.form.deposit_payment_group%></h3>
-                  <%= render_variable_checkbox_boolean('order.allow_deposit_payment', t.booking_settings.form.activities_allow_deposit_payment) %>
-                  <%= render_variable_input_text('order.deposit', t.booking_settings.form.activities_deposit, 2, 2) %>
-                  <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.deposit_description%></p>
-                  <h3><%=t.booking_settings.form.total_payment_group%></h3>
-                  <%= render_variable_checkbox_boolean('order.allow_total_payment', t.booking_settings.form.activities_allow_total_payment) %>
-                  <div class="formrow-botonera  top-separator top-space">
-                    <input type="submit" value="<%=t.entitymanagement.update%>"
-                           class="button blue-button">
-                  </div>
-                </form>
-              </div>
-            </div>
-            <% end %>
-          </div>
-        </div>
-
-        <div id="notifications_tab" class="top-margin bottom-margin all-border-solid all-space" style="color: #EEE">
+        <div id="notifications_tab" class="top-margin bottom-margin all-border-solid all-space" style="border-color: #EEE">
           <div class="container_12">
             <div class="grid_6">
               <form name="variables" action="/api/variables" method="PUT"
@@ -260,7 +138,7 @@
           </div>
         </div>
 
-        <div id="smtp_tab" class="top-margin bottom-margin all-border-solid all-space" style="color: #EEE">
+        <div id="smtp_tab" class="top-margin bottom-margin all-border-solid all-space" style="border-color: #EEE">
           <div class="container_12">
             <div class="grid_6">
                 <form name="variables" action="/api/svariables" method="PUT"
@@ -284,7 +162,7 @@
           </div>
         </div>
 
-        <div id="front_end_tab" class="top-margin bottom-margin all-border-solid all-space" style="color: #EEE">
+        <div id="front_end_tab" class="top-margin bottom-margin all-border-solid all-space" style="border-color: #EEE">
           <form name="variables" action="/api/variables" method="PUT"
                 data-remote="ajax" data-remote-method="PUT">
             <div class="container_12">
@@ -300,7 +178,29 @@
           </form>
         </div>
 
-        <div id="business_tab" class="top-margin bottom-margin all-border-solid all-space" style="color: #EEE">
+        <% if booking_renting and booking_mode == 'rent' %>
+        <div id="planning_resources_tab" class="top-margin bottom-margin all-border-solid all-space" style="border-color: #EEE">
+          <div class="container_12">
+            <div class="grid_6">
+              <form name="variables" action="/api/variables" method="PUT"
+                    data-remote="ajax" data-remote-method="PUT">
+                <%= render_variable_checkbox_boolean('booking.assignation.allow_different_category', t.booking_settings.form.assignation.allow_different_category) %>
+                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.assignation.allow_different_category_description%></p>
+                <%= render_variable_checkbox_boolean('booking.assignation.allow_busy_resource', t.booking_settings.form.assignation.allow_busy_resource) %>
+                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.assignation.allow_different_category_description%></p>
+                <%= render_variable_checkbox_boolean('booking.assignation.automatic_resource_assignation', t.booking_settings.form.assignation.automatic_resource_assignation) %>
+                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.assignation.automatic_resource_assignation_description%></p>
+                <div class="formrow-botonera top-separator top-space">
+                  <input type="submit" value="<%=t.entitymanagement.update%>" class="button blue-button">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% end %>
+
+
+        <div id="business_tab" class="top-margin bottom-margin all-border-solid all-space" style="border-color: #EEE">
           <form name="variables" action="/api/variables" method="PUT"
                 data-remote="ajax" data-remote-method="PUT">
             <div class="container_12">

@@ -1,0 +1,66 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_settings.form.online_payment%></h2>
+</div>
+
+<div class="admin_content_wrapper" style="background-color: #f5f5f5; margin: 0">
+  <br>
+  <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+  <% if booking_renting %>
+  <div class="row">
+    <div class="col-sm-12 col-md-10 col-md-offset-1">
+      <div class="block ">
+        <div class="block-header bg-gray-lighter">
+          <h3 class="block-title"><%=t.booking_settings.form.rent_group%></h3>
+        </div>
+        <div class="block-content block-content-narrow">
+          <form name="variables" action="/api/variables" method="PUT"
+                data-remote="ajax" data-remote-method="PUT">
+            <%= render_variable_checkbox_boolean('booking.payment', t.booking_settings.form.payment) %>
+            <%= render_variable_input_text('booking.payment_cadence', t.booking_settings.form.payment_cadence, 2, 2) %>
+            <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.payment_cadence_description%></p>
+            <h3 class="bottom-border-solid" style="font-size:1.2em"><%=t.booking_settings.form.deposit_payment_group%></h3>
+            <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
+            <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.deposit_description%></p>
+            <h3 class="bottom-border-solid" style="font-size:1.2em"><%=t.booking_settings.form.total_payment_group%></h3>
+            <%= render_variable_checkbox_boolean('booking.allow_total_payment', t.booking_settings.form.allow_total_payment) %>
+            <div class="formrow-botonera  top-separator top-space">
+              <input type="submit" value="<%=t.entitymanagement.update%>"
+                     class="button blue-button">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% end %>
+  <% if booking_activities %>
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_settings.form.rent_group%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/svariables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT">
+              <%= render_variable_checkbox_boolean('order.payment', t.booking_settings.form.activities_payment) %>
+              <%= render_variable_input_text('order.payment_cadence', t.booking_settings.form.activities_payment_cadence, 2, 2) %>
+              <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.activities_payment_cadence_description%></p>
+              <h3><%=t.booking_settings.form.deposit_payment_group%></h3>
+              <%= render_variable_checkbox_boolean('order.allow_deposit_payment', t.booking_settings.form.activities_allow_deposit_payment) %>
+              <%= render_variable_input_text('order.deposit', t.booking_settings.form.activities_deposit, 2, 2) %>
+              <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.deposit_description%></p>
+              <h3><%=t.booking_settings.form.total_payment_group%></h3>
+              <%= render_variable_checkbox_boolean('order.allow_total_payment', t.booking_settings.form.activities_allow_total_payment) %>
+              <div class="formrow-botonera  top-separator top-space">
+                <input type="submit" value="<%=t.entitymanagement.update%>"
+                       class="button blue-button">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <br>
+</div>
