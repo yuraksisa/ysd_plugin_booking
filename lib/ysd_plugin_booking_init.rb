@@ -46,6 +46,10 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlaceDefinitionsManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlacesManagement
    sinatra_extension Sinatra::YitoExtension::BookingPickupReturnPlacesManagementRESTApi
+   sinatra_extension Sinatra::YitoExtension::BookingDriverAgeRuleDefinitionsManagement
+   sinatra_extension Sinatra::YitoExtension::BookingDriverAgeRuleDefinitionsManagementRESTApi
+   sinatra_extension Sinatra::YitoExtension::BookingDriverAgeRulesManagement
+   sinatra_extension Sinatra::YitoExtension::BookingDriverAgeRulesManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingRentalLocationsManagement
    sinatra_extension Sinatra::YitoExtension::BookingRentalLocationsManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingTranslation

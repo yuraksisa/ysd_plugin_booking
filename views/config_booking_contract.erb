@@ -1,0 +1,34 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_contract.title%></h2>
+</div>
+<div class="admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
+  <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+
+  <div id="content">
+
+    <br>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_contract.template_title%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="templates" action="/api/templates" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="all-space">
+              <%= render_template_editor 'booking_contract','','', 20 %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+</div>
+</div>

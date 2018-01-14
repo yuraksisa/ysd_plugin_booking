@@ -1,0 +1,35 @@
+require(["jquery", "YSDEntityManagement", "jquery.ui", "YSDjson2"], 
+         function($, EntityManagement, EntityManagementComplementHooks) {
+    
+  var driverAgeRuleDefinitionHook = {
+     
+       
+    entityKey : function(entity) {
+      return entity.id;
+    },
+
+    onEdit : function(entity) {
+      $('#name').focus();
+    },
+  
+    onNew : function() {
+      $('#name').focus();
+    }
+        
+
+  };
+
+  var urls = { query_url  : '/api/booking-driver-age-rule-definitions',
+               create_url : '/api/booking-driver-age-rule-definition',
+               update_url : '/api/booking-driver-age-rule-definition',
+               delete_url : '/api/booking-driver-age-rule-definition',
+               get_url    : '/api/booking-driver-age-rule-definition'
+             };
+  
+  var hooks = [driverAgeRuleDefinitionHook];
+                 
+  var hooksManager = new EntityManagement(urls, 'booking-driver-age-rule-definitions-management',
+     <%=booking_driver_age_rule_definitions%>, hooks, {prefix: '/admin/booking'});
+
+  
+});

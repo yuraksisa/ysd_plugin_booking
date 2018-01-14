@@ -7,6 +7,14 @@ require(['jquery', 'ysdtemplate', 'datejs',
      pickupResult : null,
      returnResult : null,
 
+     statusDescription: {
+        'pending_confirmation' : '<span class="label label-warning"><%= t.booking_status.pending_confirmation%></span>',
+        'confirmed' : '<span class="label label-success"><%= t.booking_status.confirmed%></span>',
+        'in_progress' : '<span class="label label-info"><%= t.booking_status.in_progress%></span>',
+        'done' : '<span class="label label-primary"><%= t.booking_status.done%></span>',
+        'cancelled' : '<span class="label label-danger"><%= t.booking_status.cancelled%></span>'
+     },
+
      loadData: function(dateFrom, dateTo, rentalLocation) {
 
        var strDateFrom = dateFrom.toString("yyyy-MM-dd");
@@ -186,11 +194,11 @@ require(['jquery', 'ysdtemplate', 'datejs',
 
         switch(status) {
         	case 'pickup_data_available':
-            $("#pickedup_booking_data").html(tmpl('pickedup_bookings_table', {data: bookingPickedupModel.pickupResult}));
+            $("#pickedup_booking_data").html(tmpl('pickedup_bookings_table', {data: bookingPickedupModel.pickupResult, status: bookingPickedupModel.statusDescription}));
         	  $("#pickedup_summary").html(tmpl('pickedup_summary_tmpl', {picked_up_count: bookingPickedupModel.pickupResult.length}));
         	  break;
           case 'return_data_available':
-            $("#returned_booking_data").html(tmpl('returned_bookings_table', {data: bookingPickedupModel.returnResult}));
+            $("#returned_booking_data").html(tmpl('returned_bookings_table', {data: bookingPickedupModel.returnResult, status: bookingPickedupModel.statusDescription}));
             $("#return_summary").html(tmpl('return_summary_tmpl', {return_count: bookingPickedupModel.returnResult.length}));
             break;            
         }

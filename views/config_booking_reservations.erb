@@ -1,0 +1,202 @@
+<style>
+#renting_tab li a, #activities_tab li a {
+  background-color: white;
+}
+#renting_tab li#current a,
+#renting_tab li#current a::after,
+#activities_tab li#current a,
+#activities_tab li#current a::after {
+  background-color: white;
+}
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_settings.form.reservation_configuration_title%></h2>
+</div>
+
+<div class="admin_content_wrapper" style="background-color: #f5f5f5; margin: 0">
+
+    <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+
+    <br>
+
+    <% if booking_renting %>
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_settings.form.rent_group%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.min_days_description%></p>
+              <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.item_hold_time_description%></p>
+
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if booking_item_family and booking_item_family.pickup_return_place %>
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Lugares entrega y devolución</h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <p><a href="/admin/booking/booking-place-defs">Gestionar lugares entrega y devolución</a></p>
+              <%= render_variable_checkbox_boolean('booking.allow_custom_pickup_return_place', t.booking_settings.form.custom_pickup_return_place) %>
+              <%= render_variable_input_text('booking.custom_pickup_return_place_price', t.booking_settings.form.custom_pickup_return_place_price, 3, 3) %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+
+    <% if booking_item_family and booking_item_family.time_to_from %>
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Horarios entrega y devolución</h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_select('booking.pickup_return_timetable', t.booking_settings.form.pickup_return_timetable, pickup_return_timetables) %>
+              <p><a href="/admin/calendar/timetables">Gestionar horarios</a></p>
+              <%= render_variable_input_text('booking.pickup_return_timetable_out_price', t.booking_settings.form.pickup_return_timetable_out_price, 3, 3) %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+
+    <% if booking_item_family and booking_item_family.driver %>
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Edad del conductor</h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_checkbox_boolean('booking.driver_min_age.rules', t.booking_settings.form.driver_min_age_rules) %>
+              <%= render_variable_select('booking.driver_min_age.rule_definition', t.booking_settings.form.driver_min_age_reservation_rule, booking_driver_age_rule_definitions) %>
+              <p><a href="/admin/booking/driver-age-rule-definitions">Gestionar reglas edades conductor</a></p>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_settings.form.rates.title%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.form.calendar_mode.title, calendar_modes) %>
+              <p class="less_contrast_text"><%=t.booking_settings.form.rates.description%></p>
+              <p><a href="/admin/rates/season-defs">Gestionar temporadas</a></p>
+              <% if use_factors %>
+              <p><a href="/admin/rates/factor-defs">Gestionar factores</a></p>
+              <% end %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_settings.form.deposit_group.title%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_checkbox_boolean('booking.booking_amount_includes_deposit', t.booking_settings.form.deposit_includes_product_deposit) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.deposit_includes_product_deposit_description%></p>
+              <%= render_variable_checkbox_boolean('booking.total_cost_includes_deposit', t.booking_settings.form.total_cost_includes_deposit) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.total_cost_includes_deposit_description%></p>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% end %>
+
+    <% if booking_activities %>
+      <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title"><%=t.booking_settings.form.activities_group%></h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="variables" action="/api/variables" method="PUT"
+                    data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+                <%= render_variable_checkbox_boolean('order.request_reservations', t.booking_settings.form.activities_request_reservation) %>
+                <p class="less_contrast_text "><%=t.booking_settings.form.activities_request_reservation_description%></p>
+                <%= render_variable_input_text('order.item_hold_time', t.booking_settings.form.activities_item_hold_time, 2, 2) %>
+                <p class="less_contrast_text"><%=t.booking_settings.form.activities_item_hold_time_description%></p>
+                <div class="form-group">
+                  <div class="col-xs-12">
+                    <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+</div>

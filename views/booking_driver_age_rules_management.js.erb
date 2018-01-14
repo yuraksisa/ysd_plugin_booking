@@ -1,0 +1,101 @@
+require(["jquery", "YSDEntityManagement", "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"],
+         function($, EntityManagement, RemoteDataSource, SelectSelector) {
+    
+  var driverAgeRuleHook = {
+     
+       
+    entityKey : function(entity) {
+      return entity.id;
+    },
+
+    onEdit : function(entity) {
+      $('#name').focus();
+      this.configForm(entity);
+    },
+  
+    onNew : function() {
+      $('#name').focus();
+      this.configForm(entity);
+    },
+
+    configForm: function(entity) {
+
+      $('#age_rule_type').bind('change', function() {
+
+          if ($(this).val() == 'age') {
+              $('#age_condition_group').show();
+              $('#join_conditions_group').hide();
+              $('#driving_license_years_group').hide();
+          }
+          else if ($(this).val() == 'driving_license_years') {
+              $('#age_condition_group').hide();
+              $('#join_conditions_group').hide();
+              $('#driving_license_years_group').show();
+          }
+          else if ($(this).val() == 'both_age_driving_license_years') {
+              $('#age_condition_group').show();
+              $('#join_conditions_group').show();
+              $('#driving_license_years_group').show();
+          }
+
+      });
+
+      $('#age_condition').bind('change', function() {
+         if ($(this).val() == '<->') {
+             $('#age_to').show();
+         }
+         else {
+             $('#age_to').hide();
+         }
+      });
+
+      $('#driving_license_years_condition').bind('change', function() {
+          if ($(this).val() == '<->') {
+              $('#driving_license_years_to').show();
+          }
+          else {
+              $('#driving_license_years_to').hide();
+          }
+      });
+
+    },
+        
+    adaptFormData : function(data) {
+
+      if ($('input[name=allowed]').length > 0) {
+          if ($('input[name=allowed]').prop('checked')) {
+              data.allowed = true;
+          }
+          else {
+              data.allowed = false;
+          }
+      }
+
+      if ($('input[name=apply_if_product_deposit]').length > 0) {
+        if ($('input[name=apply_if_product_deposit]').prop('checked')) {
+          data.apply_if_product_deposit = true;
+        }
+        else {
+          data.apply_if_product_deposit = false;
+        }
+      }
+
+      return data;
+    }
+
+  };
+
+  var urls = { query_url  : '/api/booking-driver-age-rules',
+               create_url : '/api/booking-driver-age-rule',
+               update_url : '/api/booking-driver-age-rule',
+               delete_url : '/api/booking-driver-age-rule',
+               get_url    : '/api/booking-driver-age-rule'
+             };
+  
+  var hooks = [driverAgeRuleHook];
+                 
+  var hooksManager = new EntityManagement(urls, 'booking-driver-age-rule',
+     <%=booking_driver_age_rules%>, hooks, {prefix: '/admin/booking',parent_filtered:true});
+
+  
+});

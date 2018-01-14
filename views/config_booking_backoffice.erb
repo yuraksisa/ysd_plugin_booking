@@ -1,0 +1,74 @@
+<style>
+#renting_tab li a, #activities_tab li a {
+  background-color: white;
+}
+#renting_tab li#current a,
+#renting_tab li#current a::after,
+#activities_tab li#current a,
+#activities_tab li#current a::after {
+  background-color: white;
+}
+</style>
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_settings.form.backoffice_configuration_title%></h2>
+</div>
+
+<div class="admin_content_wrapper" style="background-color: #f5f5f5; margin: 0">
+
+    <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+
+    <br>
+
+    <% if booking_renting %>
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_settings.form.planning_resources%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_checkbox_boolean('booking.assignation.allow_different_category', t.booking_settings.form.assignation.allow_different_category) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.allow_different_category_description%></p>
+              <%= render_variable_checkbox_boolean('booking.assignation.allow_busy_resource', t.booking_settings.form.assignation.allow_busy_resource) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.allow_different_category_description%></p>
+              <%= render_variable_checkbox_boolean('booking.assignation.automatic_resource_assignation', t.booking_settings.form.assignation.automatic_resource_assignation) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.automatic_resource_assignation_description%></p>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+
+
+  <% if booking_renting and multiple_locations%>
+      <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title"><%=t.booking_settings.form.pick_up_return_report%></h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="variables" action="/api/variables" method="PUT"
+                    data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+                <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_allow_operator_all_locations', t.booking_settings.form.pickup_return_backoffice.allow_operator_all_locations) %>
+                <div class="form-group">
+                  <div class="col-xs-12">
+                    <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+  <% end %>
+
+</div>

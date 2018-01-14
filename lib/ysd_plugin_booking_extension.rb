@@ -321,45 +321,27 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.adwords_active'},
-        {:value => 'false',
-         :description => 'Activate adwords for booking',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.adwords_booking_request_conversion_id'},
-        {:value => '',
-         :description => 'Adwords booking request conversion id',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.adwords_booking_request_conversion_label'},
-        {:value => '',
-         :description => 'Adwords booking request conversion label',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.adwords_booking_pay_now_conversion_id'},
-        {:value => '',
-         :description => 'Adwords booking pay now conversion id',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.adwords_booking_pay_now_conversion_label'},
-        {:value => '',
-         :description => 'Adwords booking pay now conversion label',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.multiple_rental_locations'},
           {:value => 'false',
            :description => 'There are multiple rental locations',
            :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.multiple_rental_locations_allow_operator_all_locations'},
+          {:value => 'false',
+           :description => 'Check if the booking operators can show all locations in pickup/return report',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.use_factors_in_rates'},
           {:value => 'false',
            :description => 'Use factors in rates definition',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.inner_reservation_engine'},
+          {:value => 'true',
+           :description => 'Uses the inner reservation engine',
            :module => :booking})
 
       SystemConfiguration::Variable.first_or_create({:name => 'site.booking_manager_front_page'},
@@ -774,6 +756,9 @@ module Huasi
       if page.admin_page
         if app.user and app.user.belongs_to?('booking_manager')
           menu = block_view(context, 'booking_admin_menu')
+          result.store(:sidebar_menu, [menu])
+        elsif app.user and app.user.belongs_to?('booking_operator')
+          menu = block_view(context, 'booking_operator_menu')
           result.store(:sidebar_menu, [menu])
         end
       end

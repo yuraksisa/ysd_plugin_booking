@@ -57,17 +57,21 @@ module Sinatra
 
           # Multiple locations
           multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          allow_booking_operator_multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations_allow_operator_all_locations', 'false').to_bool
           locals.store(:multiple_rental_locations, multiple_locations)
+          locals.store(:allow_booking_operator_multiple_locations, allow_booking_operator_multiple_locations)
 
           if multiple_locations
             locals.store(:rental_locations, ::Yito::Model::Booking::RentalLocation.all)
             rental_location_user = ::Yito::Model::Booking::RentalLocationUser.first('user.username'.to_sym => user.username)
             locals.store(:current_user_rental_location, rental_location_user.nil? ? nil : rental_location_user.rental_location)
             locals.store(:current_user_manager, user.belongs_to?('booking_manager'))
+            locals.store(:current_user_operator, user.belongs_to?('booking_operator'))
           else
             locals.store(:rental_locations, [])
             locals.store(:current_user_rental_location, nil)
             locals.store(:current_user_manager, false)
+            locals.store(:current_user_operator, false)
           end
 
           # Journal addon
@@ -109,12 +113,15 @@ module Sinatra
           # Rental location
           rental_location_code = nil
           multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          allow_booking_operator_multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations_allow_operator_all_locations', 'false').to_bool
           if multiple_locations
             if params[:rental_location]
               rental_location_code = params[:rental_location]
             else
               if rental_location_user = ::Yito::Model::Booking::RentalLocationUser.first('user.username'.to_sym => user.username)
-                rental_location_code = rental_location_user.rental_location.code if rental_location_user.user.belongs_to?('booking_operator')
+                if rental_location_user.user.belongs_to?('booking_operator')
+                  rental_location_code = rental_location_user.rental_location.code unless allow_booking_operator_multiple_locations
+                end
               end
             end
           end

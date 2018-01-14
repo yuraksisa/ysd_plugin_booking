@@ -123,8 +123,8 @@
   <% if booking_item_family.driver and driver_min_age_rules %>
     <%% if (entity.driver_age_rule_description && entity.driver_age_rule_description.length > 0) { %>
     <div class="container_12">
-      <div class="highlight_block all-space centered_text" style="margin-top: 10px; margin-bottom: 10px">
-        <%%= entity.driver_age_rule_description %>
+      <div class="highlight_block all-space centered_text" style="margin-top: 10px; margin-bottom: 10px<%% if (!entity.driver_age_allowed) { %>;background-color:red; color:white<%% } %>">
+        <%%= entity.driver_age_rule_description %> <%% if (!entity.driver_age_allowed) { %>(<%=t.booking_management.form.driver_age.not_allowed.upcase%>)<%%}%>
       </div>
     </div>
     <%% } %>

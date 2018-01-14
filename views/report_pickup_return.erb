@@ -13,9 +13,11 @@
 <div class="admin_content_wrapper">
 <%= partial(:pickedup_bookings, :locals => {product_family: product_family,
                                             multiple_rental_locations: multiple_rental_locations,
+                                            allow_booking_operator_multiple_locations: allow_booking_operator_multiple_locations,
                                             rental_locations: rental_locations,
                                             current_user_rental_location: current_user_rental_location,
-                                            current_user_manager: current_user_manager}) %>
+                                            current_user_manager: current_user_manager,
+                                            current_user_operator: current_user_operator}) %>
 </div>
 <% if addons and addons.has_key?(:addon_journal) and addons[:addon_journal] %>
     <div id="new_journal" class="all-space" style="background-color: white; display: none; min-width: 600px">

@@ -535,12 +535,16 @@ module Sinatra
            # Rental Location
            rental_location_code = nil
            multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+           allow_booking_operator_multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations_allow_operator_all_locations', 'false').to_bool
+
            if multiple_locations
              if params[:rental_location]
                rental_location_code = params[:rental_location]
              else
                if rental_location_user = ::Yito::Model::Booking::RentalLocationUser.first('user.username'.to_sym => user.username)
-                 rental_location_code = rental_location_user.rental_location.code if rental_location_user.user.belongs_to?('booking_operator')
+                 if rental_location_user.user.belongs_to?('booking_operator')
+                   rental_location_code = rental_location_user.rental_location.code unless allow_booking_operator_multiple_locations
+                 end
                end
              end
            end

@@ -1,0 +1,97 @@
+<%= include('entity-management') %>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_title">
+  <h2 class="entity-title"><%=t.booking_driver_age_rule_definitions_management.title%></h2>
+</script>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_description">
+<%=t.booking_driver_age_rule_definitions_management.description%>
+</script>
+
+<!-- Renders the elements container -->
+<script type="text/tmpl" id="elements_container_template">
+  <table id="elements_table" class="table">
+     <thead class="table-header">
+       <tr>
+         <th class="table-header-title" scope="col" style="width:30%">
+            <%= t.booking_driver_age_rule_definitions_management.table.id %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:30%">
+            <%= t.booking_driver_age_rule_definitions_management.table.name %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:40%">
+         </th>
+       </tr>
+     </thead>
+     <tbody id="elements_tbody" class="table-tbody">
+     </tbody>
+  </table>
+</script>
+
+<!-- Renders one element in the elements list view -->
+        
+<script type="text/tmpl" id="elements_list_template">
+    <tr class="table-row" id="element_row_<%%=index%>">
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+        <%%= entity.id %>
+      </td>
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+        <%%= entity.name %>
+      </td>
+      <td class="table-cell">
+              <div class="btn btn-minw btn-default">
+                <a href="/admin/booking/driver-age-rules/<%%=entity.id%>">
+                  <%=t.booking_driver_age_rule_definitions_management.table.driver_age_rules%>
+                </a>
+              </div>
+      </td>
+    </tr>
+</script>
+
+<!-- Renders one element in the element view (full detailed) -->
+
+<script type="text/tmpl" id="element_template">
+   
+</script>
+
+<!-- Renders the form to edit an element -->
+
+<script type="text/tmpl" id="element_template_form">
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Datos básicos</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <%% if (entity) { %>
+                      <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                      <%% } %>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rule_definitions_management.form.name.label %></label>
+                         <div class="col-md-9">
+                           <input type="text" maxlength="10" id="name" name="name" class="form-control" <%% if (entity) {%> value="<%%=entity.name%>" <%%}%>/>
+                         </div>
+                      </div>
+
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <%% if (entity) { %>
+                              <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                            <%% } else { %>
+                              <input type="button" class="btn btn-sm btn-primary create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                            <%% } %>
+                        </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+</script>
+

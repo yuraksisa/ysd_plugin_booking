@@ -255,46 +255,77 @@ module Sinatra
         end
 
 
-        # -------------------- Configuration : GENERAL -------------------------------------------------
+        # -------------------- Configuration  ---------------------------------------------------------
 
         #
-        # Booking configuration (general)
+        # Booking configuration (reservations)
         #
-        app.get '/admin/booking/config/general', :allowed_usergroups => ['booking_manager', 'staff'] do
-          
-          pickup_return_timetables = {"" => t.booking_settings.form.no_pickup_return_timetable}.merge(Hash[ *::Yito::Model::Calendar::Timetable.all.collect { |tt| [tt.id.to_s, tt.name] }.flatten])
+        app.get '/admin/booking/config/business', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
-                    :pickup_return_timetables => pickup_return_timetables,
-                    :booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :booking_modes => {
-                      :rent => t.booking_settings.form.booking_mode.rent,
-                      :restaurant => t.booking_settings.form.booking_mode.restaurant
-                    },
-                    :calendar_modes => {
-                      :first_day =>  t.booking_settings.form.calendar_mode.first_day,
-                      :default => t.booking_settings.form.calendar_mode.default
-                    }}
-
+          booking_renting, booking_activities = mybooking_plan
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
+                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+                    :calendar_modes => {
+                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
+                        :default => t.booking_settings.form.calendar_mode.default
+                    }}
           locals.store(:booking_item_family, booking_item_family)
+          locals.store(:booking_renting, booking_renting)
+          locals.store(:booking_activities, booking_activities)
+          load_page(:config_booking_business, {:locals => locals})
 
+        end
+
+        #
+        # Booking configuration (reservations)
+        #
+        app.get '/admin/booking/config/reservations', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          pickup_return_timetables = {"" => t.booking_settings.form.no_pickup_return_timetable}.merge(Hash[ *::Yito::Model::Calendar::Timetable.all.collect { |tt| [tt.id.to_s, tt.name] }.flatten])
+          booking_renting, booking_activities = mybooking_plan
+          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          use_factors = SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool
+          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
+                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+                    :calendar_modes => {
+                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
+                        :default => t.booking_settings.form.calendar_mode.default
+                    },
+                    :use_factors => use_factors,
+                    :pickup_return_timetables => pickup_return_timetables}
+          locals.store(:booking_item_family, booking_item_family)
+          locals.store(:booking_renting, booking_renting)
+          locals.store(:booking_activities, booking_activities)
           if booking_item_family and booking_item_family.driver
             locals.store(:booking_driver_age_rule_definition, SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
             locals.store(:booking_driver_age_rule_definitions, Hash[ *::Yito::Model::Booking::BookingDriverAgeRuleDefinition.all.collect { |v| [v.id.to_s, v.name]}.flatten])
           end
+          load_page(:config_booking_reservations, {:locals => locals})
 
-          booking_renting, booking_activities = mybooking_plan
-
-          locals.store(:booking_renting, booking_renting)        
-          locals.store(:booking_activities, booking_activities)        
-         
-          load_page(:config_booking, {:locals => locals})
         end
 
+        #
+        # Booking configuration (reservations)
+        #
+        app.get '/admin/booking/config/backoffice', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          booking_renting, booking_activities = mybooking_plan
+          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
+                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+                    :multiple_locations => multiple_locations}
+          locals.store(:booking_item_family, booking_item_family)
+          locals.store(:booking_renting, booking_renting)
+          locals.store(:booking_activities, booking_activities)
+
+          load_page(:config_booking_backoffice, {:locals => locals})
+
+        end
 
         #
-        # Booking configuration (general)
+        # Booking configuration (payment)
         #
         app.get '/admin/booking/config/payment', :allowed_usergroups => ['booking_manager', 'staff'] do
           booking_renting, booking_activities = mybooking_plan
@@ -307,59 +338,60 @@ module Sinatra
           load_page(:config_booking_payment, {:locals => locals})
         end
 
-        # --------------------- Configuration : Templates --------------------------------------------
+        #
+        # Booking configuration (notifications)
+        #
+        app.get '/admin/booking/config/notifications', :allowed_usergroups => ['booking_manager', 'staff'] do
+          booking_renting, booking_activities = mybooking_plan
+          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
+                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
+          locals.store(:booking_item_family, booking_item_family)
+          locals.store(:booking_renting, booking_renting)
+          locals.store(:booking_activities, booking_activities)
+          load_page(:config_booking_notifications, {:locals => locals})
+        end
 
-        app.get '/admin/booking/config/templates', :allowed_usergroups => ['booking_manager', 'staff'] do
+        #
+        # Booking configuration (notifications) - renting customer messages templates
+        #
+        app.get '/admin/booking/config/notifications/renting-customer-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:config_booking_renting_notifications_customer_templates)
+        end
 
-          booking_renting = SystemConfiguration::Variable.get_value('booking.renting','false').to_bool
-          booking_activities = SystemConfiguration::Variable.get_value('booking.activities','false').to_bool
-          
-          if booking_renting
-            contract = ContentManagerSystem::Template.first({:name => 'booking_contract'})
-            conditions = ContentManagerSystem::Content.first({:alias => '/renting_conditions'})
-            summary_message = ContentManagerSystem::Template.first({:name => 'booking_summary_message'})      
-            b_m_n = ContentManagerSystem::Template.first({:name => 'booking_manager_notification'})
-            b_m_n_pay_now = ContentManagerSystem::Template.first({:name => 'booking_manager_notification_pay_now'})
-            b_m_c_n = ContentManagerSystem::Template.first({:name => 'booking_confirmation_manager_notification'})
-            b_m_r_c = ContentManagerSystem::Template.first({:name => 'booking_customer_req_notification'})
-            b_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
-            b_m_c_c = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
-            b_m_c_c_pay_enabled = ContentManagerSystem::Template.first({:name => 'booking_customer_notification_payment_enabled'})
-          end
+        #
+        # Booking configuration (notifications) - renting manager messages templates
+        #
+        app.get '/admin/booking/config/notifications/renting-manager-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:config_booking_renting_notifications_manager_templates)
+        end
 
-          if booking_activities 
-            o_m_n = ContentManagerSystem::Template.first({:name => 'order_manager_notification'})
-            o_m_n_pay_now = ContentManagerSystem::Template.first({:name => 'order_manager_notification_pay_now'})
-            o_m_c_n = ContentManagerSystem::Template.first({:name => 'order_confirmation_manager_notification'})
-            o_m_r_c = ContentManagerSystem::Template.first({:name => 'order_customer_req_notification'})
-            o_m_r_c_pay_now = ContentManagerSystem::Template.first({:name => 'order_customer_req_pay_now_notification'})
-            o_m_c_c = ContentManagerSystem::Template.first({:name => 'order_customer_notification'})
-            o_m_c_c_pay_enabled = ContentManagerSystem::Template.first({:name => 'order_customer_notification_payment_enabled'})
-          end
+        #
+        # Booking configuration (notifications) - activities customer messages templates
+        #
+        app.get '/admin/booking/config/notifications/activities-customer-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:config_booking_activities_notifications_customer_templates)
+        end
 
-          locals = {:booking_renting => booking_renting,
-                    :booking_activities => booking_activities}
+        #
+        # Booking configuration (notifications) - activities manager messages templates
+        #
+        app.get '/admin/booking/config/notifications/activities-manager-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:config_booking_activities_notifications_manager_templates)
+        end
 
-          locals.merge!({:conditions => conditions,
-                    :contract => contract,
-                    :summary_message => summary_message,
-                    :b_m_n => b_m_n, 
-                    :b_m_n_pay_now => b_m_n_pay_now, 
-                    :b_m_c_n => b_m_c_n,
-                    :b_m_r_c => b_m_r_c,
-                    :b_m_r_c_pay_now => b_m_r_c_pay_now, 
-                    :b_m_c_c => b_m_c_c,
-                    :b_m_c_c_pay_enabled => b_m_c_c_pay_enabled})  if booking_renting   
+        #
+        # Booking configuration contract
+        #
+        app.get '/admin/booking/config/contract', :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:config_booking_contract)
+        end
 
-          locals.merge!({:o_m_n => o_m_n, 
-                    :o_m_n_pay_now => o_m_n_pay_now, 
-                    :o_m_c_n => o_m_c_n,
-                    :o_m_r_c => o_m_r_c,
-                    :o_m_r_c_pay_now => o_m_r_c_pay_now, 
-                    :o_m_c_c => o_m_c_c,
-                    :o_m_c_c_pay_enabled => o_m_c_c_pay_enabled})  if booking_activities   
-
-          load_page(:console_booking_configuration_templates, :locals => locals)
+        #
+        # Booking configuration frontend
+        #
+        app.get '/admin/booking/config/front-end', :allowed_usergroups => ['booking_manager', 'staff'] do
+          load_page(:config_booking_frontend)
         end
 
         #

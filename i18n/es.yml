@@ -37,27 +37,36 @@ booking_configuration_templates:
   template: Plantilla
   customer_emails: Se envían al cliente
   manager_emails: Se envían al gestor de las reservas
-  email_customer_request_received: "Cliente : Recepción de solicitud"
-  email_customer_payment_request_received: "Cliente : Solicitud de reserva con pago online"
-  email_customer_reservation_confirmed: "Cliente: Reserva confirmada"
-  email_customer_payment_enabled: "Cliente: Pago de reserva habilitado"
-  email_manager_request_received: Cuando se recibe una nueva solucitud
-  email_manager_payment_request_received: Cuando se recibe una nueva solicitud con pago online
-  email_manager_confirmation: Cuando se confirma una solicitud
+  email_customer_request_received: "Nueva solicitud de reserva"
+  email_customer_payment_request_received: "Nueva solicitud de reserva con pago online"
+  email_customer_reservation_confirmed: "Reserva confirmada"
+  email_customer_payment_enabled: "Pago de reserva habilitado"
+  email_manager_request_received: "Nueva solicitud de reserva"
+  email_manager_payment_request_received: "Nueva solicitud de reserva con pago online"
+  email_manager_confirmation: "Reserva confirmada"
 booking_settings:
   form:
     title: Configuración General
-    online_payment: Pago online
+    reservation_configuration_title: Configuración de las reservas
+    backoffice_configuration_title: Configuración de la herramienta de gestión
+    online_payment: Configuración del pago online
     planning_resources: Planning y recursos
-    notifications: Notificaciones
+    pick_up_return_report: Entregas y recogidas
+    notifications: Configuración de las notificaciones
+    activities_customer_notification_templates: Plantillas notificaciones reservas actividades a los clientes
+    activities_manager_notification_templates: Plantillas notificaciones reservas actividades al gestor
+    renting_customer_notification_templates: Plantillas notificaciones reservas alquiler a los clientes
+    renting_manager_notification_templates: Plantillas notificaciones reservas alquiler al gestor
     notificacion_smtp_setup: Configuración SMTP
     notification_email: Email de notificación
     notification_email_description: Lista separada por comas de los correos electrónicos a las que se envían las notificaciones dirigidas al gestor de reservas
-    send_notifications: Envía notificaciones por email
-    send_notifications_backoffice_reservations: Envía notificaciones por mail (reservas del backoffice)
-    business: Otros
+    notificacions_setup: Configuración
+    send_notifications: Habilita notificaciones de las reservas recibidas por la web
+    send_notifications_backoffice_reservations: Habilita notificaciones de las reservas registradas desde el backoffice
+    business: Características del negocio
     front_end_title: Front-end
     multiple_rental_locations: Múltiples oficinas
+    manage_locations: Gestionar oficinas
     multiple_rental_locations_description: El negocio tiene múltiples oficinas o centros de gestión. Las reservas de material o las actividades son gestionadas por un centro.
     scheduler_start_time: Hora de inicio planificación
     scheduler_finish_time: Hora de fin planificación    
@@ -70,7 +79,7 @@ booking_settings:
     reservation:
       title: Reserva
     calendar_mode:
-      title: Temporada(s) de la tarifa
+      title: Selección temporada(s)
       default: Promedio de las temporadas afectadas
       first_day: La fecha de inicio de la reserva determina la temporada
     planning:
@@ -78,6 +87,8 @@ booking_settings:
     rates:
       title: Cálculo de las tarifas
       description: En el caso de que las tarifas sean por temporadas, determina la forma en la que se calculará el precio cuando las fechas de la reserva incluyen varias temporadas
+    deposit_group:
+      title: Fianza
     reservation_starts_with:
       title: Tipo formulario de reserva
       dates: Selección fechas (para 1 producto)
@@ -90,6 +101,8 @@ booking_settings:
       allow_busy_resource_description: Permitir que desde el planning pueda realizarse la asignación de un recurso ocupado a una reserva
       automatic_resource_assignation: Asignación automática
       automatic_resource_assignation_description: Realiza la asignación automática de uno de los recursos disponibles al confirmar la reserva
+    pickup_return_backoffice:
+      allow_operator_all_locations: Permite que el usuario operador pueda consultar entregas y recogidas de múltiples oficinas
     front_end:
       multilanguage_site: Sitio multi idioma
       multilanguage_site_description: Permite que la página web de reservas se muestre en múltiples idiomas
@@ -129,7 +142,6 @@ booking_settings:
     max_adults_extra: Número máximo de adultos (extra)
     people_resources: Recursos para los clientes        
     general_group: General
-    notifications: Notificaciones
     product_reservation_rates: Proceso de reserva
     pickup_return_group: Entrega y devolución
     payment_group: Pago online
@@ -147,7 +159,7 @@ booking_settings:
     activities_request_reservation: Permitir realizar sólo solicitud (sin pago online)
     activities_request_reservation_description: Permite realizar sólo la solicitud de una actividad sin tener que realizar el pago online. Permite captar la solicitud del cliente y disponer de sus datos de contacto.
     activities_payment: Pago online habilitado
-    activities_deposit: "% de paga y señal sobre el total de la reserva (0 si no se quiere permitir)"
+    activities_deposit: "% de paga y señal sobre el total de la reserva"
     activities_allow_deposit_payment: Permitir el pago de la paga y señal
     activities_allow_total_payment: Permitir el pago total del pedido
     activities_item_hold_time: Caducidad (en horas) del pedido
@@ -176,6 +188,41 @@ booking_settings:
     driver_min_age_driving_license_years_max: Número de años carnet conducir pago fianza
     driver_min_age_driving_license_years_max_description: Número de años carnet conducir pago fianza
     driver_min_age_driving_license_years_deposit: Importe fianza
+booking_notification_settings:
+  renting_customer_notification_template_title: Plantillas notificaciones alquiler clientes
+  renting_manager_notification_template_title: Plantillas notificaciones alquiler gestor
+  activities_customer_notification_template_title: Plantillas notificaciones actividades clientes
+  activities_manager_notification_template_title: Plantillas notificaciones actividades gestor
+booking_business_settings:
+  title: Empresa
+  renting_title: Alquiler
+  company:
+    title: Empresa
+    name: Nombre empresa
+    document_id: CIF
+    phone_number: Teléfono
+    email: Correo electrónico
+    address: Dirección
+    city: Localidad
+    state: Provincia
+    country: País
+    zip: Código postal
+    social_networks: Redes sociales
+    facebook: Facebook
+    twitter: Twitter
+    linkedin: Linkedin
+    instagram: Instagram
+booking_contract:
+  title: Contrato
+  template_title: Plantilla
+booking_front_end:
+  title: Web
+  engine:
+    title: Motor de reservas
+    inner_label: Usar el motor de reservas interno
+    inner_description: Marque esta opción si desea utilizar el motor de reservas interno. En el caso de que sea una web externa la utilizada para realizar las reservas online desmarque esta opción
+    external_web_prefix_url: URL de la web externa
+  languages_title: Idiomas
 booking_rates:
   title: Tarifas    
   seasons: Temporadas
@@ -235,7 +282,7 @@ booking_console:
   availability: Calendarios
   summary: Resumen
   pickup_return: Entrega y devolución
-  places: Entrega y devolución
+  places: Lugares
   create_rates: Preparar tarifas
   adjust_prices: Ajustes masivos precios    
   calendars: Calendarios
@@ -596,6 +643,8 @@ booking_management:
     other_tab: Otros datos
     deposit_received: Depósito
     rental_location: Oficina / Centro
+    driver_age:
+      not_allowed: no permitido
     confirm_button: 
       label: Confirmar
       message: ¿Desea confirmar la reserva?
@@ -1239,6 +1288,61 @@ booking_dashboard:
   forecast_charged_reservations: Previsión cobros
   total_charged_activities: Total cobrado
   forecast_charged_activities: Previsión cobros  
+booking_driver_age_rule_definitions_management:
+  title: Def. reglas edad conductor
+  description: Definición reglas edad conductor
+  table:
+    id: Id
+    name: Nombre
+    driver_age_rules: Reglas del conductor
+  form:
+    name:
+      label: Nombre
+booking_driver_age_rules_management:
+  title: Reglas edad conductor
+  description: Reglas edad conductor
+  table:
+    condition: Condición
+    and: Y
+    or: O
+    age: Edad conductor
+    driving_license_years: Años carnet conducir
+    allowed: Permitido
+    supplement: Suplemento
+    deposit: Fianza
+  form:
+    conditions_group: Condiciones
+    age_rule_type:
+      label: Tipo
+      age: Edad conductor
+      driving_license_years: Años carnet de conducir
+      both_age_driving_license_years: Edad conductor y años carnet de conducir
+    join_conditions:
+      label: Conector condiciones
+      and: Y
+      or: O
+    age_from:
+      label: Edad desde
+    age_to:
+      label: Edad hasta
+    age_condition:
+      label: Condición edad
+    driving_license_years_from:
+      label: Años carnet conducir desde
+    driving_license_years_to:
+      label: Años carnet conducir hasta
+    driving_license_years_condition:
+      label: Condición años carnet conducir
+    allowed:
+      label: Permitido
+    suplement:
+      label: Suplemento
+    deposit:
+      label: Fianza
+    apply_if_product_deposit:
+      label: Añadir el importe de la fianza del producto
+    rule_order:
+      label: Orden
 booking_activity_management:
   title: Actividades 
   form:

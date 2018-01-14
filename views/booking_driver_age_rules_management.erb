@@ -1,0 +1,200 @@
+<%= include('entity-management') %>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_title">
+  <h2 class="entity-title"><%=t.booking_driver_age_rules_management.title%> </h2>
+</script>
+
+<!-- Renders the element description -->
+<script type="text/tmpl" id="elements_description">
+<%=t.booking_driver_age_rules_management.description%>
+</script>
+
+<!-- Renders the elements container -->
+<script type="text/tmpl" id="elements_container_template">
+  <table id="elements_table" class="table table-striped">
+     <thead class="table-header">
+       <tr>
+         <th class="table-header-title text-center" scope="col" style="width:40%">
+           <%= t.booking_driver_age_rules_management.table.condition %>
+         </th>
+         <th class="table-header-title text-center" scope="col" style="width:20%">
+           <%= t.booking_driver_age_rules_management.table.allowed %>
+         </th>
+         <th class="table-header-title text-center" scope="col" style="width:20%">
+           <%= t.booking_driver_age_rules_management.table.deposit %>
+         </th>
+         <th class="table-header-title text-center" scope="col" style="width:20%">
+           <%= t.booking_driver_age_rules_management.table.supplement %>
+         </th>
+         <th class="table-header-title" scope="col" style="width:35%"></th>
+       </tr>
+     </thead>
+     <tbody id="elements_tbody" class="table-tbody">             
+     </tbody>
+  </table>
+</script>
+
+<!-- Renders one element in the elements list view -->
+        
+<script type="text/tmpl" id="elements_list_template">
+    <tr class="table-row element-navigation-detail" id="element_row_<%%=index%>" rel="<%%= index %>">
+      <td class="table-cell text-center">
+
+        <%% if (entity.age_rule_type == 'age' || entity.age_rule_type == 'both_age_driving_license_years') { %>
+          (<%= t.booking_driver_age_rules_management.table.age %>
+          <%% if (entity.age_condition == '>' || entity.age_condition == '<' || entity.age_condition == '=') { %>
+          <%%= entity.age_condition %> <%%= entity.age_from %>
+          <%% } else if (entity.driving_license_years_condition == '<->'){ %>
+          <%%= entity.age_from %> <%%= entity.age_condition %> <%%= entity.age_to %>
+          <%% } %>)
+        <%% } %>
+
+        <%% if (entity.age_rule_type == 'both_age_driving_license_years') { %>
+          <%% if (entity.join_conditions == 'and') { %>
+          <%= t.booking_driver_age_rules_management.table.and %>
+          <%% } else if (entity.join_conditions == 'or') { %>
+          <%= t.booking_driver_age_rules_management.table.or %>
+          <%% } %>
+        <%% } %>
+
+        <%% if (entity.age_rule_type == 'driving_license_years' || entity.age_rule_type == 'both_age_driving_license_years') { %>
+          (<%= t.booking_driver_age_rules_management.table.driving_license_years %>
+          <%% if (entity.driving_license_years_condition == '>' || entity.driving_license_years_condition == '<' || entity.driving_license_years_condition == '=') { %>
+          <%%= entity.driving_license_years_condition %> <%%= entity.driving_license_years_from %>
+          <%% } else if (entity.driving_license_years_condition == '<->') { %>
+          <%%= entity.driving_license_years_from %> <%%= entity.driving_license_years_condition %> <%%= entity.driving_license_years_to %>
+          <%% } %>)
+        <%% } %>
+
+      </td>
+      <td class="table-cell text-center">
+        <%%= entity.allowed ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
+      </td>
+      <td class="table-cell text-center">
+        <%%= new Number(entity.deposit).toFixed(2)%>
+      </td>
+      <td class="table-cell text-center">
+        <%%= new Number(entity.suplement).toFixed(2)%>
+      </td>
+      <td class="table-cell"></td>
+    </tr>
+</script>
+
+<!-- Renders one element in the element view (full detailed) -->
+
+<script type="text/tmpl" id="element_template">
+   
+</script>
+
+<!-- Renders the form to edit an element -->
+
+<script type="text/tmpl" id="element_template_form">
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Datos básicos</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <%% if (entity) { %>
+                      <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                      <%% } %>
+                      <input type="hidden" id="driver_age_rule_definition[id]" name="driver_age_rule_definition[id]" value="<%=driver_age_rule_definition.id%>"/>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.age_rule_type.label %></label>
+                         <div class="col-md-9">
+                           <select name="age_rule_type" id="age_rule_type" class="form-control">
+                             <option value="age" <%% if (entity && entity.age_rule_type == 'age') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.age_rule_type.age %></option>
+                             <option value="driving_license_years" <%% if (entity && entity.age_rule_type == 'driving_license_years') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.age_rule_type.driving_license_years %></option>
+                             <option value="both_age_driving_license_years" <%% if (entity && entity.age_rule_type == 'both_age_driving_license_years') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.age_rule_type.both_age_driving_license_years %></option>
+                           </select>
+                         </div>
+                      </div>
+                      <div id="age_condition_group" class="form-group" <%% if (entity && entity.age_rule_type == 'driving_license_years') { %>style="display:none"<%%}%>>
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.age_condition.label %></label>
+                         <div class="col-md-9">
+                           <select name="age_condition" id="age_condition" class="form-control">
+                             <option value="<" <%% if (entity && entity.age_condition == '<') { %>selected<%%}%>>&lt;</option>
+                             <option value=">" <%% if (entity && entity.age_condition == '>') { %>selected<%%}%>>&gt;</option>
+                             <option value="=" <%% if (entity && entity.age_condition == '=') { %>selected<%%}%>>=</option>
+                             <option value="<->" <%% if (entity && entity.age_condition == '<->') { %>selected<%%}%>>Entre</option>
+                           </select>
+                           <input type="text" maxlength="2" id="age_from" name="age_from" class="form-control" <%% if (entity) { %> value="<%%=entity.age_from%>" <%% } %>/>
+                           <input type="text" maxlength="2" id="age_to" name="age_to" class="form-control" <%% if (entity) { %> value="<%%=entity.age_from%>" <%% } %> <%% if (!entity || (entity && entity.age_condition !='<->')) {%> style="display:none" <%%}%>/>
+                         </div>
+                      </div>
+                      <div id="join_conditions_group" class="form-group"  <%% if (entity && entity.age_rule_type != 'both_age_driving_license_years') { %>style="display:none"<%%}%>>
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.join_conditions.label %></label>
+                         <div class="col-md-9">
+                           <select name="join_conditions" id="join_conditions" class="form-control">
+                             <option value="and" <%% if (entity && entity.join_conditions == 'and') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.join_conditions.and %></option>
+                             <option value="or" <%% if (entity && entity.join_conditions == 'or') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.join_conditions.or %></option>
+                           </select>
+                         </div>
+                      </div>
+                      <div id="driving_license_years_group" class="form-group" <%% if (entity && entity.age_rule_type == 'age') { %>style="display:none"<%%}%>>
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.driving_license_years_condition.label %></label>
+                         <div class="col-md-9">
+                           <select name="driving_license_years_condition" id="driving_license_years_condition" class="form-control">
+                             <option value="<" <%% if (entity && entity.driving_license_years_condition == '<') { %>selected<%%}%>>&lt;</option>
+                             <option value=">" <%% if (entity && entity.driving_license_years_condition == '>') { %>selected<%%}%>>&gt;</option>
+                             <option value="=" <%% if (entity && entity.driving_license_years_condition == '=') { %>selected<%%}%>>=</option>
+                             <option value="<->" <%% if (entity && entity.driving_license_years_condition == '<->') { %>selected<%%}%>>Entre</option>
+                           </select>
+                           <input type="text" maxlength="2" id="driving_license_years_from" name="driving_license_years_from" class="form-control" <%% if (entity) { %> value="<%%=entity.driving_license_years_from%>" <%% } %>/>
+                           <input type="text" maxlength="2" id="driving_license_years_to" name="driving_license_years_to" class="form-control" <%% if (entity) { %> value="<%%=entity.driving_license_years_to%>" <%% } %> <%% if (!entity || (entity && entity.driving_license_years_condition !='<->')) {%> style="display:none" <%%}%>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.allowed.label %></label>
+                         <div class="col-md-9">
+                           <input type="checkbox" maxlength="2" id="allowed" name="allowed" class="form-control" <%% if (entity && entity.allowed) {%> checked <%%}%>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.suplement.label %></label>
+                         <div class="col-md-9">
+                           <input type="text" maxlength="10" id="suplement" name="suplement" class="form-control" <%% if (entity) {%> value="<%%=entity.suplement%>" <%%}%>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.deposit.label %></label>
+                         <div class="col-md-9">
+                           <input type="text" maxlength="10" id="deposit" name="deposit" class="form-control" <%% if (entity) {%> value="<%%=entity.deposit%>" <%%}%>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.apply_if_product_deposit.label %></label>
+                         <div class="col-md-9">
+                           <input type="checkbox" maxlength="2" id="apply_if_product_deposit" name="apply_if_product_deposit" class="form-control" <%% if (entity && entity.apply_if_product_deposit) {%> checked <%%}%>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.rule_order.label %></label>
+                         <div class="col-md-9">
+                           <input type="text" maxlength="10" id="rule_order" name="rule_order" class="form-control" <%% if (entity) {%> value="<%%=entity.rule_order%>" <%%}%>/>
+                         </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <%% if (entity) { %>
+                              <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                            <%% } else { %>
+                              <input type="button" class="btn btn-sm btn-primary create-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                            <%% } %>
+                        </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+</script>
+

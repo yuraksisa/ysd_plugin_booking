@@ -20,7 +20,7 @@
                   <span class="entity-fieldvalue">
                      <input type="text" name="driver_date_of_birth" id="driver_date_of_birth" class="date_control" size="15" maxlength="10"
                             <% if driver_min_age_rules %>readonly disabled style="background:#EEE"<%end%>/>
-                     <%% if (entity.driver_age) { %> <small>(<%%= entity.driver_age %> años)</small> <%% } %>
+                     <%% if (entity.driver_age >= 0) { %> <small>(<%%= entity.driver_age %> años)</small> <%% } %>
                   </span>
                 </div>
               </div>
@@ -76,7 +76,7 @@
                      <span class="entity-fieldvalue">
                         <input type="text" name="driver_driving_license_date" id="driver_driving_license_date" class="date_control" size="15" maxlength="10"
                                <% if driver_min_age_rules %>readonly disabled style="background:#EEE"<%end%>/>
-                         <%% if (entity.driver_driving_license_years) { %> <small>(<%%= entity.driver_driving_license_years %> años)</small> <%% } %>
+                         <%% if (entity.driver_driving_license_years >= 0) { %> <small>(<%%= entity.driver_driving_license_years %> años)</small> <%% } %>
                      </span>
                   </div>
               </div>

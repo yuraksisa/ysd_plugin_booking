@@ -30,7 +30,7 @@
               <input class="form-control date_control" type="text" id="date_to" name="date_to" placeholder="Introduzca fecha hasta">
             </div>
           </div>
-          <% if multiple_rental_locations and current_user_manager%>
+          <% if (multiple_rental_locations and current_user_manager) or (multiple_rental_locations and current_user_operator and allow_booking_operator_multiple_locations)%>
           <div class="form-group">
             <label class="col-xs-10" for="rental_location_code">Oficina</label>
             <div class="col-xs-10">
@@ -152,7 +152,7 @@
            <% end %>
            <td class="table-cell left_text"><%%= data[i].product %></td>
            <td class="table-cell left_text right-margin"><%%=data[i].extras %></td>
-           <td class="table-cell left_text right-margin"><%%=data[i].notes %></td>
+           <td class="table-cell left_text right-margin"><%%=status[data[i].status]%><%% if (data[i].status!=''){%><br><%%}%><%%=data[i].notes %></td>
            <td class="table-cell left_text right-margin"><%%=data[i].customer%> <br><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%> <br><%%=data[i].customer_email%></td>
            <% if product_family and product_family.flight %>
            <td class="table-cell left_text right-margin"><%%=data[i].flight%></td>
@@ -219,7 +219,7 @@
            <% end %>
            <td class="table-cell left_text"><%%= data[i].product %></td>
            <td class="table-cell left_text"><%%= data[i].extras %></td>
-           <td class="table-cell left_text"><%%= data[i].notes %></td>
+           <td class="table-cell left_text"><%%=status[data[i].status]%><%% if (data[i].status!=''){%><br><%%}%><%%= data[i].notes %></td>
            <td class="table-cell left_text"><%%=data[i].customer%> <br><%%=data[i].customer_phone%> <%%=data[i].customer_mobile_phone%> <br><%%=data[i].customer_email%></td>
            <% if multiple_rental_locations %>
            <td class="table-cell left_text"><%%= data[i].rental_location_code %></td>
