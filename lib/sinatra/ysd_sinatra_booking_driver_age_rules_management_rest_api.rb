@@ -57,11 +57,23 @@ module Sinatra
         app.post "/api/booking-driver-age-rule" do
         
           data_request = body_as_json(::Yito::Model::Booking::BookingDriverAgeRule)
-          data = ::Yito::Model::Booking::BookingDriverAgeRule.create(data_request)
-         
-          status 200
-          content_type :json
-          data.to_json          
+          data = ::Yito::Model::Booking::BookingDriverAgeRule.new(data_request)
+          begin
+            data.age_from = 0 if data.age_from.nil? or !data.age_from.is_a?Numeric
+            data.age_to = 0 if data.age_to.nil? or !data.age_to.is_a?Numeric
+            data.driving_license_years_from = 0 if data.driving_license_years_from.nil? or !data.driving_license_years_from.is_a?Numeric
+            data.driving_license_years_to = 0 if data.driving_license_years_to.nil? or !data.driving_license_years_to.is_a?Numeric
+            #p "data: #{data.inspect} -- #{data.valid?} -- #{data.errors.inspect} -- #{data.errors.full_messages.inspect}"
+            data.save
+            status 200
+            content_type :json
+            data.to_json
+          rescue DataMapper::SaveFailureError => error
+            #p "data: #{data.inspect} -- #{error.inspect} -- #{data.valid?} -- #{data.errors.inspect} -- #{data.errors.full_messages.inspect}"
+            status 422
+            content_type :json
+            data.errors.full_messages.to_json
+          end
         
         end
         

@@ -109,7 +109,7 @@
                            <select name="age_rule_type" id="age_rule_type" class="form-control">
                              <option value="age" <%% if (entity && entity.age_rule_type == 'age') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.age_rule_type.age %></option>
                              <option value="driving_license_years" <%% if (entity && entity.age_rule_type == 'driving_license_years') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.age_rule_type.driving_license_years %></option>
-                             <option value="both_age_driving_license_years" <%% if (entity && entity.age_rule_type == 'both_age_driving_license_years') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.age_rule_type.both_age_driving_license_years %></option>
+                             <option value="both_age_driving_license_years" <%% if ((!entity) || (entity && entity.age_rule_type == 'both_age_driving_license_years')) { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.age_rule_type.both_age_driving_license_years %></option>
                            </select>
                          </div>
                       </div>
@@ -130,7 +130,7 @@
                          <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.join_conditions.label %></label>
                          <div class="col-md-9">
                            <select name="join_conditions" id="join_conditions" class="form-control">
-                             <option value="and" <%% if (entity && entity.join_conditions == 'and') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.join_conditions.and %></option>
+                             <option value="and" <%% if ((!entity) || (entity && entity.join_conditions == 'and')) { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.join_conditions.and %></option>
                              <option value="or" <%% if (entity && entity.join_conditions == 'or') { %>selected<%%}%>><%= t.booking_driver_age_rules_management.form.join_conditions.or %></option>
                            </select>
                          </div>
