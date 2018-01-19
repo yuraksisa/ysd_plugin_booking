@@ -519,12 +519,19 @@ module Sinatra
           locals.store(:booking_front_end_prefix, SystemConfiguration::Variable.get_value('booking.front_end_prefix', ''))
           locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
           locals.store(:driver_min_age_rules, SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool)
+          locals.store(:elements_actions, partial(:bookings_management_header))
 
           # Simple invoicing addon
           addons = mybooking_addons
           addon_simple_invoicing = (addons and addons.has_key?(:addon_simple_invoicing) and addons[:addon_simple_invoicing])
           locals.store(:booking_addon_simple_invoicing, addon_simple_invoicing)
-          
+
+          @today = Date.today
+          @year = DateTime.now.year
+          @transit_today = BookingDataSystem::Booking.count_transit(@today)
+          @pending_confirmation_reservations = BookingDataSystem::Booking.count_pending_confirmation_reservations(@year)
+          @received_reservations = BookingDataSystem::Booking.count_received_reservations(@year)
+          @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
         end

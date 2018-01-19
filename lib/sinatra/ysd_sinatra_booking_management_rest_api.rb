@@ -624,11 +624,34 @@ module Sinatra
             if request.media_type == "application/json"
               request.body.rewind
               search_request = JSON.parse(URI.unescape(request.body.read))
-              if search_request.has_key?('search')
+
+              if search_request.has_key?('status') and ['pending','in_process','confirmed','received'].include?(search_request['status'])
+                today = Date.today.to_date
+                first_year_date = Date.civil(today.year, 1, 1)
+                p "first_date: #{first_year_date}"
+                if search_request['status'] == 'pending'
+                  data, total = BookingDataSystem::Booking.all_and_count(
+                      :conditions => {:status => [:pending_confirmation], :date_from.gte => today},
+                      :order => :creation_date.desc)
+                elsif search_request['status'] == 'in_process'
+                  data, total = BookingDataSystem::Booking.all_and_count(
+                      {:conditions => {:status => [:confirmed, :in_progress],
+                                      :date_from.lte => today,
+                                      :date_to.gte => today}}.merge(offset_order_query))
+                elsif search_request['status'] == 'confirmed'
+                  data, total = BookingDataSystem::Booking.all_and_count(
+                      {:conditions => {:status => [:confirmed, :in_progress, :done],
+                                      :creation_date.gte => first_year_date}}.merge(offset_order_query))
+                elsif search_request['status'] == 'received'
+                  data, total = BookingDataSystem::Booking.all_and_count(
+                      {:conditions => {:creation_date.gte => first_year_date}}.merge(offset_order_query))
+                end
+              elsif search_request.has_key?('search') and (search_request['search'].strip.length > 0)
                 total, data = BookingDataSystem::Booking.text_search(search_request['search'],offset_order_query)
               else
                 data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
               end
+
             else
                 data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
             end

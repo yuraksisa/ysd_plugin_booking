@@ -85,6 +85,13 @@ module Huasi
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.products.allow_deposit'},
+          {:value => 'false',
+           :description => 'It allows to setup if the products can define a deposit',
+           :module => :booking})
+
+
+      SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.booking_amount_includes_deposit'},
           {:value => 'true',
            :description => 'The deposit (booking amount) to confirm the reservation includes the deposit',

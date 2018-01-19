@@ -156,6 +156,8 @@
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_checkbox_boolean('booking.products.allow_deposit', t.booking_settings.form.product_allow_deposit) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.product_allow_deposit_description%></p>
               <%= render_variable_checkbox_boolean('booking.booking_amount_includes_deposit', t.booking_settings.form.deposit_includes_product_deposit) %>
               <p class="less_contrast_text "><%=t.booking_settings.form.deposit_includes_product_deposit_description%></p>
               <%= render_variable_checkbox_boolean('booking.total_cost_includes_deposit', t.booking_settings.form.total_cost_includes_deposit) %>

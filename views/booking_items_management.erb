@@ -61,7 +61,7 @@
 <!-- Renders one element in the elements list view -->
         
 <script type="text/tmpl" id="elements_list_template">
-    <tr class="table-row" id="element_row_<%%=index%>">
+    <tr class="table-row" id="element_row_<%%=index%>" <%%if (!entity.active){%>style="color:#BBB"<%%}%>>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>">
          <%%= entity.category_code %>
       </td>
@@ -78,10 +78,10 @@
          <%%= entity.stock_plate %>
       </td>
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
-         <%%= entity.own_property ? '<i class="fa fa-times"></i>' : '' %>
+         <%%= entity.own_property ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
       </td>
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
-         <%%= entity.assignable ? '<i class="fa fa-times"></i>' : ''  %>
+         <%%= entity.assignable ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  %>
       </td>
       <td class="table-cell">
       </td>

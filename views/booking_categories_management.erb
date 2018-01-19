@@ -56,8 +56,8 @@
          <th class="table-header-title centered_text" scope="col" style="width:10%">
             Activo
          </th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%">
-            Público
+         <th class="table-header-title centered_text" scope="col" style="width:15%">
+            Disponible web
          </th>
          <th class="table-header-title" scope="col">
          </th>
@@ -71,7 +71,7 @@
 <!-- Renders one element in the elements list view -->
 
 <script type="text/tmpl" id="elements_list_template">
-    <tr class="table-row" id="element_row_<%%=index%>">
+    <tr class="table-row" id="element_row_<%%=index%>" <%%if (!entity.active){%>style="color:#BBB"<%%}%>>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="margin-right: 20px">
          <img src="<%%= entity.photo_url_medium %>" class="element-row-selector" style="display:block; margin: 0 auto" rel="<%%= index %>"/>
       </td>
@@ -85,13 +85,13 @@
          <%%= entity.stock %>
       </td>
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
-         <%%= entity.stock_control ? '<i class="fa fa-times"></i>' : '' %>
+         <%%= entity.stock_control ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
       </td>
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
-         <%%= entity.active ? '<i class="fa fa-times"></i>' : '' %>
+         <%%= entity.active ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
       </td>
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
-         <%%= entity.web_public ? '<i class="fa fa-times"></i>' : ''  %>
+         <%%= entity.web_public ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  %>
       </td>
       <td class="table-cell">
       </td>
@@ -148,7 +148,7 @@
                 </a>
             </div>
             <%% if (entity.defined_stock != entity.stock) { %>
-            <div class="col-xs-4 col-sm2">
+            <div class="col-xs-4 col-sm-2">
                 <a class="block block-link-hover3 text-center" href="javascript:void(0)">
                     <div class="block-content block-content-full" style="height:94px">
                       <span class="h4" data-toggle="popover" data-placement="bottom" role="button" data-content="<%=t.booking_category_management.form.stock_not_match%>"><i class="si si-close fa-3x text-danger"></i></span>
@@ -306,6 +306,7 @@
         </div>
 
         <!-- Deposit -->
+        <% if products_allow_deposit %>
         <div class="row">
           <div class="col-sm-12 col-md-10 col-md-offset-1">
             <div class="block ">
@@ -333,6 +334,7 @@
             </div>
           </div>
         </div>
+        <% end %>
 
         <!-- Stock -->
 
