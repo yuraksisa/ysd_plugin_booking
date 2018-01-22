@@ -107,6 +107,7 @@
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <%= render_variable_checkbox_boolean('booking.driver_min_age.rules', t.booking_settings.form.driver_min_age_rules) %>
+              <%= render_variable_checkbox_boolean('booking.driver_min_age.booking_driver_edition', t.booking_settings.form.driver_min_age_edition) %>
               <%= render_variable_select('booking.driver_min_age.rule_definition', t.booking_settings.form.driver_min_age_reservation_rule, booking_driver_age_rule_definitions) %>
               <p><a href="/admin/booking/driver-age-rule-definitions">Gestionar reglas edades conductor</a></p>
               <div class="form-group">

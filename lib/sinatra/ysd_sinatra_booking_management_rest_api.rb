@@ -628,7 +628,6 @@ module Sinatra
               if search_request.has_key?('status') and ['pending','in_process','confirmed','received'].include?(search_request['status'])
                 today = Date.today.to_date
                 first_year_date = Date.civil(today.year, 1, 1)
-                p "first_date: #{first_year_date}"
                 if search_request['status'] == 'pending'
                   data, total = BookingDataSystem::Booking.all_and_count(
                       :conditions => {:status => [:pending_confirmation], :date_from.gte => today},
@@ -1049,12 +1048,64 @@ module Sinatra
                 data_request[k] = nil if v.empty?
               end
             end
+
+            # Driver address update
+            if data_request.has_key?(:driver_address)
+              driver_address = data_request.delete(:driver_address)
+              if data.driver_address.nil?
+                data.driver_address = driver_address
+              else
+                data.driver_address.attributes = driver_address
+              end
+            end
+
+            # Destination address update
+            if data_request.has_key?(:destination_address)
+              destination_address = data_request.delete(:destination_address)
+              if data.destination_address.nil?
+                data.destination_address = destination_address
+              else
+                data.destination_address.attributes = destination_address
+              end
+            end
+
             data.attributes=data_request
+
+            # Driver date of birth or driver driving license date update
+            if SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool and
+               !SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition','').empty?
+              calculate_cost = false
+              if data_request.has_key?(:driver_date_of_birth) and !data_request[:driver_date_of_birth].nil?
+                data.driver_age = BookingDataSystem::Booking.completed_years(data.date_from,
+                                                                             data.driver_date_of_birth)
+                calculate_cost = true
+              end
+              if data_request.has_key?(:driver_driving_license_date) and !data_request[:driver_driving_license_date].nil?
+                data.driver_driving_license_years = BookingDataSystem::Booking.completed_years(data.date_from,
+                                                                                               data.driver_driving_license_date)
+                calculate_cost = true
+              end
+              data.calculate_cost if calculate_cost
+            end
+
             # Prepare updated attributes
             updated_attributes = {}
             data.dirty_attributes.each do |key, value|
               updated_attributes.store(key.name, value) unless value.nil?
             end
+
+            if data.driver_address
+              data.driver_address.dirty_attributes.each do |key, value|
+                updated_attributes.store("driver_address.#{key.name}", value) unless value.nil?
+              end
+            end
+
+            if data.destination_address
+              data.destination_address.dirty_attributes.each do |key, value|
+                updated_attributes.store("destination_address.#{key.name}", value) unless value.nil?
+              end
+            end
+
             data.save
             # Newsfeed
             ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',

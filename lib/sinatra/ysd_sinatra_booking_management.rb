@@ -519,6 +519,8 @@ module Sinatra
           locals.store(:booking_front_end_prefix, SystemConfiguration::Variable.get_value('booking.front_end_prefix', ''))
           locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
           locals.store(:driver_min_age_rules, SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool)
+          locals.store(:driver_min_age_edition, SystemConfiguration::Variable.get_value('booking.driver_min_age.booking_driver_edition', 'false').to_bool)
+          
           locals.store(:elements_actions, partial(:bookings_management_header))
 
           # Simple invoicing addon

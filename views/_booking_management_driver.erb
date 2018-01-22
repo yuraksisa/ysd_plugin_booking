@@ -19,7 +19,7 @@
                   <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_date_of_birth %></span>
                   <span class="entity-fieldvalue">
                      <input type="text" name="driver_date_of_birth" id="driver_date_of_birth" class="date_control" size="15" maxlength="10"
-                            <% if driver_min_age_rules %>readonly disabled style="background:#EEE"<%end%>/>
+                     <% if driver_min_age_rules && !driver_min_age_edition %>readonly disabled style="background:#EEE"<%end%>/>
                      <%% if (entity.driver_age >= 0) { %> <small>(<%%= entity.driver_age %> años)</small> <%% } %>
                   </span>
                 </div>
@@ -75,7 +75,7 @@
                      <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_license_date %></span>
                      <span class="entity-fieldvalue">
                         <input type="text" name="driver_driving_license_date" id="driver_driving_license_date" class="date_control" size="15" maxlength="10"
-                               <% if driver_min_age_rules %>readonly disabled style="background:#EEE"<%end%>/>
+                        <% if driver_min_age_rules && !driver_min_age_edition%>readonly disabled style="background:#EEE"<%end%>/>
                          <%% if (entity.driver_driving_license_years >= 0) { %> <small>(<%%= entity.driver_driving_license_years %> años)</small> <%% } %>
                      </span>
                   </div>

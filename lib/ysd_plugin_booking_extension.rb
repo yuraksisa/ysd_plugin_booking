@@ -73,6 +73,13 @@ module Huasi
       )
 
       SystemConfiguration::Variable.first_or_create(
+          {name: 'booking.assignation.planning_style'},
+          {value: 'compact',
+           description: 'Planning style: compact or extended',
+           module: :booking}
+      )      
+      
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.notification_email'},
         {:value => '',
          :description => 'Bookings notification email',
@@ -203,6 +210,12 @@ module Huasi
           {:name => 'booking.driver_min_age.rule_definition'},
           {:value => '',
            :description => 'Driver rule definition id for reservation form'}
+      )
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.driver_min_age.booking_driver_edition'},
+          {:value => 'false',
+           :description => 'Allow editing the driver age and driver license date in the driver block'}
       )
 
       SystemConfiguration::Variable.first_or_create(

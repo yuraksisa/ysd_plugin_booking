@@ -1396,7 +1396,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
     this.adaptFormData = function(data) {
 
-        <% if booking_item_family.driver and driver_min_age_rules %>
+        <% if booking_item_family.driver and driver_min_age_rules and !driver_min_age_edition %>
         delete data.driver_date_of_birth;
         delete data.driver_driving_license_date;
         <% end %>

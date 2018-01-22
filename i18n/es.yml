@@ -101,6 +101,10 @@ booking_settings:
       allow_busy_resource_description: Permitir que desde el planning pueda realizarse la asignación de un recurso ocupado a una reserva
       automatic_resource_assignation: Asignación automática
       automatic_resource_assignation_description: Realiza la asignación automática de uno de los recursos disponibles al confirmar la reserva
+      planning_style:
+        title: Tipo de planning
+        compact: Compacto
+        extended: Extendido
     pickup_return_backoffice:
       allow_operator_all_locations: Permite que el usuario operador pueda consultar entregas y recogidas de múltiples oficinas
     front_end:
@@ -174,6 +178,7 @@ booking_settings:
     booking_pay_now_conversion_label: Pago online reserva conversion_label
     driver_min_age_title: Conductor joven
     driver_min_age_rules: Política (limitaciones/suplementos) para conductores jóvenes
+    driver_min_age_edition: Permite editar la fecha de nacimiento del conductor y la fecha de expedición de la licencia en el formulario de datos del conductor
     driver_min_age_reservation_rule: Regla para el formulario de reserva
     driver_min_age_rules_description: Permite indicar si la empresa tiene una política con limitaciones para los conductores jóvenes. En caso de no tenerla desactivar la opción.
     driver_min_age_rules_description: Existe una política en la empresa para los conductores jóvenes, ya sea imposibilidad de alquilar, suplemento o fianza

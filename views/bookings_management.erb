@@ -183,7 +183,8 @@
          <% if booking_item_family.driver %>
          <div id="driver_tab"  class="top-margin bottom-margin">
             <%= partial :booking_management_driver, :locals => {:booking_item_family => booking_item_family,
-                                                                :driver_min_age_rules => driver_min_age_rules} %>
+                                                                :driver_min_age_rules => driver_min_age_rules,
+                                                                :driver_min_age_edition => driver_min_age_edition} %>
          </div>
          <div id="additional_drivers_tab"  class="top-margin bottom-margin">
             <%= partial :booking_management_additional_drivers, :locals => {:booking_item_family => booking_item_family} %>
