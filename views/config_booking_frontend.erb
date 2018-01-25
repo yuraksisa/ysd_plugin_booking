@@ -1,3 +1,8 @@
+<style>
+  .sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  .sortable li { margin: 0 3px 3px 3px; padding: 1em; padding-left: 1.5em; }
+  .sortable li span { position: absolute; margin-left: -1.3em; }
+</style>
 <div class="top-navigation-bar">
   <h2 class="entity-title"><%=t.booking_front_end.title%></h2>
 </div>
@@ -37,25 +42,155 @@
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
           <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_front_end.languages_title%></h3>
+            <h3 class="block-title">Datos generales</h3>
           </div>
-          <div class="block-content block-content-narrow">
-            <form name="variables" action="/api/variables" method="PUT"
-                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-              <%= render_variable_checkbox_boolean('language.multilanguage_site',
-                                                   t.booking_settings.form.front_end.multilanguage_site) %>
-              <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.front_end.multilanguage_site_description%></p>
-              <div class="form-group">
-                <div class="col-xs-12">
-                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
-                </div>
-              </div>
-            </form>
+          <div class="block-content block-content-narrow text-center">
+             <% if @logo %>
+             <div>
+               <img src="<%=@logo%>"/>
+             </div>
+             <% end %>
+             <div class="text-muted">Logo</div>
+             <br>
           </div>
         </div>
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <ul class="block-options">
+              <li>
+                <button id="new_page_button" type="button"><i class="si si-plus"></i></button>
+              </li>
+            </ul>
+            <h3 class="block-title">Páginas</h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Título</th>
+                <th class="hidden-xs" style="width: 15%;">Estado</th>
+                <th class="text-center" style="width: 100px;">Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @pages.each do |page| %>
+              <tr>
+                <td><%=page.title%></td>
+                <td class="hidden-xs">
+                  <span class="label label-warning"><%=page.publishing_state_id%></span>
+                </td>
+                <td class="text-center">
+                  <div class="btn-group">
+                    <button class="btn btn-xs btn-default edit_page_button" rel="<%=page.id%>" type="button"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-xs btn-default delete_page_button" rel="<%=page.id%>" type="button"><i class="fa fa-times"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <ul class="block-options">
+              <li>
+                <button id="new_primary_links_menu_item" type="button"><i class="si si-plus"></i></button>
+              </li>
+            </ul>
+            <h3 class="block-title">Menú principal</h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <% if @primary_links_menu and @primary_links_menu.menu_items %>
+            <ul id="primary_links" class="sortable">
+            <% @primary_links_menu.menu_items.each do |menu_item| %>
+              <% unless menu_item.parent %>
+              <li class="ui-state-default" rel="<%=menu_item.id%>">
+                  <span class="ui-icon ui-icon-arrowthick-2-n-s"></span><%=menu_item.title%>
+                  <div class="btn-group pull-right">
+                    <button class="btn btn-xs btn-default" type="button"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-xs btn-default" type="button"><i class="fa fa-times"></i></button>
+                  </div>
+                  <% if menu_item.children %>
+                     <ul class="sortable">
+                       <% menu_item.children.each do |menu_item_children| %>
+                         <li class="ui-state-default" rel="<%=menu_item_children.id%>">
+                           <span class="ui-icon ui-icon-arrowthick-2-n-s"></span><%=menu_item_children.title%>
+                           <div class="btn-group pull-right">
+                             <button class="btn btn-xs btn-default" type="button"><i class="fa fa-pencil"></i></button>
+                             <button class="btn btn-xs btn-default" type="button"><i class="fa fa-times"></i></button>
+                           </div>
+                         </li>
+                       <% end %>
+                     </ul>
+                  <% end %>
+              </li>
+              <% end %>
+            <% end %>
+            </ul>
+            <% end %>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <ul class="block-options">
+              <li>
+                <button id="new_secondary_links_menu_item" type="button"><i class="si si-plus"></i></button>
+              </li>
+            </ul>
+            <h3 class="block-title">Menú secundario</h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <% if @secondary_links_menu and @secondary_links_menu.menu_items %>
+            <ul id="secondary_links" class="sortable">
+              <% @secondary_links_menu.menu_items.each do |menu_item| %>
+                <li class="ui-state-default" rel="<%=menu_item.id%>"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><%=menu_item.title%></li>
+              <% end %>
+            </ul>
+            <% end %>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+
+<!-- ======================================== -->
+<!--               Modal container            -->
+<!-- ======================================== -->
+<div id="modal_container" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul class="block-options">
+          <li>
+            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+          </li>
+        </ul>
+        <h3 class="modal-title"></h3>
+      </div>
+      <div class="modal-body">
+
+      </div>
+    </div>
+  </div>
 </div>

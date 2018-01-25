@@ -258,7 +258,27 @@ module Sinatra
         # -------------------- Configuration  ---------------------------------------------------------
 
         #
-        # Booking configuration (reservations)
+        # Booking configuration (general)
+        #
+        app.get '/admin/booking/config/general', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          booking_renting, booking_activities = mybooking_plan
+          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
+                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+                    :calendar_modes => {
+                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
+                        :default => t.booking_settings.form.calendar_mode.default
+                    }}
+          locals.store(:booking_item_family, booking_item_family)
+          locals.store(:booking_renting, booking_renting)
+          locals.store(:booking_activities, booking_activities)
+          load_page(:config_booking_general, {:locals => locals})
+
+        end        
+        
+        #
+        # Booking configuration (business)
         #
         app.get '/admin/booking/config/business', :allowed_usergroups => ['booking_manager', 'staff'] do
 
@@ -306,7 +326,7 @@ module Sinatra
         end
 
         #
-        # Booking configuration (reservations)
+        # Booking configuration (back-office)
         #
         app.get '/admin/booking/config/backoffice', :allowed_usergroups => ['booking_manager', 'staff'] do
 
@@ -391,6 +411,13 @@ module Sinatra
         # Booking configuration frontend
         #
         app.get '/admin/booking/config/front-end', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          @logo = SystemConfiguration::Variable.get_value('site.logo',nil)
+          @pages = ContentManagerSystem::Content.all(conditions: { type: 'page' },
+                                                     order: [:title])
+          @primary_links_menu = ::Site::Menu.first(name: 'primary_links')
+          @secondary_links_menu = ::Site::Menu.first(name: 'secondary_links')
+
           load_page(:config_booking_frontend)
         end
 

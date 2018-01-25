@@ -1,8 +1,56 @@
-require(['jquery', 'YSDForms'], function($, YSDForms) {
+require(['jquery', 'YSDForms', 'jquery.ui', 'ysdhtmleditor',], function($, YSDForms) {
+
+
+  model = {
+
+  };
+
+  controller = {
+
+      newPageButtonClick: function() {
+          $('#modal_container .modal-body').load('/admin/cms/page-content/new #container',
+              function(responseText, textStatus, jqXHR){
+                  $('.modal-title').html('Nueva página');
+                  htmlEditor('.texteditor');
+                  $('#modal_container').modal('show');
+              }
+          );
+      },
+
+      editPageButtonClick: function(id) {
+          $('#modal_container .modal-body').load('/admin/cms/page-content/'+id+'/edit #container',
+              function(responseText, textStatus, jqXHR){
+                  $('.modal-title').html('Editar página');
+                  htmlEditor('.texteditor');
+                  $('#modal_container').modal('show');
+              }
+          );
+      },
+
+      deletePageButtonClick: function() {
+
+      }
+
+  };
+
+  view = {
+
+      init: function() {
+          YSDForms.improve();
+          $('.sortable').sortable();
+          $('.sortable').disableSelection();
+          $('#new_page_button').bind('click', function() {
+              controller.newPageButtonClick();
+          });
+          $('.edit_page_button').bind('click', function() {
+              controller.editPageButtonClick($(this).attr('rel'));
+          });
+      }
+
+  };
 
   $(document).ready(function() {
-
-      YSDForms.improve();
-
+      view.init();
   });
+
 });

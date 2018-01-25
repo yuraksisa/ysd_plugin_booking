@@ -61,7 +61,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
 
      $('#cost').autoNumeric('init',{aSep:''});
 
-      var categoryDataSource = new RemoteDataSource('/api/booking-categories',{'id':'code','description':'name'});
+      var categoryDataSource = new RemoteDataSource('/api/booking-categories?all=true',{'id':'code','description':'name'});
       var categoryValue = (this.entity && this.entity.category_code)?this.entity.category_code:null;
       var categorySelector = new SelectSelector('category[code]', categoryDataSource, categoryValue); 
 

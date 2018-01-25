@@ -47,7 +47,7 @@ module Sinatra
         #
         app.get "/api/booking-categories" do
 
-          booking_categories = if params[:all] and params[:all] == 'yes'
+          booking_categories = if params[:all] and (params[:all] == 'yes' or params[:all] == 'true')
                                  ::Yito::Model::Booking::BookingCategory.all(active: true)
                                else
                                  ::Yito::Model::Booking::BookingCategory.all(active: true, web_public: true)

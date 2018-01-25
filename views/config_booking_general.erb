@@ -1,0 +1,80 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_business_settings.title%></h2>
+</div>
+<div class="admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
+  <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+
+  <div id="content">
+
+    <br>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_business_settings.company.title%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_input_text('site.company.name',
+                                             t.booking_business_settings.company.name, 80, 40) %>
+              <%= render_variable_input_text('site.company.document_id',
+                                             t.booking_business_settings.company.document_id, 80, 40) %>
+              <%= render_variable_input_text('site.company.phone_number',
+                                             t.booking_business_settings.company.phone_number, 80, 40) %>
+              <%= render_variable_input_text('site.company.email',
+                                             t.booking_business_settings.company.email, 80, 40) %>
+              <%= render_variable_input_text('site.company.address_1',
+                                             t.booking_business_settings.company.address, 80, 40) %>
+              <%= render_variable_input_text('site.company.address_2',
+                                             '', 80, 40) %>
+              <%= render_variable_input_text('site.company.city',
+                                             t.booking_business_settings.company.city, 80, 40) %>
+              <%= render_variable_input_text('site.company.state',
+                                             t.booking_business_settings.company.state, 80, 40) %>
+              <%= render_variable_input_text('site.company.country',
+                                             t.booking_business_settings.company.country, 80, 40) %>
+              <%= render_variable_input_text('site.company.zip',
+                                             t.booking_business_settings.company.zip, 80, 40) %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_business_settings.company.social_networks%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_input_text('site.company.facebook',
+                                             t.booking_business_settings.company.facebook, 80, 40) %>
+              <%= render_variable_input_text('site.company.twitter',
+                                             t.booking_business_settings.company.twitter, 80, 40) %>
+              <%= render_variable_input_text('site.company.linkedin',
+                                             t.booking_business_settings.company.linkedin, 80, 40) %>
+              <%= render_variable_input_text('site.company.instagram',
+                                             t.booking_business_settings.company.instagram, 80, 40) %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

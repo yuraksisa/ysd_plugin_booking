@@ -108,8 +108,8 @@ booking_settings:
     pickup_return_backoffice:
       allow_operator_all_locations: Permite que el usuario operador pueda consultar entregas y recogidas de múltiples oficinas
     front_end:
-      multilanguage_site: Sitio multi idioma
-      multilanguage_site_description: Permite que la página web de reservas se muestre en múltiples idiomas
+      multilanguage_site: Multi idioma
+      multilanguage_site_description: Permite que definir los datos en múltiples idiomas
     renting: Gestión de alquileres
     activities: Gestión de actividades o eventos
     deposit_payment_group: Paga y señal
