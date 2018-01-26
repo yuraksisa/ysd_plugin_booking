@@ -43,10 +43,10 @@
           <%= entity.stock_plate %>
         </td>
         <td class="table-cell centered_text">
-          <%= entity.own_property ? '<i class="fa fa-times"></i>' : '' %>
+          <%= entity.own_property ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
         </td>
         <td class="table-cell centered_text">
-          <%= entity.assignable ? '<i class="fa fa-times"></i>' : ''  %>
+          <%= entity.assignable ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  %>
         </td>
       </tr>
       <% end %>

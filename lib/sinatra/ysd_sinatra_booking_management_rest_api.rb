@@ -912,7 +912,10 @@ module Sinatra
           products = ::Yito::Model::Booking::RentingSearch.search(date_from, 
                                                                   date_to, 
                                                                   calculator.days,
-                                                                   locale)
+                                                                  locale,
+                                                                  true,
+                                                                  nil,
+                                                                  false)
 
           # Prepare the extras
           extras = ::Yito::Model::Booking::RentingExtraSearch.search(date_from,
