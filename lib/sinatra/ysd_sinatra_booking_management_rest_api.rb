@@ -1416,17 +1416,9 @@ module Sinatra
         end
 
         #
-        # Update booking line item
-        #
-        app.put '/api/booking/booking-line/item', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
-        end
-
-        #
         # Update booking extra: quantity
         #
         app.put '/api/booking/booking-extra/quantity', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
 
           request.body.rewind
           data_request = JSON.parse(URI.unescape(request.body.read))

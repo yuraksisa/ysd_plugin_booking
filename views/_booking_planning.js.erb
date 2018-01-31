@@ -36,7 +36,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
 
     dateFrom: null,                      /* Date from to be shown */
     dateTo: null,                        /* Date to to be shown */
-    numberOfDays: 14,                    /* Number of days to be shown */
+    numberOfDays: 16,                    /* Number of days to be shown */
 
     references: null,                    /* The loaded references (table rows) */
     planningData : null,                 /* The loaded data - reservation to show */
@@ -53,6 +53,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
     topVisibleRow: null,                 /* The top visible row (tr element in planning_table) */
     topVisiblePosition: null,            /* The top visible position $(window).scrollTop() of the top visible row */
     startDragWindowScrollTop: null,      /* Store topVisiblePosition when starting drag and drop to restore if reverted */
+    assignationResourceData: null,
 
     loadData: function() { /* Load the planning data */
 
@@ -80,6 +81,21 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
       else {
     	bookingPlanningView.update('not_enough_information');
       }
+    },
+
+    assignResource: function() { /* Reassign a resource */
+        var url = '/admin/booking/planning-reassign-reservation';
+        url+='?id='+this.selectedItemId+'&resource='+this.newReference+'&type='+this.selectedItemOrigin;
+        $.ajax({
+            type: 'POST',
+            url : url,
+            success: function(data, textStatus, jqXHR) {
+                bookingPlanningView.update('assigned');
+            },
+            error: function(textStatus, jqXHR) {
+                alert('Error asignando');
+            }
+        });
     },
 
     reassignResource: function() { /* Reassign a resource */
@@ -230,7 +246,46 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
 
     tableCellClick: function(theElement, reference, date) {
 
-      stockBlockingView.showStockBlockingForm(reference, date);
+      if (bookingPlanningModel.assignationResourceData && $('#assignation_resource').is(':visible')) {
+
+          var referenceCategory = theElement.parent().attr('rel');
+
+          <% if @assignation_allow_diferent_categories %>
+          if (referenceCategory != bookingPlanningModel.assignationResourceData.bookingCategory) {
+              var confirmation = confirm('¿Desea asignar el recuro ' + reference + ' de la categoría ' +
+                                          referenceCategory + ' a la reserva de la categoría ' +
+                                          bookingPlanningModel.assignationResourceData.bookingCategory + '?');
+          }
+          else {
+              var confirmation = confirm("¿Desea asignar el recurso " + reference + ' a la reserva?');
+          }
+          <% else %>
+          if (referenceCategory != bookingPlanningModel.assignationResourceData.bookingCategory) {
+              alert('No puede asignarse un recurso de diferente categoría');
+              var confirmation = false;
+          }
+          else {
+              var confirmation = confirm("¿Desea asignar el recurso " + reference + ' a la reserva?');
+          }
+          <% end %>
+
+
+          if (confirmation) {
+              bookingPlanningModel.selectedItemId = bookingPlanningModel.assignationResourceData.bookingResourceId;
+              bookingPlanningModel.newReference = reference;
+              bookingPlanningModel.selectedItemOrigin = 'booking';
+              bookingPlanningModel.assignResource();
+          }
+      }
+      else {
+          stockBlockingView.showStockBlockingForm(reference, date);
+      }
+
+    },
+
+    closeAssignationResourceButtonClick: function() {
+
+      bookingPlanningView.hideAssignationResource();
 
     }
 
@@ -281,6 +336,10 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
 
         $('#next_week_button').bind('click', function(){
             bookingPlanningController.nextWeekButtonClick();
+        });
+
+        $('#close_assignation_resource_button').bind('click', function() {
+            bookingPlanningController.closeAssignationResourceButtonClick();
         });
 
         $(window).scroll(function() {
@@ -601,6 +660,48 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
   		  this.fillPlanningTable();
   		  break;
 
+          case 'assigned': // Assigned reservation
+        $.toast({
+            heading: 'Asignación de stock',
+            text: 'La asignación se ha realizado correctamente',
+            position: 'top-right',
+            bgColor: 'rgb(56, 154, 56)',
+            textColor: 'white',
+            loader: false,
+            stack: false
+        });
+
+        var item = {
+              origin: 'booking',
+              id: bookingPlanningModel.assignationResourceData.bookingId,
+              id2: bookingPlanningModel.assignationResourceData.bookingResourceId,
+              item_id: bookingPlanningModel.assignationResourceData.bookingCategory,
+              booking_item_reference: bookingPlanningModel.newReference,
+              date_from: bookingPlanningModel.assignationResourceData.bookingFrom,
+              time_from: bookingPlanningModel.assignationResourceData.bookingTimeFrom,
+              date_to: bookingPlanningModel.assignationResourceData.bookingTo,
+              time_to: bookingPlanningModel.assignationResourceData.bookingTimeTo,
+              title: bookingPlanningModel.assignationResourceData.bookingCustomer,
+              planning_color: 'rgb(102, 255, 102)'
+          };
+        bookingPlanningModel.planningData.push(item);
+
+        var parent = $('#booking-line-resource-'+bookingPlanningModel.assignationResourceData.bookingResourceId).parent();
+        $('#booking-line-resource-'+bookingPlanningModel.assignationResourceData.bookingResourceId).remove();
+        if (parent.children().length == 0) {
+           parent.parent().remove();
+        }
+        var reservationCount = parseInt($('#pending_asignation_button span').html())-1;
+        if (reservationCount > 0) {
+            $('#pending_asignation_button span').html(reservationCount);
+            $('#pending_reservations_count').html('('+reservationCount+')');
+        }
+        else {
+            $('#pending_asignation_button').hide();
+        }
+        bookingPlanningView.hideAssignationResource();
+        break;
+
       case 'reassigned': // Reassigned reservation
         $.toast({
               heading: 'Reasignación de stock',
@@ -629,6 +730,46 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
   		  alert('No hay suficientes datos para obtener la información');
   		  break;
   	  }
+    },
+
+    showAssignationResource: function(data) {
+
+        if (!$('#assignation_resource').is(':visible')) {
+            var height = parseInt($('#assignation_resource').css('height').replace('px',''));
+            $('#assignation_resource').show();
+            $('.gap').css('top', parseInt($('.gap').css('top').replace('px', '')) + height + 'px');
+            $('#planning_table_header').css('top', parseInt($('#planning_table_header').css('top').replace('px', '')) + height + 'px');
+            $('#planning_table').css('top', parseInt($('#planning_table').css('top').replace('px', '')) + height + 'px');
+            this.update('data_available');
+        }
+        $('#assignation_resource_booking_id').html(data.bookingId);
+        $('#assignation_resource_booking_customer').html(data.bookingCustomer);
+        $('#assignation_resource_booking_date_from').html(data.bookingDateFrom);
+        $('#assignation_resource_booking_date_to').html(data.bookingDateTo);
+        $('#assignation_resource_booking_category').html(data.bookingCategory);
+        $('#assignation_resource_booking_line_resource_id').val(data.bookingResourceId);
+        $('#assignation_resource_booking_customer_height_weight').html(data.bookingCustomerHeight+'/'+data.bookingCustomerWeight);
+        $('#assignation_resource_booking_driver_date_for_birth').html(data.bookingDriverDateOfBirth + ' ('+data.bookingDriverAge+')');
+
+        bookingPlanningModel.assignationResourceData = data;
+
+
+        $('#planning_date').datepicker('setDate', new Date(data.bookingFrom).add(-3).days());
+        bookingPlanningController.planningDateChanged();
+
+    },
+
+    hideAssignationResource: function() {
+
+        if ($('#assignation_resource').is(':visible')) {
+            var height = parseInt($('#assignation_resource').css('height').replace('px', ''));
+            $('.gap').css('top', parseInt($('.gap').css('top').replace('px', '')) - height + 'px');
+            $('#planning_table_header').css('top', parseInt($('#planning_table_header').css('top').replace('px', '')) - height + 'px');
+            $('#planning_table').css('top', parseInt($('#planning_table').css('top').replace('px', '')) - height + 'px');
+            $('#assignation_resource').hide();
+            this.update('data_available');
+        }
+
     }
 
   }

@@ -43,6 +43,11 @@
     z-index: 1000;
   }
 
+  #assignation_resource {
+    margin-top: 10px;
+    height: 170px;
+  }
+
   @media screen and (min-width: 992px) {
     .top-navigation-bar {
       left: 230px;
@@ -67,11 +72,11 @@
 </style>
 <div class="top-navigation-bar">
   <div class="row">
-    <div class="col-xs-4 col-md-4 col-lg-4">
-      <h2 class="entity-title"><%=t.bookings_planning.title%></h2>
+    <div class="col-xs-2 col-md-4 col-lg-3">
+      <h2 class="entity-title" style="position:relative; top: 2px"><%=t.bookings_planning.title%></h2>
     </div>
-    <div class="col-xs-8 col-md-6 col-lg-6">
-      <form>
+    <div class="col-xs-8 col-md-6 col-lg-5">
+      <form class="text-center">
         <div class="form-row">
           <button id="prior_week_button" type="button" class="btn btn-default"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i></button>
           <button id="prior_day_button" type="button" class="btn btn-default"><i class="fa fa-angle-left"></i></button>
@@ -81,12 +86,211 @@
         </div>
       </form>
     </div>
+    <div class="col-xs-2 col-md-2 col-lg-4">
+      <button id="new_reservation_button" class="btn btn-minw btn-success">Nueva reserva</button>
+      <% if @pending_of_asignation_bookings.size > 0 %>
+      <button id="pending_asignation_button" class="btn btn-minw btn-primary">Pendientes asignar<span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -9px; left: 1px; color: white; text-decoration: none; font-size: 0.7em"><%=@pending_of_asignation_bookings.size%></span></button>
+      <% end %>
+    </div>
+  </div>
+  <div id="assignation_resource" class="row" style="display: none;">
+    <br>
+      <div class="col-sm-12 col-lg-12">
+        <div class="block block-bordered">
+          <div class="block-header bg-gray-lighter">
+            <ul class="block-options">
+              <li>
+                <button type="button" id="close_assignation_resource_button"><i class="si si-close"></i></button>
+              </li>
+            </ul>
+            <h3 class="block-title">Asignación reserva</h3>
+          </div>
+          <div class="block-content">
+            <form class="horizontal-form">
+               <input type="hidden" id="assignation_resource_booking_line_resource_id" name="assignation_resource_booking_line_resource_id">
+               <div class="col-lg-4">
+                  <div class="form-group" style="margin-bottom: 0">
+                    <label class="col-md-3 control-label">#</label>
+                    <div class="form-control-static" style="position:relative; top: -6px; left: 15px"  id="assignation_resource_booking_id"></div>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0">
+                    <label class="col-md-3 control-label">Cliente</label>
+                    <div class="form-control-static" style="position:relative; top: -6px; left: 15px"  id="assignation_resource_booking_customer"></div>
+                  </div>
+               </div>
+               <div class="col-lg-4">
+                  <div class="form-group" style="margin-bottom: 0">
+                    <label class="col-md-3 control-label">Inicio</label>
+                    <div class="form-control-static" style="position:relative; top: -6px; left: 15px"  id="assignation_resource_booking_date_from"></div>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0">
+                    <label class="col-md-3 control-label">Fin</label>
+                    <div class="form-control-static" style="position:relative; top: -6px; left: 15px" id="assignation_resource_booking_date_to"></div>
+                  </div>
+               </div>
+               <div class="col-lg-4">
+                  <div class="form-group" style="margin-bottom: 0">
+                    <label class="col-md-3 control-label">Categoría</label>
+                    <div class="form-control-static" style="position:relative; top: -6px; left: 15px"  id="assignation_resource_booking_category"></div>
+                  </div>
+                 <% if @product_family.height or @product_family.weight %>
+                   <div class="form-group" style="margin-bottom: 0">
+                     <label class="col-md-3 control-label">Alt/Peso</label>
+                     <div class="form-control-static" style="position:relative; top: -6px; left: 15px"  id="assignation_resource_booking_customer_height_weight"></div>
+                   </div>
+                 <% elsif @product_family.driver and @product_family.code='car' %>
+                   <div class="form-group" style="margin-bottom: 0">
+                     <label class="col-md-3 control-label">Nacimiento</label>
+                     <div class="form-control-static" style="position:relative; top: -6px; left: 15px"  id="assignation_resource_booking_driver_date_for_birth"></div>
+                   </div>
+                 <% end %>
+               </div>
+            </form>
+          </div>
+      </div>
+    </div>
   </div>
 </div>
+
 <!-- Used to hide the planning table scroll -->
 <div class="gap">
 </div>
+
 <!-- Wraps the planning table -->
 <div class="admin_content_wrapper">
   <%= partial :booking_planning %>
+</div>
+
+<!-- ========================================= -->
+<!-- Pending assignation reservations modal    -->
+<!-- ========================================= -->
+<div class="modal fade" id="pending_asignation_container" tabindex="-1" role="dialog" aria-labelledby="pendingAssignationModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul class="block-options">
+          <li>
+            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+          </li>
+        </ul>
+        <h3 class="modal-title">Reservas pendientes de asignar <span id="pending_reservations_count">(<%=@pending_of_asignation_bookings.size%>)</span></h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12 col-md-12 col-lg-12">
+            <button id="pending-reservation-auto-assignation-btn" class="btn btn-minw btn-primary btn-assign-resource">Asignación automática de todas las reservas</button>
+          </div>
+        </div>
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th style="width: 50px">#</th>
+            <th style="width: 120px">Cliente</th>
+            <% if @product_family.driver and @product_family.code='car'%>
+            <th style="width: 100px">Nacimiento</th>
+            <% end %>
+            <th style="width: 100px">Fechas</th>
+            <th style="width: 30px">Días</th>
+            <th style="width: 240px">Asignación</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% last = nil %>
+          <% number_of_bookings = 0 %>
+          <% @pending_of_asignation_bookings.each do |reservation| %>
+            <% if last != reservation %>
+            <tr>
+              <td style="vertical-align: middle"><%= reservation.id %></td>
+              <td style="vertical-align: middle"><%= reservation.customer_name %> <%= reservation.customer_surname%></td>
+              <% if @product_family.driver and @product_family.code='car'%>
+                <td style="vertical-align: middle"><%= reservation.driver_date_of_birth ? reservation.driver_date_of_birth.strftime('%d-%m-%Y') : '-'%><br>(<%=reservation.driver_date_of_birth ? BookingDataSystem::Booking.completed_years(reservation.date_from, reservation.driver_date_of_birth) : '-' %> años)</td>
+              <%end%>
+              <td style="vertical-align: middle"><%=reservation.date_from.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=reservation.time_from%><%end%><br><%=reservation.date_to.strftime('%d-%m-%Y')%> <%if @product_family.time_to_from%><%=reservation.time_to%><%end%></td>
+              <td style="vertical-align: middle"><%=reservation.days%></td>
+              <td style="vertical-align: middle">
+                 <% if reservation.booking_line_resources.size == 1 %>
+                   <div id="booking-line-resource-<%=reservation.booking_line_resources.first.id%>">
+                     <div class="col-lg-12">
+                       <strong><%= reservation.booking_lines.first.item_id %></strong>&nbsp;&nbsp;
+                       <button class="btn btn-minw btn-success btn-assign-resource"
+                               data-booking-id="<%=reservation.id%>"
+                               data-booking-customer="<%=reservation.customer_name%> <%=reservation.customer_surname%>"
+                               <% if @product_family.driver and @product_family.code='car'%>
+                               data-booking-driver-date-of-birth="<%= reservation.driver_date_of_birth ? reservation.driver_date_of_birth.strftime('%d-%m-%Y') : ''%>"
+                               data-booking-driver-age="<%=reservation.driver_date_of_birth ? BookingDataSystem::Booking.completed_years(reservation.date_from, reservation.driver_date_of_birth) : ''%>"
+                               <% end %>
+                               data-booking-from="<%=reservation.date_from.strftime('%d-%m-%Y')%><%if @product_family.time_to_from%> <%=reservation.time_from%><%end%>"
+                               data-booking-date-from="<%=reservation.date_from.strftime('%Y-%m-%d')%>"
+                               data-booking-time-from="<%=reservation.time_from%>"
+                               data-booking-to="<%=reservation.date_to.strftime('%d-%m-%Y')%><%if @product_family.time_to_from%> <%=reservation.time_to%><%end%>"
+                               data-booking-date-to="<%=reservation.date_to.strftime('%Y-%m-%d')%>"
+                               data-booking-time-to="<%=reservation.time_to%>"
+                               data-booking-category="<%= reservation.booking_lines.first.item_id %>"
+                               data-booking-days="<%=reservation.days%>"
+                               <% if @product_family.height or @product_family.weight %>
+                               data-booking-customer-height="<%=reservation.booking_line_resources.first.customer_height%>"
+                               data-booking-customer-weight="<%=reservation.booking_line_resources.first.customer_weight%>"
+                               <% end %>
+                               data-booking-line-resource-id="<%=reservation.booking_line_resources.first.id%>">Manual</button>
+                       <button class="btn btn-minw btn-primary btn-assign-resource" data-booking-line-resource-id="<%=reservation.booking_line_resources.first.id%>">Automática</button>
+                     </div>
+                   </div>
+                   <% if @product_family.height or @product_family.weight %>
+                   <div style="margin-top: 3em">
+                     <div class="col-lg-offset-1 col-lg-11">
+                       <span><strong>altura:</strong> <%= (reservation.booking_line_resources.first.customer_height and !reservation.booking_line_resources.first.customer_height.nil? and !reservation.booking_line_resources.first.customer_height.empty?) ? reservation.booking_line_resources.first.customer_height : ' N/A '%></span>
+                       <span><strong>peso:</strong> <%=(reservation.booking_line_resources.first.customer_weight and !reservation.booking_line_resources.first.customer_weight.nil? and !reservation.booking_line_resources.first.customer_weight.empty?) ? reservation.booking_line_resources.first.customer_weight : ' N/A '%></span>
+                     </div>
+                   </div>
+                   <% end %>
+                 <% else %>
+                   <% reservation.booking_line_resources.each do |reservation_resource| %>
+                     <div style="margin-bottom: 3em">
+                       <div class="col-lg-12">
+                         <strong><%= reservation_resource.booking_line.item_id %></strong>&nbsp;&nbsp;
+                         <button class="btn btn-minw btn-success btn-assign-resource"
+                                 data-booking-id="<%=reservation.id%>"
+                                 data-booking-customer="<%=reservation.customer_name%> <%=reservation.customer_surname%>"
+                                 <% if @product_family.driver and @product_family.code='car'%>
+                                 data-booking-driver-date-of-birth="<%= reservation.driver_date_of_birth ? reservation.driver_date_of_birth.strftime('%d-%m-%Y') : ''%>"
+                                 data-booking-driver-age="<%=reservation.driver_date_of_birth ? BookingDataSystem::Booking.completed_years(reservation.date_from, reservation.driver_date_of_birth) : ''%>"
+                                 <% end %>
+                                 data-booking-from="<%=reservation.date_from.strftime('%d-%m-%Y')%><%if @product_family.time_to_from%> <%=reservation.time_from%><%end%>"
+                                 data-booking-date-from="<%=reservation.date_from.strftime('%Y-%m-%d')%>"
+                                 data-booking-time-from="<%=reservation.time_from%>"
+                                 data-booking-to="<%=reservation.date_to.strftime('%d-%m-%Y')%><%if @product_family.time_to_from%> <%=reservation.time_to%><%end%>"
+                                 data-booking-date-to="<%=reservation.date_to.strftime('%Y-%m-%d')%>"
+                                 data-booking-time-to="<%=reservation.time_to%>"                                   data-booking-category="<%= reservation_resource.booking_line.item_id %>"
+                                 data-booking-days="<%=reservation.days%>"
+                                 <% if @product_family.height or @product_family.weight %>
+                                 data-booking-customer-height="<%=reservation_resource.customer_height%>"
+                                 data-booking-customer-weight="<%=reservation_resource.customer_weight%>"
+                                 <% end %>
+                                 data-booking-line-resource-id="<%=reservation_resource.id%>">Manual</button>
+                         <button class="btn btn-minw btn-primary btn-assign-resource"
+                                 data-booking-line-resource-id="<%=reservation_resource.id%>">Automática</button>
+                       </div>
+                     </div>
+                     <% if @product_family.height or @product_family.weight %>
+                     <div style="margin-bottom: 3.50em">
+                        <div class="col-lg-offset-1 col-lg-11" style="margin-bottom: 0.2em">
+                          <span><strong>altura:</strong> <%=(reservation_resource.customer_height and !reservation_resource.customer_height.nil? and !reservation_resource.customer_height.empty?) ? reservation_resource.customer_height : ' N/A '%></span>
+                          <span><strong>peso:</strong> <%=(reservation_resource.customer_weight and !reservation_resource.customer_weight.nil? and !reservation_resource.customer_weight.empty?) ? reservation_resource.customer_weight : ' N/A '%></span>
+                        </div>
+                     </div>
+                     <br>
+                     <% end %>
+                   <% end %>
+                 <% end %>
+              </td>
+            </tr>
+            <% last = reservation %>
+            <% number_of_bookings += 1 %>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

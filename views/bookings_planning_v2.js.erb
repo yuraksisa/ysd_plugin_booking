@@ -27,6 +27,32 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
 
   planningController = {
 
+      pendingAssignationButtonClick: function() {
+          $('#pending_asignation_container').modal('show');
+      },
+
+      manualAssignResourceButtonClick: function(button) {
+          var data = {
+              bookingId: button.attr('data-booking-id'),
+              bookingCustomer: button.attr('data-booking-customer'),
+              bookingDriverDateOfBirth : button.attr('data-booking-driver-date-of-birth'),
+              bookingDriverAge: button.attr('data-booking-driver-age'),
+              bookingDateFrom: button.attr('data-booking-from'),
+              bookingDateTo: button.attr('data-booking-to'),
+              bookingFrom: button.attr('data-booking-date-from'),
+              bookingTimeFrom: button.attr('data-booking-time-from'),
+              bookingTo: button.attr('data-booking-date-to'),
+              bookingTimeTo: button.attr('data-booking-time-to'),
+              bookingCategory: button.attr('data-booking-category'),
+              bookingDays: button.attr('data-booking-days'),
+              bookingCustomerHeight: button.attr('data-booking-customer-height'),
+              bookingCustomerWeight: button.attr('data-booking-customer-weight'),
+              bookingResourceId: button.attr('data-booking-line-resource-id')
+          }
+          $('#pending_asignation_container').modal('hide');
+          bookingPlanningView.showAssignationResource(data);
+      }
+
   } 
 
   planningView = {
@@ -36,6 +62,13 @@ require(['jquery', 'jquery.ui', 'jquery.ui.datepicker-es',
       bookingPlanningModel.reference = planningModel.reference;
       bookingPlanningModel.product = planningModel.product;
   	  bookingPlanningView.init();
+  	  $('.btn-assign-resource').bind('click', function() {
+  	    planningController.manualAssignResourceButtonClick($(this));
+      });
+
+  	  $('#pending_asignation_button').bind('click', function(){
+  	     planningController.pendingAssignationButtonClick();
+      });
     }
 
   }
