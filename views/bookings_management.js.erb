@@ -178,13 +178,13 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
          for (var resourceIdx=0; resourceIdx < entity.booking_lines[lineIdx].booking_line_resources.length; resourceIdx++) { 
            var heightValue = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_height;
            if (heightValue != null) {
-             if ($('select[name=customer_height][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+'] option[value="'+heightValue+'""]').length == 0) {
+             if ($('select[name=customer_height][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+'] option[value="'+heightValue+'"]').length == 0) {
                $('select[name=customer_height][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+']').append('<option value="'+heightValue+'" selected="selected">'+heightValue+'</option>');
              }
            }
            var weightValue = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_weight;
            if (weightValue != null) {
-             if ($('select[name=customer_weight][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+'] option[value="'+weightValue+'""]').length == 0) {
+             if ($('select[name=customer_weight][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+'] option[value="'+weightValue+'"]').length == 0) {
                $('select[name=customer_weight][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+']').append('<option value="'+weightValue+'" selected="selected">'+weightValue+'</option>');
              }           
            }

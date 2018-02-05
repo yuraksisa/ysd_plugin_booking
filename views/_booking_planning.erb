@@ -13,7 +13,7 @@
   }
 
   #planning_table_header {
-    width: 861px;
+    width: 1000px;
     table-layout: fixed;
     position :fixed;
     font-size: 0.9em;
@@ -24,10 +24,14 @@
   }
 
   #planning_table {
-    width: 861px;
+    width: 1000px;
     table-layout: fixed;
     position: relative;
-    top: 153px;
+    <% if @planning_style == 'extended' %>
+    top: 123px;
+    <% else %>
+    top: 151px;
+    <% end %>
     left: 16px; /* 1px */
     z-index: 10;
   }
@@ -51,6 +55,11 @@
     font-weight: 600;
     color: #0a535e;
     background: #eeeeee;
+    <% if @planning_style == 'extended' %>
+    font-size: 11px;
+    <% else %>
+    text-align: center;
+    <% end %>
   }
 
   .planning_item_category {
@@ -64,22 +73,39 @@
     font-weight: 400;
     display: block;
     line-height: 12px;
+    <% if @planning_style == 'extended' %>
+      display: none;
+    <% end %>
   }
 
   .planning_header_day {
+    <% if @planning_style == 'extended' %>
+    font-size: 11px;
+    font-weight: 400;
+    font-family: monospace;
+    <% else %>
     font-size: 20px;
-    font-weight: 600;
-    display: block;
     position: relative;
     top: 5px;
+    font-weight: 600;
+    <% end %>
+    display: block;
   }
 
   .planning_header_month {
+    <% if @planning_style == 'extended' %>
+    font-size: 8px;
+    text-align: center;
+    font-weight: 400;
+    font-family: monospace;
+    <% else %>
     font-size: 1em;
-    font-weight: 600;
     position: relative;
     top: 5px;
+    font-weight: 600;
+    <% end %>
     line-height: 12px;
+    display: block;
   }
 
   .date_header {
@@ -101,7 +127,7 @@
 
   #planning_table th, #planning_table_header th {
     background: #EEE;
-    padding: 5px 2px;
+    padding: 10px 2px;
     font-size: 0.90em;
   } 
 
@@ -167,8 +193,8 @@
                      data-title="<%%=title%>"
                      data-planning-color="<%%=backgroundColor%>"
                      class="planning_reservation"
-                     style="padding: 5px; position: absolute; color: <%%=color%>; background-color: <%%=backgroundColor%>; overflow:hidden; opacity: 0.75">
-    <%%= title %>
+                     style="<%=@planning_style=='compact' ? 'padding: 5px;' : 'padding:2px; font-size: 10px;'%>display: inline-block; position: absolute; border: 1px solid; border-color: <%%=borderColor%>; color: <%%=color%>; background-color: <%%=backgroundColor%>; overflow:hidden; opacity: 0.75">
+    <span style="white-space: nowrap; overflow: hidden; padding-right: 2px">#<%%=id%> - <%%= title %></span>
   </div>
 </script>
 

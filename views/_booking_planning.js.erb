@@ -36,7 +36,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
 
     dateFrom: null,                      /* Date from to be shown */
     dateTo: null,                        /* Date to to be shown */
-    numberOfDays: 16,                    /* Number of days to be shown */
+    numberOfDays: <%=@planning_style=='compact' ? 16 : 31%>,                    /* Number of days to be shown */
 
     references: null,                    /* The loaded references (table rows) */
     planningData : null,                 /* The loaded data - reservation to show */
@@ -54,6 +54,21 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
     topVisiblePosition: null,            /* The top visible position $(window).scrollTop() of the top visible row */
     startDragWindowScrollTop: null,      /* Store topVisiblePosition when starting drag and drop to restore if reverted */
     assignationResourceData: null,
+    planningStyle: '<%=@planning_style%>',
+    planningMeasurements: {
+        'compact': {
+           colReferenceWidth: 160,
+           tableHeaderLineHeight: 25,
+           tableColumnWidth: 50,
+           tableLineHeight: 10,
+        },
+        'extended': {
+            colReferenceWidth: 140,
+            tableHeaderLineHeight: 10,
+            tableColumnWidth: 20,
+            tableLineHeight: 10,
+        }
+    },
 
     loadData: function() { /* Load the planning data */
 
@@ -175,10 +190,6 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
         bookingPlanningModel.topVisiblePosition = $(window).scrollTop();
         bookingPlanningModel.topVisibleRow = Math.floor(bookingPlanningModel.topVisiblePosition / bookingPlanningModel.tablePlanningTrHeight);
         bookingPlanningModel.topVisibleItem = $('#planning_table tr:nth('+bookingPlanningModel.topVisibleRow+')').attr('id');
-
-        /*console.log('scroll. row = ' + bookingPlanningModel.topVisibleRow +
-            ' scrollTop: ' + bookingPlanningModel.topVisiblePosition +
-            ' item : ' + bookingPlanningModel.topVisibleItem);*/
 
     },
 
@@ -480,12 +491,18 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
 
         // Create the column for the references
         $("#planning_table_header thead").append("<tr></tr>");
-        $("#planning_table_header thead tr:first").append("<th style='width:160px;line-height: 25px; text-align:center; border: 1px solid #cccccc; background:white'>"+''+"</th>");
+        $("#planning_table_header thead tr:first").append("<th style='width:"+
+           bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['colReferenceWidth'].toString()+
+           "px;line-height:"+
+           bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableHeaderLineHeight'].toString()+"px; text-align:center; border: 1px solid #cccccc; background:white'>"+''+"</th>");
         for (item in bookingPlanningModel.references) {
             $("#planning_table tbody").append("<tr id='" + item + "' rel='" + bookingPlanningModel.references[item] + "'></tr>");
+            var title = bookingPlanningModel.planningStyle == 'compact' ? item+'<span class="planning_item_category">'+bookingPlanningModel.references[item]+'</span>' : 
+                        '<span class="planning_item_category_extended">'+bookingPlanningModel.references[item]+'</span>'+ ' - ' +item;
             $("#planning_table tbody tr#"+item+"").append(
-                "<td class='planning_reference' style='width:160px;line-height: 20px; text-align:center' data-reference='"+item+"'>"+
-                     item+'<span class="planning_item_category">'+bookingPlanningModel.references[item]+'</span>'+"</td>");
+                "<td class='planning_reference' style='width:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['colReferenceWidth'].toString()+
+           "px;line-height:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableLineHeight'].toString()+"px;' data-reference='"+item+"'>"+
+                     title+"</td>");
         }
 
         var date= new Date(bookingPlanningModel.dateFrom);
@@ -494,7 +511,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
         while (date <= bookingPlanningModel.dateTo) {
             var title = '<span class="planning_header_day_of_week">' + bookingPlanningModel.days[date.getDay()] + '</span>'+
                         '<span class="planning_header_day">' + date.getDate() + '</span>' +
-                        '<span class="planning_header_month"> ' + bookingPlanningModel.months[date.getMonth()] + '</span>';
+                        '<span class="planning_header_month">' + bookingPlanningModel.months[date.getMonth()] + '</span>';
             var datestr = YSDFormatter.formatDate(date, 'yyyy-MM-dd');
             var firstMonthDay = date.getDate() == 1 ? true : false;
             var oddMonth = (date.getMonth() + 1) % 2 == 0;
@@ -511,12 +528,14 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
                 headerClass += ' ';
                 headerClass += firstMonthDayColumnClass;
             }
-            $("#planning_table_header thead tr:first").append("<th class='" + headerClass + "' style='width:50px;line-height:25px;text-align:center' rel='" + datestr + "'>" + title + "</th>");
+            $("#planning_table_header thead tr:first").append("<th class='" + headerClass + "' style='width:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableColumnWidth'].toString()+
+           "px;line-height:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableHeaderLineHeight'].toString()+"px;text-align:center' rel='" + datestr + "'>" + title + "</th>");
             for (item in bookingPlanningModel.references) {
 
                 var value = '';
                 var background = 'white';
-                var cellInformation = "style='background:" + background + ";width:50px;line-height:20px'";
+                var cellInformation = "style='background:" + background + ";width:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableColumnWidth'].toString()+
+           "px;line-height:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableLineHeight'].toString()+"px'";
                 cellInformation += " data-date='" + datestr + "' " + "data-resource='" + item + "'";
                 var cellClasses = 'data';
                 if (firstMonthDay && date.getTime() != bookingPlanningModel.dateFrom.getTime()) {
@@ -584,28 +603,36 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
         var days = (new Date(dTo) - new Date(dFrom))/(1000*60*60*24) + 1;
 
         var positionResource = $('tr[id='+resource+']').position();
-        var positionDateFrom = $('th.date_header[rel='+dFrom+']').position();
-        var positionDateTo = $('th.date_header[rel='+dTo+']').position();
-        var height = $('tr[id='+resource+']').height();
-        var oneDayWidth = $('th.date_header[rel='+dFrom+']').width() + 4 + 2; // +4 padding +2 border
 
-        var top = positionResource.top;
-        var left = positionDateFrom.left;
-        var width = days * oneDayWidth;
+        if (positionResource != null) {
+            var positionDateFrom = $('th.date_header[rel=' + dFrom + ']').position();
+            var positionDateTo = $('th.date_header[rel=' + dTo + ']').position();
+            var height = $('tr[id=' + resource + ']').height();
+            var oneDayWidth = $('th.date_header[rel=' + dFrom + ']').width() + 4 + 2; // +4 padding +2 border
 
-        top += $('#planning_table').position().top;
-        left += 16; // 2 + 14 (
+            var top = positionResource.top;
+            var left = positionDateFrom.left;
+            var width = days * oneDayWidth;
 
-        var html = tmpl('planning_reservation')({id: id, origin: origin, idResource: idResource,
-                                                 dateFrom: dateFrom, timeFrom: timeFrom,
-                                                 dateTo: dateTo, timeTo: timeTo,
-                                                 category: category, resource: resource,
-                                                 title: title,
-                                                 backgroundColor: backgroundColor,
-                                                 color: this.textColor(backgroundColor)});
+            top += $('#planning_table').position().top;
+            left += 16; // 2 + 14 (
 
-        $(html).height(height).css({top: top, left: left, width: width}).appendTo('#parent');
+            var html = tmpl('planning_reservation')({
+                id: id, origin: origin, idResource: idResource,
+                dateFrom: dateFrom, timeFrom: timeFrom,
+                dateTo: dateTo, timeTo: timeTo,
+                category: category, resource: resource,
+                title: title,
+                backgroundColor: backgroundColor,
+                borderColor: this.lightenDarkenColor(backgroundColor, -40),
+                color: this.textColor(backgroundColor)
+            });
 
+            $(html).height(height).css({top: top, left: left, width: width}).appendTo('#parent');
+        }
+        else {
+            console.log('Resource: ' + resource + ' not found . Reservation : ' + id);
+        }
     },
 
     removeItemsInPlanning: function() { /* Remove the items in the planning */
@@ -615,14 +642,41 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'jquery.ui', 'jquery.ui.datepi
     },
 
 
+    lightenDarkenColor: function(col, amt) {
+
+      if (col == null) {
+          return 'rgb(0,0,0)';
+      }
+
+      var usePound = false;
+
+      if (col[0] == "#") {
+          col = col.slice(1);
+          usePound = true;
+      }
+
+      var num = parseInt(col,16);
+
+      var r = (num >> 16) + amt;
+
+      if (r > 255) r = 255;
+      else if  (r < 0) r = 0;
+
+      var b = ((num >> 8) & 0x00FF) + amt;
+
+      if (b > 255) b = 255;
+      else if  (b < 0) b = 0;
+
+      var g = (num & 0x0000FF) + amt;
+
+      if (g > 255) g = 255;
+      else if (g < 0) g = 0;
+
+      return (usePound?"#":"") + String("000000" + (g | (b << 8) | (r << 16)).toString(16)).slice(-6);
+
+    },
+
     textColor: function(color) {
-           //if only first half of color is defined, repeat it
-        /*
-            if(color.length < 5) {
-                color += color.slice(1);
-            }
-            return (color.replace('#','0x')) > (0xffffff/2) ? '#333' : '#fff';
-         */
 
         var text_color = "rgb(0,0,0)";
 

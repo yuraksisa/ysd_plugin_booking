@@ -1,4 +1,4 @@
-require(['jquery', 'YSDForms', 'jquery.ui', 'ysdhtmleditor',], function($, YSDForms) {
+require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.ui.touch-punch', 'ysdhtmleditor',], function($, YSDForms) {
 
 
   model = {
@@ -12,6 +12,10 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'ysdhtmleditor',], function($, YSDFo
               function(responseText, textStatus, jqXHR){
                   $('.modal-title').html('Nueva página');
                   htmlEditor('.texteditor');
+                  $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){
+                      e.preventDefault();
+                      $(this).tab('show');
+                  });
                   $('#modal_container').modal('show');
               }
           );
@@ -22,6 +26,10 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'ysdhtmleditor',], function($, YSDFo
               function(responseText, textStatus, jqXHR){
                   $('.modal-title').html('Editar página');
                   htmlEditor('.texteditor');
+                  $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){
+                      e.preventDefault();
+                      $(this).tab('show');
+                  });
                   $('#modal_container').modal('show');
               }
           );
@@ -29,6 +37,10 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'ysdhtmleditor',], function($, YSDFo
 
       deletePageButtonClick: function() {
 
+      },
+
+      openInBrowser: function(url) {
+          window.open(url,'_blank');
       }
 
   };
@@ -39,6 +51,9 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'ysdhtmleditor',], function($, YSDFo
           YSDForms.improve();
           $('.sortable').sortable();
           $('.sortable').disableSelection();
+          $('.open_in_browser_button').bind('click', function() {
+              controller.openInBrowser($(this).attr('rel'));
+          });
           $('#new_page_button').bind('click', function() {
               controller.newPageButtonClick();
           });
