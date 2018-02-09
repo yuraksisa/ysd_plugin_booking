@@ -617,6 +617,7 @@ booking_management:
   print_contract_short: Contrato
   table:
     rental_location: Centro
+    sales_channel: Canal
     id: Localizador
     creation_date: Recepción
     customer: Cliente
@@ -1699,3 +1700,12 @@ booking_rental_locations_management:
     users:
       label: Usuarios
       description: Seleccione los usuarios de la oficina. Sólo los usuarios operadores, los usuarios gestores tienen acceso a la información de todas las oficinas
+booking_category_sales_channels_management:
+  title: Canales de venta
+  no_data: No se han definido canales de venta para el producto
+  table:
+    channel_name: Canal de venta
+booking_category_sales_channels_setup:
+  title: Configurar canales de venta
+booking_category_sales_channels_edit:
+  title: Canal de venta %1

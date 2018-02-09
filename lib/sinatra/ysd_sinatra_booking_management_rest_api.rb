@@ -597,18 +597,7 @@ module Sinatra
            data.to_json
           
         end
-
-        #
-        # Regenerates the booking_js template
-        #
-        app.post '/api/booking/create-rates', :allowed_usergroups => ['booking_manager', 'staff']  do
-  
-          ::Yito::Model::Booking::Generator.instance.create_rates
-
-          true.to_json
-          
-        end        
-
+        
         # ------------------------ BOOKING MANAGER ---------------------------------------
 
         #
@@ -897,6 +886,8 @@ module Sinatra
           number_of_children = data[:number_of_children]
           driver_rule_definition_id = SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition')
           driver_rule_definition = driver_rule_definition_id ? ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(driver_rule_definition_id) : nil
+          sales_channel_code = data[:sales_channel_code]
+          sales_channel_code = nil if sales_channel_code and sales_channel_code.empty?
 
           # Prepare the supplements
           calculator = ::Yito::Model::Booking::RentingCalculator.new(date_from, time_from, date_to, time_to, pickup_place,
@@ -909,13 +900,15 @@ module Sinatra
           locale = session[:locale]#locale_to_translate_into
           
           # Prepare the products
-          products = ::Yito::Model::Booking::RentingSearch.search(date_from, 
-                                                                  date_to, 
-                                                                  calculator.days,
-                                                                  locale,
-                                                                  true,
-                                                                  nil,
-                                                                  false)
+          products = ::Yito::Model::Booking::BookingCategory.search(date_from,
+                                                                    date_to,
+                                                                    calculator.days,
+                                                                    {
+                                                                      locale: locale,
+                                                                      full_information: true,
+                                                                      product_code: nil,
+                                                                      web_public: false,
+                                                                      sales_channel_code: sales_channel_code})
 
           # Prepare the extras
           extras = ::Yito::Model::Booking::RentingExtraSearch.search(date_from,

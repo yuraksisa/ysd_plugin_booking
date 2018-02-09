@@ -10,6 +10,7 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.ui.touch-punch', 'ysdhtmledi
       newPageButtonClick: function() {
           $('#modal_container .modal-body').load('/admin/cms/page-content/new #container',
               function(responseText, textStatus, jqXHR){
+                  var dom = $('<html />').prop('innerHTML', html);
                   $('.modal-title').html('Nueva página');
                   htmlEditor('.texteditor');
                   $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){
@@ -24,6 +25,7 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.ui.touch-punch', 'ysdhtmledi
       editPageButtonClick: function(id) {
           $('#modal_container .modal-body').load('/admin/cms/page-content/'+id+'/edit #container',
               function(responseText, textStatus, jqXHR){
+                  var dom = $('<html />').prop('innerHTML', html);
                   $('.modal-title').html('Editar página');
                   htmlEditor('.texteditor');
                   $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){

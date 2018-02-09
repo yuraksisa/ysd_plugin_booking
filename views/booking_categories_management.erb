@@ -280,7 +280,7 @@
               <div class="block-header bg-gray-lighter">
                 <h3 class="block-title">Tarifas</h3>
               </div>
-              <div class="block-content block-content-narrow">
+              <div class="block-content">
                   <%% if (entity.price_definition_id == null) { %>
                   <div class="row">
                     <div class="col-xs-12 col-sm-8 col-lg-8">
@@ -380,7 +380,7 @@
               <div class="block-header bg-gray-lighter">
                 <h3 class="block-title">Detalle del stock</h3>
               </div>
-              <div class="block-content block-content-narrow">
+              <div class="block-content">
                   <div class="row">
                     <div class="col-lg-12">
                       <div id="stock_detail_container">
@@ -392,6 +392,33 @@
           </div>
         </div>
         <%% } %>
+
+        <!-- Sales channels -->
+
+        <% if @addon_sales_channels %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <ul class="block-options">
+                    <li>
+                        <button id="setup_channels_button" type="button"><i class="si si-settings"></i></button>
+                    </li>
+                </ul>
+                <h3 class="block-title">Canales de venta</h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div id="sales_channels_container">
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
 
         <!-- Translations -->
 

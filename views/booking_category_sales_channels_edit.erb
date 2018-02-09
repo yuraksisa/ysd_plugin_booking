@@ -1,0 +1,29 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_category_sales_channels_edit.title(@category_sales_channel.sales_channel.name)%></h2>
+</div>
+<div id="page_wrapper">
+  <div id="content">
+
+    <!-- Prices -->
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="block block-bordered">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Tarifas</h3>
+          </div>
+          <div class="block-content">
+            <% if @category_sales_channel.price_definition and @category_sales_channel.price_definition.season_definition%>
+            <div>
+              <a href="/admin/rates/seasons/<%=@category_sales_channel.price_definition.season_definition.id%>">Editar temporadas</a>
+            </div>
+            <% end %>
+            <div id="category_sales_channel_prices_container">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

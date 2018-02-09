@@ -126,6 +126,34 @@
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
           <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Gestión de las tarifas</h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <p><a href="/admin/rates/season-defs">Gestionar temporadas</a></p>
+              <%= render_variable_checkbox_boolean('booking.new_season_definition_instance_for_category', 'Cada producto define sus propias temporadas') %>
+              <p class="less_contrast_text ">Dejar desmarcada si queremos que todos los productos utilicen sus propias temporadas</p>
+              <% if use_factors %>
+                <p><a href="/admin/rates/factor-defs">Gestionar factores</a></p>
+                <%= render_variable_checkbox_boolean('booking.new_factor_definition_instance_for_category', 'Cada producto define sus propios factores') %>
+                <p class="less_contrast_text ">Dejar desmarcada si queremos que todos los productos utilicen sus propios factores</p>
+              <% end %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
             <h3 class="block-title"><%=t.booking_settings.form.rates.title%></h3>
           </div>
           <div class="block-content block-content-narrow">
@@ -133,10 +161,6 @@
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.form.calendar_mode.title, calendar_modes) %>
               <p class="less_contrast_text"><%=t.booking_settings.form.rates.description%></p>
-              <p><a href="/admin/rates/season-defs">Gestionar temporadas</a></p>
-              <% if use_factors %>
-              <p><a href="/admin/rates/factor-defs">Gestionar factores</a></p>
-              <% end %>
               <div class="form-group">
                 <div class="col-xs-12">
                   <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>

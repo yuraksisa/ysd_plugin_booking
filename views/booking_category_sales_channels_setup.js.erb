@@ -1,0 +1,59 @@
+require(['jquery', 'jquery.ui', 'jquery.formparams'], function($) {
+
+
+    setupBookingChannelsModel = {
+
+        bookingCategoryCode: '<%=@booking_category.code%>',
+
+        configureChannels: function() {
+
+            var url = '/api/booking/booking-categories/'+this.bookingCategoryCode+'/channels';
+
+            var data = $('form[name="channels_setup"]').formParams(true);
+            var dataJSON = encodeURIComponent(JSON.stringify(data));
+
+            $.ajax({
+                type: 'POST',
+                url : url,
+                data: dataJSON,
+                dataType : 'json',
+                contentType : 'application/json; charset=utf-8',
+                crossDomain: true,
+                success: function(data, textStatus, jqXHR) {
+                    console.log('done');
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('Error actualizando');
+                },
+                complete: function(jqXHR, textStatus) {
+                    console.log('complete');
+                }
+
+            });
+        }
+
+    };
+
+    setupBookingChannelsController = {
+        btnConfirmClick: function() {
+            setupBookingChannelsModel.configureChannels();
+        }
+    };
+
+    setupBookingChannelsView = {
+
+        init: function() {
+            this.setupEvents();
+        },
+
+        setupEvents: function() {
+            $('#btn_confirm_booking_category_channels').bind('click', function(){
+               setupBookingChannelsController.btnConfirmClick();
+            });
+        }
+
+    };
+
+    setupBookingChannelsView.init();
+
+});

@@ -359,6 +359,18 @@ module Huasi
            :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.new_season_definition_instance_for_category'},
+          {:value => 'false',
+           :description => 'Each product category has it\'s own season definition instance',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.new_factor_definition_instance_for_category'},
+          {:value => 'false',
+           :description => 'Each product category has it\'s own factor definition instance',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.inner_reservation_engine'},
           {:value => 'true',
            :description => 'Uses the inner reservation engine',

@@ -1,0 +1,70 @@
+require(['jquery', 'jquery.ui'], function($) {
+
+    categorySalesChannelsModel = {
+        bookingCategoryCode: '<%=@booking_category.code%>',
+        salesChannelId: null,
+        salesChannelName: null
+    };
+
+    categorySalesChannelsController = {
+        setupChannelsButtonClick: function() {
+            categorySalesChannelsView.update('show_manage_channels_modal');
+        },
+        editBookingCategoryChannelClick: function() {
+            categorySalesChannelsView.update('edit_booking_category_sales_channel');
+        }
+    };
+
+    categorySalesChannelsView = {
+
+        init: function() {
+
+            this.setupEvents();
+
+        },
+
+        setupEvents: function() {
+            $('#setup_channels_button').bind('click', function() {
+               categorySalesChannelsController.setupChannelsButtonClick();
+            });
+            $('.edit_booking_category_channel').bind('click', function() {
+               categorySalesChannelsModel.salesChannelId = $(this).attr('data-sales-channel-id');
+               categorySalesChannelsModel.salesChannelName = $(this).attr('data-sales-channel-name');
+               categorySalesChannelsController.editBookingCategoryChannelClick();
+            });
+        },
+
+        update: function(action) {
+            switch (action) {
+                case 'show_manage_channels_modal' :
+                   $.ajax({url: '/admin/booking/booking-categories/'+
+                       categorySalesChannelsModel.bookingCategoryCode+'/setup-channels #page_wrapper', dataType: 'text'}).done(
+                         function (html) {
+                           var dom = $('<html />').prop('innerHTML', html);
+                           $('.modal-title').html('Configurar canales');
+                           $('#modal_container .modal-body').html(dom.find('body #page_wrapper'))
+                            $('head').append(dom.find('script:not([src])'));
+                           $('#modal_container').modal('show');
+                         }
+                   );
+                   break;
+                case 'edit_booking_category_sales_channel' :
+                    $.ajax({url: '/admin/booking/booking-categories/'+ categorySalesChannelsModel.bookingCategoryCode +
+                            '/channels/'+ categorySalesChannelsModel.salesChannelId +' #page_wrapper', dataType: 'text'}).done(
+                        function (html) {
+                            var dom = $('<html />').prop('innerHTML', html);
+                            $('.modal-title').html('Editar canal de venta : ' + categorySalesChannelsModel.salesChannelName);
+                            $('#modal_container .modal-body').html(dom.find('body #page_wrapper'))
+                            $('head').append(dom.find('script:not([src])'));
+                            $('#modal_container').modal('show');
+                        }
+                    );
+                    break;
+            }
+        }
+
+    };
+
+    categorySalesChannelsView.init();
+
+});

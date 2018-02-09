@@ -25,7 +25,7 @@ module Sinatra
         end
 
         #
-        # Create new booking
+        # Show the page for creating a new booking
         #
         app.route :get, :post, ['/admin/booking/new/:booking_catalog_code',
                                 '/admin/booking/new'], :allowed_usergroups => ['booking_manager','booking_operator','staff'] do
@@ -100,6 +100,11 @@ module Sinatra
           @shopping_cart.save
           session['back_office_shopping_cart_renting_id'] = @shopping_cart.id unless session.has_key?('back_office_shopping_cart_renting_id')
 
+          # Prepare sales channels
+          addons = mybooking_addons
+          @addon_sales_channels = (addons and addons.has_key?(:addon_sales_channels) and addons[:addon_sales_channels])
+          @sales_channels = ::Yito::Model::SalesChannel::SalesChannel.all if @addon_sales_channels
+          
           load_page(:booking_management_new_reservation, :locals => locals)
 
         end

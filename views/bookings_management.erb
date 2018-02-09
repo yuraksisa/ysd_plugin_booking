@@ -45,6 +45,9 @@
          <% if multiple_rental_locations %>
          <th class="table-header-title" scope="col" style="width:120px"><%= t.booking_management.table.rental_location %></th>
          <% end %>
+         <% if @addon_sales_channels %>
+         <th class="table-header-title" scope="col" style="width:120px"><%= t.booking_management.table.sales_channel %></th>
+         <% end %>
        </tr>
      </thead>
      <tbody id="elements_tbody" class="table-tbody">             
@@ -83,6 +86,9 @@
       <td class="table-cell centered_text"><%%= entity.created_by_manager ? '<i class="fa fa-times"></i>' : '<i class="fa fa-check"></i>' %>
       <% if multiple_rental_locations %>
       <td class="table-cell"><%%= entity.rental_location_code %></td>
+      <% end %>
+      <% if @addon_sales_channels %>
+      <td class="table-cell"><%%= entity.sales_channel_code %></td>
       <% end %>
     </tr>
 </script>

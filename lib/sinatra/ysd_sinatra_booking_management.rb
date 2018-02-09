@@ -561,11 +561,11 @@ module Sinatra
           @pending_confirmation_reservations = BookingDataSystem::Booking.count_pending_confirmation_reservations(@year)
           @received_reservations = BookingDataSystem::Booking.count_received_reservations(@year)
           @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
+          addons = mybooking_addons
+          @addon_sales_channels = (addons and addons.has_key?(:addon_sales_channels) and addons[:addon_sales_channels])
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
         end
-
-
 
         #
         # Check the extras occupation

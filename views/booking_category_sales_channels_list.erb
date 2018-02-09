@@ -1,0 +1,57 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_category_sales_channels_management.title%></h2>
+</div>
+<div id="page_wrapper">
+  <div id="content">
+    <% if @booking_category_channels.size > 0 %>
+      <div class="row">
+        <div class="col-lg-offset-3 col-xs-6 col-md-6 col-lg-6">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th><%=t.booking_category_sales_channels_management.table.channel_name%></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @booking_category_channels.each do |channel| %>
+              <tr>
+                <td><%=channel.sales_channel.name%></td>
+                <td><button class="btn btn-default btn-sm edit_booking_category_channel pull-right"
+                            data-sales-channel-id="<%=channel.sales_channel.id%>"
+                            data-sales-channel-name="<%=channel.sales_channel.name%>" >Editar</button></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% else %>
+      <div class="block block">
+        <div class="block-content">
+          <p><%=t.booking_category_sales_channels_management.no_data%></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- ======================================== -->
+  <!--               Modal container            -->
+  <!-- ======================================== -->
+  <div id="modal_container" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index: 9999">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <ul class="block-options">
+            <li>
+              <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+            </li>
+          </ul>
+          <h3 class="modal-title"></h3>
+        </div>
+        <div class="modal-body">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

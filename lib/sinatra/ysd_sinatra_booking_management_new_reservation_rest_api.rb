@@ -26,9 +26,14 @@ module Sinatra
         locale = session[:locale]#locale_to_translate_into
         
         # Prepare the products
-        p_json = ::Yito::Model::Booking::RentingSearch.search(shopping_cart.date_from,
-                                                              shopping_cart.date_to, shopping_cart.days, 
-                                                              locale,true, nil, false).to_json
+        p_json = ::Yito::Model::Booking::BookingCategory.search(shopping_cart.date_from,
+                                                                shopping_cart.date_to,
+                                                                shopping_cart.days,
+                                                          { locale: locale,
+                                                                   full_information: true,
+                                                                   product_code: nil,
+                                                                   web_public: false,
+                                                                   sales_channel_code: shopping_cart.sales_channel_code}).to_json
 
         # Prepare the extras
         e_json = ::Yito::Model::Booking::RentingExtraSearch.search(shopping_cart.date_from,
@@ -65,7 +70,7 @@ module Sinatra
 
           # TODO Check parameters
           date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children =
-          driver_age_rule_id = nil
+          driver_age_rule_id = sales_channel_code = nil
 
           if model_request[:date_from] && model_request[:date_to]
             date_from = DateTime.strptime(model_request[:date_from],"%d/%m/%Y")
@@ -77,6 +82,8 @@ module Sinatra
             number_of_adults = model_request[:number_of_adults] if model_request.has_key?(:number_of_adults)
             number_of_children = model_request[:number_of_children] if model_request.has_key?(:number_of_childen)
             driver_age_rule_id = model_request[:driver_age_rule] if model_request.has_key?(:driver_age_rule)
+            sales_channel_code = model_request[:sales_channel_code] if model_request.has_key?(:sales_channel_code)
+            sales_channel_code = nil if sales_channel_code and sales_channel_code.empty?
           else
             content_type :json
             status 422
@@ -96,7 +103,7 @@ module Sinatra
                                                 date_to, time_to,
                                                 pickup_place, return_place,
                                                 number_of_adults, number_of_children,
-                                                driver_age_rule_id)
+                                                driver_age_rule_id, sales_channel_code)
           else
             shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.create(
                 date_from: date_from, time_from: time_from,
@@ -104,6 +111,7 @@ module Sinatra
                 pickup_place: pickup_place, return_place: return_place,
                 number_of_adults: number_of_adults, number_of_children: number_of_children,
                 driver_age_rule_id: driver_age_rule_id,
+                sales_channel_code: sales_channel_code,
                 customer_language: settings.default_language)
             session['back_office_shopping_cart_renting_id'] = shopping_cart.id
           end

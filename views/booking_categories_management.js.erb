@@ -45,6 +45,15 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           $('#calendar').fullCalendar('render');
       });
 
+      // Embed sales channels
+      <% if @addon_sales_channels %>
+      $.ajax({url: '/admin/booking/booking-categories/'+ entity.code+'/channels', dataType: 'text'}).done(function(html) {
+          var dom = $('<html />').prop('innerHTML', html);
+          $('#sales_channels_container').html(dom.find('body #page_wrapper'));
+          $('head').append(dom.find('script:not([src])'));
+      });
+      <% end %>
+
       // Embed translations
       <% if @show_translations %>
       $.ajax({url: '/admin/booking/translate/category/'+ entity.code, dataType: 'text'}).done(function(html) {

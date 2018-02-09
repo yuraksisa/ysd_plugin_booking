@@ -8,6 +8,8 @@ module Sinatra
         #
         app.get '/admin/booking/booking-categories/?*', :allowed_usergroups => ['booking_manager','staff'] do
 
+          addons = mybooking_addons
+          @addon_sales_channels = (addons and addons.has_key?(:addon_sales_channels) and addons[:addon_sales_channels])
           @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           @show_translations = settings.multilanguage_site
           locals = {:booking_category_page_size => 20, :types => ::Yito::Model::Booking::BookingCategory.types}

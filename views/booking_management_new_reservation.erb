@@ -71,7 +71,6 @@
               </div>
             </div>
 
-
             <!-- Return place -->
             <% if booking_item_family.pickup_return_place %>
                 <div class="form-group">
@@ -98,7 +97,7 @@
                     <%=t.new_booking.driver_age%>
                   </label>
                   <div class="col-sm-6">
-                    <select name="driver_age_rule" id="driver_age_rule" class="form-control">
+                    <select name="sales_channel" id="driver_age_rule" class="form-control">
                       <% driver_age_rule_definition.driver_age_rules.each do |driver_age_rule|%>
                           <option value="<%=driver_age_rule.id%>" allowed="<%=driver_age_rule.allowed%>"
                                   deposit="<%=driver_age_rule.deposit > 0%>"
@@ -109,8 +108,24 @@
                   </div>
                 </div>
 
-
             <% end %>
+
+            <% if @addon_sales_channels %>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">
+                  Canal de venta
+                </label>
+                <div class="col-sm-6">
+                  <select name="sales_channel_code" id="sales_channel_code" class="form-control">
+                    <option value="" selected>Estándar</option>
+                    <% @sales_channels.each do |sales_channel| %>
+                      <option value="<%=sales_channel.code%>"><%=sales_channel.name%></option>
+                    <% end %>
+                  </select>
+                </div>
+              </div>
+            <% end %>
+
             <div class="form-group">
               <div class="col-sm-9">
                 <button id="search_button" type="button"

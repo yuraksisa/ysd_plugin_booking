@@ -1,0 +1,21 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_category_sales_channels_setup.title%></h2>
+</div>
+<div id="page_wrapper">
+  <div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+      <form name="channels_setup">
+        <% @channels.each do |channel| %>
+          <div class="form-group">
+            <input type="checkbox" name="sales_channels[]" value="<%=channel.id%>" id="sales_channel_<%=channel.id%>"
+              <% if @booking_category.operative_in_sales_channel?(channel)%>checked="checked"<%end%> />
+            <label for="sales_channel_<%=channel.id%>"><%=channel.name%></label>
+          </div>
+        <% end %>
+      </form>
+    </div>
+  </div>
+  <div class="row" style="border-top-color: #eee; border-top: 1px solid #e5e5e5; padding-top: 15px; padding-right: 15px">
+    <button id="btn_confirm_booking_category_channels" class="btn btn-primary pull-right">Aceptar</button>
+  </div>
+</div>
