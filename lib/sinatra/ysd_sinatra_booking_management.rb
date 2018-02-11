@@ -376,6 +376,12 @@ module Sinatra
         # Booking configuration (notifications) - renting customer messages templates
         #
         app.get '/admin/booking/config/notifications/renting-customer-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
+          if @show_translations = settings.multilanguage_site
+            @tmpl_request = ContentManagerSystem::Template.first({:name => 'booking_customer_req_notification'})
+            @tmpl_request_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
+            @tmpl_confirmation = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
+            @tmpl_payment_enabled = ContentManagerSystem::Template.first({:name => 'booking_customer_notification_payment_enabled'})
+          end
           load_page(:config_booking_renting_notifications_customer_templates)
         end
 

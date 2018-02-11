@@ -4,5 +4,67 @@ require(['jquery', 'YSDForms'], function($, YSDForms) {
 
       YSDForms.improve();
 
+      // Embed translations
+      <% if @show_translations and @tmpl_request %>
+        $.ajax({url: '/admin/cms/translate/template/'+ <%=@tmpl_request.id%>, dataType: 'text'}).done(function(html) {
+            var dom = $('<html />').prop('innerHTML', html);
+            $('#request_notification_container').html(dom.find('body #page_wrapper'));
+            $('head').append(dom.find('script:not([src])'));
+        });
+      <% end %>
+
+      // Setup the tabs
+      $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){
+          e.preventDefault();
+          $(this).tab('show');
+      });
+
+      <% if @show_translations %>
+      $('[data-toggle="tabs"] a, .js-tabs a').on('shown.bs.tab', function (e) {
+          $('#request_notification_container').empty();
+          $('#confirmation_notification_container').empty();
+          $('#request_pay_now_notification_container').empty();
+          $('#pay_enabled_notification_container').empty();
+          switch (e.target.id) {
+              case 'request_notification':
+              <% if @tmpl_request %>
+                  $.ajax({url: '/admin/cms/translate/template/'+ <%=@tmpl_request.id%>, dataType: 'text'}).done(function(html) {
+                      var dom = $('<html />').prop('innerHTML', html);
+                      $('#request_notification_container').html(dom.find('body #page_wrapper'));
+                      $('head').append(dom.find('script:not([src])'));
+                  });
+              <% end %>
+                  break;
+              case 'confirmation_notification':
+                <% if @tmpl_confirmation %>
+                  $.ajax({url: '/admin/cms/translate/template/'+ <%=@tmpl_confirmation.id%>, dataType: 'text'}).done(function(html) {
+                      var dom = $('<html />').prop('innerHTML', html);
+                      $('#confirmation_notification_container').html(dom.find('body #page_wrapper'));
+                      $('head').append(dom.find('script:not([src])'));
+                  });
+                <% end %>
+                  break;
+              case 'request_payment_notification':
+                <% if @tmpl_request_pay_now %>
+                  $.ajax({url: '/admin/cms/translate/template/'+ <%=@tmpl_request_pay_now.id%>, dataType: 'text'}).done(function(html) {
+                      var dom = $('<html />').prop('innerHTML', html);
+                      $('#request_pay_now_notification_container').html(dom.find('body #page_wrapper'));
+                      $('head').append(dom.find('script:not([src])'));
+                  });
+                <% end %>
+                  break;
+              case 'payment_enabled_notification':
+                <% if @tmpl_payment_enabled%>
+                  $.ajax({url: '/admin/cms/translate/template/'+ <%=@tmpl_payment_enabled.id%>, dataType: 'text'}).done(function(html) {
+                      var dom = $('<html />').prop('innerHTML', html);
+                      $('#pay_enabled_notification_container').html(dom.find('body #page_wrapper'));
+                      $('head').append(dom.find('script:not([src])'));
+                  });
+                <% end %>
+                  break;
+          }
+      });
+      <% end %>
+
   });
 });

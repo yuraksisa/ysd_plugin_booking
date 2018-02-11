@@ -18,6 +18,9 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $('#name').focus();
       this.configForm(entity);
 
+      $('input[name=from_price]').autoNumeric('init',{aSep:''});
+      $('input[name=from_price_offer]').autoNumeric('init',{aSep:''});
+
       // Setup popover (TODO move to YSDEntityManagementView)
       $('[data-toggle="popover"]').popover();
 

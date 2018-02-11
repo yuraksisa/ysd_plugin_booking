@@ -3,7 +3,7 @@ require(['jquery', 'jquery.ui'], function($) {
     categorySalesChannelsModel = {
         bookingCategoryCode: '<%=@booking_category.code%>',
         salesChannelId: null,
-        salesChannelName: null
+        salesChannelName: null,
     };
 
     categorySalesChannelsController = {
@@ -43,7 +43,7 @@ require(['jquery', 'jquery.ui'], function($) {
                            var dom = $('<html />').prop('innerHTML', html);
                            $('.modal-title').html('Configurar canales');
                            $('#modal_container .modal-body').html(dom.find('body #page_wrapper'))
-                            $('head').append(dom.find('script:not([src])'));
+                           $('head').append(dom.find('script:not([src])'));
                            $('#modal_container').modal('show');
                          }
                    );

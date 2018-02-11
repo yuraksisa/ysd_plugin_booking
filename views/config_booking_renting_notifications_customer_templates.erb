@@ -10,84 +10,171 @@
 
     <div class="row">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
-        <div class="block ">
-          <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_configuration_templates.email_customer_request_received%></h3>
-          </div>
-          <div class="block-content block-content-narrow">
-            <form name="templates" action="/api/templates" method="PUT"
-                  data-remote="ajax" data-remote-method="PUT" class="all-space">
-              <%= render_template_editor 'booking_customer_req_notification','','' %>
-              <div class="formrow-botonera">
-                <input type="submit" value="<%=t.entitymanagement.update%>"
-                       class="button blue-button">
+        <div class="block">
+          <ul class="nav nav-tabs" data-toggle="tabs">
+            <li class="active">
+              <a id="request_notification" href="#btabs-static-request"><%=t.booking_configuration_templates.email_customer_request_received%></a>
+            </li>
+            <li class="">
+              <a id="confirmation_notification" href="#btabs-static-confirmation"><%=t.booking_configuration_templates.email_customer_reservation_confirmed%></a>
+            </li>
+            <li class="">
+              <a id="request_payment_notification" href="#btabs-static-payment-request"><%=t.booking_configuration_templates.email_customer_payment_request_received%></a>
+            </li>
+            <li class="">
+              <a id="payment_enabled_notification" href="#btabs-static-payment-enabled"><%=t.booking_configuration_templates.email_customer_payment_enabled%></a>
+            </li>
+          </ul>
+          <div class="block-content tab-content">
+            <div class="tab-pane active" id="btabs-static-request">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                  <div class="block block-bordered">
+                    <div class="block-header bg-gray-lighter">
+                      <h3 class="block-title">Plantilla</h3>
+                    </div>
+                    <div class="block-content block-content-narrow">
+                      <form name="templates" action="/api/templates" method="PUT"
+                            data-remote="ajax" data-remote-method="PUT" class="all-space">
+                        <%= render_template_editor 'booking_customer_req_notification','','' %>
+                        <div class="formrow-botonera">
+                          <input type="submit" value="<%=t.entitymanagement.update%>"
+                                 class="button blue-button">
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </form>
+              <% if @show_translations and @tmpl_request %>
+                <div class="row">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="block block-bordered">
+                      <div class="block-header bg-gray-lighter">
+                        <h3 class="block-title">Traducciones</h3>
+                      </div>
+                      <div class="block-content block-content-narrow">
+                        <div id="request_notification_container">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <div class="tab-pane" id="btabs-static-confirmation">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                  <div class="block block-bordered">
+                    <div class="block-header bg-gray-lighter">
+                      <h3 class="block-title">Plantilla</h3>
+                    </div>
+                    <div class="block-content block-content-narrow">
+                      <form name="templates" action="/api/templates" method="PUT"
+                            data-remote="ajax" data-remote-method="PUT" class="all-space">
+                        <%= render_template_editor 'booking_customer_notification','','' %>
+                        <div class="formrow-botonera">
+                          <input type="submit" value="<%=t.entitymanagement.update%>"
+                                 class="button blue-button">
+                        </div>
+                      </form>
+                      <% if @show_translations and @tmpl_confirmation %>
+                        <div class="row">
+                          <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="block block-bordered">
+                              <div class="block-header bg-gray-lighter">
+                                <h3 class="block-title">Traducciones</h3>
+                              </div>
+                              <div class="block-content block-content-narrow">
+                                <div id="confirmation_notification_container">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="tab-pane" id="btabs-static-payment-request">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                  <div class="block block-bordered">
+                    <div class="block-header bg-gray-lighter">
+                      <h3 class="block-title">Plantilla</h3>
+                    </div>
+                    <div class="block-content block-content-narrow">
+                      <form name="templates" action="/api/templates" method="PUT"
+                            data-remote="ajax" data-remote-method="PUT" class="all-space">
+                        <%= render_template_editor 'booking_customer_req_pay_now_notification','','' %>
+                        <div class="formrow-botonera">
+                          <input type="submit" value="<%=t.entitymanagement.update%>"
+                                 class="button blue-button">
+                        </div>
+                      </form>
+                      <% if @show_translations and @tmpl_request_pay_now %>
+                        <div class="row">
+                          <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="block block-bordered">
+                              <div class="block-header bg-gray-lighter">
+                                <h3 class="block-title">Traducciones</h3>
+                              </div>
+                              <div class="block-content block-content-narrow">
+                                <div id="request_pay_now_notification_container">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="btabs-static-payment-enabled">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                  <div class="block block-bordered">
+                    <div class="block-header bg-gray-lighter">
+                      <h3 class="block-title">Plantilla</h3>
+                    </div>
+                    <div class="block-content block-content-narrow">
+                      <form name="templates" action="/api/templates" method="PUT"
+                            data-remote="ajax" data-remote-method="PUT" class="all-space">
+                        <%= render_template_editor 'booking_customer_notification_payment_enabled','','' %>
+                        <div class="formrow-botonera">
+                          <input type="submit" value="<%=t.entitymanagement.update%>"
+                                 class="button blue-button">
+                        </div>
+                      </form>
+                      <% if @show_translations and @tmpl_payment_enabled %>
+                        <div class="row">
+                          <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="block block-bordered">
+                              <div class="block-header bg-gray-lighter">
+                                <h3 class="block-title">Traducciones</h3>
+                              </div>
+                              <div class="block-content block-content-narrow">
+                                <div id="pay_enabled_notification_container">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-12 col-md-10 col-md-offset-1">
-        <div class="block ">
-          <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_configuration_templates.email_customer_reservation_confirmed%></h3>
-          </div>
-          <div class="block-content block-content-narrow">
-            <form name="templates" action="/api/templates" method="PUT"
-                  data-remote="ajax" data-remote-method="PUT" class="all-space">
-              <%= render_template_editor 'booking_customer_notification','','' %>
-              <div class="formrow-botonera">
-                <input type="submit" value="<%=t.entitymanagement.update%>"
-                       class="button blue-button">
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-12 col-md-10 col-md-offset-1">
-        <div class="block ">
-          <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_configuration_templates.email_customer_payment_request_received%></h3>
-          </div>
-          <div class="block-content block-content-narrow">
-            <form name="templates" action="/api/templates" method="PUT"
-                  data-remote="ajax" data-remote-method="PUT" class="all-space">
-              <%= render_template_editor 'booking_customer_req_pay_now_notification','','' %>
-              <div class="formrow-botonera">
-                <input type="submit" value="<%=t.entitymanagement.update%>"
-                       class="button blue-button">
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-12 col-md-10 col-md-offset-1">
-        <div class="block ">
-          <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_configuration_templates.email_customer_payment_enabled%></h3>
-          </div>
-          <div class="block-content block-content-narrow">
-            <form name="templates" action="/api/templates" method="PUT"
-                  data-remote="ajax" data-remote-method="PUT" class="all-space">
-              <%= render_template_editor 'booking_customer_notification_payment_enabled','','' %>
-              <div class="formrow-botonera">
-                <input type="submit" value="<%=t.entitymanagement.update%>"
-                       class="button blue-button">
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-</div>
+  </div>
 </div>

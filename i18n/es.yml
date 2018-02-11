@@ -991,6 +991,10 @@ booking_category_management:
       label: Avisar al cliente si no hay reservas
     alias:
       label: Alias
+    from_price:
+      label: Precio desde (portada)
+    from_price_offer:
+      label: Precio desde en oferta (portada)
     request_customer_address:
       label: Solicitar dirección del cliente
     request_customer_information:

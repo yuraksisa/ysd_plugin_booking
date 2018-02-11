@@ -234,6 +234,20 @@
                             </div>
                       </div>
                       <div class="form-group">
+                            <label class="col-md-3 control-label"><%= t.booking_category_management.form.from_price.label%></label>
+                            <div class="col-md-9">
+                            <input type="text" class="form-control" name="from_price" id="from_price" <%% if (entity){%>value="<%%=entity.from_price%>" <%%} else { %>value="0"<%%}%>/>
+                            <p class="smaller_text less_contrast_text">Permite definir el precio desde para la portada</p>
+                            </div>
+                      </div>
+                      <div class="form-group">
+                            <label class="col-md-3 control-label"><%= t.booking_category_management.form.from_price_offer.label%></label>
+                            <div class="col-md-9">
+                            <input type="text" class="form-control" name="from_price_offer" id="from_price_offer" <%% if (entity){%>value="<%%=entity.from_price_offer%>" <%%} else { %>value="0"<%%}%>/>
+                            <p class="smaller_text less_contrast_text">Permite definir el precio desde para la portada (cuando hay oferta)</p>
+                            </div>
+                      </div>
+                      <div class="form-group">
                         <div class="col-md-9 col-md-offset-3">
                             <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
                         </div>

@@ -1,10 +1,9 @@
-require(['jquery', 'jquery.ui', 'jquery.formparams'], function($) {
+require(['jquery', 'jquery.ui', 'jquery.formparams', 'jquery.toast'], function($) {
 
 
     setupBookingChannelsModel = {
 
         bookingCategoryCode: '<%=@booking_category.code%>',
-
         configureChannels: function() {
 
             var url = '/api/booking/booking-categories/'+this.bookingCategoryCode+'/channels';
@@ -20,15 +19,11 @@ require(['jquery', 'jquery.ui', 'jquery.formparams'], function($) {
                 contentType : 'application/json; charset=utf-8',
                 crossDomain: true,
                 success: function(data, textStatus, jqXHR) {
-                    console.log('done');
+                    setupBookingChannelsView.update('booking_category_channels_setup');
                 },
                 error: function(data, textStatus, jqXHR) {
-                    alert('Error actualizando');
-                },
-                complete: function(jqXHR, textStatus) {
-                    console.log('complete');
+                    alert('Error configurando los canales de venta del producto');
                 }
-
             });
         }
 
@@ -50,6 +45,30 @@ require(['jquery', 'jquery.ui', 'jquery.formparams'], function($) {
             $('#btn_confirm_booking_category_channels').bind('click', function(){
                setupBookingChannelsController.btnConfirmClick();
             });
+        },
+
+        update: function(status) {
+            switch(status) {
+                case 'booking_category_channels_setup':
+                    $.toast({
+                        heading: 'Canales de venta',
+                        text: 'Se ha configurado correctamente el canal de venta para el producto',
+                        position: 'top-right',
+                        bgColor: 'rgb(56, 154, 56)',
+                        textColor: 'white',
+                        loader: false,
+                        stack: false
+                    });
+                    // It shouldn't be here (both sentences) but there is no way to communicate different classes defined
+                    // in requirejs
+                    $('#modal_container').modal('hide'); // booking_category_sales_channels_list
+                    $.ajax({url: '/admin/booking/booking-categories/'+ setupBookingChannelsModel.bookingCategoryCode+'/channels', dataType: 'text'}).done(function(html) {
+                        var dom = $('<html />').prop('innerHTML', html);
+                        $('#sales_channels_container').html(dom.find('body #page_wrapper'));
+                        $('head').append(dom.find('script:not([src])')); // booking_categories_management
+                    });
+                    break;
+            }
         }
 
     };
