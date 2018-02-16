@@ -879,6 +879,7 @@ booking_management:
       additional_driver_2_document_id_expiration_date_min: Fecha expiración documento conductor deber ser posterior a %1
       additional_driver_2_document_id_expiration_date_max: Fecha expiración documento conductor deber ser anterior a %1
       driver_errors_summary: Hay errores en los datos del contacto/conductor. Por favor, revísalos
+    destination_accommodation: Alojamiento
   charge_form:
     title: Cobro
     date: Fecha 

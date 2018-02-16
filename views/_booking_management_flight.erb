@@ -35,13 +35,21 @@
                <div class="more_contrast_text top-margin" style="text-decoration:underline; margin-left:5px"><%=t.booking_management.form.destination_address_title%></div>
                 <div class="element_template">
                   <div class="entity-field">
+                    <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.destination_accommodation %></span>
+                    <span class="entity-fieldvalue">
+                            <textarea rows="3" cols="25" name="destination_accommodation" id="destination_accommodation"><%%=entity.destination_accommodation%></textarea>
+                          </span>
+                  </div>
+                </div>
+                <div class="element_template">
+                  <div class="entity-field">
                     <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_address_street %></span>
                     <span class="entity-fieldvalue">
-                      <input type="text" maxlength="60" size="25" name="destination_address[street]" id="destination_address[street]"
-                      value="<%%if(entity.destination_address){%><%%=entity.destination_address.street%><%%}%>"/> 
-                    </span>
+                            <input type="text" maxlength="60" size="25" name="destination_address[street]" id="destination_address[street]"
+                                   value="<%%if(entity.destination_address){%><%%=entity.destination_address.street%><%%}%>"/>
+                          </span>
                   </div>
-                </div>  
+                </div>
                 <div class="element_template">
                   <div class="entity-field">
                     <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_address_number %></span>
