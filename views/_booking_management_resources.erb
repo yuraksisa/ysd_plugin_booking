@@ -56,12 +56,7 @@
                                <td class="table-cell centered_text">
                                   <form data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
                                     <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
-                                    <select name="customer_height" class="fieldcontrol customer_height" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
-                                      <option value=""><%=t.booking_management.form.customer_height_placeholder%></option>
-                                      <% booking_item_family.height_values.split(',').each do |height|%>
-                                        <option value="<%=height%>" <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_height == '<%=height%>') { %>selected="selected"<%%}%>><%=height%></option>
-                                      <% end %>
-                                    </select> 
+                                    <input class="fieldcontrol customer_height" type="text" maxlength="15" size="15" name="customer_height" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_height%>"/>
                                   </form>
                                </td>
                                <% end %>
@@ -69,13 +64,8 @@
                                <td class="table-cell centered_text">
                                   <form data-name="height" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
                                     <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
-                                    <select name="customer_weight" class="fieldcontrol customer_weight" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
-                                    <option value=""><%=t.booking_management.form.customer_weight_placeholder%></option>
-                                       <% booking_item_family.weight_values.split(',').each do |weight|%>
-                                        <option value="<%=weight%>" <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_weight == '<%=weight%>') { %>selected="selected"<%%}%>><%=weight%></option>
-                                       <% end %>
-                                    </select> 
-                                  </form>                                           
+                                    <input class="fieldcontrol customer_weight" type="text" maxlength="15" size="15" name="customer_weight" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_weight%>"/>
+                                  </form>
                                </td>
                                <% end %>
                                <td class="table-cell centered_text">
@@ -126,12 +116,7 @@
                                <td class="table-cell centered_text">
                                   <form class="top-margin" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
                                     <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
-                                    <select name="customer_2_height" class="fieldcontrol customer_2_height" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
-                                      <option value=""><%=t.booking_management.form.customer_height_placeholder%></option>
-                                      <% booking_item_family.height_values.split(',').each do |height|%>
-                                        <option value="<%=height%>" <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_2_height == '<%=height%>') { %>selected="selected"<%%}%>><%=height%></option>
-                                      <% end %>
-                                    </select> 
+                                    <input class="fieldcontrol customer_2_height" type="text" maxlength="15" size="15" name="customer_2_height" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_2_height%>"/>
                                   </form>
                                </td>
                                <% end %>
@@ -139,12 +124,7 @@
                                <td class="table-cell centered_text">
                                   <form class="top-margin" data-name="height" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
                                     <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
-                                    <select name="customer_2_weight" class="fieldcontrol customer_2_weight" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
-                                    <option value=""><%=t.booking_management.form.customer_weight_placeholder%></option>
-                                       <% booking_item_family.weight_values.split(',').each do |weight|%>
-                                        <option value="<%=weight%>" <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_2_weight == '<%=weight%>') { %>selected="selected"<%%}%>><%=weight%></option>
-                                       <% end %>
-                                    </select> 
+                                    <input class="fieldcontrol customer_2_weight" type="text" maxlength="15" size="15" name="customer_2_weight" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_2_weight%>"/>
                                   </form>                                           
                                </td>
                                <% end %>
