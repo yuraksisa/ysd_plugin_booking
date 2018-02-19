@@ -3,17 +3,17 @@
             <div class="element_template">
               <div class="entity-field">
                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.free_access_id %></span>
-               <% if ((defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == '3.0')) || (!defined?MY_BOOKING_FRONTEND) %>
                <span class="entity-fieldvalue">
-                  <a href="/p/mybooking/<%%=entity.free_access_id%>" target="_blank">
-                     /p/mybooking/<%%=entity.free_access_id%></a>
-               </span>
-               <% else %>
-               <span class="entity-fieldvalue">
+                  <%% if (entity.sales_channel_code == null) { %>
                   <a href="<%=booking_front_end_prefix%>/reserva/<%%=entity.free_access_id%>" target="_blank">
                      <%=booking_front_end_prefix%>/reserva/<%%=entity.free_access_id%></a>
+                  <%% } else { %>
+                     <% if @addon_sales_channels %>
+                     <a href="<%%=self.model.entityHooks[0].frontendPrefixes[entity.sales_channel_code]%>/reserva/<%%=entity.free_access_id%>" target="_blank">
+                       <%%=self.model.entityHooks[0].frontendPrefixes[entity.sales_channel_code]%>/reserva/<%%=entity.free_access_id%></a>
+                     <% end %>
+                  <%% } %>
                </span>
-               <% end %>
               </div>
             </div>
             <div class="element_template">

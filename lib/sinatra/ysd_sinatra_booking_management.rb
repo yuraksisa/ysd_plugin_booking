@@ -542,8 +542,8 @@ module Sinatra
           
           aspects = []
           aspects << UI::GuiBlockEntityAspectAdapter.new(GuiBlock::Audit.new, {:weight => 102, :render_in_group => true})
-          aspects_render = UI::EntityManagementAspectRender.new(context, aspects) 
-          
+          aspects_render = UI::EntityManagementAspectRender.new(context, aspects)
+
           locals = aspects_render.render(BookingDataSystem::Booking)
           locals.store(:bookings_page_size, 20)
           locals.store(:booking_item_family, 
@@ -569,6 +569,16 @@ module Sinatra
           @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
           addons = mybooking_addons
           @addon_sales_channels = (addons and addons.has_key?(:addon_sales_channels) and addons[:addon_sales_channels])
+
+          if @addon_sales_channels
+            @booking_frontend_prefix_sales_channels = {}
+            ::Yito::Model::SalesChannel::SalesChannel.all.each do |sales_channel|
+              @booking_frontend_prefix_sales_channels.store(sales_channel.code,
+                                                            SystemConfiguration::Variable.get_value("booking.front_end_prefix_sc_#{sales_channel.code}",
+                                                                                                    locals[:booking_front_end_prefix]))
+            end
+          end
+
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
         end

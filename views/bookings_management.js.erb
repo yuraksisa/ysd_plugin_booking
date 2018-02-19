@@ -12,6 +12,14 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
     this.stockIds = [];
     this.stockDetail = [];
 
+    <% if @addon_sales_channels %>
+    this.frontendPrefixes = {
+        <% @booking_frontend_prefix_sales_channels.each do |k,v| %>
+        '<%=k%>':'<%=v.nil? or v.empty? ? booking_front_end_prefix : v %>',
+        <% end %>
+    };
+    <% end %>
+
     this.statusDescription = {
        'pending_confirmation' : '<span class="label label-warning"><%= t.booking_status.pending_confirmation%></span>',
        'confirmed' : '<span class="label label-success"><%= t.booking_status.confirmed%></span>',
