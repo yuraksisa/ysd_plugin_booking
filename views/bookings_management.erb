@@ -108,6 +108,11 @@
      <div id="dialogs_container">
      </div> 
 
+     <%= partial :booking_management_header, locals: {booking_item_family: booking_item_family,
+                                                 -                                                      multiple_rental_locations: multiple_rental_locations,
+                                                 -                                                      driver_min_age_rules: driver_min_age_rules} %>
+-
+
      <div class="container_12">
           <div class="grid_12">
             <%= partial :booking_management_detail, locals: {booking_item_family: booking_item_family,
