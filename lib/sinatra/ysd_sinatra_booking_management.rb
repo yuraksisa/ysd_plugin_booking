@@ -553,8 +553,8 @@ module Sinatra
           locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
           locals.store(:driver_min_age_rules, SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool)
           locals.store(:driver_min_age_edition, SystemConfiguration::Variable.get_value('booking.driver_min_age.booking_driver_edition', 'false').to_bool)
-          
-          locals.store(:elements_actions, partial(:bookings_management_header))
+
+          #locals.store(:elements_actions, partial(:bookings_management_header))
 
           # Simple invoicing addon
           addons = mybooking_addons
@@ -578,6 +578,8 @@ module Sinatra
                                                                                                     locals[:booking_front_end_prefix]))
             end
           end
+
+          p "HOLA!!!"
 
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
