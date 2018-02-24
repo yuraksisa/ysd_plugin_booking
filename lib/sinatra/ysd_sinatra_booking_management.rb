@@ -112,328 +112,6 @@ module Sinatra
           load_page(:booking_dashboard)
         end
 
-        # ----------------------------------------------------------------------------------------------
-        # ----------------------------------- Setup ----------------------------------------------------
-        # ----------------------------------------------------------------------------------------------
-
-        #
-        # Setup the platform
-        #
-        app.get "/admin/booking/setup", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          @booking_renting, @booking_activities = mybooking_plan
-
-          load_page(:setup)
-
-        end
-
-        # ------------------------------ Renting setup ------------------------------------------------
-
-        #
-        # Renting setup step 1
-        #
-        app.get "/admin/booking/setup-renting-1", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          if mybooking_plan.first
-            @current_type_of_business = SystemConfiguration::Variable.get_value('booking.item_family', nil)
-            @types_of_business = ::Yito::Model::Booking::ProductFamily.all(order: [:presentation_order])
-            load_page(:setup_renting_step_1)
-          else
-            status 404
-          end
-
-        end
-
-        #
-        # Renting setup step 1 (POST)
-        #
-        app.post "/admin/booking/setup-renting-1", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          if params[:type_of_business]
-            if params[:type_of_business] != SystemConfiguration::Variable.get_value('booking.item_family', nil)
-              SystemConfiguration::Variable.set_value('booking.item_family', params[:type_of_business])
-            end
-          end
-
-          redirect '/admin/booking/setup-renting-2'
-
-        end
-
-        #
-        # Renting setup step 2
-        #
-        app.get "/admin/booking/setup-renting-2", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          if mybooking_plan.first
-            load_page(:setup_renting_step_2)
-          else
-            status 404
-          end
-
-        end
-
-        #
-        # Renting setup step 2 (POST)
-        #
-        app.post "/admin/booking/setup-renting-2", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          if mybooking_plan.first
-
-            if min_days = params['booking.min_days'.to_sym]
-              SystemConfiguration::Variable.set_value('booking.min_days', min_days)
-            end
-
-            redirect '/admin/booking/setup-renting-3'
-
-          else
-            status 404
-          end
-
-        end
-
-        #
-        # Renting setup step 3
-        #
-        app.get "/admin/booking/setup-renting-3", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          if mybooking_plan.first
-            load_page(:setup_renting_step_3)
-          else
-            status 404
-          end
-
-        end
-
-        #
-        # Renting setup step 3 (POST)
-        #
-        app.post "/admin/booking/setup-renting-3", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          redirect '/admin/booking/setup-renting-4'
-
-        end
-
-        #
-        # Renting setup step 4
-        #
-        app.get "/admin/booking/setup-renting-4", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          if mybooking_plan.first
-            load_page(:setup_renting_step_4)
-          else
-            status 404
-          end
-
-        end
-
-        #
-        # Renting setup step 4 (POST)
-        #
-        app.post "/admin/booking/setup-renting-4", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          redirect '/admin/booking/setup'
-
-        end
-
-
-        # ----------------------------- Activities setup ----------------------------------------------
-
-        #
-        #
-        #
-        app.get "/admin/booking/setup-activities-1", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-        end
-
-        # --------------------- Configuration ----------------------------------------------------------
-
-        #
-        # Booking configuration
-        #
-        app.get "/admin/booking/config", :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:console_booking_configuration)
-        end
-
-
-        # -------------------- Configuration  ---------------------------------------------------------
-
-        #
-        # Booking configuration (general)
-        #
-        app.get '/admin/booking/config/general', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          booking_renting, booking_activities = mybooking_plan
-          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
-                    :calendar_modes => {
-                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
-                        :default => t.booking_settings.form.calendar_mode.default
-                    }}
-          locals.store(:booking_item_family, booking_item_family)
-          locals.store(:booking_renting, booking_renting)
-          locals.store(:booking_activities, booking_activities)
-          load_page(:config_booking_general, {:locals => locals})
-
-        end        
-        
-        #
-        # Booking configuration (business)
-        #
-        app.get '/admin/booking/config/business', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          booking_renting, booking_activities = mybooking_plan
-          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
-                    :calendar_modes => {
-                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
-                        :default => t.booking_settings.form.calendar_mode.default
-                    }}
-          locals.store(:booking_item_family, booking_item_family)
-          locals.store(:booking_renting, booking_renting)
-          locals.store(:booking_activities, booking_activities)
-          load_page(:config_booking_business, {:locals => locals})
-
-        end
-
-        #
-        # Booking configuration (reservations)
-        #
-        app.get '/admin/booking/config/reservations', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          pickup_return_timetables = {"" => t.booking_settings.form.no_pickup_return_timetable}.merge(Hash[ *::Yito::Model::Calendar::Timetable.all.collect { |tt| [tt.id.to_s, tt.name] }.flatten])
-          booking_renting, booking_activities = mybooking_plan
-          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          use_factors = SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
-                    :calendar_modes => {
-                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
-                        :default => t.booking_settings.form.calendar_mode.default
-                    },
-                    :use_factors => use_factors,
-                    :pickup_return_timetables => pickup_return_timetables}
-          locals.store(:booking_item_family, booking_item_family)
-          locals.store(:booking_renting, booking_renting)
-          locals.store(:booking_activities, booking_activities)
-          if booking_item_family and booking_item_family.driver
-            locals.store(:booking_driver_age_rule_definition, SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
-            locals.store(:booking_driver_age_rule_definitions, Hash[ *::Yito::Model::Booking::BookingDriverAgeRuleDefinition.all.collect { |v| [v.id.to_s, v.name]}.flatten])
-          end
-          load_page(:config_booking_reservations, {:locals => locals})
-
-        end
-
-        #
-        # Booking configuration (back-office)
-        #
-        app.get '/admin/booking/config/backoffice', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          booking_renting, booking_activities = mybooking_plan
-          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
-                    :multiple_locations => multiple_locations}
-          locals.store(:booking_item_family, booking_item_family)
-          locals.store(:booking_renting, booking_renting)
-          locals.store(:booking_activities, booking_activities)
-
-          load_page(:config_booking_backoffice, {:locals => locals})
-
-        end
-
-        #
-        # Booking configuration (payment)
-        #
-        app.get '/admin/booking/config/payment', :allowed_usergroups => ['booking_manager', 'staff'] do
-          booking_renting, booking_activities = mybooking_plan
-          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
-          locals.store(:booking_item_family, booking_item_family)
-          locals.store(:booking_renting, booking_renting)
-          locals.store(:booking_activities, booking_activities)
-          load_page(:config_booking_payment, {:locals => locals})
-        end
-
-        #
-        # Booking configuration (notifications)
-        #
-        app.get '/admin/booking/config/notifications', :allowed_usergroups => ['booking_manager', 'staff'] do
-          booking_renting, booking_activities = mybooking_plan
-          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
-          locals.store(:booking_item_family, booking_item_family)
-          locals.store(:booking_renting, booking_renting)
-          locals.store(:booking_activities, booking_activities)
-          load_page(:config_booking_notifications, {:locals => locals})
-        end
-
-        #
-        # Booking configuration (notifications) - renting customer messages templates
-        #
-        app.get '/admin/booking/config/notifications/renting-customer-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
-          if @show_translations = settings.multilanguage_site
-            @tmpl_request = ContentManagerSystem::Template.first({:name => 'booking_customer_req_notification'})
-            @tmpl_request_pay_now = ContentManagerSystem::Template.first({:name => 'booking_customer_req_pay_now_notification'})
-            @tmpl_confirmation = ContentManagerSystem::Template.first({:name => 'booking_customer_notification'})
-            @tmpl_payment_enabled = ContentManagerSystem::Template.first({:name => 'booking_customer_notification_payment_enabled'})
-          end
-          load_page(:config_booking_renting_notifications_customer_templates)
-        end
-
-        #
-        # Booking configuration (notifications) - renting manager messages templates
-        #
-        app.get '/admin/booking/config/notifications/renting-manager-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:config_booking_renting_notifications_manager_templates)
-        end
-
-        #
-        # Booking configuration (notifications) - activities customer messages templates
-        #
-        app.get '/admin/booking/config/notifications/activities-customer-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:config_booking_activities_notifications_customer_templates)
-        end
-
-        #
-        # Booking configuration (notifications) - activities manager messages templates
-        #
-        app.get '/admin/booking/config/notifications/activities-manager-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:config_booking_activities_notifications_manager_templates)
-        end
-
-        #
-        # Booking configuration contract
-        #
-        app.get '/admin/booking/config/contract', :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:config_booking_contract)
-        end
-
-        #
-        # Booking configuration frontend
-        #
-        app.get '/admin/booking/config/front-end', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          @logo = SystemConfiguration::Variable.get_value('site.logo',nil)
-          @pages = ContentManagerSystem::Content.all(conditions: { type: 'page' },
-                                                     order: [:title])
-          @primary_links_menu = ::Site::Menu.first(name: 'primary_links')
-          @secondary_links_menu = ::Site::Menu.first(name: 'secondary_links')
-
-          load_page(:config_booking_frontend)
-        end
-
-        #
-        # Booking availability
-        #
-        app.get '/admin/booking/availability', :allowed_usergroups => ['booking_manager', 'staff'] do
-          redirect '/admin/calendar/calendars' 
-        end
-
         # ---------------------------- SCHEDULER ----------------------------------------------------
 
         #
@@ -474,62 +152,6 @@ module Sinatra
           load_page(:bookings_statistics, :locals => {first_year: first_year, current_year: current_year})
         end
 
-        # ----------------------------- RATES ---------------------------------------------------------
-
-        #
-        # Booking rates management
-        #
-        app.get '/admin/booking/rates', :allowed_usergroups => ['booking_manager', 'staff'] do
-          
-          locals = {}
-          locals.store(:booking_categories, ::Yito::Model::Booking::BookingCategory.all)
-          load_page(:console_booking_rates, :locals => locals)
-
-        end
-
-        # --------------------------------- EDIT BOOKING ------------------------------------------------------
-
-        #
-        # Change reservation period or pickup/return places
-        #
-        app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager', 'booking_operator'] do
-
-          if booking = BookingDataSystem::Booking.get(params[:booking_id])
-            if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.booking_lines.first.item_id)
-
-              catalog = booking_category.booking_catalog
-              locals = {}
-
-              locals.store(:booking, booking)
-
-              locals.store(:booking_item_family,
-                           catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
-
-              locals.store(:booking_allow_custom_pickup_return_place,
-                SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
-              locals.store(:booking_custom_pickup_return_place_cost, BigDecimal.new(SystemConfiguration::Variable.get_value('booking.custom_pickup_return_place_price', '0')))
-
-              pickup_return_place_def = nil
-              pickup_return_place_def_id = SystemConfiguration::Variable.get_value('booking.pickup_return_place_definition','0').to_i
-              if pickup_return_place_def_id > 0
-                pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(pickup_return_place_def_id)
-              end
-              pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first if pickup_return_place_def.nil?
-              locals.store(:booking_pickup_return_places, pickup_return_place_def.pickup_return_places)
-
-              locals.store(:booking_deposit,
-                SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i) 
-
-              load_page(:booking_edit_pickupreturn, :locals => locals)
-
-            else
-              status 404
-            end
-          else
-            status 404
-          end
-
-        end
 
         # -------------------------- ADMIN BOOKINGS ------------------------------------
 
@@ -579,49 +201,57 @@ module Sinatra
             end
           end
 
-          p "HOLA!!!"
-
           load_em_page :bookings_management, :booking, false, {:locals => locals}
 
         end
 
         #
-        # Check the extras occupation
-        # 
-        app.get '/admin/booking/extras-occupation', :allowed_usergroups => ['booking_manager','staff'] do 
+        # Change reservation period or pickup/return places
+        #
+        app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager', 'booking_operator'] do
 
-          @date_from = Date.today
-          @date_to = Date.today + 7
+          if booking = BookingDataSystem::Booking.get(params[:booking_id])
+            if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.booking_lines.first.item_id)
 
-          if params[:from]
-            begin
-              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:from]}")
+              catalog = booking_category.booking_catalog
+              locals = {}
+
+              locals.store(:booking, booking)
+
+              locals.store(:booking_item_family,
+                           catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
+
+              locals.store(:booking_allow_custom_pickup_return_place,
+                           SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+              locals.store(:booking_custom_pickup_return_place_cost, BigDecimal.new(SystemConfiguration::Variable.get_value('booking.custom_pickup_return_place_price', '0')))
+
+              pickup_return_place_def = nil
+              pickup_return_place_def_id = SystemConfiguration::Variable.get_value('booking.pickup_return_place_definition','0').to_i
+              if pickup_return_place_def_id > 0
+                pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(pickup_return_place_def_id)
+              end
+              pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first if pickup_return_place_def.nil?
+              locals.store(:booking_pickup_return_places, pickup_return_place_def.pickup_return_places)
+
+              locals.store(:booking_deposit,
+                           SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
+
+              load_page(:booking_edit_pickupreturn, :locals => locals)
+
+            else
+              status 404
             end
+          else
+            status 404
           end
 
-          if params[:to]
-            begin
-              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:to]}")
-            end
-          end   
-
-          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          @data,@detail = BookingDataSystem::Booking.extras_resources_occupation(@date_from, @date_to)
-          
-          load_page :extras_occupation
-
         end
-
 
 
         # ------------------- Contract --------------------
 
         #
-        # Contract
+        # Print the contract (PDF document)
         #
         app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager', 'booking_operator','staff'] do
 
@@ -642,7 +272,10 @@ module Sinatra
         # ------------------- Assign stock ----------------
 
         #
-        # Assign stock
+        # Assign stock assistant
+        # -------------------------------------------------------------
+        #
+        # It's a wizard to allow the stock assignation to a reservation
         #
         app.get '/admin/booking/assign-stock/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 

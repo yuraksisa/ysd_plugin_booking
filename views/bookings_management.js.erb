@@ -585,8 +585,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                 },
                 'driver_driving_license_expiration_date': {
                     validDate: true,
-                    minDate: new Date(),
-                    maxDate: new Date().add(30).years(),
+                    minDate: new Date()
                 },
                 'driver_document_id_date': {
                     validDate: true,
@@ -595,8 +594,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                 },
                 'driver_document_id_expiration_date': {
                     validDate: true,
-                    minDate: new Date(),
-                    maxDate: new Date().add(30).years(),
+                    minDate: new Date()
                 }
             },
 
@@ -613,8 +611,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                 },
                 'driver_driving_license_expiration_date': {
                     validDate: '<%=t.booking_management.form.validations.driver_driving_license_expiration_date_invalid_date%>',
-                    minDate: '<%=t.booking_management.form.validations.driver_driving_license_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>',
-                    maxDate: '<%=t.booking_management.form.validations.driver_driving_license_expiration_date_max((d=Date.today;Date.new(d.year+30,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                    minDate: '<%=t.booking_management.form.validations.driver_driving_license_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>'
                 },
                 'driver_document_id_date': {
                     validDate: '<%=t.booking_management.form.validations.driver_document_id_date_invalid_date%>',
@@ -623,8 +620,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                 },
                 'driver_document_id_expiration_date': {
                     validDate: '<%=t.booking_management.form.validations.driver_document_id_expiration_date_invalid_date%>',
-                    minDate: '<%=t.booking_management.form.validations.driver_document_id_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>',
-                    maxDate: '<%=t.booking_management.form.validations.driver_document_id_expiration_date_max((d=Date.today;Date.new(d.year+30,d.month,d.day)).strftime('%d-%m-%Y'))%>'
+                    minDate: '<%=t.booking_management.form.validations.driver_document_id_expiration_date_min(Date.today.strftime('%d-%m-%Y'))%>'
                 }
 
             },

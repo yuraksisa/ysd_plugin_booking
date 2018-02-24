@@ -634,7 +634,7 @@ module Sinatra
                   data, total = BookingDataSystem::Booking.all_and_count(
                       {:conditions => {:creation_date.gte => first_year_date}}.merge(offset_order_query))
                 end
-              elsif search_request.has_key?('search') and (search_request['search'].strip.length > 0)
+              elsif search_request.has_key?('search') and (search_request['search'].to_s.strip.length > 0)
                 total, data = BookingDataSystem::Booking.text_search(search_request['search'],offset_order_query)
               else
                 data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
@@ -1254,9 +1254,10 @@ module Sinatra
           data_request.symbolize_keys!          
           id = data_request[:booking_line_id]
           if booking_line = BookingDataSystem::BookingLine.get(id)
+            price_modification = data_request[:price_modification] # hold or update
             if data_request[:item_id] && data_request[:item_id] != booking_line.item_id
               item_id = data_request[:item_id]
-              booking_line.change_item(item_id)
+              booking_line.change_item(item_id, price_modification)
               booking = booking_line.booking
               booking.reload
               content_type :json

@@ -1,4 +1,0 @@
- <% if [:pending_confirmation, :confirming].include?(booking.status) %>
-   <%= partial(:booking_payment, :locals => {:booking => booking, 
-   	   :booking_deposit => booking_deposit, :booking_allow_total_payment => booking_allow_total_payment}) %>
- <% end %>

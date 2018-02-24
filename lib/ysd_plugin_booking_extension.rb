@@ -48,7 +48,7 @@ module Huasi
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.mode'},
         {:value => 'rent',
-         :description => 'Booking mode: rent, restaurant',
+         :description => 'Booking mode: rent',
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
@@ -746,9 +746,7 @@ module Huasi
             else
               app.partial(:booking_operator_menu, :locals => menu_locals)
             end
-          elsif booking_mode == 'restaurant'
-            app.partial(:booking_menu_restaurant)
-          end              
+          end
       end
       
     end
