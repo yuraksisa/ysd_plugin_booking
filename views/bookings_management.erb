@@ -111,151 +111,242 @@
      <%= partial :booking_management_header, locals: {booking_item_family: booking_item_family,
                                                   multiple_rental_locations: multiple_rental_locations,
                                                   driver_min_age_rules: driver_min_age_rules} %>
--
 
-     <div class="container_12">
-          <div class="grid_12">
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%=t.booking_management.form.customer_tab%></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <%= partial :booking_management_customer %>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_management.form.comments %></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <%= partial :booking_management_comments %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Productos</h3>
+            </div>
+            <div class="block-content block-content-full">
             <%= partial :booking_management_detail, locals: {booking_item_family: booking_item_family,
                                                              driver_min_age_rules: driver_min_age_rules} %>
-          </div>
-     </div>
-
-     <ul id="content_tabs" class="no-border no-background"class="no-border no-background">
-          <li class="no-border no-background top-space" style="border: none; background: none">
-            <a name="customer_tab" href="#customer_tab"><%=t.booking_management.form.customer_tab%></a>
-          </li>
-          <li class="no-border no-background top-space" style="border: none; background: none">
-            <a name="comments_tab" href="#customer_tab"><%=t.booking_management.form.comments_tab%></a>
-          </li>
-          <% if booking_item_family.driver %>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-            <a name="driver_tab" href="#driver_tab"><%=t.booking_management.form.driver_tab%></a>
-          </li>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-            <a name="additional_drivers_tab" href="#additional_drivers_tab"><%=t.booking_management.form.additional_drivers_tab%></a>
-          </li>          
-          <% end %>
-          <% if booking_item_family.flight %>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-            <a name="flight_tab" href="#flight_tab"><%=t.booking_management.form.flight_tab%></a>
-          </li>          
-          <% end %>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="charges_tab" href="#charges_tab"><%= t.booking_management.form.charges_tab %></a>
-          </li> 
-          <%% if (entity.total_pending > 0 ) { %>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="payment_tab" href="#payment_tab"><%= t.booking_management.form.payment_tab %></a>
-          </li>           
-          <%% } %>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="resources_tab" href="#resources_tab"><%= t.booking_management.form.booking_resources.title %></a>
-          </li>           
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="related_bookings_tab" href="#related_bookings_tab"><%= t.booking_management.form.related_bookings %></a>
-          </li>
-          <% if booking_addon_simple_invoicing %>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-              <a name="external_invoicing_tab" href="#external_invoicing_tab"><%=t.booking_management.form.external_invoicing_tab%></a>
-          </li>
-          <% end %>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="notifications_tab" href="#notifications_tab"><%= t.booking_management.form.notifications.title %></a>
-          </li>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-              <a name="other_tab" href="#other_tab"><%=t.booking_management.form.other_tab%></a>
-          </li>          
-     </ul>
-
-     <div id="content">
-
-         <div id="customer_tab" class="top-margin bottom-margin">
-           <div class="container_12">
-             <div class="grid_6">
-               <%= partial :booking_management_customer %>
-             </div>
-           </div>
-         </div>
-
-         <div id="comments_tab" class="top-margin bottom-margin">
-           <div class="container_12">
-             <div class="grid_6">
-               <%= partial :booking_management_comments %>
-             </div>
-             <div class="grid_6">
-               <div class="left-margin bottom-margin">
-                 <%= partial :booking_management_notes %>
-               </div>
-             </div>
-           </div>
-         </div>
-
-         <% if booking_item_family.driver %>
-         <div id="driver_tab"  class="top-margin bottom-margin">
-            <%= partial :booking_management_driver, :locals => {:booking_item_family => booking_item_family,
-                                                                :driver_min_age_rules => driver_min_age_rules,
-                                                                :driver_min_age_edition => driver_min_age_edition} %>
-         </div>
-         <div id="additional_drivers_tab"  class="top-margin bottom-margin">
-            <%= partial :booking_management_additional_drivers, :locals => {:booking_item_family => booking_item_family} %>
-         </div>
-         <% end %>
-
-         <% if booking_item_family.flight %>
-         <div id="flight_tab"  class="top-margin bottom-margin">
-           <%= partial :booking_management_flight %>
-         </div>
-         <% end %>
-
-         <div id="charges_tab" class="top-margin-1line">
-           <%= partial :booking_management_charges %>  
-         </div>
-         
-         <%% if (entity.total_pending > 0 ) { %>
-         <div id="payment_tab" class="top-margin-1line">
-           <%= partial :booking_management_payment, :locals => {:booking_payment_enabled => booking_payment_enabled} %>  
-         </div>
-         <%% } %>
-
-         <div id="resources_tab" class="top-margin-1line">
-           <%= partial :booking_management_resources, :locals => {:booking_item_family => booking_item_family} %>
-         </div>
-
-         <div id="notifications_tab" class="top-margin-1line">
-           <%= partial :booking_management_notifications %>
-         </div>
-
-         <div id="related_bookings_tab" class="top-margin-1line">
-           <%= partial :booking_management_related_bookings, locals: {booking_item_family: booking_item_family} %>
-         </div>
-
-         <% if booking_addon_simple_invoicing %>
-         <div id="external_invoicing_tab" class="top-margin-1line">
-           <%= partial :booking_management_external_invoicing_tab %>
-         </div>
-         <% end %>
-
-         <div id="other_tab"  class="top-margin-1line">
-         
-            <%= partial :booking_management_other_tab, :locals => {:booking_front_end_prefix => booking_front_end_prefix} %>
-
-            <div class="container_12">
-              <div class="grid_6">
-                <div class="top-margin">
-
-                  <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
-                                            :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
-                                            :edit_element_form_ingroup => edit_element_form_ingroup,
-                                            :new_element_form => new_element_form,
-                                            :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
-                                            :new_element_form_ingroup => new_element_form_ingroup}) %>
-                </div>
-              </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-         </div>
+      <!-- Resources -->
 
-     </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <ul class="block-options">
+                  <li>
+                      <%% if (entity.booking_lines.length > 0 && entity.booking_lines[0].booking_line_resources.length > 0) {%>
+                        <div class="button" style="position: relative; top: 2px">
+                          <a href="/admin/booking/assign-stock/<%%=entity.booking_lines[0].booking_line_resources[0].id%>"><i class="si si-settings"></i></a>
+                        </div>
+                      <%% } %>
+                  </li>
+                </ul>
+                <h3 class="block-title"><%= t.booking_management.form.booking_resources.title %></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <%= partial :booking_management_resources, :locals => {:booking_item_family => booking_item_family} %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Charges -->
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_management.form.charges_tab %></h3>
+            </div>
+            <div class="block-content block-content-full">
+              <%= partial :booking_management_charges %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flight and destination accommodation -->
+      <div class="row">
+        <!-- Flight -->
+        <% if booking_item_family.flight %>
+        <div class="col-lg-6">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%=t.booking_management.form.flight_title%></h3>
+            </div>
+            <div class="block-content block-content-full">
+              <%= partial :booking_management_flight %>
+            </div>
+          </div>
+        </div>
+        <% end %>
+        <!-- Destination accommodation -->
+        <div class="col-lg-6">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%=t.booking_management.form.destination_address_title%></h3>
+            </div>
+            <div class="block-content block-content-full">
+              <%= partial :booking_management_destination_address %>
+            </div>
+          </div>
+        </div>
+        <!-- Notes -->
+        <div class="<% if booking_item_family.flight %>col-lg-12<%else%>col-lg-6<%end%>">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_management.form.anotations %></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <%= partial :booking_management_notes %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Driver information -->
+
+      <% if booking_item_family.driver %>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><% if booking_item_family.driver_license %><%=t.booking_management.form.driver_tab%><%else%><%=t.booking_management.form.driver_contact_title%><%end%></h3>
+            </div>
+            <div class="block-content block-content-full">
+                <%= partial :booking_management_driver, :locals => {:booking_item_family => booking_item_family,
+                                                    :driver_min_age_rules => driver_min_age_rules,
+                                                    :driver_min_age_edition => driver_min_age_edition} %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% if booking_item_family.driver_license %>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%=t.booking_management.form.additional_drivers_tab%></h3>
+            </div>
+            <div class="block-content block-content-full">
+              <%= partial :booking_management_additional_drivers, :locals => {:booking_item_family => booking_item_family} %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% end %>
+      <% end %>
+
+      <% if multiple_rental_locations %>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_management.form.rental_location %></h3>
+            </div>
+            <div class="block-content block-content-full">
+                  <%= partial :booking_management_rental_location %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% end %>
+
+      <!-- Simple invoicing -->
+      <% if booking_addon_simple_invoicing %>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%=t.booking_management.form.external_invoicing_tab%></h3>
+            </div>
+            <div class="block-content block-content-full">
+                  <%= partial :booking_management_external_invoicing_tab %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% end %>
+
+      <!-- Notifications -->
+      <div class="row">
+        <div class="<%% if (entity.total_pending > 0 && entity.status != 'cancelled') { %>col-lg-8<%%} else {%>col-lg-12<%%}%>">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_management.form.notifications.title %></h3>
+            </div>
+            <div class="block-content block-content-full">
+               <%= partial :booking_management_notifications %>
+            </div>
+          </div>
+        </div>
+        <!-- Payment -->
+        <%% if (entity.total_pending > 0 && entity.status != 'cancelled') { %>
+        <div class="col-lg-4">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_management.form.payment_tab %></h3>
+            </div>
+            <div class="block-content block-content-full">
+              <%= partial :booking_management_payment, :locals => {:booking_payment_enabled => booking_payment_enabled} %>
+            </div>
+          </div>
+        </div>
+        <%% } %>
+      </div>
+
+      <!-- Entrega / Devolucion real -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_management.form.related_bookings %></h3>
+            </div>
+            <div class="block-content block-content-full">
+              <%= partial :booking_management_related_bookings, locals: {booking_item_family: booking_item_family} %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%=t.booking_management.form.other_tab%></h3>
+            </div>
+            <div class="block-content block-content-full">
+                  <%= partial :booking_management_other_tab, :locals => {:booking_front_end_prefix => booking_front_end_prefix} %>
+            </div>
+          </div>
+        </div>
+      </div>
 
      </form>
 

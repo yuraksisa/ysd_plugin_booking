@@ -1,5 +1,4 @@
-          <form name="customer" style="border:1px solid #EEE; padding-bottom: 1.45em">
-            <div class="more_contrast_text top-margin bottom-margin" style="text-decoration:underline; margin-left:5px"><%= t.booking_management.form.customer_title %></div>         
+          <form name="customer">
             <input type="hidden" name="id" value="<%%=entity.id%>"/>
             <div class="element_template">
               <div class="entity-field">
@@ -41,7 +40,7 @@
             <div class="navigation-bar bottom-margin">
               <div id="customer_error_summary" class="alert alert-danger" style="display: none; margin: 10px"></div>
               <div class="navigation-bar-crud-buttons right-float right-margin">
-                <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                <input type="submit" class="btn btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
               </div>
             </div>             
           </form> 

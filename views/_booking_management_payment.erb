@@ -1,14 +1,13 @@
-          <div class="top-margin all-space" style="border:1px solid #EEE">
-            <div class="container_12">
-              <div class="grid_6">  
-                  <div class="left-margin">
+                  <div class="text-center" style="min-height:174px">
                     <%% if (entity.status != 'cancelled') { %>
                       <%% var booking_payment_enabled = <%=booking_payment_enabled%>; %>
                       <%% if (!entity.can_pay) { %>
-                        <div class="guiblock error-status bottom-margin">
-                          <%=t.booking_management.form.payment_not_allowed%>
-                        </div>  
-                        <button class="form-button blue-button element-action-button" id="allow_payment_button" 
+                        <a class="block block-link-hover2" href="javascript:void(0)">
+                          <div class="block-content block-content-full bg-city clearfix">
+                            <span class="h4 text-white-op"><%=t.booking_management.form.payment_not_allowed%></span>
+                          </div>
+                        </a>
+                        <button class="btn btn-primary element-action-button" id="allow_payment_button"
                                 title="<%=t.booking_management.form.allow_payment_button.label%>" 
                                 data-action-method="POST"
                                 data-action-url="/api/booking/allow-payment/<%%=entity.id%>"
@@ -16,10 +15,13 @@
                                 <%=t.booking_management.form.allow_payment_button.label%>
                         </button>
                       <%% } else { %>
-                        <div class="guiblock confirmed-status"><%=t.booking_management.form.force_allow_payment%>
-                        </div>    
+                        <a class="block block-link-hover2" href="javascript:void(0)">
+                          <div class="block-content block-content-full bg-flat clearfix">
+                            <span class="h4 text-white-op"><%=t.booking_management.form.force_allow_payment%></span>
+                          </div>
+                        </a>
                         <%% if (entity.force_allow_payment) { %>
-                        <button class="form-button red-button element-action-button" id="not_allow_payment_button" 
+                        <button class="btn btn-danger element-action-button" id="not_allow_payment_button"
                                 title="<%=t.booking_management.form.not_allow_payment_button.label%>" 
                                 data-action-method="POST"
                                 data-action-url="/api/booking/not-allow-payment/<%%=entity.id%>"
@@ -30,6 +32,3 @@
                       <%% } %>  
                     <%% } %>  
                   </div> 
-              </div>
-            </div>
-          </div>

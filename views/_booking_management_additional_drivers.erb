@@ -1,4 +1,4 @@
-      <form name="additional_drivers" style="border:1px solid #EEE">
+      <form name="additional_drivers">
         <input type="hidden" name="id" value="<%%=entity.id%>"/>
         <div class="container_12">
           <div class="grid_6">
@@ -22,8 +22,7 @@
                   </span>
                 </div>
               </div>               
-              <% if booking_item_family.driver_license %>
-                <div class="top-margin" style="text-decoration:underline; margin-left:5px"><%=t.booking_management.form.driver_document%></div>
+              <div class="top-margin" style="text-decoration:underline; margin-left:5px"><%=t.booking_management.form.driver_document%></div>
               <div class="element_template">
                   <div class="entity-field">
                      <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_document_id %></span>
@@ -93,7 +92,6 @@
                   </span>
                   </div>
                 </div>
-              <% end %>          
           </div>
           <div class="grid_6">
 
@@ -117,7 +115,6 @@
                   </span>
                 </div>
               </div>               
-              <% if booking_item_family.driver_license %>
                 <div class="top-margin" style="text-decoration:underline; margin-left:5px"><%=t.booking_management.form.driver_document%></div>
               <div class="element_template">
                   <div class="entity-field">
@@ -189,9 +186,6 @@
                   </span>
                   </div>
                 </div>
-
-              <% end %>
-
           </div>
         </div>
         <div class="navigation-bar bottom-margin">

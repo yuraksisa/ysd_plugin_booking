@@ -645,10 +645,10 @@ booking_management:
     reservation_tab: Datos de la reserva
     flight_tab: Vuelo / Alojamiento
     driver_tab: Conductor
-    additional_drivers_tab: Cond. Adic.
+    additional_drivers_tab: Conductores Adicionales
     weight_height_tab: Peso/Altura
     charges_tab: Detalle cobros
-    payment_tab: Pago
+    payment_tab: Pago online
     planning_tab: Planning
     external_invoicing_tab: Facturación externa
     other_tab: Otros datos
@@ -660,13 +660,13 @@ booking_management:
       label: Confirmar
       message: ¿Desea confirmar la reserva?
     pickup_button: 
-      label: Registrar entrega/entrada
+      label: Entregar
       message: ¿Desea indicar que se ha realizado la entrega/entrada?
     return_button: 
-      label: Registrar devolución/salida
+      label: Devolución
       message: ¿Desea indicar que se ha realizado la devolución/salida?
     cancel_button:   
-      label: Cancelar reserva
+      label: Cancelar
       message: ¿Desea cancelar la solicitud reserva?
     assign_button: 
       label: Asignar
@@ -678,7 +678,7 @@ booking_management:
       label: No permitir pago
       message: ¿Desea evitar que pueda realizar el pago online de esta reserva?      
     change_dates: Cambiar fechas
-    payment_not_allowed: No se puede realizar el pago online de la reserva
+    payment_not_allowed: Pago online no permitido
     force_allow_payment: Pago online permitido
     expired: Se ha excedido el tiempo para realizar el pago del depósito
     id: Localizador reserva
@@ -695,8 +695,8 @@ booking_management:
     booking_data_title: Datos reserva
     destination_address_title: Alojamiento
     pickup_return: Entrega y devolución    
-    date_from: Entrega / Entrada
-    date_to: Devolución / Salida
+    date_from: Entrega
+    date_to: Devolución
     pickup_place: Lugar de entrega
     return_place: Lugar de devolución
     item: Producto
@@ -727,12 +727,13 @@ booking_management:
       title: Notificaciones
       sent: Enviado 
       not_sent: No enviado
-      send_again: Enviar
+      send_again: Reenviar
+      send_first: Enviar
       resend_confirmation: ¿Desea reenviar la notificación?
-      c1_notification: Reserva recibida
-      c2_notification: Reserva confirmada
-      c3_notification: Reserva recibida con pago online
-      c4_notification: Cobro habilitado
+      c1_notification: Recibida
+      c2_notification: Confirmada
+      c3_notification: Con pago
+      c4_notification: Pago habilitado
     anotations: Notas
     customer_title: Cliente
     customer_name: Nombre
@@ -744,7 +745,8 @@ booking_management:
     guests_title: Huéspedes
     adults: Adultos
     children: Niños (hasta 7 años)    
-    driver_title: Conductor/Contacto
+    driver_title: Conductor
+    driver_contact_title: Contacto
     additional_driver_1_title: Conductor adicional 1
     additional_driver_2_title: Conductor adicional 2
     driver_name: Nombre
@@ -799,13 +801,13 @@ booking_management:
     booking_resources:
       title: Recursos
       item: Producto
-      user: Nombre y apellidos
+      user: Nombre
       document_id: Documento
       phone: Teléfono
-      email: Correo electrónico
+      email: E-mail
       height: Altura
       weight: Peso
-      resource: Recurso asignado
+      resource: Recurso
     planning_color: 
       title: Color en el planning
     created_by_manager: Creada en el backend

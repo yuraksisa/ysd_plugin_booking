@@ -7,7 +7,7 @@
     cursor: pointer;      
   }
 </style>
-                  <div class="bottom-margin" style="border:1px solid #EEE;padding-right: 20px;">
+
                      <table class="table table-hover">
                         <thead class="table-header">
                           <tr>
@@ -175,17 +175,13 @@
 
                         </tbody>
                      </table>  
-                     <div class="top-margin all-space top-separator">
+                     <div class="top-margin all-space">
                         <% if booking_item_family.frontend == :shopcart %>
-                        <button id="new_booking_line_button" class="form-button">Añadir producto</button>
+                        <button id="new_booking_line_button" class="btn btn-default">Añadir producto</button>
                         <% end %>
-                        <button id="new_booking_extra_button" class="form-button">Añadir extra</button>
-                        <button id="booking_supplements_button" class="form-button">Suplementos reserva</button>
+                        <button id="new_booking_extra_button" class="btn btn-default">Añadir extra</button>
+                        <button id="booking_supplements_button" class="btn btn-default">Suplementos reserva</button>
                         <% if booking_item_family.driver and driver_min_age_rules%>
-                        <button id="booking_deposit_button" class="form-button">Fianza</button>
-                        <% end %>
-                        <% if booking_item_family.driver and driver_min_age_rules %>
-                        <button id="booking_driver_age_button" class="form-button">Fecha nacimiento conductor</button>
+                        <button id="booking_deposit_button" class="btn btn-default">Fianza</button>
                         <% end %>
                      </div>
-                  </div>

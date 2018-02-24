@@ -1,8 +1,22 @@
-         <form name="driver" style="border:1px solid #EEE">
+<% if booking_item_family.driver and driver_min_age_rules %>
+  <%% if (entity.driver_age_rule_description && entity.driver_age_rule_description.length > 0) { %>
+  <div class="row">
+    <div class="col-lg-12">
+      <a class="block block-link-hover2" href="javascript:void(0)">
+        <div class="block-content block-content-full <%% if (!entity.driver_age_allowed) { %>bg-city<%%}else{%>bg-warning<%%}%> clearfix">
+          <i class="si si-users fa-2x text-white pull-right"></i>
+          <span class="h4 font-w700 text-white"></span> <span class="h4 text-white-op"><%%= entity.driver_age_rule_description %> <%% if (!entity.driver_age_allowed) { %>(<%=t.booking_management.form.driver_age.not_allowed.upcase%>)<%%}%></span>
+        </div>
+      </a>
+    </div>
+  </div>
+  <%% } %>
+<% end %>
+
+         <form name="driver">
            <input type="hidden" name="id" value="<%%=entity.id%>"/>
            <div class="container_12">
             <div class="grid_6">
-              <div class="more_contrast_text top-margin" style="text-decoration:underline; margin-left:5px"><%=t.booking_management.form.driver_title%></div>
               <div class="element_template">
                 <div class="entity-field">
                   <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_name %></span>
@@ -100,7 +114,6 @@
               <% end %>
             </div>
             <div class="grid_6">
-               <div class="more_contrast_text top-margin" style="text-decoration:underline; margin-left:5px"><%=t.booking_management.form.driver_address_title%></div> 
                 <div class="element_template">
                   <div class="entity-field">
                     <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_address_street %></span>
@@ -173,3 +186,4 @@
               </div>
             </div> 
          </form>
+
