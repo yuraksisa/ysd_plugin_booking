@@ -35,6 +35,21 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        'refunded': '<span class="label label-danger"><%= t.booking_payment_status.refunded%></span>'
     }
 
+      this.statusDescriptionText = {
+          'pending_confirmation' : '<span class="label text-warning"><%= t.booking_status.pending_confirmation%></span>',
+          'confirmed' : '<span class="label text-success"><%= t.booking_status.confirmed%></span>',
+          'in_progress' : '<span class="label text-info"><%= t.booking_status.in_progress%></span>',
+          'done' : '<span class="label text-primary"><%= t.booking_status.done%></span>',
+          'cancelled' : '<span class="label text-danger"><%= t.booking_status.cancelled%></span>'
+      }
+
+      this.paymentStatusDescriptionText = {
+          'none' : '<%= t.booking_payment_status.none%>',
+          'deposit' : '<span class="label text-primary" style="font-size:100%"><%= t.booking_payment_status.deposit%></span>',
+          'total' : '<span class="label text-success" style="font-size:100%"><%= t.booking_payment_status.total%></span>',
+          'refunded': '<span class="label text-danger" style="font-size:100%"><%= t.booking_payment_status.refunded%></span>'
+      }
+
     this.chargeStatusDescription = {
        'pending': '<%= t.charge_status.pending %>',
        'processing': '<%= t.charge_status.processing %>',
