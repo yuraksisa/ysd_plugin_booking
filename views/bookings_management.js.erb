@@ -446,6 +446,13 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
             dataSourceRentalLocation, valueRentalLocation, true );
       <% end %>
 
+      // Embed activity newsfeed
+        $.ajax({url: '/admin/newsfeed/booking/'+ entity.id, dataType: 'text'}).done(function(html) {
+            var dom = $('<html />').prop('innerHTML', html);
+            $('#newsfeed_container').html(dom.find('body #page_wrapper'));
+            $('head').append(dom.find('script:not([src])'));
+        });
+
     }
 
     this.configForm = function(entity) {
