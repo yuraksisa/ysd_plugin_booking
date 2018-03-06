@@ -13,49 +13,7 @@
 
     <br>
 
-    <div class="row">
-      <div class="col-sm-12 col-md-10 col-md-offset-1">
-        <div class="block ">
-          <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_front_end.engine.title%></h3>
-          </div>
-          <div class="block-content block-content-narrow">
-            <form name="variables" action="/api/variables" method="PUT"
-                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-              <%= render_variable_checkbox_boolean('booking.inner_reservation_engine',
-                                                   t.booking_front_end.engine.inner_label) %>
-              <p class="less_contrast_text smaller_text"><%=t.booking_front_end.engine.inner_description%></p>
-              <%= render_variable_input_text('booking.front_end_prefix',
-                                             t.booking_front_end.engine.external_web_prefix_url, 80, 40) %>
-              <div class="form-group">
-                <div class="col-xs-12">
-                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-12 col-md-10 col-md-offset-1">
-        <div class="block ">
-          <div class="block-header bg-gray-lighter">
-            <h3 class="block-title">Datos generales</h3>
-          </div>
-          <div class="block-content block-content-narrow text-center">
-             <% if @logo %>
-             <div>
-               <img src="<%=@logo%>"/>
-             </div>
-             <% end %>
-             <div class="text-muted">Logo</div>
-             <br>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Web pages -->
 
     <div class="row">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
@@ -63,42 +21,19 @@
           <div class="block-header bg-gray-lighter">
             <ul class="block-options">
               <li>
-                <button id="new_page_button" class="btn push-5-r push-10" type="button"><i class="fa fa-plus"></i> Nueva página</button>
+                <button id="new_page_button" class="btn push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
             <h3 class="block-title">Páginas</h3>
           </div>
-          <div class="block-content block-content-narrow">
-            <table class="table">
-              <thead>
-              <tr>
-                <th>Título</th>
-                <th class="hidden-xs" style="width: 15%;">Estado</th>
-                <th class="text-center" style="width: 100px;">Acciones</th>
-              </tr>
-              </thead>
-              <tbody>
-              <% @pages.each do |page| %>
-              <tr>
-                <td><%=page.title%></td>
-                <td class="hidden-xs">
-                  <span class="label label-warning"><%=page.publishing_state_id%></span>
-                </td>
-                <td class="text-center">
-                  <div class="btn-group">
-                    <button class="btn btn-xs btn-default edit_page_button" rel="<%=page.id%>" type="button"><i class="fa fa-pencil"></i></button>
-                    <button class="btn btn-xs btn-default delete_page_button" rel="<%=page.id%>" type="button"><i class="fa fa-times"></i></button>
-                    <button class="btn btn-xs btn-default open_in_browser_button" rel="<%=page.alias%>" type="button"><i class="fa fa-external-link"></i></button>
-                  </div>
-                </td>
-              </tr>
-              <% end %>
-              </tbody>
-            </table>
+          <div id="pages_container" class="block-content block-content-narrow">
+            <%= partial :pages %>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Web primary links menu -->
 
     <div class="row">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
@@ -106,45 +41,19 @@
           <div class="block-header bg-gray-lighter">
             <ul class="block-options">
               <li>
-                <button class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i> Nuevo elemento</button>
+                <button class="new_menu_item_button" rel="<%=@primary_links_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
             <h3 class="block-title">Menú principal</h3>
           </div>
-          <div class="block-content block-content-narrow">
-            <% if @primary_links_menu and @primary_links_menu.menu_items %>
-            <ul id="primary_links" class="sortable">
-            <% @primary_links_menu.menu_items.each do |menu_item| %>
-              <% unless menu_item.parent %>
-              <li class="ui-state-default" rel="<%=menu_item.id%>">
-                  <span class="ui-icon ui-icon-arrowthick-2-n-s"></span><%=menu_item.title%>
-                  <div class="btn-group pull-right">
-                    <button class="btn btn-xs btn-default" type="button"><i class="fa fa-pencil"></i></button>
-                    <button class="btn btn-xs btn-default" type="button"><i class="fa fa-times"></i></button>
-                  </div>
-                  <% if menu_item.children %>
-                     <ul class="sortable">
-                       <% menu_item.children.each do |menu_item_children| %>
-                         <li class="ui-state-default" rel="<%=menu_item_children.id%>">
-                           <span class="ui-icon ui-icon-arrowthick-2-n-s"></span><%=menu_item_children.title%>
-                           <div class="btn-group pull-right">
-                             <button class="btn btn-xs btn-default" type="button"><i class="fa fa-pencil"></i></button>
-                             <button class="btn btn-xs btn-default" type="button"><i class="fa fa-times"></i></button>
-                           </div>
-                         </li>
-                       <% end %>
-                     </ul>
-                  <% end %>
-              </li>
-              <% end %>
-            <% end %>
-            </ul>
-            <% end %>
-            <br>
+          <div id="primary_links_container" class="block-content block-content-narrow">
+            <%= partial :menu, locals: {menu: @primary_links_menu} %>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Web secundary links menu -->
 
     <div class="row">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
@@ -152,20 +61,13 @@
           <div class="block-header bg-gray-lighter">
             <ul class="block-options">
               <li>
-                <button class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i> Nuevo elemento</button>
+                <button class="new_menu_item_button" rel="<%=@secondary_links_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
             <h3 class="block-title">Menú secundario</h3>
           </div>
-          <div class="block-content block-content-narrow">
-            <% if @secondary_links_menu and @secondary_links_menu.menu_items %>
-            <ul id="secondary_links" class="sortable">
-              <% @secondary_links_menu.menu_items.each do |menu_item| %>
-                <li class="ui-state-default" rel="<%=menu_item.id%>"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><%=menu_item.title%></li>
-              <% end %>
-            </ul>
-            <% end %>
-            <br>
+          <div id="secondary_links_container" class="block-content block-content-narrow">
+            <%= partial :menu, locals: {menu: @secondary_links_menu} %>
           </div>
         </div>
       </div>

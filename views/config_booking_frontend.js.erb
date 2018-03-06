@@ -1,49 +1,203 @@
-require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.ui.touch-punch', 'ysdhtmleditor',], function($, YSDForms) {
+require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForms) {
 
 
   model = {
+
+      deletePage: function(id) {
+
+          var data = {'id': id};
+          var dataJSON = JSON.stringify(data);
+
+          $.ajax({
+              type: 'DELETE',
+              url : '/api/content',
+              data: dataJSON,
+              dataType : 'json',
+              contentType : 'application/json; charset=utf-8',
+              success: function(data, textStatus, jqXHR) {
+                  $('#page-'+id).remove();
+                  $.toast({
+                      heading: 'Página eliminada',
+                      text: 'La página se ha eliminado correctamente',
+                      position: 'top-right',
+                      bgColor: 'rgb(56, 154, 56)',
+                      textColor: 'white',
+                      loader: false,
+                      stack: false
+                  });
+              },
+              error: function(data, textStatus, jqXHR) {
+                  alert('Error eliminando página');
+              }
+
+          });
+
+
+      },
+
+      deleteMenuItem: function(id) {
+
+          var data = {'id': id};
+          var dataJSON = JSON.stringify(data);
+
+          $.ajax({
+              type: 'DELETE',
+              url : '/api/menu-item',
+              data: dataJSON,
+              dataType : 'json',
+              contentType : 'application/json; charset=utf-8',
+              success: function(data, textStatus, jqXHR) {
+                  $('#menu-item-'+id).remove();
+                  $.toast({
+                      heading: 'Elemento de menú eliminado',
+                      text: 'El elemento de menú se ha eliminado correctamente',
+                      position: 'top-right',
+                      bgColor: 'rgb(56, 154, 56)',
+                      textColor: 'white',
+                      loader: false,
+                      stack: false
+                  });
+              },
+              error: function(data, textStatus, jqXHR) {
+                  alert('Error eliminando elemento de menú');
+              }
+
+          });
+
+
+      }
 
   };
 
   controller = {
 
-      newPageButtonClick: function() {
-          $('#modal_container .modal-body').load('/admin/cms/page-content/new #container',
-              function(responseText, textStatus, jqXHR){
-                  var dom = $('<html />').prop('innerHTML', html);
-                  $('.modal-title').html('Nueva página');
-                  htmlEditor('.texteditor');
-                  $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){
-                      e.preventDefault();
-                      $(this).tab('show');
-                  });
-                  $('#modal_container').modal('show');
-              }
-          );
-      },
+      newPageButtonClick: function() { // New page button click
 
-      editPageButtonClick: function(id) {
-          $('#modal_container .modal-body').load('/admin/cms/page-content/'+id+'/edit #container',
-              function(responseText, textStatus, jqXHR){
-                  var dom = $('<html />').prop('innerHTML', html);
-                  $('.modal-title').html('Editar página');
-                  htmlEditor('.texteditor');
-                  $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){
-                      e.preventDefault();
-                      $(this).tab('show');
-                  });
-                  $('#modal_container').modal('show');
-              }
-          );
-      },
-
-      deletePageButtonClick: function() {
+          $.ajax({url: '/admin/cms/page-content/new #container', dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('.modal-title').html('Nueva página');
+              htmlEditor('.texteditor');
+              $('#modal_container .modal-body').html(dom.find('body #container'));
+              //$('head').append(dom.find('script:not([src])'));
+              var script = dom.find('script:not([src])'); // Array of scripts source
+              controller.removeExistingScriptsFromHead(script);
+              $('head').append(script);
+              $('#modal_container').modal('show');
+              $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){
+                  e.preventDefault();
+                  $(this).tab('show');
+              });
+              $('#modal_container').on('hidden.bs.modal', function (e) {
+                  $(e.currentTarget).unbind();
+                  view.reloadPages();
+              });
+          });
 
       },
 
-      openInBrowser: function(url) {
+      editPageButtonClick: function(id) { // Edit page button click
+
+          $.ajax({url: '/admin/cms/page-content/'+id+'/edit #container', dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('.modal-title').html('Editar página');
+              htmlEditor('.texteditor');
+              $('#modal_container .modal-body').html(dom.find('body #container'));
+              //$('head').append(dom.find('script:not([src])'));
+              var script = dom.find('script:not([src])'); // Array of scripts source
+              controller.removeExistingScriptsFromHead(script);
+              $('head').append(script);
+              $('#modal_container').modal('show');
+              $('[data-toggle="tabs"] a, .js-tabs a').click(function(e){
+                  e.preventDefault();
+                  $(this).tab('show');
+              });
+              $('#modal_container').on('hidden.bs.modal', function (e) {
+                  $(e.currentTarget).unbind();
+                  view.reloadPages();
+              });
+          });
+
+      },
+
+      deletePageButtonClick: function(id) { // Delete page button click
+
+          if (confirm('¿Está seguro que desea eliminar la página?')) {
+              model.deletePage(id);
+          }
+
+      },
+
+      openInBrowser: function(url) { // Open page button click
           window.open(url,'_blank');
-      }
+      },
+
+      removeExistingScriptsFromHead: function(scripts) {
+          for (var idx=0;idx<scripts.length;idx++){
+              var headScripts = $('head script');
+              for (var n=0;n<headScripts.length;n++) {
+                  if (headScripts[n].innerHTML == scripts[idx].innerHTML ||
+                      (headScripts[n].source != '' && headScripts[n].source == scripts[idx].source)) {
+                      $(headScripts[n]).remove();
+                  }
+              }
+          }
+      },
+
+      newMenuItemButtonClick: function(menuId, parentId) { // New menu item button click
+
+          var url = '/admin/cms/menu/'+menuId+'/menu-item/new #container';
+
+          if (parentId) {
+            url = '/admin/cms/menu/'+menuId+'/menu-item/new?parent_id='+ parentId +'#container';
+          }
+
+          $.ajax({url: url, dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('.modal-title').html('Nuevo item de menú');
+              $('#modal_container .modal-body').html(dom.find('body #container'));
+
+              var script = dom.find('script:not([src])'); // Array of scripts source
+              controller.removeExistingScriptsFromHead(script);
+              $('head').append(script);
+
+              $('#modal_container').modal('show');
+              $('#modal_container').on('hidden.bs.modal', function (e) {
+                  $(e.currentTarget).unbind();
+                  view.reloadMenu(menuId);
+              });
+          });
+
+      },
+
+      editMenuItemButtonClick: function(menuId, id) { // Edit menu item button click
+
+          $.ajax({url: '/admin/cms/menu/'+menuId+'/menu-item/'+id+'/edit #container', dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('.modal-title').html('Editar item de menú');
+              $('#modal_container .modal-body').html(dom.find('body #container'));
+
+              var script = dom.find('script:not([src])'); // Array of scripts source
+              controller.removeExistingScriptsFromHead(script);
+              $('head').append(script);
+              //$('head').append(dom.find('script:not([src])'));
+
+              $('#modal_container').modal('show');
+              $('#modal_container').on('hidden.bs.modal', function (e) {
+                  $(e.currentTarget).unbind();
+                  view.reloadMenu(menuId);
+              });
+          });
+
+
+      },
+
+      deleteMenuItemButtonClick: function(id) { // Delete menu item button click
+
+          if (confirm('¿Está seguro que desea eliminar el elemento de menú?')) {
+              model.deleteMenuItem(id);
+          }
+
+      },
 
   };
 
@@ -53,14 +207,68 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.ui.touch-punch', 'ysdhtmledi
           YSDForms.improve();
           $('.sortable').sortable();
           $('.sortable').disableSelection();
-          $('.open_in_browser_button').bind('click', function() {
-              controller.openInBrowser($(this).attr('rel'));
-          });
+          this.setupPagesEvents();
+          this.setupMenuEvents();
+      },
+
+      setupPagesEvents: function() {
+
+          // New page
+          $('#new_page_button').unbind('click');
           $('#new_page_button').bind('click', function() {
               controller.newPageButtonClick();
           });
+          // Edit page
+          $('.edit_page_button').unbind('click');
           $('.edit_page_button').bind('click', function() {
               controller.editPageButtonClick($(this).attr('rel'));
+          });
+          // Delete page
+          $('.delete_page_button').unbind('click');
+          $('.delete_page_button').bind('click', function() {
+              controller.deletePageButtonClick($(this).attr('rel'));
+          });
+          // Open in browser
+          $('.open_in_browser_button').unbind('click');
+          $('.open_in_browser_button').bind('click', function() {
+              controller.openInBrowser($(this).attr('rel'));
+          });
+
+      },
+
+      setupMenuEvents: function() {
+          // New menu item
+          $('.new_menu_item_button').unbind('click');
+          $('.new_menu_item_button').bind('click', function(){
+              controller.newMenuItemButtonClick($(this).attr('rel'));
+          });
+          // New submenu item
+          $('.new_submenu_item_button').unbind('click');
+          $('.new_submenu_item_button').bind('click', function(){
+              controller.newMenuItemButtonClick($(this).attr('data-menu-id'), $(this).attr('data-parent-id'));
+          });
+          // Edit menu item
+          $('.edit_menu_item_button').unbind('click');
+          $('.edit_menu_item_button').bind('click', function() {
+              controller.editMenuItemButtonClick($(this).attr('data-menu-id'), $(this).attr('rel'));
+          });
+          // Delete menu item
+          $('.delete_menu_item_button').unbind('click');
+          $('.delete_menu_item_button').bind('click', function() {
+              controller.deleteMenuItemButtonClick($(this).attr('rel'));
+          });
+      },
+
+      reloadPages: function() {
+          $('#pages_container').load('/admin/cms/pages #pages_holder', function() {
+              view.setupPagesEvents();
+          });
+      },
+
+      reloadMenu: function(menuId) {
+
+          $('#'+menuId+'_container').load('/admin/cms/menu/' + menuId + ' #menu_holder', function() {
+              view.setupMenuEvents();
           });
       }
 

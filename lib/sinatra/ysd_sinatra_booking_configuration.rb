@@ -164,11 +164,20 @@ module Sinatra
         end
 
         #
+        # Booking configuration frontend theme
+        #
+        app.get '/admin/booking/config/front-end-theme', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          @logo = SystemConfiguration::Variable.get_value('site.logo',nil)
+
+          load_page(:config_booking_frontend_theme)
+        end
+
+        #
         # Booking configuration frontend
         #
         app.get '/admin/booking/config/front-end', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          @logo = SystemConfiguration::Variable.get_value('site.logo',nil)
           @pages = ContentManagerSystem::Content.all(conditions: { type: 'page' },
                                                      order: [:title])
           @primary_links_menu = ::Site::Menu.first(name: 'primary_links')

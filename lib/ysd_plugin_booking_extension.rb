@@ -725,7 +725,8 @@ module Huasi
             menu_locals = {booking_renting: booking_renting,
                            booking_activities: booking_activities,
                            addons: addons,
-                           use_factors: use_factors}
+                           use_factors: use_factors,
+                           use_inner_reservation_engine: SystemConfiguration::Variable.get_value('booking.inner_reservation_engine','false').to_bool}
             if booking_renting
               menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
               menu_locals.store(:today_pickup, BookingDataSystem::Booking.pickup_list(today, today, nil, true).size) #BookingDataSystem::Booking.count_pickup(today))

@@ -222,8 +222,10 @@ booking_business_settings:
 booking_contract:
   title: Contrato
   template_title: Plantilla
+booking_front_end_theme:
+  title: Tema
 booking_front_end:
-  title: Web
+  title: Estructura y contenidos
   engine:
     title: Motor de reservas
     inner_label: Usar el motor de reservas interno
