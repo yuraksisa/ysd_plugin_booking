@@ -182,6 +182,7 @@ module Sinatra
                                                      order: [:title])
           @primary_links_menu = ::Site::Menu.first(name: 'primary_links')
           @secondary_links_menu = ::Site::Menu.first(name: 'secondary_links')
+          @translations = settings.multilanguage_site
 
           load_page(:config_booking_frontend)
         end

@@ -119,6 +119,25 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForm
 
       },
 
+
+      translatePageButtonClick: function(id) { // Translate page button click
+
+          $.ajax({url: '/admin/cms/translate/content/'+id+' #page_wrapper', dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('.modal-title').html('Traducir página');
+              //htmlEditor('.texteditor');
+              $('#modal_container .modal-body').html(dom.find('body #page_wrapper'));
+              var script = dom.find('script:not([src])'); // Array of scripts source
+              controller.removeExistingScriptsFromHead(script);
+              $('head').append(script);
+              $('#modal_container').modal('show');
+              $('#modal_container').on('hidden.bs.modal', function (e) {
+                  $(e.currentTarget).unbind();
+              });
+          });
+
+      },
+
       deletePageButtonClick: function(id) { // Delete page button click
 
           if (confirm('¿Está seguro que desea eliminar la página?')) {
@@ -188,6 +207,23 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForm
               });
           });
 
+      },
+
+      translateMenuItemButtonClick: function(id) { // Translate page button click
+
+          $.ajax({url: '/admin/cms/translate/menuitem/'+id+' #page_wrapper', dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('.modal-title').html('Traducir item de menú');
+              //htmlEditor('.texteditor');
+              $('#modal_container .modal-body').html(dom.find('body #page_wrapper'));
+              var script = dom.find('script:not([src])'); // Array of scripts source
+              controller.removeExistingScriptsFromHead(script);
+              $('head').append(script);
+              $('#modal_container').modal('show');
+              $('#modal_container').on('hidden.bs.modal', function (e) {
+                  $(e.currentTarget).unbind();
+              });
+          });
 
       },
 
@@ -223,6 +259,12 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForm
           $('.edit_page_button').bind('click', function() {
               controller.editPageButtonClick($(this).attr('rel'));
           });
+          // Translate page
+          $('.translate_page_button').unbind('click');
+          $('.translate_page_button').bind('click', function() {
+              controller.translatePageButtonClick($(this).attr('rel'));
+          });
+
           // Delete page
           $('.delete_page_button').unbind('click');
           $('.delete_page_button').bind('click', function() {
