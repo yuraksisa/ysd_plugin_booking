@@ -294,6 +294,11 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForm
           $('.edit_menu_item_button').bind('click', function() {
               controller.editMenuItemButtonClick($(this).attr('data-menu-id'), $(this).attr('rel'));
           });
+          // Translate page
+          $('.translate_menu_item_button').unbind('click');
+          $('.translate_menu_item_button').bind('click', function() {
+              controller.translateMenuItemButtonClick($(this).attr('rel'));
+          });
           // Delete menu item
           $('.delete_menu_item_button').unbind('click');
           $('.delete_menu_item_button').bind('click', function() {
