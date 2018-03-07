@@ -52,10 +52,10 @@
         <%%= entity.name %>
       </td>
       <td class="table-cell text-center">
-        <%%= entity.is_pickup ? '<i class="fa fa-times"></i>' : '' %>
+        <%%= entity.is_pickup ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
       </td>
       <td class="table-cell text-center">
-        <%%= entity.is_return ? '<i class="fa fa-times"></i>' : '' %>
+        <%%= entity.is_return ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
       </td>
       <td class="table-cell text-center">
         <%%= new Number(entity.price).toFixed(2)%>   

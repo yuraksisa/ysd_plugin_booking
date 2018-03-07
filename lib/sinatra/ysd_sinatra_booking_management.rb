@@ -191,10 +191,14 @@ module Sinatra
           @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
           addons = mybooking_addons
           @addon_sales_channels = (addons and addons.has_key?(:addon_sales_channels) and addons[:addon_sales_channels])
+          @multilanguage = settings.multilanguage_site
+          @languages = Model::Translation::TranslationLanguage.all
+          @default_language = settings.default_language
 
           if @addon_sales_channels
+            @sales_channels = ::Yito::Model::SalesChannel::SalesChannel.all
             @booking_frontend_prefix_sales_channels = {}
-            ::Yito::Model::SalesChannel::SalesChannel.all.each do |sales_channel|
+            @sales_channels.each do |sales_channel|
               @booking_frontend_prefix_sales_channels.store(sales_channel.code,
                                                             SystemConfiguration::Variable.get_value("booking.front_end_prefix_sc_#{sales_channel.code}",
                                                                                                     locals[:booking_front_end_prefix]))

@@ -136,3 +136,19 @@
                           <%% } %>
                         </tbody>
                       </table>
+
+                      <div style="position: relative; left: 10px">
+
+                        <form name="planning" class="form-inline">
+                          <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                          <div class="form-group">
+                            <label for="planning_color">Color en el planning</label>&nbsp;
+                            <input type="color" name="planning_color" value="<%%=entity.planning_color%>" style="width:50px" class="form-control"/>
+                          </div>
+                          <div class="form-group">
+                            <button class="btn btn-default update-entity-button action-button entity-management-button" type="submit"><%=t.entitymanagement.update%></button>
+                          </div>
+                        </form>
+
+
+                      </div>

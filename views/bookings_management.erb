@@ -108,19 +108,61 @@
      <div id="dialogs_container">
      </div> 
 
-     <%= partial :booking_management_header, locals: {booking_item_family: booking_item_family,
+      <%= partial :booking_management_header, locals: {booking_item_family: booking_item_family,
                                                   multiple_rental_locations: multiple_rental_locations,
                                                   driver_min_age_rules: driver_min_age_rules} %>
 
 
+
+
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-3">
           <div class="block  text-center">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Estado</h3>
+            </div>
+            <div class="block-content block-content-full">
+                <%= partial :booking_management_workflow %>
+            </div>
+          </div>
+        </div>
+        <% if @addon_sales_channels %>
+        <div class="col-lg-3">
+          <div class="block  text-center">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Canal de venta</h3>
+            </div>
+            <div class="block-content block-content-full">
+              <form name="sales_channel_form" class="form-inline">
+                <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                <div class="form-group">
+                  <select name="sales_channel_code" id="sales_channel_code" class="form-control">
+                    <option value="">Estándar</option>
+                    <% @sales_channels.each do |sales_channel| %>
+                    <option value="<%=sales_channel.code%>" <%% if (entity.sales_channel_code == '<%=sales_channel.code%>') {%>selected<%%}%>><%=sales_channel.name%></option>
+                    <% end %>
+                  </select>
+                </div>
+            <div class="navigation-bar bottom-margin" style="display:none">
+              <div id="customer_error_summary" class="alert alert-danger" style="display: none; margin: 10px"></div>
+              <div class="navigation-bar-crud-buttons right-float right-margin">
+                <input type="submit" class="btn btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+              </div>
+            </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% end %>
+        <div class="col-lg-6">
+          <div class="block  text-center">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Acciones</h3>
+            </div>
             <div class="block-content block-content-full">
               <%= partial :booking_management_actions %>
               <div style="line-height:8px">&nbsp;</div>
             </div>
-            <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Acciones</div>
           </div>
         </div>
       </div>

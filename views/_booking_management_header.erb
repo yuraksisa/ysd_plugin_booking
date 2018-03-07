@@ -5,7 +5,7 @@
         <div class="h3 font-w600 push-15-t"><span><%%= self.model.entityHooks[0].statusDescriptionText[entity.status] %></span></div>
         <div class="font-w600 push-15-t"><span class="fa fa-credit-card">&nbsp;</span><span><%%= self.model.entityHooks[0].paymentStatusDescriptionText[entity.payment_status] %></span></div>
       </div>
-      <div class="block-content block-content-full block-content-mini bg-gray-lighter font-w600"><span class="text-success">#<%%= entity.id %></span></div>
+      <div class="block-content block-content-full block-content-mini bg-gray-lighter font-w600"><span class="text-success">#<%%= entity.id %></span> <%% if (entity.created_by_manager) { %><i class="fa fa-user"></i><%% } else { %><i class="fa fa-desktop"></i><%%}%></div>
     </a>
   </div>
   <div class="col-sm-6 col-md-3">
@@ -29,10 +29,9 @@
   <div class="col-sm-6 col-md-3">
     <a class="block block-link-hover3 text-center" href="javascript:void(0)">
       <div class="block-content block-content-full">
-        <div class="h3 font-w600 push-15-t"><span><%%= entity.days %> <%= t.booking_management.form.days.to_s.downcase %></span></div>
-        <div class="font-w400 push-15-t"><%%= entity.sales_channel_code || '&nbsp;' %> <%% if (!entity.created_by_manager) { %>(web)<%%}%></div>
+        <div class="h2 font-w600 push-15-t push-20"><span><%%= entity.days %></span></div>
       </div>
-      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600"><%= t.booking_management.form.days %> <% if @addon_sales_channels %>/ Canal de venta<%end%></div>
+      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600"><%= t.booking_management.form.days %></div>
     </a>
   </div>
 </div>

@@ -85,186 +85,101 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       <% end %>
     }
 
+    this.setupDates = function(entity) {
+        $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+
+        $('#driver_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.driver_date_of_birth != null) {
+            $('#driver_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_date_of_birth, 'dd/MM/yyyy')));
+        }
+
+        $('#driver_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.driver_document_id_date != null) {
+            $('#driver_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_date, 'dd/MM/yyyy')));
+        }
+
+        $('#driver_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.driver_document_id_date != null) {
+            $('#driver_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_expiration_date, 'dd/MM/yyyy')));
+        }
+
+        $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.driver_driving_license_date != null) {
+            $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
+        }
+
+        $('#driver_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.driver_driving_license_expiration_date != null) {
+            $('#driver_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_expiration_date, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_1_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_1_date_of_birth != null) {
+            $('#additional_driver_1_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_date_of_birth, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_1_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_1_document_id_date != null) {
+            $('#additional_driver_1_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_date, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_1_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_1_document_id_expiration_date != null) {
+            $('#additional_driver_1_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_expiration_date, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_1_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_1_driving_license_date != null) {
+            $('#additional_driver_1_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_date, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_1_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_1_driving_license_expiration_date != null) {
+            $('#additional_driver_1_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_expiration_date, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_2_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_2_date_of_birth != null) {
+            $('#additional_driver_2_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_date_of_birth, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_2_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_2_document_id_date != null) {
+            $('#additional_driver_2_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_date, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_2_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_2_document_id_expiration_date != null) {
+            $('#additional_driver_2_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_expiration_date, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_2_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_2_driving_license_date != null) {
+            $('#additional_driver_2_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_date, 'dd/MM/yyyy')));
+        }
+
+        $('#additional_driver_2_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.additional_driver_2_driving_license_expiration_date != null) {
+            $('#additional_driver_2_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_expiration_date, 'dd/MM/yyyy')));
+        }
+
+        $('#external_invoice_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+        if (entity.external_invoice_date != null) {
+            $('#external_invoice_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.external_invoice_date, 'dd/MM/yyyy')));
+        }
+    }
+
     this.onEdit = function(entity) {
 
-       this.configForm(entity);
-       
-       $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+      this.configForm(entity);
+      this.setupDates(entity);
 
-       $('#driver_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.driver_date_of_birth != null) {
-           $('#driver_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_date_of_birth, 'dd/MM/yyyy')));
-       }
-
-       $('#driver_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.driver_document_id_date != null) {
-           $('#driver_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_date, 'dd/MM/yyyy')));
-       }
-
-       $('#driver_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.driver_document_id_date != null) {
-           $('#driver_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_document_id_expiration_date, 'dd/MM/yyyy')));
-       }
-
-       $('#driver_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.driver_driving_license_date != null) {
-           $('#driver_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_date, 'dd/MM/yyyy')));
-       }
-
-       $('#driver_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.driver_driving_license_expiration_date != null) {
-           $('#driver_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.driver_driving_license_expiration_date, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_1_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_1_date_of_birth != null) {
-            $('#additional_driver_1_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_date_of_birth, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_1_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_1_document_id_date != null) {
-           $('#additional_driver_1_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_date, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_1_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_1_document_id_expiration_date != null) {
-           $('#additional_driver_1_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_document_id_expiration_date, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_1_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_1_driving_license_date != null) {
-           $('#additional_driver_1_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_date, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_1_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_1_driving_license_expiration_date != null) {
-            $('#additional_driver_1_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_1_driving_license_expiration_date, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_2_date_of_birth').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_2_date_of_birth != null) {
-           $('#additional_driver_2_date_of_birth').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_date_of_birth, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_2_document_id_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_2_document_id_date != null) {
-           $('#additional_driver_2_document_id_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_date, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_2_document_id_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_2_document_id_expiration_date != null) {
-          $('#additional_driver_2_document_id_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_document_id_expiration_date, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_2_driving_license_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_2_driving_license_date != null) {
-          $('#additional_driver_2_driving_license_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_date, 'dd/MM/yyyy')));
-       }
-
-       $('#additional_driver_2_driving_license_expiration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.additional_driver_2_driving_license_expiration_date != null) {
-          $('#additional_driver_2_driving_license_expiration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.additional_driver_2_driving_license_expiration_date, 'dd/MM/yyyy')));
-       }
-
-       $('#external_invoice_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
-       if (entity.external_invoice_date != null) {
-          $('#external_invoice_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingManager.view.formatDate(entity.external_invoice_date, 'dd/MM/yyyy')));
-       }
-
-        // Configure resources combo
-
-       for (var lineIdx=0; lineIdx < entity.booking_lines.length; lineIdx++) { 
-         for (var resourceIdx=0; resourceIdx < entity.booking_lines[lineIdx].booking_line_resources.length; resourceIdx++) { 
-           var valueModel = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].booking_item_reference; 
-           var dataSourceModel = new RemoteDataSource('/api/booking-items',{'id':'reference',
-                                                      'description':'reference'});
-           dataSourceModel.addListener('data_available', function(event){
-             var exists = false;
-             for (var idx=0;idx<event.data.length;idx++) {
-                if (event.data['reference'] == valueModel) {
-                  exists = true;
-                  break;
-                }
-             }
-             if (!exists) {
-               event.data.push({'id':valueModel, 'description': valueModel});
-             }
-           });
-           var selectorModel = new SelectSelector('booking_item_reference_'+entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id,
-                                                  dataSourceModel, valueModel, true );
-         }
-       }
-
-       // Improve height and weights (including current value if not in list)
-       
-       for (var lineIdx=0; lineIdx < entity.booking_lines.length; lineIdx++) { 
-         for (var resourceIdx=0; resourceIdx < entity.booking_lines[lineIdx].booking_line_resources.length; resourceIdx++) { 
-           var heightValue = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_height;
-           if (heightValue != null) {
-             if ($('select[name=customer_height][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+'] option[value="'+heightValue+'"]').length == 0) {
-               $('select[name=customer_height][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+']').append('<option value="'+heightValue+'" selected="selected">'+heightValue+'</option>');
-             }
-           }
-           var weightValue = entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].customer_weight;
-           if (weightValue != null) {
-             if ($('select[name=customer_weight][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+'] option[value="'+weightValue+'"]').length == 0) {
-               $('select[name=customer_weight][data-lineindex='+lineIdx+'][data-resourceindex='+resourceIdx+']').append('<option value="'+weightValue+'" selected="selected">'+weightValue+'</option>');
-             }           
-           }
-         }
-       }
-
-       // Validation
-
-       this.configValidations();
+      // Validation
+      this.configValidations();
 
       var self = this;
-      $('.resource_user_name').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });
-      $('.resource_user_surname').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });
-      $('.resource_user_document_id').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });   
-      $('.resource_user_phone').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });          
-      $('.resource_user_email').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });       
-      $('.customer_height').bind('change', function() {
-        self.updateLineResource($(this)[0]);
-      });
-      $('.customer_weight').bind('change', function() {
-        self.updateLineResource($(this)[0]);
-      });
-      $('.resource_user_2_name').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });
-      $('.resource_user_2_surname').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });
-      $('.resource_user_2_document_id').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });   
-      $('.resource_user_2_phone').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });          
-      $('.resource_user_2_email').bind('blur', function() {
-        self.updateLineResource($(this)[0]);
-      });       
-      $('.customer_2_height').bind('change', function() {
-        self.updateLineResource($(this)[0]);
-      });
-      $('.customer_2_weight').bind('change', function() {
-        self.updateLineResource($(this)[0]);
-      });      
-      $('.booking_item_reference').bind('change', function() {
-        self.updateLineResource($(this)[0]);
-      });
 
+      // Set up new charge button click
       $('#new_charge').bind('click', function(){
         $('#new_charge_button').unbind('click');
         $('#date').datetimepicker(
@@ -299,14 +214,17 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         }
       });
 
+      // Set up new booking line button click
       $('#new_booking_line_button').bind('click', function() {
         self.prepareFormNewBookingLine(entity);
       });
 
+      // Set up new extra button click
       $('#new_booking_extra_button').bind('click', function() {
         self.prepareFormNewBookingExtra(entity);
       });
 
+      // Set up remove extra button click
       $('.remove-booking-extra-id').bind('click', function() {
         var bookingExtraId = $(this).attr('data-id');
         $("<div title='" + '<%=t.booking_management.form.extra_removed.confirm_delete_title%>' + "'>" +
@@ -342,6 +260,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         }); 
       });
 
+      // Set up remove booking charge button click
       $('.remove-booking-charges').bind('click', function() {
         var bookingId = $(this).attr('data-booking-id');
         var chargeId = $(this).attr('data-charge-id');
@@ -378,18 +297,17 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         }); 
       });
 
+      // Setup booking supplemments button click
       $('#booking_supplements_button').bind('click', function() {
         self.prepareFormBookingSupplements(entity);
       });
 
+      // Setup booking deposit button click
       $('#booking_deposit_button').bind('click', function() {
          self.prepareFormBookingDeposit(entity);
       });
 
-      $('#booking_driver_age_button').bind('click', function() {
-         self.prepareFormEditDriverDateOfBirth(entity);
-      });
-
+      // Setup edit booking line item button click
       $('.booking-line-item-id').bind('click', function() {
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');
@@ -397,18 +315,21 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         self.prepareFormEditBookingLineItemId(id, value, priceValue);
       });
 
+      // Setup edit booking line quantity button click
       $('.booking-line-quantity').bind('click', function() {
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');
         self.prepareFormEditBookingLineQuantity(id, value);
       });
 
+      // Setup edit booking line unit cost button click
       $('.booking-line-unit-cost').bind('click', function() {
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');        
         self.prepareFormEditBookingLineItemUnitCost(id, value);
-      });      
+      });
 
+      // Setup edit booking line deposit button click
       $('.booking-line-deposit').bind('click', function() {
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');        
@@ -425,7 +346,55 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');        
         self.prepareFormEditBookingExtraItemCost(id, value);
-      });      
+      });
+
+
+      // Configure resources auto edition
+      $('.resource_user_name').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_surname').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_document_id').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_phone').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_email').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.customer_height').bind('change', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.customer_weight').bind('change', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_2_name').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_2_surname').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_2_document_id').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_2_phone').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.resource_user_2_email').bind('blur', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.customer_2_height').bind('change', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.customer_2_weight').bind('change', function() {
+          self.updateLineResource($(this)[0]);
+      });
+      $('.booking_item_reference').bind('change', function() {
+          self.updateLineResource($(this)[0]);
+      });
 
       $('.booking_item_reference_detail').bind('click', function() {
         var form = $(this)[0].form;
@@ -447,11 +416,16 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       <% end %>
 
       // Embed activity newsfeed
-        $.ajax({url: '/admin/newsfeed/booking/'+ entity.id, dataType: 'text'}).done(function(html) {
+      $.ajax({url: '/admin/newsfeed/booking/'+ entity.id, dataType: 'text'}).done(function(html) {
             var dom = $('<html />').prop('innerHTML', html);
             $('#newsfeed_container').html(dom.find('body #page_wrapper'));
             $('head').append(dom.find('script:not([src])'));
-        });
+      });
+
+      // Configure sales channel
+      $('select[name=sales_channel_code]').bind('change', function(){
+            $($(this)[0].form).find('input[type=submit]').trigger('click');
+      });
 
     }
 
@@ -1361,6 +1335,10 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         delete data.driver_date_of_birth;
         delete data.driver_driving_license_date;
         <% end %>
+
+        if (data.sales_channel_code == '') {
+            data.sales_channel_code = null;
+        }
 
         return data;
 

@@ -1,6 +1,5 @@
 
          <div id="booking_actions">
-             <%= partial :booking_management_workflow %>
              <div class="btn btn-default"><a href="/admin/booking/contract/<%%=entity.id%>" target="_blank"><%=t.booking_management.print_contract%></a></div>
              <%% if (entity.status != 'cancelled') { %>
              <div class="btn btn-default">
