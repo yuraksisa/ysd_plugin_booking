@@ -39,7 +39,8 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $('#code').focus();
       $('#code').bind('input', function(){
         $(this).val(function(_, v){
-          return v.replace(/\s+/g, '');
+          //return v.replace(/\s+/g, '');
+          return v.replace(/[^a-zA-Z0-9\-\_]/g,'');
         });
       });       
       this.configForm(null);     

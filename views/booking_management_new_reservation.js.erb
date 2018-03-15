@@ -15,6 +15,7 @@ bookingNewModel = {
    products: null,
    extras: null,
    minDays : <%= booking_min_days %>,
+   allowCustomPlaces : <%=pickup_return_places_configuration == 'list+custom'%>,
 
    search: function() {
 
@@ -145,32 +146,30 @@ bookingNewController = {
 
     change_pickup_place_select : function(pickup_place) { /* change pickup place */
 
-        if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
-            $('#other_pickup_place').show();
-            $('#pickup_place_value').val('');
+        if ($('#pickup_place :selected').val() == 'other' ) {
+            $('input[name=custom_pickup_place]').val('true');
+            $('#another_pickup_place_group').show();
             $('#pickup_place_other').focus();
         }
         else
         {
-            $('#other_pickup_place').hide();
-            $('#pickup_place_other').val('');
-            $('#pickup_place_value').val(pickup_place);
+            $('input[name=custom_pickup_place]').val('false');
+            $('#another_pickup_place_group').hide();
         }
 
     },
 
     change_return_place_select : function(return_place) { /* change return place */
 
-        if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
-            $('#other_return_place').show();
-            $('#return_place_value').val('');
+        if ($('#return_place :selected').val() == 'other'  ) {
+            $('input[name=custom_return_place]').val('true');
+            $('#another_return_place_group').show();
             $('#return_place_other').focus();
         }
         else
         {
-            $('#other_return_place').hide();
-            $('#return_place_other').val('');
-            $('#return_place_value').val(return_place);
+            $('input[name=custom_return_place]').val('false');
+            $('#another_return_place_group').hide();
         }
 
     },
@@ -263,7 +262,15 @@ bookingNewView = {
                                                           {'id':'name','description':'name'});
         var pickupPlaceValue = "<%=@shopping_cart.pickup_place%>";
         var pickupPlace = new SelectSelector('pickup_place',
-            dataSourcePickupPlaces, pickupPlaceValue, false, '');
+            dataSourcePickupPlaces, pickupPlaceValue, false, '',
+            function() {
+                if (bookingNewModel.allowCustomPlaces) {
+                    $('#pickup_place').append($('<option>', {
+                        value: 'other',
+                        text : '<%=t.front_end_reservation.another_place%>'
+                    }));
+                }
+            });
 
         $('#pickup_place').bind('change',
             function() {
@@ -274,7 +281,15 @@ bookingNewView = {
                                                           {'id':'name','description':'name'});
         var returnPlaceValue = "<%=@shopping_cart.return_place%>";
         var returnPlace = new SelectSelector('return_place',
-            dataSourceReturnPlaces, returnPlaceValue, false, '');
+            dataSourceReturnPlaces, returnPlaceValue, false, '',
+            function() {
+                if (bookingNewModel.allowCustomPlaces) {
+                    $('#return_place').append($('<option>', {
+                        value: 'other',
+                        text : '<%=t.front_end_reservation.another_place%>'
+                    }));
+                }
+            });
         $('#return_place').bind('change',
             function() {
                 bookingNewController.change_return_place_select($('#return_place option:selected').val());

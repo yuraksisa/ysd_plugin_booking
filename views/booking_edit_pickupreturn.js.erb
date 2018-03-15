@@ -11,6 +11,7 @@
         calculator: null,
         products: null,
         extras: null,
+        allowCustomPlaces : <%=pickup_return_places_configuration == 'list+custom'%>,
 
         pickup_places : {
           <%  booking_pickup_return_places.each do |item| %>
@@ -48,8 +49,15 @@
           time_from: '<%=booking.time_from%>',
           date_to: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to.strftime('%d/%m/%y')%>"),
           time_to: '<%=booking.time_to%>',
-          pickup_place: "<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : ''%>",
-          return_place: "<%=booking.return_place ? booking.return_place.gsub("\n","<br/>") : ''%>",
+
+          pickup_place: "<%=booking.custom_pickup_place ? 'other' : (booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : '')%>",
+          custom_pickup_place: <%=booking.custom_pickup_place%>,
+          pickup_place_other: "<%=booking.custom_pickup_place ? booking.pickup_place : ''%>",
+
+          return_place: "<%=booking.custom_return_place ? 'other' : (booking.return_place ? booking.return_place.gsub("\n","<br/>") : '')%>",
+          custom_return_place: <%=booking.custom_return_place%>,
+          return_place_other: "<%=booking.custom_return_place ? booking.return_place_other : ''%>",
+
           days: <%=booking.days%>,
           date_to_price_calculation: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to_price_calculation.strftime('%d/%m/%y')%>"),
           item_cost: <%=booking.item_cost%>,
@@ -119,7 +127,7 @@
 
         },
 
-        calculatePrice : function(date_from, time_from, date_to, time_to, pickup_place, return_place) {
+        calculatePrice : function(date_from, time_from, date_to, time_to, pickup_place, custom_pickup_place, pickup_place_other, return_place, custom_return_place, return_place_other) {
 
             var self = this;
 
@@ -128,7 +136,11 @@
                                           date_to: date_to.toString("yyyy-MM-dd"),
                                           time_to: time_to,
                                           pickup_place: pickup_place,
+                                          custom_pickup_place: custom_pickup_place,
+                                          pickup_place_other: pickup_place_other,
                                           return_place: return_place,
+                                          custom_return_place: custom_return_place,
+                                          return_place_other: pickup_place_other,
                                           date_of_birth: this.booking.driver_date_of_birth ? this.booking.driver_date_of_birth.toString("yyyy-MM-dd") : null,
                                           driver_driving_license_date: this.booking.driver_driving_license_date  ? this.booking.driver_driving_license_date.toString("yyyy-MM-dd") : null,
                                           sales_channel_code: this.booking.sales_channel_code ? this.booking.sales_channel_code : null});
@@ -165,7 +177,12 @@
                             self.booking.time_to = time_to;
 
                             self.booking.pickup_place = pickup_place;
+                            self.booking.custom_pickup_place = custom_pickup_place;
+                            self.booking.pickup_place_other = pickup_place_other;
+
                             self.booking.return_place = return_place;
+                            self.booking.custom_return_place = custom_return_place;
+                            self.booking.return_place_other = return_place_other;
 
                             self.booking.days = self.calculator.days;
                             self.booking.date_to_price_calculation = self.calculator.date_to_price_calculation;
@@ -190,10 +207,10 @@
                                 self.booking.extras_cost += self.booking.booking_extras[i].extra_cost;
                             }
 
-                            self.booking.time_from_cost = new Number(self.calculator.time_from_cost);
-                            self.booking.time_to_cost = new Number(self.calculator.time_to_cost);
-                            self.booking.pickup_place_cost = new Number(self.calculator.pickup_place_cost);
-                            self.booking.return_place_cost = new Number(self.calculator.return_place_cost);
+                            self.booking.time_from_cost = new Number(self.calculator.time_from_cost).valueOf();
+                            self.booking.time_to_cost = new Number(self.calculator.time_to_cost).valueOf();
+                            self.booking.pickup_place_cost = new Number(self.calculator.pickup_place_cost).valueOf();
+                            self.booking.return_place_cost = new Number(self.calculator.return_place_cost).valueOf();
 
                             bookingEditView.showNewPrices();
                             $('.price').autoNumeric('init',{aSep:''});
@@ -230,39 +247,7 @@
           this.booking.extras_cost = this.booking.extras_cost - oldValue + this.booking.booking_extras[index].extra_cost;
 
           bookingEditView.showNewPrices();       	
-       },
-
-       updatePickupPlace: function(pickupPlace) {
-
-          if (bookingEditModel.pickup_places[pickupPlace]) {
-            this.booking.pickup_place_cost = bookingEditModel.pickup_placesRates[pickupPlace];
-          }
-          else {
-            this.booking.pickup_place_cost = this.custom_pickup_return_place_price;
-          }
-
-          this.booking.pickup_place = pickupPlace;
-          bookingEditView.showNewPrices(); 
-          $('#situation_change').fadeIn();
-          $('#update_button').show();
-
-       },
-
-       updateReturnPlace: function(returnPlace) {
-
-          if (this.return_places[returnPlace]) {
-            this.booking.return_place_cost = this.return_placesRates[returnPlace];
-          }
-          else {
-            this.booking.return_place_cost = this.custom_pickup_return_place_price;
-          }
-
-          this.booking.return_place = returnPlace;
-          bookingEditView.showNewPrices(); 
-          $('#situation_change').fadeIn();
-          $('#update_button').show();
-       
-       },
+       }
 
   }
 
@@ -273,62 +258,42 @@
              $('#time_from').val(),
              $('#date_to').datepicker("getDate"),
              $('#time_to').val(),
-             $('#pickup_place_value').val(),
-             $('#return_place_value').val());
+             $('#pickup_place').val(),
+             $('input[name=custom_pickup_place]').val(),
+             $('#pickup_place_other').val(),
+             $('#return_place').val(),
+             $('input[name=custom_return_place]').val(),
+             $('#return_place_other').val());
      },
 
      change_pickup_place_select : function(pickup_place) { /* change pickup place */
         
-        if ($('#pickup_place :selected').val() == '<%=t.new_booking.other%>' ) {
-          $('#other_pickup_place').show();  
-          $('#pickup_place_value').val('');
-          $('#pickup_place_other').focus();
+        if ($('#pickup_place :selected').val() == 'other' ) {
+            $('input[name=custom_pickup_place]').val('true');
+            $('#another_pickup_place_group').show();
+            $('#pickup_place_other').focus();
         } 
         else
         {
-          $('#other_pickup_place').hide();
-          $('#pickup_place_other').val(''); 
-          $('#pickup_place_value').val(pickup_place);
+            $('input[name=custom_pickup_place]').val('false');
+            $('#another_pickup_place_group').hide();
         }
 
-        //bookingEditModel.updatePickupPlace($('#pickup_place_value').val());
-        
      },
-      
-     blur_pickup_place_input : function(pickup_place) { /* Lost focus on the custom pickup place */
-      
-        if ($('#pickup_place_other').val() != $('#pickup_place_value').val()) {
-          $('#pickup_place_value').val(pickup_place);
-          //bookingEditModel.updatePickupPlace(pickup_place);
-        }
-                
-     },
-     
+
      change_return_place_select : function(return_place) { /* change return place */
         
-        if ($('#return_place :selected').val() == '<%=t.new_booking.other%>'  ) {
-          $('#other_return_place').show();
-          $('#return_place_value').val('');   
-          $('#return_place_other').focus();
+        if ($('#return_place :selected').val() == 'other'  ) {
+            $('input[name=custom_return_place]').val('true');
+            $('#another_return_place_group').show();
+            $('#return_place_other').focus();
         } 
         else
         {
-          $('#other_return_place').hide();
-          $('#return_place_other').val(''); 
-          $('#return_place_value').val(return_place);
+            $('input[name=custom_return_place]').val('false');
+            $('#another_return_place_group').hide();
         }          
 
-        //bookingEditModel.updateReturnPlace($('#return_place_value').val());
-
-     },
-      
-     blur_return_place_input : function(return_place) { /* Lost focus on custom return place */
-        
-        if ($('#return_place_other').val() != $('return_place_value').val()) {
-          $('return_place_value').val(return_place);
-          //bookingEditModel.updateReturnPlace(return_place);
-        }
-        
      },
 
      itemCostBlur: function(index, value) {  // item cost lost focus
@@ -368,21 +333,11 @@
           function() {
              bookingEditController.change_pickup_place_select($('#pickup_place option:selected').val());
           });
-      $('#pickup_place_other').bind('blur',
-          function() {
-             bookingEditController.blur_pickup_place_input($(this).val());
-          });
-      $('#pickup_place_value').val("<%=booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : "" %>");
-           
+
       $('#return_place').bind('change',
           function() {
              bookingEditController.change_return_place_select($('#return_place option:selected').val());
           });
-      $('#return_place_other').bind('blur',
-          function() {
-            bookingEditController.blur_return_place_input($(this).val());
-          });
-      $('#return_place_value').val("<%=booking.return_place ? booking.return_place.gsub("\n","<br/>"): "" %>");
 
 
       // Add the new options
@@ -404,19 +359,23 @@
           optionItem.text = optionItem.innerText = text;
           comboItems.appendChild(optionItem);
         }
-        <% if booking_allow_custom_pickup_return_place %>
-        var optionItem = document.createElement('option');
-        optionItem.setAttribute('value', '<%=t.new_booking.other%>');
-        if (!selected) {
-          optionItem.setAttribute('selected', 'selected');
-          $('#other_pickup_place').show();
-        }  
-        optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
-        if (this.custom_pickup_return_place_price > 0) {
-          optionItem.text += " (" + this.custom_pickup_return_place_price + "€)";
-        } 
-        comboItems.appendChild(optionItem);    
-        <% end %>  
+        if (bookingEditModel.allowCustomPlaces) {
+            var optionItem = document.createElement('option');
+            optionItem.setAttribute('value', 'other');
+            if (!selected) {
+                optionItem.setAttribute('selected', 'selected');
+                $('#other_pickup_place').show();
+            }
+            optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+            if (this.custom_pickup_return_place_price > 0) {
+                optionItem.text += " (" + this.custom_pickup_return_place_price + "€)";
+            }
+            comboItems.appendChild(optionItem);
+        }
+      }
+      if (bookingEditModel.booking.custom_pickup_place) {
+        $('#another_pickup_place_group').show();
+        $('input[name=custom_pickup_place]').val('true');
       }
 
       // Add the new options
@@ -439,20 +398,25 @@
           comboItems.appendChild(optionItem);
         }
 
-        <% if booking_allow_custom_pickup_return_place %>
-        var optionItem = document.createElement('option');
-        optionItem.setAttribute('value', '<%=t.new_booking.other%>');  
-        if (!selected) {
-          optionItem.setAttribute('selected','selected');
-          $('#other_return_place').show();
+        if (bookingEditModel.allowCustomPlaces) {
+            var optionItem = document.createElement('option');
+            optionItem.setAttribute('value', 'other');
+            if (!selected) {
+                optionItem.setAttribute('selected', 'selected');
+                $('#other_return_place').show();
+            }
+            optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
+            if (this.custom_pickup_return_place_price > 0) {
+                optionItem.text += " (" + this.custom_pickup_return_place_price + "€)";
+            }
+            comboItems.appendChild(optionItem);
         }
-        optionItem.text = optionItem.innerText = '<%=t.new_booking.other%>';
-        if (this.custom_pickup_return_place_price > 0) {
-          optionItem.text += " (" + this.custom_pickup_return_place_price + "€)";
-        }
-        comboItems.appendChild(optionItem);    
-        <% end %>  
       }
+      if (bookingEditModel.booking.custom_return_place) {
+          $('#another_return_place_group').show();
+          $('input[name=custom_return_place]').val('true');
+      }
+      //
       bookingEditView.loadExtras();
     },
 

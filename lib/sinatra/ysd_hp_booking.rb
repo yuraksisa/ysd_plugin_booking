@@ -76,21 +76,66 @@ module Sinatra
 
     end
 
+
     #
-    # Get the booking catalog template
-    # 
-    #   - From the parameters
-    #   - From the default template
-    #   - The first catalog
-    # 
-    def catalog_template(catalog=nil)
-    
-        booking_js = if catalog
-                       ContentManagerSystem::Template.find_by_name(catalog.rates_template_code)
-                     else
-                       ContentManagerSystem::Template.find_by_name('booking_js')
-                     end
+    # Extract pickup/return place from request
+    #
+    def request_pickup_return_place(data)
+
+      pickup_place = nil
+      custom_pickup_place = false
+      pickup_place_customer_translation = nil
+      return_place = nil
+      custom_return_place = false
+      return_place_customer_translation = nil
+      if booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')) and
+          booking_item_family.pickup_return_place
+        pickup_return_places_configuration = SystemConfiguration::Variable.get_value('booking.pickup_return_places_configuration', 'list')
+        if pickup_return_places_configuration == 'list'
+          pickup_place = data[:pickup_place]
+          custom_pickup_place = false
+          return_place = data[:return_place]
+          custom_return_place = false
+        elsif pickup_return_places_configuration == 'value'
+          pickup_place = data[:pickup_place_other]
+          custom_pickup_place = false
+          return_place = data[:return_place_other]
+          custom_return_place = false
+        elsif pickup_return_places_configuration == 'list+custom'
+          custom_pickup_place = (data[:custom_pickup_place] || 'false').to_bool
+          custom_return_place = (data[:custom_return_place] || 'false').to_bool
+          if custom_pickup_place
+            pickup_place = data[:pickup_place_other]
+          else
+            pickup_place = data[:pickup_place]
+          end
+          if custom_return_place
+            return_place = data[:return_place_other]
+          else
+            return_place = data[:return_place]
+          end
+        end
+        # pickup_place_customer_translation
+        if custom_pickup_place
+          pickup_place_customer_translation = pickup_place
+        else
+          booking_pickup_place = ::Yito::Model::Booking::PickupReturnPlace.first(name: pickup_place)
+          pickup_place_customer_translation = booking_pickup_place ? booking_pickup_place.translate(session[:locale]).name : pickup_place
+        end
+        # return_place_customer_translation
+        if custom_return_place
+          return_place_customer_translation = return_place
+        else
+          booking_return_place = ::Yito::Model::Booking::PickupReturnPlace.first(name: return_place)
+          return_place_customer_translation = booking_return_place ? booking_return_place.translate(session[:locale]).name : return_place
+        end
+      end
+
+      [pickup_place, custom_pickup_place, pickup_place_customer_translation,
+       return_place, custom_return_place, return_place_customer_translation]
+
     end
+
 
   end
 end

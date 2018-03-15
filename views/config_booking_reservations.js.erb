@@ -5,6 +5,28 @@ require(['jquery','YSDForms'], function($, YSDForms) {
       YSDForms.improve();
       YSDForms.limit_text_area_content_size('.variable', 255);
 
+      // Hide the custom pickup return place price container unless the pickup and return place configuration allows
+      // custom place
+      <% unless ['list+custom'].include?booking_pickup_return_places_configuration %>
+      $('input[name=booking\\.custom_pickup_return_place_price]').parent().hide();
+      <% end %>
+
+      // When the user select the pickup/return places configuration setup the controls that should be shown
+      $('select[name=booking\\.pickup_return_places_configuration]').bind('change', function(){
+         if ($(this).val() == 'list') {
+             $('#manage_pickup_return_places_container').show();
+             $('input[name=booking\\.custom_pickup_return_place_price]').parent().hide();
+         }
+         else if ($(this).val() == 'list+custom') {
+             $('#manage_pickup_return_places_container').show();
+             $('input[name=booking\\.custom_pickup_return_place_price]').parent().show();
+         }
+         else {
+             $('#manage_pickup_return_places_container').hide();
+             $('input[name=booking\\.custom_pickup_return_place_price]').parent().hide();
+         }
+      });
+
   });
 
 });

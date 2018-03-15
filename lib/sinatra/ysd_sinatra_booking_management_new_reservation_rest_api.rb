@@ -73,15 +73,20 @@ module Sinatra
           driver_age_rule_id = sales_channel_code = nil
 
           if model_request[:date_from] && model_request[:date_to]
+            # Retrieve date/time from - to
             date_from = DateTime.strptime(model_request[:date_from],"%d/%m/%Y")
             time_from = model_request[:time_from]
             date_to = DateTime.strptime(model_request[:date_to],"%d/%m/%Y")
             time_to = model_request[:time_to]
-            pickup_place = model_request[:pickup_place] if model_request.has_key?(:pickup_place)
-            return_place = model_request[:return_place] if model_request.has_key?(:return_place)
+            # Retrieve pickup/return place
+            pickup_place, custom_pickup_place, pickup_place_customer_translation,
+            return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(model_request)
+            # Retrieve number of adutls and children
             number_of_adults = model_request[:number_of_adults] if model_request.has_key?(:number_of_adults)
             number_of_children = model_request[:number_of_children] if model_request.has_key?(:number_of_childen)
+            # Retrieve driver age rule
             driver_age_rule_id = model_request[:driver_age_rule] if model_request.has_key?(:driver_age_rule)
+            # Retrieve sales channel
             sales_channel_code = model_request[:sales_channel_code] if model_request.has_key?(:sales_channel_code)
             sales_channel_code = nil if sales_channel_code and sales_channel_code.empty?
           else
@@ -101,14 +106,20 @@ module Sinatra
           if shopping_cart
             shopping_cart.change_selection_data(date_from, time_from,
                                                 date_to, time_to,
-                                                pickup_place, return_place,
+                                                pickup_place, custom_pickup_place,
+                                                return_place, custom_return_place,
                                                 number_of_adults, number_of_children,
                                                 driver_age_rule_id, sales_channel_code)
           else
             shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.create(
                 date_from: date_from, time_from: time_from,
                 date_to: date_to, time_to: time_to,
-                pickup_place: pickup_place, return_place: return_place,
+                pickup_place: pickup_place,
+                custom_pickup_place: custom_pickup_place,
+                pickup_place_customer_translation: pickup_place_customer_translation,
+                return_place: return_place,
+                custom_return_place: custom_return_place,
+                return_place_customer_translation: return_place_customer_translation,
                 number_of_adults: number_of_adults, number_of_children: number_of_children,
                 driver_age_rule_id: driver_age_rule_id,
                 sales_channel_code: sales_channel_code,

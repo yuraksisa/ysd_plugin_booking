@@ -97,8 +97,8 @@ booking_settings:
     assignation:
       allow_different_category: Permitir asignar diferentes categorías
       allow_different_category_description: Permite que a una reserva pueda asignarse un recurso de diferente categoría, por ejemplo un coche de categoría superior
-      allow_busy_resource: Permitir asignar recurso ocupado
-      allow_busy_resource_description: Permitir que desde el planning pueda realizarse la asignación de un recurso ocupado a una reserva
+      allow_busy_resource: Permitir asignar recurso ocupado.
+      allow_busy_resource_description: Permite que en un mismo día pueda haber el mismo recurso asignado a dos reservas. Marcar si permitimos que el mismo día que se realice la devolución de un recurso pueda realizarse la asignación a otra reserva
       automatic_resource_assignation: Asignación automática
       automatic_resource_assignation_description: Realiza la asignación automática de uno de los recursos disponibles al confirmar la reserva
       planning_style:

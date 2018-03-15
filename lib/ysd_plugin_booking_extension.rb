@@ -182,9 +182,9 @@ module Huasi
            :description => 'Pickup and return place definition'})
 
       SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.allow_custom_pickup_return_place'},
-        {:value => 'false',
-         :description => 'Allow custom pickup and return places'})
+          {:name => 'booking.pickup_return_places_configuration'},
+          {:value => 'list',
+           :description => 'pickup and return place: list - value - list+custom'})
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.custom_pickup_return_place_price'},
@@ -651,13 +651,7 @@ module Huasi
     
       app = context[:app]
     
-      [{:name => 'booking_selector',
-        :module_name => :booking,
-        :theme => Themes::ThemeManager.instance.selected_theme.name},
-       {:name => 'booking_selector_inline',
-        :module_name => :booking,
-        :theme => Themes::ThemeManager.instance.selected_theme.name},
-       {:name => 'booking_admin_menu',
+      [{:name => 'booking_admin_menu',
         :module_name => :booking,
         :theme => Themes::ThemeManager.instance.selected_theme.name},
        {:name => 'booking_operator_menu',
@@ -686,31 +680,11 @@ module Huasi
       app = context[:app]
         
       locals = {}
-      locals.store(:booking_min_days,
-        SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i)
-      locals.store(:booking_item_family, 
-        ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
-      locals.store(:booking_item_type,
-        SystemConfiguration::Variable.get_value('booking.item_type')) 
-      locals.store(:booking_allow_custom_pickup_return_place,
-        SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
-
-      young_driver_rules = SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool
-      young_driver_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
-
-      locals.store(:driver_age_rules, young_driver_rules)
-      locals.store(:driver_age_rule_definition, young_driver_rule_definition)
-      
-      locals.store(:booking_js, '')      
 
       case block_name
         when 'booking_activities_shopping_cart'
           shopping_cart = ::Yito::Model::Order::ShoppingCart.get(app.session[:shopping_cart_id]) || ::Yito::Model::Order::ShoppingCart.new
           app.partial(:activities_shopping_cart, :locals => {shopping_cart: shopping_cart}) 
-        when 'booking_selector'    
-          app.partial(:booking_selector, :locals => locals)
-        when 'booking_selector_inline'         
-          app.partial(:booking_selector_inline, :locals => locals)
         when 'booking_operator_menu', 'booking_admin_menu'
           today = Date.today
           year = today.year

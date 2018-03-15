@@ -44,8 +44,8 @@ module Sinatra
           locals.store(:booking_min_days, min_days)
           locals.store(:multiple_products, reservation_mode.to_sym == :shopcart)
           locals.store(:booking_item_family, product_family)
-          locals.store(:booking_allow_custom_pickup_return_place,
-                       SystemConfiguration::Variable.get_value('booking.allow_custom_pickup_return_place', 'false').to_bool)
+          locals.store(:pickup_return_places_configuration,
+                       SystemConfiguration::Variable.get_value('booking.pickup_return_places_configuration', 'list'))
           locals.store(:booking_custom_pickup_return_place_cost, BigDecimal.new(SystemConfiguration::Variable.get_value('booking.custom_pickup_return_place_price', '0')))
 
           pickup_return_place_def = nil

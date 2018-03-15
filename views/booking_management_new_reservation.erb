@@ -41,13 +41,22 @@
                     <%=t.new_booking.pickup_place%>
                   </label>
                   <div class="col-sm-6">
-                    <select name="pickup_place" class="form-control" id="pickup_place">
-                    </select>
-                    <div id="other_pickup_place" class="top-margin" style="display:none;">
+                    <% if ['list','list+custom'].include?(pickup_return_places_configuration) %>
+                      <select name="pickup_place" class="form-control" id="pickup_place">
+                      </select>
+                      <% if pickup_return_places_configuration == 'list+custom'%>
+                        <div id="another_pickup_place_group" class="top-margin" style="display:none;">
+                            <textarea name="pickup_place_other" id="pickup_place_other" rows="3" cols="28" class="form-control"
+                                      placeholder="<%=t.new_booking.pickup_place%>"></textarea>
+                            <input type="hidden" name="custom_pickup_place" value="false"/>
+                        </div>
+                      <% end %>
+                    <% else %>
+                      <div>
                          <textarea name="pickup_place_other" id="pickup_place_other" rows="3" cols="28"
                                    placeholder="<%=t.new_booking.pickup_place%>"></textarea>
-                    </div>
-                    <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>
+                      </div>
+                    <% end %>
                   </div>
 
                 </div>
@@ -78,13 +87,22 @@
                     <%=t.new_booking.return_place%>
                   </label>
                   <div class="col-sm-6">
-                    <select name="return_place" id="return_place" class="form-control">
-                    </select>
-                    <div id="other_return_place" class="form-control" style="display:none;">
+                    <% if ['list','list+custom'].include?(pickup_return_places_configuration) %>
+                      <select name="return_place" class="form-control" id="return_place">
+                      </select>
+                      <% if pickup_return_places_configuration == 'list+custom'%>
+                        <div id="another_return_place_group" class="top-margin" style="display:none;">
+                            <textarea name="return_place_other" id="return_place_other" rows="3" cols="28"
+                                      placeholder="<%=t.new_booking.return_place%>" class="form-control"></textarea>
+                          <input type="hidden" name="custom_return_place" value="false"/>
+                        </div>
+                      <% end %>
+                    <% else %>
+                      <div>
                          <textarea name="return_place_other" id="return_place_other" rows="3" cols="28"
                                    placeholder="<%=t.new_booking.return_place%>"></textarea>
-                    </div>
-                    <input type="hidden" name="return_place_value" id="return_place_value"/>
+                      </div>
+                    <% end %>
                   </div>
                 </div>
             <% end %>

@@ -66,14 +66,22 @@
                         <%=t.new_booking.pickup_place%>
                       </span>
                       <span class="entity-fieldvalue">
-                        <div class="pickup_place">
-                          <select name="pickup_place" class="fieldcontrol" id="pickup_place">
-                          </select>     
-                        </div>
-                        <div id="other_pickup_place" class="top-margin" style="display:none;">
-                           <textarea name="pickup_place_other" id="pickup_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.pickup_place%>"><%=booking.pickup_place%></textarea>
-                        </div>
-                        <input type="hidden" name="pickup_place_value" id="pickup_place_value"/>                                        
+                        <% if ['list','list+custom'].include?(pickup_return_places_configuration) %>
+                          <div class="pickup_place">
+                            <select name="pickup_place" class="fieldcontrol" id="pickup_place">
+                            </select>
+                          </div>
+                          <% if pickup_return_places_configuration == 'list+custom'%>
+                            <div id="another_pickup_place_group" class="top-margin" style="display:none;">
+                               <textarea name="pickup_place_other" id="pickup_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.pickup_place%>"><%=booking.pickup_place%></textarea>
+                               <input type="hidden" name="custom_pickup_place" value="false"/>
+                            </div>
+                          <% end %>
+                        <% else %>
+                          <div>
+                            <textarea name="pickup_place_other" id="pickup_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.pickup_place%>"><%=booking.pickup_place%></textarea>
+                          </div>
+                        <% end %>
                       </span>
                     </div>
                   </div>           
@@ -106,14 +114,22 @@
                         <%=t.new_booking.return_place%>
                       </span>
                       <span class="entity-fieldvalue">
-                        <div class="return_place">
-                          <select name="return_place" id="return_place" class="fieldcontrol">
-                          </select>     
-                        </div>
-                        <div id="other_return_place" class="top-margin top-space" style="display:none;">
-                          <textarea name="return_place_other" id="return_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.return_place%>"><%=booking.return_place%></textarea>  
-                        </div>
-                        <input type="hidden" name="return_place_value" id="return_place_value"/>                                        
+                        <% if ['list','list+custom'].include?(pickup_return_places_configuration) %>
+                          <div class="return_place">
+                            <select name="return_place" class="fieldcontrol" id="return_place">
+                            </select>
+                          </div>
+                          <% if pickup_return_places_configuration == 'list+custom'%>
+                            <div id="another_return_place_group" class="top-margin" style="display:none;">
+                               <textarea name="return_place_other" id="return_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.return_place%>"><%=booking.return_place%></textarea>
+                               <input type="hidden" name="custom_return_place" value="false"/>
+                            </div>
+                          <% end %>
+                        <% else %>
+                          <div>
+                            <textarea name="return_place_other" id="return_place_other" rows="3" cols="28"  placeholder="<%=t.new_booking.return_place%>"><%=booking.return_place%></textarea>
+                          </div>
+                        <% end %>
                       </span>
                     </div>
                   </div>           

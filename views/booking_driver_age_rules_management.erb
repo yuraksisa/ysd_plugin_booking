@@ -42,12 +42,11 @@
       <td class="table-cell text-center">
 
         <%% if (entity.age_rule_type == 'age' || entity.age_rule_type == 'both_age_driving_license_years') { %>
-          (<%= t.booking_driver_age_rules_management.table.age %>
           <%% if (entity.age_condition == '>' || entity.age_condition == '<' || entity.age_condition == '=') { %>
-          <%%= entity.age_condition %> <%%= entity.age_from %>
-          <%% } else if (entity.driving_license_years_condition == '<->'){ %>
-          <%%= entity.age_from %> <%%= entity.age_condition %> <%%= entity.age_to %>
-          <%% } %>)
+          (<%= t.booking_driver_age_rules_management.table.age %> <%%= entity.age_condition %> <%%= entity.age_from %>)
+          <%% } else if (entity.age_condition == '<->'){ %>
+          (<%%= entity.age_from %> =< <%= t.booking_driver_age_rules_management.table.age %> <= <%%= entity.age_to %>)
+          <%% } %>
         <%% } %>
 
         <%% if (entity.age_rule_type == 'both_age_driving_license_years') { %>
@@ -59,12 +58,11 @@
         <%% } %>
 
         <%% if (entity.age_rule_type == 'driving_license_years' || entity.age_rule_type == 'both_age_driving_license_years') { %>
-          (<%= t.booking_driver_age_rules_management.table.driving_license_years %>
           <%% if (entity.driving_license_years_condition == '>' || entity.driving_license_years_condition == '<' || entity.driving_license_years_condition == '=') { %>
-          <%%= entity.driving_license_years_condition %> <%%= entity.driving_license_years_from %>
+          (<%= t.booking_driver_age_rules_management.table.driving_license_years %> <%%= entity.driving_license_years_condition %> <%%= entity.driving_license_years_from %>)
           <%% } else if (entity.driving_license_years_condition == '<->') { %>
-          <%%= entity.driving_license_years_from %> <%%= entity.driving_license_years_condition %> <%%= entity.driving_license_years_to %>
-          <%% } %>)
+          (<%%= entity.driving_license_years_from %> =< <%= t.booking_driver_age_rules_management.table.driving_license_years %> <= <%%= entity.driving_license_years_to %>)
+          <%% } %>
         <%% } %>
 
       </td>
@@ -123,7 +121,7 @@
                              <option value="<->" <%% if (entity && entity.age_condition == '<->') { %>selected<%%}%>>Entre</option>
                            </select>
                            <input type="text" maxlength="2" id="age_from" name="age_from" class="form-control" <%% if (entity) { %> value="<%%=entity.age_from%>" <%% } %>/>
-                           <input type="text" maxlength="2" id="age_to" name="age_to" class="form-control" <%% if (entity) { %> value="<%%=entity.age_from%>" <%% } %> <%% if (!entity || (entity && entity.age_condition !='<->')) {%> style="display:none" <%%}%>/>
+                           <input type="text" maxlength="2" id="age_to" name="age_to" class="form-control" <%% if (entity) { %> value="<%%=entity.age_to%>" <%% } %> <%% if (!entity || (entity && entity.age_condition !='<->')) {%> style="display:none" <%%}%>/>
                          </div>
                       </div>
                       <div id="join_conditions_group" class="form-group"  <%% if (entity && entity.age_rule_type != 'both_age_driving_license_years') { %>style="display:none"<%%}%>>
@@ -175,7 +173,7 @@
                       <div class="form-group">
                          <label class="col-md-3 control-label"><%= t.booking_driver_age_rules_management.form.rule_order.label %></label>
                          <div class="col-md-9">
-                           <input type="text" maxlength="10" id="rule_order" name="rule_order" class="form-control" <%% if (entity) {%> value="<%%=entity.rule_order%>" <%%}%>/>
+                           <input type="text" maxlength="10" id="rule_order" name="rule_order" class="form-control" <%% if (entity) {%> value="<%%=entity.rule_order%>" <%%} else { %>value="0"<%% } %>/>
                          </div>
                       </div>
                       <div class="form-group">

@@ -874,20 +874,26 @@ module Sinatra
           data = JSON.parse(URI.unescape(request.body.read))
           data.symbolize_keys!
 
+          # Retrieve date/time from - to
           date_from = DateTime.strptime(data[:date_from],'%Y-%m-%d')
           time_from = data[:time_from]
-          pickup_place = data[:pickup_place]
           date_to =  DateTime.strptime(data[:date_to],'%Y-%m-%d')
           time_to = data[:time_to]
-          return_place = data[:return_place]
-          date_of_birth = DateTime.strptime(data[:date_of_birth],'%Y-%m-%d') if data.has_key?(:date_of_birth) && !data[:date_of_birth].nil? && !data[:date_of_birth].empty?
-          driver_driving_license_date = DateTime.strptime(data[:driver_driving_license_date],'%Y-%m-%d') if data.has_key?(:driver_driving_license_date) && !data[:driver_driving_license_date].nil? && !data[:driver_driving_license_date].empty?
-           number_of_adults = data[:number_of_adults]
+          # Retrieve pickup/return place
+          pickup_place, custom_pickup_place, pickup_place_customer_translation,
+          return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(data)
+          # Retrieve number of adutls and children
+          number_of_adults = data[:number_of_adults]
           number_of_children = data[:number_of_children]
+          # Retrieve driver age rule
           driver_rule_definition_id = SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition')
           driver_rule_definition = driver_rule_definition_id ? ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(driver_rule_definition_id) : nil
+          # Retrieve sales channel
           sales_channel_code = data[:sales_channel_code]
           sales_channel_code = nil if sales_channel_code and sales_channel_code.empty?
+
+          date_of_birth = DateTime.strptime(data[:date_of_birth],'%Y-%m-%d') if data.has_key?(:date_of_birth) && !data[:date_of_birth].nil? && !data[:date_of_birth].empty?
+          driver_driving_license_date = DateTime.strptime(data[:driver_driving_license_date],'%Y-%m-%d') if data.has_key?(:driver_driving_license_date) && !data[:driver_driving_license_date].nil? && !data[:driver_driving_license_date].empty?
 
           # Prepare the supplements
           calculator = ::Yito::Model::Booking::RentingCalculator.new(date_from, time_from, date_to, time_to, pickup_place,
@@ -895,7 +901,8 @@ module Sinatra
                                                                      {driver_age_mode: :dates,
                                                                       driver_date_of_birth: date_of_birth,
                                                                       driver_driving_license_date: driver_driving_license_date,
-                                                                      driver_age_rule_definition: driver_rule_definition})
+                                                                      driver_age_rule_definition: driver_rule_definition},
+                                                                     custom_pickup_place, custom_return_place)
 
           locale = session[:locale]#locale_to_translate_into
           
@@ -924,6 +931,7 @@ module Sinatra
         #
         app.put '/api/booking/:id/price', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
+          request = body_as_json
           booking_request = body_as_json(BookingDataSystem::Booking)
           lines_request = booking_request.delete(:booking_lines)
           extras_request = booking_request.delete(:booking_extras)
@@ -935,7 +943,18 @@ module Sinatra
             old_booking_time_from_cost = booking.time_from_cost
             old_booking_time_to_cost = booking.time_to_cost
             old_booking_total_cost = booking.total_cost
+
+            pickup_place, custom_pickup_place, pickup_place_customer_translation,
+            return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(request)
+
             booking.attributes = booking_request
+            booking.pickup_place = pickup_place
+            booking.custom_pickup_place = custom_pickup_place
+            booking.pickup_place_customer_translation = pickup_place_customer_translation
+            booking.return_place = return_place
+            booking.custom_return_place = custom_return_place
+            booking.return_place_customer_translation = return_place_customer_translation
+
             booking.calculate_cost(false, false)
             booking.save
             lines_request.each do |line_booking| 

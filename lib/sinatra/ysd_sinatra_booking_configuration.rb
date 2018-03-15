@@ -63,7 +63,8 @@ module Sinatra
                         :default => t.booking_settings.form.calendar_mode.default
                     },
                     :use_factors => use_factors,
-                    :pickup_return_timetables => pickup_return_timetables}
+                    :pickup_return_timetables => pickup_return_timetables,
+                    :booking_pickup_return_places_configuration => SystemConfiguration::Variable.get_value('booking.pickup_return_places_configuration', 'list')}
           locals.store(:booking_item_family, booking_item_family)
           locals.store(:booking_renting, booking_renting)
           locals.store(:booking_activities, booking_activities)

@@ -29,19 +29,27 @@
   <table id="elements_table" class="table table-striped">
      <thead class="table-header">
        <tr>
-         <th class="table-header-title" scope="col" style="width:30%">
+         <th class="table-header-title" scope="col" style="width:10%">
+         </th>
+         <th class="table-header-title" scope="col" style="width:10%">
             <%= t.booking_extra_management.table.code %>
          </th>
-         <th class="table-header-title" scope="col" style="width:30%">
+         <th class="table-header-title" scope="col" style="width:20%">
             <%= t.booking_extra_management.table.name %>
          </th>
-         <th class="table-header-title centered_text" scope="col" style="width:20%">
+         <th class="table-header-title centered_text" scope="col" style="width:10%">
             Stock
          </th>
-         <th class="table-header-title centered_text" scope="col" style="width:20%">
-            Cantidad máxima
+         <th class="table-header-title centered_text" scope="col" style="width:10%">
+            Cant. máxima
          </th>
-         <th class="table-header-title" scope="col" style="width:20%">
+         <th class="table-header-title centered_text" scope="col" style="width:10%">
+            Activo
+         </th>
+         <th class="table-header-title centered_text" scope="col" style="width:10%">
+            Disponible web
+         </th>
+         <th class="table-header-title" scope="col" style="width:10%">
          </th>         
        </tr>
      </thead>
@@ -53,18 +61,29 @@
 <!-- Renders one element in the elements list view -->
         
 <script type="text/tmpl" id="elements_list_template">
-    <tr class="table-row" id="element_row_<%%=index%>">
-      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+    <tr class="table-row" id="element_row_<%%=index%>" <%%if (!entity.active){%>style="color:#BBB"<%%}%>>
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="margin-right: 20px">
+         <%% if (entity.photo_url_medium) { %>
+         <img src="<%%= entity.photo_url_medium %>" class="element-row-selector" style="display:block; margin: 0 auto; max-height: 80px" rel="<%%= index %>"/>
+         <%% } %>
+      </td>
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="vertical-align: middle">
         <strong><%%= entity.code %></strong>
       </td>
-      <td class="table-cell element-navigation-detail" rel="<%%= index %>">
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="vertical-align: middle">
         <%%= entity.name %>
       </td>
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
         <%%= entity.stock %>
       </td>
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>">
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
         <%%= entity.max_quantity %>
+      </td>
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
+         <%%= entity.active ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
+      </td>
+      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
+         <%%= entity.web_public ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  %>
       </td>
       <td class="table-cell">
       </td>

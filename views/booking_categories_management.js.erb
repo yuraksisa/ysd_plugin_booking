@@ -73,9 +73,10 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $('#code').focus();
       this.configForm(null);
 
+      // Only admit numbers, digits, hypen and underscore
       $('#code').bind('input', function(){
         $(this).val(function(_, v){
-          return v.replace(/\s+/g, '');
+          return v.replace(/[^a-zA-Z0-9\-\_]/g,'');
         });
       });
 

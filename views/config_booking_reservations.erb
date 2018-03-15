@@ -56,8 +56,15 @@
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-              <p><a href="/admin/booking/booking-place-defs">Gestionar lugares entrega y devolución</a></p>
-              <%= render_variable_checkbox_boolean('booking.allow_custom_pickup_return_place', t.booking_settings.form.custom_pickup_return_place) %>
+              <select name="booking.pickup_return_places_configuration" id="booking.pickup_return_places_configuration">
+                <option value="list" <%if booking_pickup_return_places_configuration == 'list'%>selected<%end%>>Lista de lugares</option>
+                <option value="value" <%if booking_pickup_return_places_configuration == 'value'%>selected<%end%>>Dirección</option>
+                <option value="list+custom" <%if booking_pickup_return_places_configuration == 'list+custom'%>selected<%end%>>Lista de lugares + otros lugares</option>
+              </select>
+              <div id="manage_pickup_return_places_container" <% unless ['list','list+custom'].include?booking_pickup_return_places_configuration %>style="display:none"<%end%>>
+                <br>
+                <a href="/admin/booking/booking-place-defs">Gestionar lugares entrega y devolución</a>
+              </div>
               <%= render_variable_input_text('booking.custom_pickup_return_place_price', t.booking_settings.form.custom_pickup_return_place_price, 3, 3) %>
               <div class="form-group">
                 <div class="col-xs-12">
