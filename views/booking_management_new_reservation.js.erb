@@ -1,10 +1,10 @@
 require(['jquery', 'YSDForms', 'YSDDateControl', 'ysdtemplate',
-        'YSDListSelector', 'YSDRemoteDataSource', 'YSDSelectSelector', 'json2', 'jquery.validate',
+        'YSDListSelector', 'YSDRemoteDataSource', 'YSDSelectSelector', 'YSDGui', 'json2', 'jquery.validate',
         'jquery.placeholder', 'jquery.ui', 'jquery.ui.datepicker-es',
         'jquery.ui.datepicker.validation',
         'jquery.tools', 'jquery.formparams', 'datejs', 'autonumeric'],
     function($, YSDForms, DateControl, tmpl,
-             ListSelector, RemoteDataSource, SelectSelector) {
+             ListSelector, RemoteDataSource, SelectSelector, YSDGui) {
 
 
 /** ------------------------------ THE MODEL ------------------------------------ **/
@@ -53,6 +53,7 @@ bookingNewModel = {
        var data = {product: productCode,
                    quantity: parseInt(quantity)};
        var requestData = JSON.stringify(data);
+       YSDGui.lockBackground('#bbb');
 
        $.ajax({
            type: 'POST',
@@ -67,6 +68,9 @@ bookingNewModel = {
            },
            error: function(data, textStatus, jqXHR) {
                alert('<%=t.admin_new_reservation.errors.error_setting_product%>');
+           },
+           complete: function(jqXHR, textStatus) {
+               YSDGui.unLockBackground();
            }
        });
    },
@@ -75,6 +79,7 @@ bookingNewModel = {
        var data = {extra: extraCode,
                    quantity: quantity};
        var requestData = JSON.stringify(data);
+       YSDGui.lockBackground('#bbb');
 
        $.ajax({
            type: 'POST',
@@ -89,6 +94,9 @@ bookingNewModel = {
            },
            error: function(data, textStatus, jqXHR) {
                alert('<%=t.admin_new_reservation.errors.error_setting_extra%>');
+           },
+           complete: function(jqXHR, textStatus) {
+               YSDGui.unLockBackground();
            }
        });
    },
@@ -103,6 +111,7 @@ bookingNewModel = {
 
        var data = $('form[name=customer]').formParams(false);
        var requestData = JSON.stringify(data);
+       YSDGui.lockBackground('#bbb');
 
        $.ajax({
            type: 'POST',
@@ -112,10 +121,14 @@ bookingNewModel = {
            contentType : 'application/json; charset=utf-8',
            crossDomain: true,
            success: function(data, textStatus, jqXHR) {
+               YSDGui.unLockBackground();
                window.location.href = '/admin/booking/bookings/'+data.id; // Load the reservation
            },
            error: function(data, textStatus, jqXHR) {
                alert('<%=t.admin_new_reservation.errors.error_making_reservation%>');
+           },
+           complete: function(jqXHR, textStatus) {
+               YSDGui.unLockBackground();
            }
        });
 
