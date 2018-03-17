@@ -192,6 +192,26 @@ module Huasi
          :description => 'Custom pickup and return places cost'})
 
       SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.pickup_return_main_season.month_from'},
+          {:value => '1',
+           :description => 'Pickup and return places main season month from'})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.pickup_return_main_season.day_from'},
+          {:value => '1',
+           :description => 'Pickup and return places main season day from'})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.pickup_return_main_season.month_to'},
+          {:value => '12',
+           :description => 'Pickup and return places main season month to'})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.pickup_return_main_season.day_to'},
+          {:value => '31',
+           :description => 'Pickup and return places main season day to'})
+
+      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.pickup_return_timetable'},
         {:value => '',
          :description => 'Pickup and return places timetable'})
@@ -200,6 +220,11 @@ module Huasi
         {:name => 'booking.pickup_return_timetable_out_price'},
         {:value => '0',
          :description => 'Price if the pickup/return is not on pickup/return timetable'})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.pickup_return_timetable_out_of_season'},
+          {:value => '',
+           :description => 'Pickup and return places timetable out of season'})
 
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.driver_min_age.rules'},

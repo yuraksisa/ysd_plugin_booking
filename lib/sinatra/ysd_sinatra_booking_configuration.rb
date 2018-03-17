@@ -68,6 +68,14 @@ module Sinatra
           locals.store(:booking_item_family, booking_item_family)
           locals.store(:booking_renting, booking_renting)
           locals.store(:booking_activities, booking_activities)
+          locals.store(:months, {'1': t.months.january, '2':t.months.february, '3':t.months.march, '4':t.months.april, '5':t.months.may,
+                                 '6':t.months.june, '7':t.months.july, '8':t.months.august, '9':t.months.september, '10':t.months.october,
+                                 '11':t.months.november, '12':t.months.december})
+          locals.store(:days, %w{1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31})
+          locals.store(:main_season_month_from, SystemConfiguration::Variable.get_value('booking.pickup_return_main_season.month_from', 1).to_i)
+          locals.store(:main_season_day_from, SystemConfiguration::Variable.get_value('booking.pickup_return_main_season.day_from', 1).to_i)
+          locals.store(:main_season_month_to, SystemConfiguration::Variable.get_value('booking.pickup_return_main_season.month_to', 12).to_i)
+          locals.store(:main_season_day_to, SystemConfiguration::Variable.get_value('booking.pickup_return_main_season.day_to', 31).to_i)
           if booking_item_family and booking_item_family.driver
             locals.store(:booking_driver_age_rule_definition, SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
             locals.store(:booking_driver_age_rule_definitions, Hash[ *::Yito::Model::Booking::BookingDriverAgeRuleDefinition.all.collect { |v| [v.id.to_s, v.name]}.flatten])

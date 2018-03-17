@@ -33,13 +33,15 @@
               <p class="less_contrast_text "><%=t.booking_settings.form.min_days_description%></p>
               <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2) %>
               <p class="less_contrast_text "><%=t.booking_settings.form.item_hold_time_description%></p>
-
+              <% if booking_item_family.cycle_of_24_hours %>
+                <%= render_variable_input_text('booking.hours_cadence', t.booking_settings.form.hours_cadence, 2, 2) %>
+                <p class="less_contrast_text "><%=t.booking_settings.form.hours_cadence_description%></p>
+              <% end %>
               <div class="form-group">
                 <div class="col-xs-12">
                   <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
                 </div>
               </div>
-
             </form>
           </div>
         </div>
@@ -88,9 +90,31 @@
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-              <%= render_variable_select('booking.pickup_return_timetable', t.booking_settings.form.pickup_return_timetable, pickup_return_timetables) %>
+
               <p><a href="/admin/calendar/timetables">Gestionar horarios</a></p>
+
+              <h2 class="content-heading"><%=t.booking_settings.form.pickup_return_main_season%></h2>
+              <div class="form-row bottom-space">
+                <%= render_variable_select('booking.pickup_return_main_season.month_from', t.booking_settings.form.pickup_return_main_season_from, months, '', true) %>
+                <%= render_variable_select('booking.pickup_return_main_season.day_from', '', days, '', true) %>
+              </div>
+
+              <div class="form-row bottom-space">
+                <%= render_variable_select('booking.pickup_return_main_season.month_to', t.booking_settings.form.pickup_return_main_season_to, months, '', true) %>
+                <%= render_variable_select('booking.pickup_return_main_season.day_to', '', days, '', true) %>
+              </div>
+
+              <%= render_variable_select('booking.pickup_return_timetable', t.booking_settings.form.pickup_return_timetable, pickup_return_timetables) %>
+
+              <div id="timetable_out_of_season_container" <%if main_season_month_from.to_i == 1 and main_season_day_from.to_i == 1 and main_season_month_to.to_i == 12 and main_season_day_to.to_i == 31 %>style="display:none"<%end%>>
+                <h2 class="content-heading"><%=t.booking_settings.form.pickup_return_out_of_season%></h2>
+                <%= render_variable_select('booking.pickup_return_timetable_out_of_season', t.booking_settings.form.pickup_return_timetable, pickup_return_timetables) %>
+              </div>
+
+              <hr/>
+
               <%= render_variable_input_text('booking.pickup_return_timetable_out_price', t.booking_settings.form.pickup_return_timetable_out_price, 3, 3) %>
+
               <div class="form-group">
                 <div class="col-xs-12">
                   <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
