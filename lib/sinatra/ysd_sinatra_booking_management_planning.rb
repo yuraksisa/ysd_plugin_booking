@@ -71,21 +71,6 @@ module Sinatra
         end
 
         #
-        # Planning: Remove prereservation
-        #
-        app.post '/admin/booking/planning-remove-prereservation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
-          id = params[:id]
-          if prereservation = BookingDataSystem::BookingPrereservation.get(id)
-            prereservation.destroy
-            status 200
-          else
-            status 404
-          end
-
-        end
-
-        #
         # Planning : Change color
         #
         app.post '/admin/booking/planning-change-color', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
@@ -159,7 +144,7 @@ module Sinatra
               status 404
             end
           elsif type == 'prereservation'
-            if prereservation = BookingDataSystem::BookingPrereservation.get(id)
+            if prereservation = BookingDataSystem::BookingPrereservationLine.get(id)
               if booking_item = ::Yito::Model::Booking::BookingItem.get(resource)
                 prereservation.booking_item_category = booking_item.category.code if booking_item.category
                 prereservation.booking_item_reference = booking_item.reference

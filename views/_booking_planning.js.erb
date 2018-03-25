@@ -405,6 +405,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                booking.time_to = $(this).attr('data-time-to');
                booking.planning_color = $(this).attr('data-planning-color');
                booking.detail = $(this).attr('data-detail');
+               booking.id2 = $(this).attr('data-id-resource');
                var html = tmpl('planning_reservation_detail')({booking: booking});
                return html;
             },
@@ -420,7 +421,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 bookingPlanningController.colorChanged(id, type, color);
             });
            $('.destroy_prereservation_button').bind('click', function() {
-                stockBlockingModel.destroyPrereservation($(this).attr('rel'));
+                destroyStockBlockingController.destroyPrereservationClick($(this).attr('rel'));
            });
            $('.modify_reservation_button').bind('click', function() {
                $('.planning_reservation').popover('hide');
@@ -879,115 +880,52 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
   //                              Stock blocking
   // ----------------------------------------------------------------------------------------------
 
-  stockBlockingModel = {
+  destroyStockBlockingModel = {
 
-      data: null,
       id: null,
-
-      createPrereservation: function() { /* Create a new stock blocking */
-          var formdata = $('form[name="element"]').formParams(true);
-          delete formdata.id;
-          var json_request = JSON.stringify(formdata);
-          $.ajax({
-              type: 'POST',
-              data : json_request,
-              url : '/api/booking-prereservation',
-              success: function(data, textStatus, jqXHR) {
-                  stockBlockingModel.data = data;
-                  stockBlockingView.update('created_prereservation');
-              },
-              error: function(data, textStatus, jqXHR) {
-                  alert('Error creando prereserva');
-              }
-          });
-      },
 
       destroyPrereservation: function(id) { /* Delete a stock blocking */
           this.id = id;
-          var url = '/admin/booking/planning-remove-prereservation';
-          url+='?id='+id;
+          var url = '/api/booking/planning/prereservation-line/'+this.id;
           $.ajax({
-              type: 'POST',
+              type: 'DELETE',
               url : url,
+              contentType : 'application/json; charset=utf-8',
               success: function(data, textStatus, jqXHR) {
-                  stockBlockingView.update('destroyed_preservation');
+                  destroyStockBlockingView.update('destroyed_preservation');
               },
               error: function(textStatus, jqXHR) {
-                  alert('Error eliminando prereserva');
+                  alert('Error eliminando bloqueo de stock');
               }
           });
       }
 
   };
 
-  stockBlockingController = {
+  destroyStockBlockingController = {
 
       destroyPrereservationClick: function(id) { /* Destroy preresevation */
 
-          $("<div title='Eliminar prereserva'>" +
-              '¿Está seguro?' + "</div>").dialog(
-              { height: 250, modal: true,
-                  buttons: {
-                      Ok: function() {
-                          response = true;
-                          $(this).dialog( "close" );
-                      },
-                      Cancel: function() {
-                          response = false;
-                          $( this ).dialog( "close" );
-                      }
-                  },
-                  close : function(event, ui) {
-                      if (response) {
-                          stockBlockingModel.destroyPrereservation(id);
-                      }
-                  }
-              });
+          if (confirm('¿Está seguro que desea eliminar el bloqueo de stock?')) {
+              destroyStockBlockingModel.destroyPrereservation(id);
+          }
 
-      },
+      }
 
   };
 
-  stockBlockingView = {
+  destroyStockBlockingView = {
 
       update: function(event, value) {
 
         switch (event) {
-            case 'created_prereservation': // After create a pre-reservation (stock blocking)
-                $('#prereservation_container').modal('hide');
-                bookingPlanningView.showItemInPlanning(
-                        'prereservation',
-                        stockBlockingModel.data.id,
-                        stockBlockingModel.data.id,
-                        stockBlockingModel.data.booking_item_category,
-                        stockBlockingModel.data.booking_item_reference,
-                        stockBlockingModel.data.date_from.toString('yyyy-MM-dd'),
-                        stockBlockingModel.data.time_from,
-                        stockBlockingModel.data.date_to.toString('yyyy-MM-dd'),
-                        stockBlockingModel.data.time_to,
-                        stockBlockingModel.data.title,
-                        stockBlockingModel.data.planning_color,
-                        '');
-                var id='#prereservation'+stockBlockingModel.data.id;
-                bookingPlanningView.setupDraggable(id);
-                bookingPlanningView.setupPopover(id);
-                $.toast({
-                    heading: 'Bloqueo de stock',
-                    text: 'El bloqueo de stock se ha registrado',
-                    position: 'top-right',
-                    bgColor: 'rgb(56, 154, 56)',
-                    textColor: 'white',
-                    loader: false,
-                    stack: false
-                });
-                break;
 
             case 'destroyed_preservation': // After destroy a pre-reservation (stock blocking)
-                $('#prereservation'+stockBlockingModel.id).remove();
+                $('.planning_reservation[data-id-resource='+destroyStockBlockingModel.id+']').remove();
                 $('.popover').remove();
                 $.toast({
-                    heading: 'Reasignación de stock',
-                    text: 'El bloqueo de stock se ha eliminado',
+                    heading: 'Bloqueo de stock eliminado',
+                    text: 'El bloqueo de stock se ha eliminado correctamente',
                     position: 'top-right',
                     bgColor: 'rgb(56, 154, 56)',
                     textColor: 'white',
@@ -996,6 +934,82 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 });
                 break;
         }
+
+      }
+
+  };
+
+  // ----------------------------------------------------------------------------------------------
+  //                              Modify prereservation (only for multiple products setup)
+  // ----------------------------------------------------------------------------------------------
+
+  planningModifyStockBlockingModel = {
+
+      id: null,
+      prereservation : null,
+      products: null,
+
+      loadPrereservation: function(id) {
+
+          this.id = id;
+          var url = '/api/booking/planning/prereservation/'+id;
+          YSDGui.lockBackground('#bbb');
+          var unlock = false;
+          $.ajax({
+              type: 'GET',
+              url : url,
+              contentType : 'application/json; charset=utf-8',
+              crossDomain: true,
+              success: function(data, textStatus, jqXHR) {
+                  YSDGui.unLockBackground();
+                  unlock = true;
+                  planningModifyStockBlockingModel.booking = data.prereservation;
+                  planningModifyStockBlockingModel.products = data.products;
+                  planningModifyStockBlockingModel.loadSearchResult();
+              },
+              error: function(data, textStatus, jqXHR) {
+                  alert('<%=t.admin_new_reservation.errors.error_searching%>');
+              },
+              complete: function(jqXHT, textStatus) {
+                  if (!unlock) {
+                      YSDGui.unLockBackground();
+                  }
+              }
+          });
+      }
+
+
+  };
+
+  planningModifyStockBlockingController = {
+
+  };
+
+  planningModifyStockBlockingView = {
+
+      show: function(id) {
+          planningModifyStockBlockingModel.loadPrereservation(id);
+      },
+
+      loadSearchResult: function() {
+
+          var html = tmpl('script_modify_reservation')({booking: planningModifyStockBlockingModel.booking,
+              products: planningModifyStockBlockingModel.products});
+
+          $('#reservation_container .modal-title').html('Modificar bloqueo de stock');
+          $('#reservation_container .modal-body').html(html);
+
+          for (var idx=0; idx<planningModifyStockBlockingModel.booking.booking_lines.length; idx++) {
+              $('input[name'+planningModifyStockBlockingModel.booking.booking_lines[idx].item_id+']').filter('[value='+planningModifyStockBlockingModel.booking.booking_lines[idx].item_id+']').prop('checked', true);
+              $('select.product_selector[name='+planningModifyStockBlockingModel.booking.booking_lines[idx].item_id+']').val(planningModifyStockBlockingModel.booking.booking_lines[idx].quantity);
+          }
+
+          $('#reservation_container').modal('show');
+
+          $('#update_reservation_products_button').unbind('click');
+          $('#update_reservation_products_button').bind('click', function() {
+              planningModifyStockBlockingController.updateReservationProductsButtonClick();
+          });
 
       }
 
