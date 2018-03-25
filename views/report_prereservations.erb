@@ -55,7 +55,7 @@
                 <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
                 <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
                 <th class="table-cell" scope="col" style="width:1.5em">Localizador</th>
-                <th class="table-cell" scope="col" style="width:3em">Recurso</th>
+                <th class="table-cell" scope="col" style="width:3em">Recurso(s)</th>
                 <th class="table-cell" scope="col" style="width:4em">Titulo</th>
                 <th class="table-cell" scope="col" style="width:4.5em">Notas</th>    
               </tr>
@@ -66,7 +66,11 @@
           <td class="table-cell"><%=prereservation.date_from.strftime('%Y-%m-%d')%> <%if @product_family.time_to_from%><%=prereservation.time_from%><%end%></td>
           <td class="table-cell"><%=prereservation.date_to.strftime('%Y-%m-%d')%> <%if @product_family.time_to_from%><%=prereservation.time_to%><%end%></td>
           <td class="table-cell"><%=prereservation.id%></td>
-          <td class="table-cell"><%=prereservation.booking_item_reference%></td>
+          <td class="table-cell">
+            <% prereservation.prereservation_lines.each do |prl| %>
+            <%=prl.booking_item_reference%>&nbsp;
+            <% end %>
+          </td>
           <td class="table-cell"><%=prereservation.title%></td>
           <td class="table-cell"><%=prereservation.notes%></td>
         </tr>

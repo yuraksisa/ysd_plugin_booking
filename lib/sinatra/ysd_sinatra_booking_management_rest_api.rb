@@ -3,259 +3,10 @@ require 'ysd_md_booking' unless defined?BookingDataSystem::Booking
 require 'date'
 module Sinatra
   module YSD
-    
-    module BookingManagementRESTApiHelper
-
-      def booking_availability(params)
-
-        if params['from'].nil? or params['to'].nil?
-           []
-        else
-           begin
-             from = DateTime.strptime(params[:from], '%Y-%m-%d')
-             to = DateTime.strptime(params[:to], '%Y-%m-%d')
-             ::Yito::Model::Booking::Availability.instance.categories_available(from, to)
-           rescue ArgumentError => ex
-             []
-           end
-        end  
-
-      end
-
-      def booking_stock
-
-         ::Yito::Model::Booking::BookingCategory.all(:conditions => {:active => true}, :fields => [:code, :stock_control, :stock]).map do |item| 
-           {item_id: item.code, stock_control: item.stock_control, stock: item.stock}
-         end
-
-      end
-
-      #
-      # Get the booking occupation for the dates
-      #
-      # @params[Hash]
-      #
-      #   from : Date from
-      #   to   : Date to
-      #
-      def booking_occupation(params)
-
-        if params['from'].nil? or params['to'].nil?
-           []
-        else
-           begin
-             from = DateTime.strptime(params[:from], '%Y-%m-%d')
-             to = DateTime.strptime(params[:to], '%Y-%m-%d')
-             BookingDataSystem::Booking.occupation(from, to).map do |item|  
-                {item_id: item.item_id, stock: item.stock, busy: item.busy}
-             end
-           rescue ArgumentError => ex
-             []
-           end
-        end  
-
-      end
-
-      #
-      # Get the booking extras occupation for the dates
-      #
-      # @params [Hash]
-      #
-      #   from: Date from
-      #   to: Date to
-      #
-      def booking_extras_occupation(params)
-
-        if params['from'].nil? or params['to'].nil?
-           []
-        else
-           begin
-             from = DateTime.strptime(params[:from], '%Y-%m-%d')
-             to = DateTime.strptime(params[:to], '%Y-%m-%d')
-             BookingDataSystem::Booking.extras_occupation(from, to).map do |item|  
-                {extra_id: item.extra_id, stock: item.stock, busy: item.busy}
-             end
-           rescue ArgumentError => ex
-             []
-           end
-        end  
-
-
-      end
-
-      def booking_payment_enabled(params)
-
-        if params['from'].nil? or params['to'].nil?
-          []
-        else
-          begin
-            from = DateTime.strptime(params[:from], '%Y-%m-%d')
-            if (BookingDataSystem::Booking.payment_cadence?(from))
-              to = DateTime.strptime(params[:to], '%Y-%m-%d')
-              ::Yito::Model::Booking::Availability.instance.categories_payment_enabled(from, to)
-            else
-              []
-            end
-          rescue ArgumentError => ex
-              []
-          end
-        end  
-        
-      end
-
-      def booking_planning_conditions(params)
-          today = DateTime.now
-          month = today.month
-          year = today.year
-
-          if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
-            month = params[:month].to_i
-          end
-           
-          if params[:year]
-            year = params[:year].to_i
-          end
-
-          from = DateTime.new(year, month, 1, 0, 0, 0, 0)
-          to = (from >> 1) - 1
-
-          condition = Conditions::JoinComparison.new('$and',
-           [Conditions::Comparison.new(:status, '$in', [:confirmed,:in_progress,:done]),
-            Conditions::JoinComparison.new('$or', 
-              [Conditions::JoinComparison.new('$and', 
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', from)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', to),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from, '$gte', from),
-                  Conditions::Comparison.new(:date_to, '$lte', to)])               
-              ]
-            ),
-            ]
-          )
-      end
-
-      def booking_confirmed_conditions(params)
-          today = DateTime.now
-          month = today.month
-          year = today.year
-
-          if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
-            month = params[:month].to_i
-          end
-           
-          if params[:year]
-            year = params[:year].to_i
-          end
-
-          from = DateTime.new(year, month, 1, 0, 0, 0, 0)
-          to = (from >> 1) - 1
-
-          condition = Conditions::JoinComparison.new('$and',
-           [Conditions::Comparison.new(:status, '$in', [:confirmed,:in_progress,:done]),
-            Conditions::JoinComparison.new('$or', 
-              [Conditions::JoinComparison.new('$and', 
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', from)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', to),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from, '$gte', from),
-                  Conditions::Comparison.new(:date_to, '$lte', to)])               
-              ]
-            ),
-            ]
-          )
-
-      end
-
-    end
 
   	module BookingManagementRESTApi
       
       def self.registered(app)
-
-        # -------------------- Public services for MYBOOKING V 3.0 ----------------------------------
-
-        #
-        # Check availability and payment
-        #
-        app.get '/api/booking/check' do
-         
-          occupation_hash=booking_occupation(params).inject({}) do |result,item| 
-             result.store(item[:item_id], item.select {|key,value| key != :item_id}) 
-             result 
-          end
-
-          stock_hash=booking_stock.inject({}) do |result,item| 
-             result.store(item[:item_id], item.select { |key,value| key != :item_id})
-             result
-          end
-          
-          stock_hash.each do |key, value|
-             if occupation_hash.has_key?(key) 
-               value.store(:busy, occupation_hash[key][:busy])
-             else
-               value.store(:busy, 0)
-             end
-          end
-
-          availables = booking_availability(params)
-
-          availability = availables.select do |item| 
-                           true if stock_hash.has_key?(item) and ((stock_hash[item][:stock_control] and stock_hash[item][:busy] < stock_hash[item][:stock]) or (!stock_hash[item][:stock_control]))
-                         end
-
-          extras_occupation_hash = booking_extras_occupation(params).inject({}) do |result, item|
-                                     result.store(item[:extra_id], {stock: item[:stock], busy: item[:busy]})
-                                     result
-                                   end
-
-          result = {:availability => availability,
-                    :payment => booking_payment_enabled(params),
-                    :stock => stock_hash,
-                    :extras_stock => extras_occupation_hash}
-          result.to_json          
-
-        end
-
-        #
-        # Check availability
-        #        
-        app.get '/api/booking/availability' do
-
-          cats = booking_availability(params)
-          cats.to_json
-
-        end
-
-        #
-        # Check the categories that have payment enabled
-        #
-        app.get '/api/booking/payment-enabled' do
-
-          cats = booking_payment_enabled(params)
-          cats.to_json
-
-        end
-
-
-        # ------------------------------------------------------------------------------------
 
         #
         # Check resources available for a period
@@ -440,60 +191,6 @@ module Sinatra
 
         end
 
-        #
-        # Bookings (planning)
-        #
-        app.get '/api/booking/planning', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
-          condition = booking_planning_conditions(params)
-
-          bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-             :order => [:date_from.asc]
-            ) 
-
-          bookings.to_json(:only => [:id, :date_from, :time_from, :date_to, :time_to, :customer_name, 
-                           :customer_surname, :planning_color],
-                           :relationships => {:booking_line_resources => {}})
-
-        end
-        
-        #
-        # Planning summary
-        #
-        app.get '/api/booking/planning-summary', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-          
-          today = Date.today
-          @date_from = Date.civil(today.year, today.month, 1)
-          @date_to = Date.civil(today.year, today.month, -1)          
-
-          if params[:from]
-            begin
-              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:from]}")
-            end
-          end
-
-          if params[:to]
-            begin
-              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:to]}")
-            end
-          end  
-          
-          @options = nil
-          if params[:reference]
-            @options = {mode: :stock, reference: params[:reference]}
-          elsif params[:product]
-            @options = {mode: :product, product: params[:product]}
-          end
-
-          result = BookingDataSystem::Booking.planning(@date_from, @date_to, @options)
-
-          content_type :json
-          result.to_json
-        end  
 
         #
         # Get the confirmed bookings that have not been assigned
@@ -601,14 +298,14 @@ module Sinatra
         # ------------------------ BOOKING MANAGER ---------------------------------------
 
         #
-        # Booking querying 
+        # Booking querying
         #
         ["/api/bookings", "/api/bookings/page/:page"].each do |path|
           app.post path, :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-        	
-            page = [params[:page].to_i, 1].max  
+
+            page = [params[:page].to_i, 1].max
             page_size = 20
-            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]} 
+            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]}
 
             if request.media_type == "application/json"
               request.body.rewind
@@ -879,6 +576,11 @@ module Sinatra
           time_from = data[:time_from]
           date_to =  DateTime.strptime(data[:date_to],'%Y-%m-%d')
           time_to = data[:time_to]
+          # Calculate days
+          days_calculus = BookingDataSystem::Booking.calculate_days(date_from, time_from, date_to, time_to)
+          days = days_calculus[:days]
+          date_to_price_calculation = days_calculus[:date_to_price_calculation]
+
           # Retrieve pickup/return place
           pickup_place, custom_pickup_place, pickup_place_customer_translation,
           return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(data)
@@ -896,8 +598,8 @@ module Sinatra
           driver_driving_license_date = DateTime.strptime(data[:driver_driving_license_date],'%Y-%m-%d') if data.has_key?(:driver_driving_license_date) && !data[:driver_driving_license_date].nil? && !data[:driver_driving_license_date].empty?
 
           # Prepare the supplements
-          calculator = ::Yito::Model::Booking::RentingCalculator.new(date_from, time_from, date_to, time_to, pickup_place,
-                                                                     return_place,
+          calculator = ::Yito::Model::Booking::RentingCalculator.new(date_from, time_from, date_to, time_to, days, date_to_price_calculation, 
+                                                                     pickup_place, return_place,
                                                                      {driver_age_mode: :dates,
                                                                       driver_date_of_birth: date_of_birth,
                                                                       driver_driving_license_date: driver_driving_license_date,
@@ -954,6 +656,15 @@ module Sinatra
             booking.return_place = return_place
             booking.custom_return_place = custom_return_place
             booking.return_place_customer_translation = return_place_customer_translation
+
+            # Calculate driver age and driving license years
+            booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+            if booking_item_family.driver_date_of_birth
+              booking.driver_age = BookingDataSystem::Booking.completed_years(booking.date_from,
+                                                                              booking.driver_date_of_birth) unless booking.driver_date_of_birth.nil?
+              booking.driver_driving_license_years = BookingDataSystem::Booking.completed_years(booking.date_from,
+                                                                                                booking.driver_driving_license_date) unless booking.driver_driving_license_date.nil?
+            end
 
             booking.calculate_cost(false, false)
             booking.save
@@ -1036,8 +747,8 @@ module Sinatra
         app.put '/api/booking', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           data_request = body_as_json(BookingDataSystem::Booking)
-                              
-          if data = BookingDataSystem::Booking.get(data_request.delete(:id).to_i)     
+
+          if booking = BookingDataSystem::Booking.get(data_request.delete(:id).to_i)
             data_request.each do |k,v|
               if [:driver_date_of_birth,
                   :driver_driving_license_date,
@@ -1067,71 +778,78 @@ module Sinatra
             # Driver address update
             if data_request.has_key?(:driver_address)
               driver_address = data_request.delete(:driver_address)
-              if data.driver_address.nil?
-                data.driver_address = driver_address
+              if booking.driver_address.nil?
+                booking.driver_address = driver_address
               else
-                data.driver_address.attributes = driver_address
+                booking.driver_address.attributes = driver_address
               end
             end
 
             # Destination address update
             if data_request.has_key?(:destination_address)
               destination_address = data_request.delete(:destination_address)
-              if data.destination_address.nil?
-                data.destination_address = destination_address
+              if booking.destination_address.nil?
+                booking.destination_address = destination_address
               else
-                data.destination_address.attributes = destination_address
+                booking.destination_address.attributes = destination_address
               end
             end
 
-            data.attributes=data_request
+            booking.attributes=data_request
+
+            # Calculate driver age and driving license years
+            updated_driver_age_driving_license_years = false
+            booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+            if booking_item_family and booking_item_family.driver_date_of_birth
+              if data_request.has_key?(:driver_date_of_birth) and !data_request[:driver_date_of_birth].nil?
+                booking.driver_age = BookingDataSystem::Booking.completed_years(booking.date_from,
+                                                                                booking.driver_date_of_birth)
+                updated_driver_age_driving_license_years = true
+              end
+            end
+            if booking_item_family and booking_item_family.driver_license
+              if data_request.has_key?(:driver_driving_license_date) and !data_request[:driver_driving_license_date].nil?
+                booking.driver_driving_license_years = BookingDataSystem::Booking.completed_years(booking.date_from,
+                                                                                                  booking.driver_driving_license_date)
+                updated_driver_age_driving_license_years = true
+              end
+            end
 
             # Driver date of birth or driver driving license date update
             if SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool and
                !SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition','').empty?
-              calculate_cost = false
-              if data_request.has_key?(:driver_date_of_birth) and !data_request[:driver_date_of_birth].nil?
-                data.driver_age = BookingDataSystem::Booking.completed_years(data.date_from,
-                                                                             data.driver_date_of_birth)
-                calculate_cost = true
-              end
-              if data_request.has_key?(:driver_driving_license_date) and !data_request[:driver_driving_license_date].nil?
-                data.driver_driving_license_years = BookingDataSystem::Booking.completed_years(data.date_from,
-                                                                                               data.driver_driving_license_date)
-                calculate_cost = true
-              end
-              data.calculate_cost if calculate_cost
+              booking.calculate_cost(true, true) if updated_driver_age_driving_license_years # Calculates the cost applying the driver
             end
 
             # Prepare updated attributes
             updated_attributes = {}
-            data.dirty_attributes.each do |key, value|
+            booking.dirty_attributes.each do |key, value|
               updated_attributes.store(key.name, value) unless value.nil?
             end
 
-            if data.driver_address
-              data.driver_address.dirty_attributes.each do |key, value|
+            if booking.driver_address
+              booking.driver_address.dirty_attributes.each do |key, value|
                 updated_attributes.store("driver_address.#{key.name}", value) unless value.nil?
               end
             end
 
-            if data.destination_address
-              data.destination_address.dirty_attributes.each do |key, value|
+            if booking.destination_address
+              booking.destination_address.dirty_attributes.each do |key, value|
                 updated_attributes.store("destination_address.#{key.name}", value) unless value.nil?
               end
             end
 
-            data.save
+            booking.save
             # Newsfeed
             ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
                                                      action: 'updated_booking',
-                                                     identifier: data.id.to_s,
+                                                     identifier: booking.id.to_s,
                                                      description: BookingDataSystem.r18n.t.booking_news_feed.updated_booking,
                                                      attributes_updated: updated_attributes.to_json)
           end
-      
+
           content_type :json
-          data.to_json        
+          booking.to_json
 
         end
 
@@ -1280,7 +998,7 @@ module Sinatra
               booking = booking_line.booking
               booking.reload
               content_type :json
-              booking.to_json
+              @booking.to_json
             else
               body "Producto no especificado"
               status 500
@@ -1393,34 +1111,6 @@ module Sinatra
               booking.reload
               content_type :json
               booking.to_json
-            end
-          else
-            status 404
-          end
-
-        end
-
-        #
-        # Update booking driver dates (date of birth and driving license date)
-        #
-        app.post '/api/booking/booking-driver-dates', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
-          request.body.rewind
-          data_request = JSON.parse(URI.unescape(request.body.read))
-          data_request.symbolize_keys!
-
-          if data_request.has_key?(:id)
-             data_request.has_key?(:driver_date_of_birth) and
-             data_request.has_key?(:driver_driving_license_date) and
-            id = data_request[:id]
-            driver_date_of_birth = data_request[:driver_date_of_birth]
-            driver_driving_license_date = data_request[:driver_driving_license_date]
-            if booking = BookingDataSystem::Booking.get(id)
-              booking.update_driver_dates(driver_date_of_birth, driver_driving_license_date)
-              content_type :json
-              booking.to_json
-            else
-              status 404
             end
           else
             status 404

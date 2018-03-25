@@ -127,7 +127,7 @@
     </div>
     <% end %>
 
-    <% if booking_item_family and booking_item_family.driver %>
+    <% if booking_item_family and booking_item_family.driver_date_of_birth %>
     <div class="row">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
@@ -138,7 +138,6 @@
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <%= render_variable_checkbox_boolean('booking.driver_min_age.rules', t.booking_settings.form.driver_min_age_rules) %>
-              <%= render_variable_checkbox_boolean('booking.driver_min_age.booking_driver_edition', t.booking_settings.form.driver_min_age_edition) %>
               <%= render_variable_select('booking.driver_min_age.rule_definition', t.booking_settings.form.driver_min_age_reservation_rule, booking_driver_age_rule_definitions) %>
               <p><a href="/admin/booking/driver-age-rule-definitions">Gestionar reglas edades conductor</a></p>
               <div class="form-group">
@@ -164,7 +163,7 @@
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <p><a href="/admin/rates/season-defs">Gestionar temporadas</a></p>
               <%= render_variable_checkbox_boolean('booking.new_season_definition_instance_for_category', 'Cada producto define sus propias temporadas') %>
-              <p class="less_contrast_text ">Dejar desmarcada si queremos que todos los productos utilicen sus propias temporadas</p>
+              <p class="less_contrast_text ">Dejar desmarcada si queremos que todos los productos utilicen sus propias temporadas. Ésto se aplicará en el momento de crear un nuevo producto.</p>
               <% if use_factors %>
                 <p><a href="/admin/rates/factor-defs">Gestionar factores</a></p>
                 <%= render_variable_checkbox_boolean('booking.new_factor_definition_instance_for_category', 'Cada producto define sus propios factores') %>

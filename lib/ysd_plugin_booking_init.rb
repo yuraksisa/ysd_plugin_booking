@@ -22,6 +22,7 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YitoExtension::BookingNewReservation
    sinatra_extension Sinatra::YitoExtension::BookingNewReservationRESTApi
    sinatra_helper Sinatra::YitoExtension::BookingNewReservationRESTApiHelper
+   sinatra_extension Sinatra::YSD::BookingManagementPlanningRESTApi
    sinatra_extension Sinatra::YSD::BookingManagementRESTApi
    sinatra_extension Sinatra::YSD::BookingPlannedActivitiesManagement
    sinatra_extension Sinatra::YSD::BookingPaymentIntegrationRESTApi

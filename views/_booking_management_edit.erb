@@ -212,30 +212,6 @@
   </form>
 </script>
 
-<!-- Edit driver date of birth -->
-<script type="text/tmpl" id="booking_driver_age_of_birth_script">
-
-  <form name="driver_dates_form" class="all-space" style="background: white; min-width: 500px">
-      <h3 class="guiblock">Fechas del conductor</h3>
-      <input type="hidden" name="id" value="<%%=entity.id%>"/>
-      <div class="formrow">
-              <label class="fieldtitle"><%= t.booking_management.form.driver_date_of_birth %></label>
-              <input type="text" name="driver_date_of_birth" id="driver_date_of_birth" class="date_control fieldcontrol" size="15" maxlength="10"/>
-      </div>
-      <div class="formrow">
-            <label class="fieldtitle"><%= t.booking_management.form.driver_license_date %></label>
-            <input type="text" name="driver_driving_license_date" id="driver_driving_license_date" class="date_control fieldcontrol" size="15" maxlength="10"/>
-      </div>
-      <div class="navigation-bar bottom-margin">
-        <div id="driver_age_error_summary" class="alert alert-danger" style="display: none; margin: 10px"></div>
-        <div class="navigation-bar-crud-buttons right-float">
-          <input id="update_driver_age_of_birth_button" type="button" class="update-entity-button" value="<%=t.entitymanagement.update%>"/>
-        </div>
-      </div>
-  </form>
-
-</script>
-
 <!-- Resource detail -->
 <script type="text/tmpl" id="booking_line_resource_detail_script">
   <form name="update_booking_line_resource" class="all-space" style="background: white; min-width: 500px">

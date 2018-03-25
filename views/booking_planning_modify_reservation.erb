@@ -1,0 +1,67 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.admin_planning_update_reservation.title%></h2>
+</div>
+
+<div class="admin_content_wrapper" data-reservation-id="<%=@booking.id%>">
+
+  <!-- Reservation form pickup and return date, time and place -->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div id="products_list">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="text/tmpl" id="script_products">
+
+      <form name="products_selection">
+        <div class="block block-bordered">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Productos</h3>
+          </div>
+          <div class="block-content">
+              <table id="products_table" class="table table-hover">
+                <thead class="table-header">
+                  <tr>
+                    <th class="table-header-title centered_text" scope="col" style="width:10%"></th>
+                    <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.photo %></th>
+                    <th class="table-header-title centered_text" scope="col" style="width:30%"><%= t.admin_planning_update_reservation.products_table.product %></th>
+                    <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.stock %></th>
+                    <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.price %></th>
+                  </tr>
+                </thead>
+                <tbody id="elements_tbody" class="table-tbody">
+                  <%% for (var idx=0;idx<products.length;idx++) { %>
+                    <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
+                      <td class="table-cell centered_text">
+                        <% if @product_family.multiple_items? %>
+                          <select name="<%%=products[idx].code%>" class="product_selector">
+                            <%% for (var idxStock=0; idxStock <= products[idx].stock; idxStock++) { %>
+                               <option value="<%%=idxStock%>"><%%=idxStock%></option>
+                            <%% } %>
+                          </select>
+                        <% else %>
+                          <input type="radio" name="<%%=products[idx].code%>" value="<%%=products[idx].code%>" class="product_chooser"></input>
+                        <% end %>
+                     </td>
+                     <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
+                     <td class="table-cell centered_text"><%%=products[idx].name%></td>
+                     <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
+                     <td class="table-cell centered_text"><%%=new Number(products[idx].price).toFixed(2)%></td>
+                   </tr>
+                  <%% } %>
+                 </tbody>
+              </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <button id="update_reservation_products_button" class="btn btn-minw btn-square btn-primary pull-right" type="button"><i class="fa fa-save push-5-r"></i><%=t.entitymanagement.update%></button>
+          </div>
+        </div>
+      </form>
+
+</script>

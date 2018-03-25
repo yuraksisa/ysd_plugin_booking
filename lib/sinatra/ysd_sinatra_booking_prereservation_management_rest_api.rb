@@ -4,53 +4,6 @@ module Sinatra
 
       def self.registered(app)
 
-        #
-        # Booking prereservations planning
-        #
-        app.get '/api/booking-prereservations/planning', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          today = DateTime.now
-          month = today.month
-          year = today.year
-
-          if params[:month] and params[:month].to_i > 0 and params[:month].to_i < 13
-            month = params[:month].to_i
-          end
-           
-          if params[:year]
-            year = params[:year].to_i
-          end
-
-          from = DateTime.new(year, month, 1, 0, 0, 0, 0)
-          to = (from >> 1) - 1
-
-          condition = Conditions::JoinComparison.new('$or', 
-              [Conditions::JoinComparison.new('$and', 
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', from)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', to),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from,'$lte', from),
-                  Conditions::Comparison.new(:date_to,'$gte', to)
-                  ]),
-               Conditions::JoinComparison.new('$and',
-                 [Conditions::Comparison.new(:date_from, '$gte', from),
-                  Conditions::Comparison.new(:date_to, '$lte', to)])               
-              ]
-            )
-
-          bookings = condition.build_datamapper(BookingDataSystem::BookingPrereservation).all(
-             :order => [:booking_item_reference.asc, :date_from.asc]
-            ) 
-
-          bookings.to_json
-
-        end
-
         #                    
         # Query booking prereservations planning
         #

@@ -1,0 +1,101 @@
+require(['jquery', 'ysdtemplate', 'jquery.formparams'], function($, tmpl) {
+
+    planningModifyReservationModel = {
+
+        id: null,
+        booking : null,
+        products: null,
+        extras: null,
+
+        loadReservation: function(id) {
+
+            this.id = id;
+            var url = '/api/booking/planning/booking/'+id;
+
+            $.ajax({
+                type: 'GET',
+                url : url,
+                contentType : 'application/json; charset=utf-8',
+                crossDomain: true,
+                success: function(data, textStatus, jqXHR) {
+                    planningModifyReservationModel.booking = data.booking;
+                    planningModifyReservationModel.products = data.products;
+                    planningModifyReservationModel.extras = data.extras;
+                    planningModifyReservationView.loadSearchResult();
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('<%=t.admin_new_reservation.errors.error_searching%>');
+                }
+            });
+        },
+
+        updateReservation: function() {
+
+            var data = $('form[name=products_selection]').formParams(false);
+            var requestData = JSON.stringify(data);
+
+            var url = '/api/booking/planning/booking/' + this.id;
+
+            $.ajax({
+                type: 'PUT',
+                url : url,
+                data: requestData,
+                dataType : 'json',
+                contentType : 'application/json; charset=utf-8',
+                crossDomain: true,
+                success: function(data, textStatus, jqXHR) {
+                    alert('Reserva actualizada');
+                    planningModifyReservationModel.loadReservation(planningModifyReservationModel.id);
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('Error actualizando la reserva');
+                }
+            });
+
+
+        }
+
+    };
+
+    planningModifyReservationController = {
+        updateReservationProductsButtonClick: function() {
+            if (confirm('¿Está seguro que dese actualizar los productos de la reserva?')) {
+                planningModifyReservationModel.updateReservation();
+            }
+        }
+    };
+
+    planningModifyReservationView = {
+
+        init: function() {
+           planningModifyReservationModel.loadReservation($('.admin_content_wrapper').attr('data-reservation-id'));
+        },
+
+        loadSearchResult: function() {
+
+            this.loadProducts();
+            $('#update_reservation_products_button').unbind('click');
+            $('#update_reservation_products_button').bind('click', function() {
+                planningModifyReservationController.updateReservationProductsButtonClick();
+            });
+
+        },
+
+        loadProducts: function() {
+
+            var html = tmpl('script_products')({products: planningModifyReservationModel.products});
+            $('#products_list').html(html);
+
+            for (var idx=0; idx<planningModifyReservationModel.booking.booking_lines.length; idx++) {
+                $('input[name'+planningModifyReservationModel.booking.booking_lines[idx].item_id+']').filter('[value='+planningModifyReservationModel.booking.booking_lines[idx].item_id+']').prop('checked', true);
+                $('select.product_selector[name='+planningModifyReservationModel.booking.booking_lines[idx].item_id+']').val(planningModifyReservationModel.booking.booking_lines[idx].quantity);
+            }
+
+
+        }
+
+    };
+
+    planningModifyReservationView.init();
+
+});

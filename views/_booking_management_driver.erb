@@ -28,16 +28,17 @@
                   </span>
                 </div>
               </div>
+              <% if booking_item_family.driver_date_of_birth %>
               <div class="element_template">
                 <div class="entity-field">
                   <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_date_of_birth %></span>
                   <span class="entity-fieldvalue">
-                     <input type="text" name="driver_date_of_birth" id="driver_date_of_birth" class="date_control" size="15" maxlength="10"
-                     <% if driver_min_age_rules && !driver_min_age_edition %>readonly disabled style="background:#EEE"<%end%>/>
+                     <input type="text" name="driver_date_of_birth" id="driver_date_of_birth" class="date_control" size="15" maxlength="10"/>
                      <%% if (entity.driver_age >= 0) { %> <small>(<%%= entity.driver_age %> años)</small> <%% } %>
                   </span>
                 </div>
               </div>
+              <% end %>
               <div class="top-margin" style="text-decoration:underline; margin-left:5px"><%=t.booking_management.form.driver_document%></div>
               <div class="element_template">
                   <div class="entity-field">
@@ -88,8 +89,7 @@
                   <div class="entity-field">
                      <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.driver_license_date %></span>
                      <span class="entity-fieldvalue">
-                        <input type="text" name="driver_driving_license_date" id="driver_driving_license_date" class="date_control" size="15" maxlength="10"
-                        <% if driver_min_age_rules && !driver_min_age_edition%>readonly disabled style="background:#EEE"<%end%>/>
+                        <input type="text" name="driver_driving_license_date" id="driver_driving_license_date" class="date_control" size="15" maxlength="10"/>
                          <%% if (entity.driver_driving_license_years >= 0) { %> <small>(<%%= entity.driver_driving_license_years %> años)</small> <%% } %>
                      </span>
                   </div>

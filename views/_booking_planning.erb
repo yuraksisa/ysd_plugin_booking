@@ -139,6 +139,16 @@
   #planning_table .data {
   	text-align: center;
   }
+
+  .date_control {
+    z-index: 100000 !important;
+  }
+
+  .highlight {
+    background-color:#ffa;
+  }
+
+
 </style>
 
 <div class="row">
@@ -159,21 +169,20 @@
 </div>
 
 <!-- ======================================== -->
-<!-- Stock blocking (pre-reservation) modal   -->
+<!--            Reservation modal             -->
 <!-- ======================================== -->
-<div class="modal fade" id="prereservation_container" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="reservation_container" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <ul class="block-options">
           <li>
-            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+            <button id="close_reservation_modal_button" data-dismiss="modal" type="button"><i class="si si-close"></i></button>
           </li>
         </ul>
-        <h3 class="modal-title">Bloqueo de stock</h3>
+        <h3 class="modal-title"></h3>
       </div>
       <div class="modal-body">
-        <%= partial :prereservation_form %>
       </div>
     </div>
   </div>
@@ -192,6 +201,7 @@
                      data-id-resource="<%%=idResource%>"
                      data-title="<%%=title%>"
                      data-planning-color="<%%=backgroundColor%>"
+                     data-detail="<%%=detail%>"
                      class="planning_reservation"
                      style="<%=@planning_style=='compact' ? 'padding: 5px;' : 'padding:2px; font-size: 10px;'%>display: inline-block; position: absolute; border: 1px solid; border-color: <%%=borderColor%>; color: <%%=color%>; background-color: <%%=backgroundColor%>; overflow:hidden; opacity: 0.75">
     <span style="white-space: nowrap; overflow: hidden; padding-right: 2px">#<%%=id%> - <%%= title %></span>
@@ -209,10 +219,10 @@
         <div class="col-sm-12">
           <div class="push-5">
             <%% if (booking.origin == 'booking') { %>
-                #<a href="/admin/booking/bookings/<%%=booking.id%>"><%%=booking.id%></a>
+                #<a href="/admin/booking/bookings/<%%=booking.id%>"><%%=booking.id%></a> <%%=booking.title%>
             <%% } else { %>
             <%% if (booking.origin == 'prereservation') {%>
-                #<%%=booking.id%>
+                #<%%=booking.id%> <%%=booking.title%>
             <%% } %>
             <%% } %>
           </div>
@@ -221,7 +231,7 @@
       <div class="row" style="font-size:12px">
         <div class="col-sm-12">
           <div class="push-5">
-            <%%=booking.title%>
+            <%if @product_family.height or @product_family.weight%><%%=booking.detail%><%end%>
           </div>
           <% if @product_family.time_to_from %>
               <div class="push-5">
@@ -231,10 +241,10 @@
                 <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=booking.date_to%> <%if @product_family.time_to_from%><%%=booking.time_to%><%end%>
               </div>
           <% else %>
-          <div class="push-5">
-            <i class="fa fa-calendar-o"></i>&nbsp;<%%=booking.date_from%>&nbsp;&nbsp;&nbsp;
-            <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=booking.date_to%>
-          </div>
+              <div class="push-5">
+                <i class="fa fa-calendar-o"></i>&nbsp;<%%=booking.date_from%>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=booking.date_to%>
+              </div>
           <% end %>
           <form name="color" style="display: inline-block; position: relative; top: 3px">
             <input type="hidden" name="id" value="<%%=booking.id%>"/>
@@ -247,6 +257,437 @@
           </form>
         </div>
       </div>
+      <% if @product_family.multiple_items? %>
+        <%% if (booking.origin == 'booking') { %>
+        <br>
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-primary modify_reservation_button" rel="<%%=booking.id%>">Cambiar cantidades</button>
+          </div>
+        </div>
+        <%% } %>
+      <% end %>
     </div>
   </div>
+</script>
+
+<!-- ========================================================================================== -->
+<!--                            New reservation template                                        -->
+<!-- ========================================================================================== -->
+
+<script type="text/tmpl" id="script_new_reservation">
+      <div class="js-wizard-validation block">
+        <!-- Step Tabs -->
+        <ul class="nav nav-tabs nav-tabs-alt nav-justified">
+            <li class="active">
+                <a class="inactive" href="#validation-step1" data-toggle="tab">1. Fechas</a>
+            </li>
+            <li>
+                <a class="inactive" href="#validation-step2" data-toggle="tab">2. Productos</a>
+            </li>
+            <% if @booking_item_family and @booking_item_family.multiple_items? %>
+            <li>
+                <a class="inactive" href="#validation-step3" data-toggle="tab">3. Recursos</a>
+            </li>
+            <li>
+                <a class="inactive" href="#validation-step4" data-toggle="tab"><%% if (action=='booking'){%>4. Cliente<%%}else{%>4. Información<%%}%></a>
+            </li>
+            <% else %>
+            <li>
+                <a class="inactive" href="#validation-step3" data-toggle="tab"><%% if (action=='booking'){%>3. Cliente<%%}else{%>4. Información<%%}%></a>
+            </li>
+            <% end %>
+        </ul>
+        <!-- END Step Tabs -->
+
+        <!-- Form -->
+        <div class="js-form2">
+            <!-- Steps Content -->
+            <div class="block-content tab-content">
+                <!-- Step 1 -->
+                <div class="tab-pane fade fade-right in push-30-t push-50 active" id="validation-step1">
+                  <form id="reservation" name="reservation" class="form-horizontal push-10-t">
+
+                    <!-- Pickup date -->
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">
+                        <%% if (action=='booking') {%>
+                        <%=(@booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
+                        <%% } else { %>
+                        Inicio
+                        <%% } %>
+                      </label>
+                      <div class="col-sm-3">
+                        <input type="text" name="date_from" id="new_reservation_date_from" class="date_control" size="15" maxlength="10"/>
+                      </div>
+                      <div class="col-sm-2">
+                        <% if @booking_item_family.time_to_from %>
+                            <input type="text" name="time_from" class="form-control" id="new_reservation_time_from" maxlength="5" size="5"/>
+                        <% else %>
+                            <input type="hidden" name="time_from" id="new_reservation_time_from"/>
+                        <% end %>
+                      </div>
+                    </div>
+
+                    <!-- Pickup place -->
+                    <%% if (action=='booking') {%>
+                    <% if @booking_item_family.pickup_return_place %>
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">
+                            <%=t.new_booking.pickup_place%>
+                          </label>
+                          <div class="col-sm-8">
+                            <% if ['list','list+custom'].include?(@pickup_return_places_configuration) %>
+                              <select name="pickup_place" class="form-control" id="new_reservation_pickup_place">
+                                 <% @pickup_places.each do |pickup_place| %>
+                                   <option value="<%=pickup_place.name.sub("'",'&#39;')%>"><%=pickup_place.name.sub("'",'&#39;')%></option>
+                                 <% end %>
+                              </select>
+                              <% if @pickup_return_places_configuration == 'list+custom'%>
+                                <div id="another_pickup_place_group" class="top-margin" style="display:none;">
+                                    <textarea name="pickup_place_other" id="new_reservation_pickup_place_other" rows="3" cols="28" class="form-control"
+                                              placeholder="<%=t.new_booking.pickup_place%>"></textarea>
+                                    <input type="hidden" name="custom_pickup_place" value="false"/>
+                                </div>
+                              <% end %>
+                            <% else %>
+                              <div>
+                                 <textarea name="pickup_place_other" id="new_reservation_pickup_place_other" rows="3" cols="28"
+                                           placeholder="<%=t.new_booking.pickup_place%>"></textarea>
+                              </div>
+                            <% end %>
+                          </div>
+
+                        </div>
+                    <% end %>
+                    <%% } %>
+
+                    <!-- Return date -->
+
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">
+                        <%% if (action=='booking') {%>
+                        <%=(@booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
+                        <%% } else { %>
+                        Fin
+                        <%% } %>
+                      </label>
+                      <div class="col-sm-3">
+                        <input type="text" name="date_to" id="new_reservation_date_to" class="date_control" size="15" maxlength="10"
+                                           />
+                      </div>
+                      <div class="col-sm-2">
+                        <% if @booking_item_family.time_to_from %>
+                            <input type="text" name="time_to" class="form-control" id="new_reservation_time_to" maxlength="5" size="5"/>
+                        <% else %>
+                            <input type="hidden" name="time_to" id="new_reservation_time_to"/>
+                        <% end %>
+                      </div>
+                    </div>
+
+                    <!-- Return place -->
+                    <%% if (action=='booking') {%>
+                    <% if @booking_item_family.pickup_return_place %>
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">
+                            <%=t.new_booking.return_place%>
+                          </label>
+                          <div class="col-sm-8">
+                            <% if ['list','list+custom'].include?(@pickup_return_places_configuration) %>
+                              <select name="return_place" class="form-control" id="new_reservation_return_place">
+                                 <% @return_places.each do |return_place| %>
+                                   <option value="<%=return_place.name.sub("'",'&#39;')%>"><%=return_place.name.sub("'",'&#39;')%></option>
+                                 <% end %>
+                              </select>
+                              <% if @pickup_return_places_configuration == 'list+custom'%>
+                                <div id="another_return_place_group" class="top-margin" style="display:none;">
+                                    <textarea name="return_place_other" id="new_reservation_return_place_other" rows="3" cols="28"
+                                              placeholder="<%=t.new_booking.return_place%>" class="form-control"></textarea>
+                                  <input type="hidden" name="custom_return_place" value="false"/>
+                                </div>
+                              <% end %>
+                            <% else %>
+                              <div>
+                                 <textarea name="return_place_other" id="new_reservation_return_place_other" rows="3" cols="28"
+                                           placeholder="<%=t.new_booking.return_place%>"></textarea>
+                              </div>
+                            <% end %>
+                          </div>
+                        </div>
+                    <% end %>
+                    <%% } %>
+
+                    <!-- Driver age -->
+                    <%% if (action=='booking') {%>
+                    <% if @booking_item_family and @booking_item_family.driver and @driver_age_rules %>
+
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label">
+                            <%=t.new_booking.driver_age%>
+                          </label>
+                          <div class="col-sm-6">
+                            <select name="driver_age_rule" id="new_reservation_driver_age_rule" class="form-control">
+                              <% @driver_age_rule_definition.driver_age_rules.each do |driver_age_rule|%>
+                                  <option value="<%=driver_age_rule.id%>" allowed="<%=driver_age_rule.allowed%>"
+                                          deposit="<%=driver_age_rule.deposit > 0%>"
+                                          supplement="<%=driver_age_rule.suplement > 0%>"
+                                          <%if !driver_age_rule.allowed and driver_age_rule.description.size == 2%>not-allowed-message="<%=driver_age_rule.description.last%>"<%end%>><%=driver_age_rule.description.first%></option>
+                              <% end %>
+                            </select>
+                          </div>
+                        </div>
+
+                    <% end %>
+
+                    <% if @addon_sales_channels %>
+                      <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                          Canal de venta
+                        </label>
+                        <div class="col-sm-6">
+                          <select name="sales_channel_code" id="new_reservation_sales_channel_code" class="form-control">
+                            <option value="" selected>Estándar</option>
+                            <% @sales_channels.each do |sales_channel| %>
+                              <option value="<%=sales_channel.code%>"><%=sales_channel.name%></option>
+                            <% end %>
+                          </select>
+                        </div>
+                      </div>
+                    <% end %>
+                    <%% } %>
+
+                  </form>
+                </div>
+                <!-- END Step 1 -->
+
+                <!-- Step 2 -->
+                <div class="tab-pane fade fade-right push-30-t push-50" id="validation-step2">
+                  <form name="new_reservation_products_selection">
+                    <div class="block block-bordered">
+                      <div class="block-header bg-gray-lighter">
+                        <h3 class="block-title">Productos</h3>
+                      </div>
+                      <div class="block-content">
+                        <div id="new_reservation_products_container">
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <!-- END Step 2 -->
+
+                <!-- Step 3 -->
+                <% if @booking_item_family and @booking_item_family.multiple_items? %>
+                <div class="tab-pane fade fade-right push-30-t push-50" id="validation-step3">
+                  <form name="new_reservation_resources_selection">
+                    <div class="block block-bordered">
+                      <div class="block-header bg-gray-lighter">
+                        <h3 class="block-title">Recursos</h3>
+                      </div>
+                      <div class="block-content">
+                          <div id="new_reservation_resources_container" class="chooser_container">
+                          </div>
+                          <br>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <!-- END Step 3 -->
+                <% end %>
+
+
+                <!-- Step 3 -->
+                <div class="tab-pane fade fade-right push-30-t push-50" id="<% if @booking_item_family and @booking_item_family.multiple_items? %>validation-step4<%else%>validation-step3<%end%>">
+                    <form name="new_reservation_customer">
+                      <%% if (action=='booking') {%>
+                      <div class="formrow">
+                        <label for="customer_name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_name %> <span class="mandatoryfield">*</span></label>
+                        <input type="text" maxlength="40" id="customer_name" name="customer_name" class="fieldcontrol" />
+                      </div>
+
+                      <div class="formrow">
+                        <label for="customer_name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_surname %> <span class="mandatoryfield">*</span></label>
+                        <input type="text" maxlength="40" id="customer_surname" name="customer_surname" class="fieldcontrol"/>
+                      </div>
+
+                      <div class="formrow">
+                        <label for="customer_phone" class="fieldtitle"><%= t.admin_new_reservation.form.customer_phone %></label>
+                        <input type="text" maxlength="15" id="customer_phone" name="customer_phone" class="fieldcontrol"/>
+                      </div>
+
+                      <div class="formrow">
+                        <label for="customer_phone" class="fieldtitle"><%= t.admin_new_reservation.form.customer_mobile_phone %></label>
+                        <input type="text" maxlength="15" id="customer_mobile_phone" name="customer_mobile_phone" class="fieldcontrol"/>
+                      </div>
+
+                      <div class="formrow">
+                        <label for="name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_email %></label>
+                        <input type="text" maxlength="40" id="customer_email" name="customer_email" class="fieldcontrol"/>
+                      </div>
+                      <%% } else { %>
+                        <div class="formrow">
+                          <label class="fieldtitle"><%=t.bookings_planning.prereservation.subject%></label>
+                          <input type="text" name="title" id="title" class="fieldcontrol" size="15" maxlength="256"/>
+                        </div>
+                        <div class="formrow">
+                          <label class="fieldtitle"><%=t.bookings_planning.prereservation.notes%></label>
+                          <textarea name="notes" id="notes" class="fieldcontrol" rows="2"></textarea>
+                        </div>
+                      <%% } %>
+
+                    </form>
+                </div>
+                <!-- END Step 3 -->
+            </div>
+            <!-- END Steps Content -->
+
+            <!-- Steps Navigation -->
+            <div class="block-content block-content-mini block-content-full border-t">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="wizard-prev btn btn-warning disabled" type="button"><i class="fa fa-arrow-circle-o-left"></i> Previous</button>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <button class="wizard-next btn btn-success" type="button">Next <i class="fa fa-arrow-circle-o-right"></i></button>
+                        <button class="wizard-finish btn btn-primary" type="submit" style="display: none;"><i class="fa fa-check-circle-o"></i> Submit</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END Steps Navigation -->
+        </div>
+      </div>
+</script>
+
+<script type="text/tmpl" id="script_products_search">
+          <table id="products_table" class="table table-hover">
+            <thead class="table-header">
+              <tr>
+                <th class="table-header-title centered_text" scope="col" style="width:10%"></th>
+                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.photo %></th>
+                <th class="table-header-title centered_text" scope="col" style="width:30%"><%= t.admin_planning_update_reservation.products_table.product %></th>
+                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.stock %></th>
+                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.price %></th>
+              </tr>
+            </thead>
+            <tbody id="elements_tbody" class="table-tbody">
+              <%% for (var idx=0;idx<products.length;idx++) { %>
+                <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
+                  <td class="table-cell centered_text">
+                    <% if @product_family.multiple_items? %>
+                      <select name="<%%=products[idx].code%>" class="product_selector">
+                        <%% for (var idxStock=0; idxStock <= products[idx].stock; idxStock++) { %>
+                           <option value="<%%=idxStock%>"><%%=idxStock%></option>
+                        <%% } %>
+                      </select>
+                    <% else %>
+                      <input type="radio" name="<%%=products[idx].code%>" value="<%%=products[idx].code%>" class="product_chooser"></input>
+                    <% end %>
+                 </td>
+                 <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
+                 <td class="table-cell centered_text"><%%=products[idx].name%></td>
+                 <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
+                 <td class="table-cell centered_text"><%%=new Number(products[idx].price).toFixed(2)%></td>
+               </tr>
+              <%% } %>
+             </tbody>
+          </table>
+</script>
+
+<script type="text/tmpl" id="script_resources">
+          <%% for (var idx=0;idx<products.length;idx++) { %>
+            <h2 class="content-heading"><%%=products[idx].code%></h2>
+            <div id="resource_<%%=products[idx].code%>">
+              <%% for (var idx2=0;idx2<products[idx].resources.length;idx2++) { %>
+                <div class="chooser_row">
+                 <input type="checkbox" name="<%%=products[idx].code%>" value="<%%=products[idx].resources[idx2]%>" class="resource"
+                      <%% if (resource == products[idx].resources[idx2]){ %>checked<%%}%>><%%=products[idx].resources[idx2]%></input>
+                </div>
+              <%% } %>
+            </div>
+          <%% } %>
+</script>
+
+<!-- ========================================================================================== -->
+<!--                            Modify reservation template                                     -->
+<!-- ========================================================================================== -->
+
+<script type="text/tmpl" id="script_modify_reservation">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="block block-bordered">
+        <div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Reserva</h3>
+        </div>
+        <div class="block-content">
+          <div class="push-5">
+            <div>
+              <span class="text-primary-dark"><strong>#<%%=booking.id%></strong></span>&nbsp;<span><%%=booking.title%><span>
+            </div>
+          </div>
+          <% if @product_family.time_to_from %>
+              <div class="push-5">
+                <i class="fa fa-calendar-o"></i>&nbsp;<%%=booking.date_from%> <%if @product_family.time_to_from%><%%=booking.time_from%><%end%>
+              </div>
+              <div class="push-5">
+                <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=booking.date_to%> <%if @product_family.time_to_from%><%%=booking.time_to%><%end%>
+              </div>
+          <% else %>
+              <div class="push-5">
+                <i class="fa fa-calendar-o"></i>&nbsp;<%%=booking.date_from%>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=booking.date_to%>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form name="products_selection">
+    <div class="block block-bordered">
+      <div class="block-header bg-gray-lighter">
+        <h3 class="block-title">Productos</h3>
+      </div>
+      <div class="block-content">
+          <table id="products_table" class="table table-hover">
+            <thead class="table-header">
+              <tr>
+                <th class="table-header-title centered_text" scope="col" style="width:10%"></th>
+                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.photo %></th>
+                <th class="table-header-title centered_text" scope="col" style="width:30%"><%= t.admin_planning_update_reservation.products_table.product %></th>
+                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.stock %></th>
+                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.price %></th>
+              </tr>
+            </thead>
+            <tbody id="elements_tbody" class="table-tbody">
+              <%% for (var idx=0;idx<products.length;idx++) { %>
+                <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
+                  <td class="table-cell centered_text">
+                    <% if @product_family.multiple_items? %>
+                      <select name="<%%=products[idx].code%>" class="product_selector">
+                        <%% for (var idxStock=0; idxStock <= products[idx].stock; idxStock++) { %>
+                           <option value="<%%=idxStock%>"><%%=idxStock%></option>
+                        <%% } %>
+                      </select>
+                    <% else %>
+                      <input type="radio" name="<%%=products[idx].code%>" value="<%%=products[idx].code%>" class="product_chooser"></input>
+                    <% end %>
+                 </td>
+                 <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
+                 <td class="table-cell centered_text"><%%=products[idx].name%></td>
+                 <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
+                 <td class="table-cell centered_text"><%%=new Number(products[idx].price).toFixed(2)%></td>
+               </tr>
+              <%% } %>
+             </tbody>
+          </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <button id="update_reservation_products_button" class="btn btn-minw btn-square btn-primary pull-right" type="button"><i class="fa fa-save push-5-r"></i><%=t.entitymanagement.update%></button>
+      </div>
+    </div>
+  </form>
+
 </script>

@@ -941,7 +941,7 @@ booking_category_management:
     prices: Precios  
     scheduler: Agenda
   form:
-    stock_not_match: El stock del producto con coincide con el stock definido.
+    stock_not_match: El stock del producto no coincide con el stock definido.
     product_not_ready: El producto no está listo para la venta. Se necesita código, nombre y tarifa
     new_product_detail: >
                         <h3>Nuevo producto</h3>
@@ -1574,6 +1574,13 @@ admin_new_reservation:
     error_setting_product: Error seleccionando producto
     error_setting_extra: Error seleccionando extra
     error_making_reservation: Error registrando la reserva
+admin_planning_update_reservation:
+   title: Modificar reserva
+   products_table:
+     photo: Photo
+     product: Producto
+     stock: Stock
+     price: Precio unitario
 location:
   location_title: Dirección
   street: Calle

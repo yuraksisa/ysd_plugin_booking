@@ -33,8 +33,40 @@ module Sinatra
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           @pending_of_asignation_bookings = BookingDataSystem::Booking.pending_of_assignation
           @planning_style = SystemConfiguration::Variable.get_value('booking.assignation.planning_style','compact')
-          
+
+          # Prepare sales channels
+          addons = mybooking_addons
+          @addon_sales_channels = (addons and addons.has_key?(:addon_sales_channels) and addons[:addon_sales_channels])
+          @sales_channels = ::Yito::Model::SalesChannel::SalesChannel.all if @addon_sales_channels
+          @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          @pickup_return_places_configuration = SystemConfiguration::Variable.get_value('booking.pickup_return_places_configuration', 'list')
+          @driver_age_rules = SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool
+          @driver_age_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
+          if @product_family and @product_family.pickup_return_place and @pickup_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first
+            @pickup_places = ::Yito::Model::Booking::PickupReturnPlace.all(conditions: {place_definition_id: @pickup_place_def.id, is_pickup: true})
+            @return_places = ::Yito::Model::Booking::PickupReturnPlace.all(conditions: {place_definition_id: @pickup_place_def.id, is_return: true})
+          else
+            @pickup_places = []
+            @return_places = []
+          end
+          @min_days = SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i
+
           load_page(:bookings_planning)
+
+        end
+
+        #
+        # Modify a reservation in the planning (only for multiple products setup)
+        #
+        app.get '/admin/booking/planning/modify-reservation/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+
+
+          if @booking = BookingDataSystem::Booking.get(params[:id])
+            @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+            load_page(:booking_planning_modify_reservation)
+          else
+            status 404
+          end
 
         end
 
@@ -143,18 +175,6 @@ module Sinatra
           end
 
         end
-
-        #
-        # The user select the reservations not asigned
-        #
-        #app.get '/admin/booking/planning-pending-assignation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-        #
-        #  @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-        #
-        #  @bookings = BookingDataSystem::Booking.pending_of_assignation
-        #  load_page(:booking_planning_pending_assignation, :layout => false)
-        #
-        #end
 
 
       end
