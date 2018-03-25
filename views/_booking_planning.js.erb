@@ -1384,7 +1384,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
           $('form[name=reservation] input[name=time_from]').val('<%=@booking_item_family.time_start%>');
           <% if @booking_item_family.cycle_of_24_hours %>
-          $('form[name=reservation] input[name=time_to]').val('<%=@booking_item_family.time_start%>');
+          $('form[name=reservation] input[name=time_to]').val('<%=@booking_item_family.time_end%>');
           <% else %>
           $('form[name=reservation] input[name=time_to]').val('<%=@booking_item_family.time_end%>');
           <% end %>

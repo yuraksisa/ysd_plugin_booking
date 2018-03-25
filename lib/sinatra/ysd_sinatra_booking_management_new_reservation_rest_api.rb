@@ -39,6 +39,8 @@ module Sinatra
         e_json = ::Yito::Model::Booking::RentingExtraSearch.search(shopping_cart.date_from,
                                                                    shopping_cart.date_to, shopping_cart.days, locale).to_json
 
+        p "extras:#{e_json}--days:#{shopping_cart.days}"
+
         # Join all the data togheter
         "{\"shopping_cart\": #{sc_json}, \"products\": #{p_json}, \"extras\": #{e_json} }"
 

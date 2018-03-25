@@ -48,22 +48,22 @@ module Sinatra
                        SystemConfiguration::Variable.get_value('booking.pickup_return_places_configuration', 'list'))
           locals.store(:booking_custom_pickup_return_place_cost, BigDecimal.new(SystemConfiguration::Variable.get_value('booking.custom_pickup_return_place_price', '0')))
 
-          pickup_return_place_def = nil
-          pickup_return_place_def_id = SystemConfiguration::Variable.get_value('booking.pickup_return_place_definition','0').to_i
-          if pickup_return_place_def_id > 0
-            pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(pickup_return_place_def_id)
+          if product_family and product_family.pickup_return_place
+            pickup_return_place_def = nil
+            pickup_return_place_def_id = SystemConfiguration::Variable.get_value('booking.pickup_return_place_definition','0').to_i
+            if pickup_return_place_def_id > 0
+              pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(pickup_return_place_def_id)
+            end
+            pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first if pickup_return_place_def.nil?
+            locals.store(:booking_pickup_return_places, pickup_return_place_def.pickup_return_places)
           end
-          pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first if pickup_return_place_def.nil?
-          locals.store(:booking_pickup_return_places, pickup_return_place_def.pickup_return_places)
 
-
-
-          young_driver_rules = SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool
-          young_driver_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
-
-          locals.store(:driver_age_rules, young_driver_rules)
-          locals.store(:driver_age_rule_definition, young_driver_rule_definition)
-          
+          if product_family and product_family.driver_license
+            young_driver_rules = SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool
+            young_driver_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
+            locals.store(:driver_age_rules, young_driver_rules)
+            locals.store(:driver_age_rule_definition, young_driver_rule_definition)
+          end
 
           @shopping_cart = nil
 
@@ -81,8 +81,8 @@ module Sinatra
           if product_family.cycle_of_24_hours
             @shopping_cart.date_from = today
             @shopping_cart.date_to = today + min_days
-            @shopping_cart.time_from = "10:00"
-            @shopping_cart.time_to = "10:00"
+            @shopping_cart.time_from = product_family.time_start
+            @shopping_cart.time_to = product_family.time_end
           else
             @shopping_cart.date_from = today
             @shopping_cart.date_to = today + min_days - 1
@@ -103,7 +103,9 @@ module Sinatra
           # Prepare sales channels
           addons = mybooking_addons
           @addon_sales_channels = (addons and addons.has_key?(:addon_sales_channels) and addons[:addon_sales_channels])
-          @sales_channels = ::Yito::Model::SalesChannel::SalesChannel.all if @addon_sales_channels
+          if @addon_sales_channels
+            @sales_channels = ::Yito::Model::SalesChannel::SalesChannel.all
+          end
           
           load_page(:booking_management_new_reservation, :locals => locals)
 

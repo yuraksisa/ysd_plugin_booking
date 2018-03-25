@@ -384,6 +384,12 @@ module Huasi
            :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.use_factors_in_extras_rates'},
+          {:value => 'false',
+           :description => 'Use factors in rates definition',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.new_season_definition_instance_for_category'},
           {:value => 'false',
            :description => 'Each product category has it\'s own season definition instance',
