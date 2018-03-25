@@ -19,7 +19,7 @@ bookingNewModel = {
 
    search: function() {
 
-       <% if booking_item_family.driver and driver_age_rules and driver_age_rule_definition and !driver_age_rule_definition.driver_age_rules.empty?  %>
+       <% if booking_item_family.driver_date_of_birth and driver_age_rules and driver_age_rule_definition and !driver_age_rule_definition.driver_age_rules.empty?  %>
        if ($('#driver_age_rule option:selected').attr('allowed') == 'false') {
            alert($('#driver_age_rule option:selected').attr('not-allowed-message'));
            return;

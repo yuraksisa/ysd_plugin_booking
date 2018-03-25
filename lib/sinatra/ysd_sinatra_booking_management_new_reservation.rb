@@ -63,6 +63,8 @@ module Sinatra
             young_driver_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(SystemConfiguration::Variable.get_value('booking.driver_min_age.rule_definition'))
             locals.store(:driver_age_rules, young_driver_rules)
             locals.store(:driver_age_rule_definition, young_driver_rule_definition)
+          else
+            locals.store(:driver_age_rules, false)
           end
 
           @shopping_cart = nil
