@@ -1242,6 +1242,10 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
     this.adaptFormData = function(data) {
 
+        if (data.customer_language == '') {
+            data.customer_language = null;
+        }
+
         if (data.sales_channel_code == '') {
             data.sales_channel_code = null;
         }
