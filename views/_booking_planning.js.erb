@@ -420,13 +420,20 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 var color =$(this).val();
                 bookingPlanningController.colorChanged(id, type, color);
             });
+           // Destroy pre-reservation button click
            $('.destroy_prereservation_button').bind('click', function() {
                 destroyStockBlockingController.destroyPrereservationClick($(this).attr('rel'));
            });
+           // Add resources to prereservation button click
+           $('.modify_prereservation_button').bind('click', function() {
+               $('.planning_reservation').popover('hide');
+               planningModifyStockBlockingView.show($(this).attr('rel'));
+           });
+           // Add quantity to reservation button click
            $('.modify_reservation_button').bind('click', function() {
                $('.planning_reservation').popover('hide');
                planningModifyReservationView.show($(this).attr('rel'));
-           })
+           });
         })
 
        // Setup event when the planning reservation is clicked
@@ -877,7 +884,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
   }
 
   // ----------------------------------------------------------------------------------------------
-  //                              Stock blocking
+  //                              Destroy Stock blocking
   // ----------------------------------------------------------------------------------------------
 
   destroyStockBlockingModel = {
@@ -963,9 +970,9 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
               success: function(data, textStatus, jqXHR) {
                   YSDGui.unLockBackground();
                   unlock = true;
-                  planningModifyStockBlockingModel.booking = data.prereservation;
+                  planningModifyStockBlockingModel.prereservation = data.prereservation;
                   planningModifyStockBlockingModel.products = data.products;
-                  planningModifyStockBlockingModel.loadSearchResult();
+                  planningModifyStockBlockingView.loadSearchResult();
               },
               error: function(data, textStatus, jqXHR) {
                   alert('<%=t.admin_new_reservation.errors.error_searching%>');
@@ -976,12 +983,79 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                   }
               }
           });
+      },
+
+      updatePrereservation: function() {
+
+          var request = $('form[name=update_prereservation_from]').formParams(false);
+          var requestData = JSON.stringify(request);
+          var url = '/api/booking/planning/prereservation/' + this.id;
+
+          YSDGui.lockBackground('#bbb');
+          var unlock = false;
+
+          $.ajax({
+              type: 'PUT',
+              url : url,
+              data: requestData,
+              contentType : 'application/json; charset=utf-8',
+              success: function(data, textStatus, jqXHR) {
+                  YSDGui.unLockBackground();
+                  unlock = true;
+                  $.toast({
+                      heading: 'Bloqueo de stock actualizado',
+                      text: 'El bloqueo de stock se ha actualizado correctamente',
+                      position: 'top-right',
+                      bgColor: 'rgb(56, 154, 56)',
+                      textColor: 'white',
+                      loader: false,
+                      stack: false
+                  });
+
+                  // Update the planning information
+                  // Remove the items from the visual planning
+                  $('.planning_reservation[data-origin=prereservation][data-id='+planningModifyStockBlockingModel.id+']').remove();
+                  // Remove elements from the model
+                  bookingPlanningModel.planningData.forEach(function(item, index, object) {
+                      if (item.id === planningModifyReservationModel.id && item.origin == 'prereservation') {
+                          object.splice(index, 1);
+                      }
+                  });
+                  // Add the items to the model and to the planning
+                  if (data && data.length && data.length > 0) {
+                      data.forEach(function (item, index, object) {
+                          bookingPlanningModel.planningData.push(item);
+                          bookingPlanningView.showItemInPlanning(item.origin, item.id, item.id2, item.item_id,
+                              item.booking_item_reference, item.date_from, item.time_from,
+                              item.date_to, item.time_to, item.title, item.planning_color, item.detail)
+                      });
+                  }
+
+                  bookingPlanningView.setupDraggable('.planning_reservation[data-origin=prereservation][data-id='+planningModifyStockBlockingModel.id+']');
+                  bookingPlanningView.setupPopover('.planning_reservation[data-origin=prereservation][data-id='+planningModifyStockBlockingModel.id+']');
+
+                  setTimeout(function() { $('#reservation_container').modal('hide'); }, 1000);
+              },
+              error: function(data, textStatus, jqXHR) {
+                  alert('Error modificando el bloqueo de stock');
+              },
+              complete: function(jqXHT, textStatus) {
+                  if (!unlock) {
+                      YSDGui.unLockBackground();
+                  }
+              }
+          });
+
       }
 
 
   };
 
   planningModifyStockBlockingController = {
+
+      updatePrereservationProductsButtonClick: function() {
+          planningModifyStockBlockingModel.updatePrereservation();
+      }
 
   };
 
@@ -993,22 +1067,26 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
       loadSearchResult: function() {
 
-          var html = tmpl('script_modify_reservation')({booking: planningModifyStockBlockingModel.booking,
-              products: planningModifyStockBlockingModel.products});
-
-          $('#reservation_container .modal-title').html('Modificar bloqueo de stock');
-          $('#reservation_container .modal-body').html(html);
-
-          for (var idx=0; idx<planningModifyStockBlockingModel.booking.booking_lines.length; idx++) {
-              $('input[name'+planningModifyStockBlockingModel.booking.booking_lines[idx].item_id+']').filter('[value='+planningModifyStockBlockingModel.booking.booking_lines[idx].item_id+']').prop('checked', true);
-              $('select.product_selector[name='+planningModifyStockBlockingModel.booking.booking_lines[idx].item_id+']').val(planningModifyStockBlockingModel.booking.booking_lines[idx].quantity);
+          var productsEmpty = true;
+          for (var idx=0;idx<planningModifyStockBlockingModel.products.length;idx++) {
+              if (planningModifyStockBlockingModel.products[idx].resources.length > 0) {
+                  productsEmpty = false;
+                  break;
+              }
           }
+
+          var html = tmpl('script_modify_prereservation')({prereservation: planningModifyStockBlockingModel.prereservation,
+                                                           products: planningModifyStockBlockingModel.products,
+                                                           productsEmpty: productsEmpty});
+
+          $('#reservation_container .modal-title').html('Añadir recursos');
+          $('#reservation_container .modal-body').html(html);
 
           $('#reservation_container').modal('show');
 
-          $('#update_reservation_products_button').unbind('click');
-          $('#update_reservation_products_button').bind('click', function() {
-              planningModifyStockBlockingController.updateReservationProductsButtonClick();
+          $('#update_prereservation_button').unbind('click');
+          $('#update_prereservation_button').bind('click', function() {
+              planningModifyStockBlockingController.updatePrereservationProductsButtonClick();
           });
 
       }
@@ -1210,7 +1288,9 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
           <% end %>
         }
         else {
+          <% if @booking_item_family.cycle_of_24_hours %>
           dateTo.add(1).days();
+          <% end %>
         }
 
         $('form[name=reservation] input[name=date_to]').datepicker('setDate', dateTo );
@@ -1549,7 +1629,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
           var data = $('form[name=products_selection]').formParams(false);
           var requestData = JSON.stringify(data);
-
+          console.log(data);
+/*
           var url = '/api/booking/planning/booking/' + this.id;
 
           YSDGui.lockBackground('#bbb');
@@ -1577,7 +1658,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                   planningModifyReservationModel.loadReservation(planningModifyReservationModel.id);
                   // Update the planning information
                   // Remove the items from the visual planning
-                  $('.planning_reservation[data-id='+planningModifyReservationModel.id+']').remove();
+                  $('.planning_reservation[data-origin=booking][data-id='+planningModifyReservationModel.id+']').remove();
                   // Remove elements from the model
                   bookingPlanningModel.planningData.forEach(function(item, index, object) {
                       if (item.id === planningModifyReservationModel.id) {
@@ -1594,8 +1675,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                       });
                   }
 
-                  bookingPlanningView.setupDraggable('.planning_reservation[data-id='+planningModifyReservationModel.id+']');
-                  bookingPlanningView.setupPopover('.planning_reservation[data-id='+planningModifyReservationModel.id+']');
+                  bookingPlanningView.setupDraggable('.planning_reservation[data-origin=booking][data-id='+planningModifyReservationModel.id+']');
+                  bookingPlanningView.setupPopover('.planning_reservation[data-origin=booking][data-id='+planningModifyReservationModel.id+']');
 
                   setTimeout(function() { $('#reservation_container').modal('hide'); }, 1000);
 
@@ -1610,7 +1691,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
               }
           });
-
+*/
 
       }
 
@@ -1632,8 +1713,17 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
       loadSearchResult: function() {
 
+          var productsEmpty = true;
+          for (var idx=0;idx<planningModifyReservationModel.products.length;idx++) {
+              if (planningModifyReservationModel.products[idx].resources.length > 0) {
+                  productsEmpty = false;
+                  break;
+              }
+          }
+
           var html = tmpl('script_modify_reservation')({booking: planningModifyReservationModel.booking,
-                                              products: planningModifyReservationModel.products});
+                                              products: planningModifyReservationModel.products,
+                                              productsEmpty: productsEmpty});
 
           $('#reservation_container .modal-title').html('Modificar reserva');
           $('#reservation_container .modal-body').html(html);

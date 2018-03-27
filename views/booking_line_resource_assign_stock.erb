@@ -138,7 +138,8 @@
             </tr>
           </thead>
           <tbody>      
-            <% @data.each do |id, detail| %>  
+            <% @data.each do |id, detail| %>
+              <% if detail[:real_stock] %>
               <% selected_resource = (!@booking_line_resource.booking_item_reference.nil? and @booking_line_resource.booking_item_reference == id) %>
               <tr class="table-row <%if selected_resource%>selected_resource<%end%>">
                 <td class="table-cell right_text">
@@ -175,6 +176,7 @@
                   <% end %>
                 </td>
               </tr>
+              <% end %>
             <% end %>
           </tbody>
         </table>

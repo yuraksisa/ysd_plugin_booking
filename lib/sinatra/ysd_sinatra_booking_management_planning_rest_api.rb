@@ -449,11 +449,38 @@ module Sinatra
           model_request = JSON.parse(URI.unescape(request.body.read)).symbolize_keys
 
           if @prereservation = BookingDataSystem::BookingPrereservation.get(params[:id])
-
             begin
-              @prereservation.title = model_request[:title] if model_request.has_key?(:title)
-              @prereservation.notes = model_request[:notes] if model_request.has_key?(:notes)
-              @prereservation.save
+              @prereservation.transaction do
+                  @prereservation.title = model_request[:title] if model_request.has_key?(:title)
+                  @prereservation.notes = model_request[:notes] if model_request.has_key?(:notes)
+                  if model_request.has_key?(:references)
+                    model_request[:references].each do |category, resources|
+                      resources.each do |resource|
+                        @prereservation.prereservation_lines << BookingDataSystem::BookingPrereservationLine.new(booking_item_category: category, booking_item_reference: resource)
+                      end
+                    end
+                  end
+                  @prereservation.save
+                  # Build the result to update the planning data
+                  result = @prereservation.prereservation_lines.inject([]) do |result, value|
+                    result <<
+                        {"booking_item_reference": value.booking_item_reference,
+                         "item_id": value.booking_item_category,
+                         "id": @prereservation.id,
+                         "origin": "prereservation",
+                         "date_from": @prereservation.date_from.strftime("%Y-%m-%d"),
+                         "time_from": @prereservation.time_from,
+                         "date_to": @prereservation.date_to.strftime("%Y-%m-%d"),
+                         "time_to": @prereservation.time_to,
+                         "days": @prereservation.days,
+                         "title": @prereservation.title,
+                         "detail": @prereservation.notes,
+                         "id2": value.id,
+                         "planning_color": @prereservation.planning_color}
+                  end
+                  content_type :json
+                  result.to_json
+              end
             rescue  DataMapper::SaveFailureError => error
               logger.error "#{error.resource.errors.full_messages.inspect}"
               raise error

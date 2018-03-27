@@ -250,10 +250,6 @@
             <input type="hidden" name="id" value="<%%=booking.id%>"/>
             <input type="hidden" name="type" value="<%%=booking.origin%>"/>
             <input type="color" name="planning_color" class="color" value="<%%=booking.planning_color%>" style="width:32px; height: 32px"/>
-            <%% if (booking.origin == 'prereservation') { %>
-            <button type="button" class="destroy_prereservation_button btn btn-danger left-margin"
-                    style="position:relative; top: -6px" rel="<%%=booking.id2%>">Eliminar</button>
-            <%% } %>
           </form>
         </div>
       </div>
@@ -262,7 +258,15 @@
         <br>
         <div class="row">
           <div class="col-sm-12">
-            <button type="button" class="btn btn-primary modify_reservation_button" rel="<%%=booking.id%>">Cambiar cantidades</button>
+            <button type="button" class="btn btn-primary modify_reservation_button" rel="<%%=booking.id%>">Editar</button>
+          </div>
+        </div>
+        <%% } else if (booking.origin == 'prereservation') {%>
+        <br>
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-primary modify_prereservation_button" rel="<%%=booking.id%>">Editar</button>
+            <button type="button" class="destroy_prereservation_button btn btn-danger" rel="<%%=booking.id2%>">Eliminar</button>
           </div>
         </div>
         <%% } %>
@@ -558,53 +562,57 @@
       </div>
 </script>
 
+<!-- Script select products -->
+
 <script type="text/tmpl" id="script_products_search">
-          <table id="products_table" class="table table-hover">
-            <thead class="table-header">
-              <tr>
-                <th class="table-header-title centered_text" scope="col" style="width:10%"></th>
-                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.photo %></th>
-                <th class="table-header-title centered_text" scope="col" style="width:30%"><%= t.admin_planning_update_reservation.products_table.product %></th>
-                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.stock %></th>
-                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.price %></th>
-              </tr>
-            </thead>
-            <tbody id="elements_tbody" class="table-tbody">
-              <%% for (var idx=0;idx<products.length;idx++) { %>
-                <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
-                  <td class="table-cell centered_text">
-                    <% if @product_family.multiple_items? %>
-                      <select name="<%%=products[idx].code%>" class="product_selector">
-                        <%% for (var idxStock=0; idxStock <= products[idx].stock; idxStock++) { %>
-                           <option value="<%%=idxStock%>"><%%=idxStock%></option>
-                        <%% } %>
-                      </select>
-                    <% else %>
-                      <input type="radio" name="<%%=products[idx].code%>" value="<%%=products[idx].code%>" class="product_chooser"></input>
-                    <% end %>
-                 </td>
-                 <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
-                 <td class="table-cell centered_text"><%%=products[idx].name%></td>
-                 <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
-                 <td class="table-cell centered_text"><%%=new Number(products[idx].price).toFixed(2)%></td>
-               </tr>
-              <%% } %>
-             </tbody>
-          </table>
+  <table id="products_table" class="table table-hover">
+    <thead class="table-header">
+      <tr>
+        <th class="table-header-title centered_text" scope="col" style="width:10%"></th>
+        <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.photo %></th>
+        <th class="table-header-title centered_text" scope="col" style="width:30%"><%= t.admin_planning_update_reservation.products_table.product %></th>
+        <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.stock %></th>
+        <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.price %></th>
+      </tr>
+    </thead>
+    <tbody id="elements_tbody" class="table-tbody">
+      <%% for (var idx=0;idx<products.length;idx++) { %>
+        <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
+          <td class="table-cell centered_text">
+            <% if @product_family.multiple_items? %>
+              <select name="<%%=products[idx].code%>" class="product_selector">
+                <%% for (var idxStock=0; idxStock <= products[idx].stock; idxStock++) { %>
+                   <option value="<%%=idxStock%>"><%%=idxStock%></option>
+                <%% } %>
+              </select>
+            <% else %>
+              <input type="radio" name="<%%=products[idx].code%>" value="<%%=products[idx].code%>" class="product_chooser"></input>
+            <% end %>
+         </td>
+         <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
+         <td class="table-cell centered_text"><%%=products[idx].name%></td>
+         <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
+         <td class="table-cell centered_text"><%%=new Number(products[idx].price).toFixed(2)%></td>
+       </tr>
+      <%% } %>
+     </tbody>
+  </table>
 </script>
 
+<!-- Script select resources -->
+
 <script type="text/tmpl" id="script_resources">
-          <%% for (var idx=0;idx<products.length;idx++) { %>
-            <h2 class="content-heading"><%%=products[idx].code%></h2>
-            <div id="resource_<%%=products[idx].code%>">
-              <%% for (var idx2=0;idx2<products[idx].resources.length;idx2++) { %>
-                <div class="chooser_row">
-                 <input type="checkbox" name="<%%=products[idx].code%>" value="<%%=products[idx].resources[idx2]%>" class="resource"
-                      <%% if (resource == products[idx].resources[idx2]){ %>checked<%%}%>><%%=products[idx].resources[idx2]%></input>
-                </div>
-              <%% } %>
-            </div>
-          <%% } %>
+  <%% for (var idx=0;idx<products.length;idx++) { %>
+    <h2 class="content-heading"><%%=products[idx].code%></h2>
+    <div id="resource_<%%=products[idx].code%>" class="row">
+      <%% for (var idx2=0;idx2<products[idx].resources.length;idx2++) { %>
+        <div class="chooser_row col-lg-4">
+         <input type="checkbox" name="<%%=products[idx].code%>" value="<%%=products[idx].resources[idx2]%>" class="resource"
+              <%% if (resource == products[idx].resources[idx2]){ %>checked<%%}%>><%%=products[idx].resources[idx2]%></input>
+        </div>
+      <%% } %>
+    </div>
+  <%% } %>
 </script>
 
 <!-- ========================================================================================== -->
@@ -646,46 +654,121 @@
   <form name="products_selection">
     <div class="block block-bordered">
       <div class="block-header bg-gray-lighter">
-        <h3 class="block-title">Productos</h3>
+        <h3 class="block-title">Datos</h3>
       </div>
       <div class="block-content">
-          <table id="products_table" class="table table-hover">
-            <thead class="table-header">
-              <tr>
-                <th class="table-header-title centered_text" scope="col" style="width:10%"></th>
-                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.photo %></th>
-                <th class="table-header-title centered_text" scope="col" style="width:30%"><%= t.admin_planning_update_reservation.products_table.product %></th>
-                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.stock %></th>
-                <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_planning_update_reservation.products_table.price %></th>
-              </tr>
-            </thead>
-            <tbody id="elements_tbody" class="table-tbody">
-              <%% for (var idx=0;idx<products.length;idx++) { %>
-                <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
-                  <td class="table-cell centered_text">
-                    <% if @product_family.multiple_items? %>
-                      <select name="<%%=products[idx].code%>" class="product_selector">
-                        <%% for (var idxStock=0; idxStock <= products[idx].stock; idxStock++) { %>
-                           <option value="<%%=idxStock%>"><%%=idxStock%></option>
-                        <%% } %>
-                      </select>
-                    <% else %>
-                      <input type="radio" name="<%%=products[idx].code%>" value="<%%=products[idx].code%>" class="product_chooser"></input>
-                    <% end %>
-                 </td>
-                 <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
-                 <td class="table-cell centered_text"><%%=products[idx].name%></td>
-                 <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
-                 <td class="table-cell centered_text"><%%=new Number(products[idx].price).toFixed(2)%></td>
-               </tr>
-              <%% } %>
-             </tbody>
-          </table>
+        <div class="formrow">
+          <label class="fieldtitle"><%=t.bookings_planning.prereservation.notes%></label>
+          <textarea name="notes" id="notes" class="fieldcontrol" rows="5"><%%=booking.notes%></textarea>
+        </div>
       </div>
     </div>
+    <%% if (!productsEmpty) { %>
+      <div class="block block-bordered">
+        <div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Añadir recursos</h3>
+        </div>
+        <div class="block-content">
+          <%% for (var idx=0;idx<products.length;idx++) { %>
+            <%% if (products[idx].resources.length > 0) { %>
+              <h2 class="content-heading"><%%=products[idx].code%></h2>
+              <div id="resource_<%%=products[idx].code%>" class="row">
+                <%% for (var idx2=0;idx2<products[idx].resources.length;idx2++) { %>
+                  <div class="chooser_row col-lg-4">
+                   <input type="checkbox" name="references\[<%%=products[idx].code%>\]" value="<%%=products[idx].resources[idx2]%>" class="resource"><%%=products[idx].resources[idx2]%></input>
+                  </div>
+                <%% } %>
+              </div>
+            <%% } %>
+          <%% } %>
+        </div>
+      </div>
+    <%% } %>
     <div class="row">
       <div class="col-lg-12">
         <button id="update_reservation_products_button" class="btn btn-minw btn-square btn-primary pull-right" type="button"><i class="fa fa-save push-5-r"></i><%=t.entitymanagement.update%></button>
+      </div>
+    </div>
+  </form>
+
+</script>
+
+<!-- ========================================================================================== -->
+<!--                            Modify prereservation                                           -->
+<!-- ========================================================================================== -->
+
+<script type="text/tmpl" id="script_modify_prereservation">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="block block-bordered">
+        <div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Bloqueo de stock</h3>
+        </div>
+        <div class="block-content">
+          <div class="push-5">
+            <div>
+              <span class="text-primary-dark"><strong>#<%%=prereservation.id%></strong></span>&nbsp;<span><%%=prereservation.title%><span>
+            </div>
+          </div>
+          <% if @product_family.time_to_from %>
+              <div class="push-5">
+                <i class="fa fa-calendar-o"></i>&nbsp;<%%=prereservation.date_from%> <%%=prereservation.time_from%>
+              </div>
+              <div class="push-5">
+                <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=prereservation.date_to%> <%%=prereservation.time_to%>
+              </div>
+          <% else %>
+              <div class="push-5">
+                <i class="fa fa-calendar-o"></i>&nbsp;<%%=prereservation.date_from%>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-calendar-check-o"></i>&nbsp;<%%=prereservation.date_to%>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form name="update_prereservation_from">
+    <div class="block block-bordered">
+      <div class="block-header bg-gray-lighter">
+        <h3 class="block-title">Datos</h3>
+      </div>
+      <div class="block-content">
+        <div class="formrow">
+          <label class="fieldtitle"><%=t.bookings_planning.prereservation.subject%></label>
+          <input type="text" name="title" id="title" class="fieldcontrol" size="15" maxlength="256" value="<%%=prereservation.title%>"/>
+        </div>
+        <div class="formrow">
+          <label class="fieldtitle"><%=t.bookings_planning.prereservation.notes%></label>
+          <textarea name="notes" id="notes" class="fieldcontrol" rows="5"><%%=prereservation.notes%></textarea>
+        </div>
+      </div>
+    </div>
+    <%% if (!productsEmpty) { %>
+      <div class="block block-bordered">
+        <div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Añadir recursos</h3>
+        </div>
+        <div class="block-content">
+          <%% for (var idx=0;idx<products.length;idx++) { %>
+            <%% if (products[idx].resources.length > 0) { %>
+              <h2 class="content-heading"><%%=products[idx].code%></h2>
+              <div id="resource_<%%=products[idx].code%>" class="row">
+                <%% for (var idx2=0;idx2<products[idx].resources.length;idx2++) { %>
+                  <div class="chooser_row col-lg-4">
+                   <input type="checkbox" name="references\[<%%=products[idx].code%>\]" value="<%%=products[idx].resources[idx2]%>" class="resource"><%%=products[idx].resources[idx2]%></input>
+                  </div>
+                <%% } %>
+              </div>
+            <%% } %>
+          <%% } %>
+        </div>
+      </div>
+    <%% } %>
+    <div class="row">
+      <div class="col-lg-12">
+        <button id="update_prereservation_button" class="btn btn-minw btn-square btn-primary pull-right" type="button"><i class="fa fa-save push-5-r"></i><%=t.entitymanagement.update%></button>
       </div>
     </div>
   </form>
