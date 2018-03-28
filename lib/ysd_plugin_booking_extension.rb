@@ -745,7 +745,12 @@ module Huasi
             menu_locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
             if block_name == 'booking_admin_menu'
               begin
-                app.partial(:booking_menu, :locals => menu_locals)
+                product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+                if product_family.code == 'hostel'
+                  app.partial(:booking_menu_hostel, :locals => menu_locals)
+                else
+                  app.partial(:booking_menu, :locals => menu_locals)
+                end
               rescue => error
                 p "error: #{error.inspect}"
               end

@@ -127,7 +127,7 @@ booking_settings:
     min_days_description: Permite indicar el número mínimo de días que se puede alquilar un producto
     hours_cadence: Horas de cadencia (tarifa)
     hours_cadence_description: Número de horas que exceden de las 24 horas para considerar que se ha de aplicar un día más a la hora de calcular la tarifa
-    family: Tipo de producto en alquiler
+    family: Tipo de negocio
     family_description: El sistema está preparado para la gestión de determinados negocios en función del producto que alquilan.
     custom_pickup_return_place: Permitir otros lugares de entrega/devolución
     custom_pickup_return_place_price: Precio otro lugar de entrega/devolución
@@ -208,7 +208,7 @@ booking_notification_settings:
   activities_manager_notification_template_title: Plantillas notificaciones actividades gestor
 booking_business_settings:
   title: Empresa
-  renting_title: Alquiler
+  renting_title: Negocio
   company:
     title: Empresa
     name: Nombre empresa
