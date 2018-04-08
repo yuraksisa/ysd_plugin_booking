@@ -45,6 +45,16 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         });
       }
 
+      // Embed calendar
+      if (entity.calendar_id != null) {
+          $.ajax({url: '/admin/calendar/events/' + entity.calendar_id, dataType: 'text'}).done(function (html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('#calendar_container').html(dom.find('body #page_wrapper'));
+              $('head').append(dom.find('script:not([src])'));
+              $('#calendar').fullCalendar('render');
+          });
+      }
+
       // Embed translations
       <% if @show_translations %>
       $.ajax({url: '/admin/booking/translate/activity/'+ entity.id, dataType: 'text'}).done(function(html) {
@@ -189,34 +199,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
 
     configForm: function(entity) {
       $('#calendar_container').empty();
-      $("#content > div").hide(); // Initially hide all content
-      $("#content_tabs li:first").attr("id","current"); // Activate first tab
-      $("#content > div:first").fadeIn(); // Show first tab content
-      $('#content_tabs a').click(function(e) {
-        e.preventDefault();
-        if ($(this).attr("name")=='calendar_tab') {
-          if ($('#calendar_container').is(':empty')) {
-            $.ajax({url: '/admin/calendar/events/'+entity.calendar_id, dataType: 'text'}).done(function(html) {
-              var dom = $('<html />').prop('innerHTML', html);
-              $('#calendar_container').html(dom.find('body #page_wrapper'));
-              $('head').append(dom.find('script:not([src])'));
-              $('#calendar').fullCalendar('render');
-            });
-          }
-        }
-        if ($(this).attr("name") == 'preview') {
-          ($('#home_frame')[0]).contentWindow.location.reload();
-        }
-        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
-         return;       
-        }
-        else{             
-          $("#content > div").hide(); //Hide all content
-          $("#content_tabs li").attr("id",""); //Reset id's
-          $(this).parent().attr("id","current"); // Activate this
-          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
-        }
-      });
+
 
       $(".content > div").hide(); // Initially hide all content
       $(".content_tabs li:first").attr("id","current"); // Activate first tab
@@ -227,13 +210,13 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           ($('#home_frame')[0]).contentWindow.location.reload();
         }
         if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
-         return;       
+         return;
         }
-        else{             
+        else{
           $(".content > div").hide(); //Hide all content
           $(".content_tabs li").attr("id",""); //Reset id's
           $(this).parent().attr("id","current"); // Activate this
-          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab          
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab
         }
       });
 

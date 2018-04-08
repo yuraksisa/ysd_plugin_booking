@@ -2,7 +2,7 @@
               <div class="entity-field">
                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.free_access_id %></span>
                <span class="entity-fieldvalue">
-                  <%% if (entity.sales_channel_code == null) { %>
+                  <%% if (entity.sales_channel_code == null || entity.sales_channel_code == '') { %>
                   <a href="<%=booking_front_end_prefix%>/reserva/<%%=entity.free_access_id%>" target="_blank">
                      <%=booking_front_end_prefix%>/reserva/<%%=entity.free_access_id%></a>
                   <%% } else { %>

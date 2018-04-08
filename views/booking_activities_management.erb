@@ -76,26 +76,7 @@
 </script>
 
 <!-- Renders one element in the elements list view -->
-        
-<!--script type="text/tmpl" id="elements_list_template">
-  <div class="entity-block-container">
-    <div class="entity-block-container-inside all-space">
-      <div style="max-height:108px">
-        <%% if (entity && entity.photo_url_small != null && entity.photo_url_small.length > 0)  { %> 
-        <img src="<%%= entity.photo_url_small %>" class="box-shadow element-row-selector" style="display:block; margin: 0 auto" rel="<%%= index %>"/>
-        <%% } else { %>
-        <div class="box-shadow element-row-selector" style="max-width:144px; max-height: 108px" rel="<%%= index %>">
-          <span class="centered_text" style="font-size:5em; display: block" data-icon="&#xe072;"></span> 
-        </div> 
-        <%% } %>
-      </div>
-      <div>
-        <div class="smaller_text less_contrast_text centered_text top-margin"><%%= entity.name %> 
-        </div>
-      </div>
-    </div>
-  </div>
-</script-->
+
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row" id="element_row_<%%=index%>">
       <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="margin-right: 20px">
@@ -135,346 +116,402 @@
 <script type="text/tmpl" id="element_template_form">
               
     <%% if (entity) { %>
+
     <div class="row">
-      <div class="col-lg-12">
-         <div class="block block-bordered">
+        <div class="col-lg-5 col-lg-offset-1">
+            <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                <div class="block-content block-content-full">
+                    <form name="element" class="form-horizontal" method="POST">
+                        <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                        <div class="form-group">
+                          <div class="col-xs-12">
+                              <label class="css-input switch switch-sm switch-primary">
+                                <input type="checkbox" class="auto-submit-change-control" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/><span></span>
+                              </label>
+                          </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Activo</div>
+            </a>
+        </div>
+        <div class="col-lg-5">
+            <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                <div class="block-content block-content-full">
+                    <form name="element" class="form-horizontal" method="POST">
+                        <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                        <div class="form-group">
+                          <div class="col-xs-12">
+                              <label class="css-input switch switch-sm switch-primary">
+                                <input type="checkbox" name="web_public" class="auto-submit-change-control" value="true" id="web_public" <%% if (entity && entity.web_public) { %>checked="checked"<%%}%>/><span></span>
+                              </label>
+                          </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Público</div>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Datos básicos</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="element" class="form-horizontal" method="POST">
+                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                  <div class="form-group">
+                     <label class="col-md-3 control-label"><%= t.booking_category_management.form.code.label %></label>
+                     <div class="col-md-9">
+                     <span class="form-control"><%%=entity.code%></span>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-md-3 control-label"><%= t.booking_category_management.form.name.label %></label>
+                    <div class="col-md-9">
+                        <input type="text" maxlength="80" id="name" name="name" class="form-control" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-md-3 control-label"><%= t.booking_category_management.form.short_description.label %></label>
+                    <div class="col-md-9">
+                        <textarea rows="5" cols="50" id="short_description" name="short_description" class="form-control"><%% if (entity) {%><%%=entity.short_description %><%% } %></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                    </div>
+                  </div>
+              </form>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Descripción</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="element" class="form-horizontal" method="POST">
+                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                  <div class="form-group">
+                     <label class="col-md-3 control-label"><%= t.booking_category_management.form.description.label %></label>
+                     <div class="col-md-9">
+                       <textarea rows="5" cols="50" id="description" name="description" class="form-control texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                    </div>
+                  </div>
+              </form>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Características</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="element" method="POST">
+                <div class="container_12">
+                  <div class="grid_6">
+                    <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                    <div class="formrow" <%% if (entity.mode=='full'){%>style="display:none"<%%}%>>
+                      <label class="fieldtitle"><%= t.booking_category_management.form.capacity.label %></label>
+                      <input type="text" maxlength="80" id="capacity" name="capacity" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.capacity%>" <%% } %>/>
+                      <p class="smaller_text less_contrast_text">Indica el número máximo de plazas admitidas en la actividad o evento</p>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle">Duración días</label>
+                      <input type="text" maxlength="2" id="duration_days" name="duration_days" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_days%>" <%% } %>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle">Duración horas (hh:mm)</label>
+                      <input type="text" maxlength="5" id="duration_hours" name="duration_hours" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_hours%>" <%% } %>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle">Color agenda</label>
+                      <input type="color" name="schedule_color" value="<%%=entity.schedule_color%>"/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.notify_customer_if_empty.label%></label>
+                      <input type="checkbox" name="notify_customer_if_empty" value="true" id="notify_customer_if_empty" <%% if (entity && entity.notify_customer_if_empty) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_activity_management.form.custom_pickup_places%></label>
+                      <input type="checkbox" name="custom_pickup_places" value="true" id="custom_pickup_places" <%% if (entity && entity.custom_pickup_places) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div id="pickup_places_container" class="formrow"  <%% if (!entity || !entity.custom_pickup_places) { %> style="display:none"<%%}%>>
+                      <label class="fieldtitle"><%= t.booking_activity_management.form.pickup_places %></label>
+                      <select name="pickup_return_place_definition_id" class="fieldcontrol" id="pickup_return_place_definition"></select>
+                    </div>
+                  </div>
+                  <div class="grid_6">
+                    <div class="left-margin">
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_address.label%></label>
+                      <input type="checkbox" name="request_customer_address" value="true" id="request_customer_address" <%% if (entity && entity.request_customer_address) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_information.label%></label>
+                      <input type="checkbox" name="request_customer_information" value="true" id="request_customer_information" <%% if (entity && entity.request_customer_information) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_document_id.label%></label>
+                      <input type="checkbox" name="request_customer_document_id" value="true" id="request_customer_document_id" <%% if (entity && entity.request_customer_document_id) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_phone.label%></label>
+                      <input type="checkbox" name="request_customer_phone" value="true" id="request_customer_phone" <%% if (entity && entity.request_customer_phone) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_email.label%></label>
+                      <input type="checkbox" name="request_customer_email" value="true" id="request_customer_email" <%% if (entity && entity.request_customer_email) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_height.label%></label>
+                      <input type="checkbox" name="request_customer_height" value="true" id="request_customer_height" <%% if (entity && entity.request_customer_height) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_weight.label%></label>
+                      <input type="checkbox" name="request_customer_weight" value="true" id="request_customer_weight" <%% if (entity && entity.request_customer_weight) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_allergies_intolerances.label%></label>
+                      <input type="checkbox" name="request_customer_allergies_intolerances" value="true" id="request_customer_allergies_intolerances" <%% if (entity && entity.request_customer_allergies_intolerances) { %>checked="checked"<%%}%>/>
+                    </div>
+                    <div class="formrow">
+                      <label class="fieldtitle"><%= t.booking_category_management.form.uses_planning_resources.label%></label>
+                      <input type="checkbox" name="uses_planning_resources" value="true" id="uses_planning_resources" <%% if (entity && entity.uses_planning_resources) { %>checked="checked"<%%}%>/>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="container_12">
+                  <div class="grid_12">
+                    <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                      <div class="navigation-bar-crud-buttons">
+                        <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Portada</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="element" method="POST">
+                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                  <div class="formrow">
+                    <label class="fieldtitle">Precio desde</label>
+                    <input type="text" maxlength="12" id="from_price" name="from_price" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.from_price).toFixed(2)%>" <%% } %>/>
+                  </div>
+                  <div class="formrow">
+                    <label class="fieldtitle">Precio desde (oferta)</label>
+                    <input type="text" maxlength="12" id="from_price_offer" name="from_price_offer" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.from_price_offer).toFixed(2)%>" <%% } %>/>
+                  </div>
+                  <div class="formrow">
+                    <label class="fieldtitle"><%= t.booking_activity_management.form.alias%></label>
+                    <input type="text" class="fieldcontrol" name="alias" id="alias" <%% if (entity){%>value="<%%=entity.alias%>" <%%} else { %>value=""<%%}%>/>
+                    <p class="smaller_text less_contrast_text">Esta opción permite establecer una url alternativa para visualizar el producto en el navegador</p>
+                  </div>
+                  <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                    <div class="navigation-bar-crud-buttons">
+                      <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                    </div>
+                  </div>
+              </form>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Turnos</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <%% if (entity.occurence == 'cyclic') {%>
+              <div id="turns_tab" class="top-margin bottom-margin">
+                <form name="element" method="POST">
+                <div class="container_12">
+                  <div class="grid_6">
+                    <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                    <%= partial :booking_activities_cyclic_turns_management %>
+                    <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                      <div class="navigation-bar-crud-buttons">
+                        <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                </form>
+              </div>
+              <%% } %>
+              <%% if (entity.occurence == 'multiple_dates') { %>
+              <div id="dates_tab" class="top-margin bottom-margin">
+                <%= partial :booking_activities_multiple_dates_management %>
+              </div>
+              <%% } %>
+              <%% if (entity.occurence == 'one_time') {%>
+              <div id="date_tab" class="top-margin bottom-margin">
+                <form name="element" method="POST">
+                <div class="container_12">
+                  <div class="grid_6">
+                    <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                    <%= partial :booking_activities_one_time_management %>
+                    <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                      <div class="navigation-bar-crud-buttons">
+                        <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                </form>
+              </div>
+              <%% } %>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Imágenes</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+                 <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
+                                                   :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
+                                                   :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
+                                                   :new_element_form_above => new_element_form_above,
+                                                   :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
+                                                   :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
+
+                  <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
+                                    :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
+                                    :edit_element_form_ingroup => edit_element_form_ingroup,
+                                    :new_element_form => new_element_form,
+                                    :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
+                                    :new_element_form_ingroup => new_element_form_ingroup}) %>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Tarifas</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <%% if (entity.price_definition_1_id == null &&
+                      entity.price_definition_2_id == null &&
+                      entity.price_definition_3_id == null) { %>
+                <div class="container_12">
+                  <div class="grid_6">
+                    <form name="element" method="POST">
+                      <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                      <div id="category_price" class="element-form-detail">
+                      <div class="formrow">
+                        <label class="fieldtitle">Nombre tarifa</label>
+                        <input type="text" maxlength="80" id="price_1_description" name="price_1_description" class="fieldcontrol"/>
+                      </div>
+                        <%= partial(:price_definition_creation, :locals => {suffix: '_1'})%>
+                      </div>
+                      <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                        <div class="navigation-bar-crud-buttons">
+                           <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_rates.label%>"/>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              <%% } else { %>
+                   <div class="container_12">
+                      <div class="grid_12">
+                        <%= partial :booking_activity_price_management %>
+                      </div>
+                   </div>
+              <%% } %>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Calendario</h3>
+            </div>
             <div class="block-content">
-             <div class="row">
-                <div class="col-lg-2">
-                <div class="push">
-                    <img style="height:100px; width: auto" src="<%%= entity.photo_url_medium %>" alt="">
+              <%% if (entity.calendar_id == null) { %>
+              <div class="container_12">
+                <div class="grid_6">
+                  <form name="element" method="POST">
+                      <%=t.booking_category_management.form.create_calendar.description%>
+                      <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                      <input type="hidden" name="create_calendar" value="true"/>
+                      <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                        <div class="navigation-bar-crud-buttons">
+                           <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_calendar.label%>"/>
+                        </div>
+                      </div>
+                  </form>
                 </div>
-                </div>
-                <div class="col-lg-10">
-                <div class="push-10-t">
-                    <h2 class="h5 font-w600 push-5">
-                        <%%=entity.name%>
-                    </h2>
-                    <h3 class="h6 text-muted"><%%=entity.code%></h3>
-                </div>
-                </div>
+              </div>
+              <%% } %>
+              <div id="calendar_container">
               </div>
             </div>
          </div>
-      </div>
-    </div>
-    <div class="container_12">
-      <ul id="content_tabs" class="no-border no-background"class="no-border no-background">  
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="basic_data_tab" href="#basic_data_tab">Datos básicos</a>
-          </li> 
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="description_tab" href="#description_tab">Descripción</a>
-          </li>
-          <li class="no-border no-background top-space" style="border:none; background:none">
-              <a name="characteristics_tab" href="#characteristics_tab">Características</a>
-          </li>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="detail_tab" href="#detail_tab">Portada</a>
-          </li>          
-          <%% if (entity.occurence == 'cyclic') { %>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="turns_tab" href="#turns_tab">Turnos</a>
-          </li>                      
-          <%% } %>
-          <%% if (entity.occurence == 'multiple_dates') { %>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="dates_tab" href="#dates_tab">Fechas</a>
-          </li>                      
-          <%% } %>
-          <%% if (entity.occurence == 'one_time') { %>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="date_tab" href="#date_tab">Fecha</a>
-          </li>                      
-          <%% } %>
-          <li class="no-border no-background top-space" style="border:none;background:none">
-              <a name="photos_tab" href="#photos_tab">Fotos</a>
-          </li>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-              <a name="prices_tab" href="#prices_tab">Tarifas</a>
-          </li>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-              <a name="calendar_tab" href="#calendar_tab">Calendario</a>
-          </li>
-          <% if @show_translations %>
-          <li class="no-border no-background top-space" style="border:none; backgrond:none">
-              <a name="translation_tab" href="#translation_tab">Traducciones</a>
-          </li>
-          <% end %>
-      </ul>
-     <div id="content">
-        <div id="basic_data_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-          <div class="grid_6">        
-          <form name="element" method="POST">
-              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_category_management.form.name.label %></label>
-                <input type="text" maxlength="80" id="name" name="name" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
-              </div>  
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_category_management.form.short_description.label %></label>
-                <textarea rows="5" cols="50" id="short_description" name="short_description" class="fieldcontrol"><%% if (entity) {%><%%=entity.short_description %><%% } %></textarea>
-              </div>                    
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_category_management.form.active.label%></label>
-                <input type="checkbox" name="active" value="true" id="active" <%% if (entity && entity.active) { %>checked="checked"<%%}%>/>
-              </div> 
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_category_management.form.web_public.label%></label>
-                <input type="checkbox" name="web_public" value="true" id="web_public" <%% if (entity && entity.web_public) { %>checked="checked"<%%}%>/>
-              </div>
-              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                <div class="navigation-bar-crud-buttons">
-                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                </div>
-              </div>                                          
-          </form>
-          </div>
-          </div>
-        </div>
-        <div id="description_tab" class="top-margin bottom-margin">
-          <form name="element" method="POST">
-              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-              <div class="formrow">
-                 <textarea rows="5" cols="50" id="description" name="description" class="fieldcontrol texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
-              </div>
-              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                <div class="navigation-bar-crud-buttons">
-                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                </div>
-              </div>                
-          </form>
-        </div>
-        <div id="characteristics_tab" class="top-margin bottom-margin">
-          <form name="element" method="POST">
-            <div class="container_12">
-              <div class="grid_6">
-                <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                <div class="formrow" <%% if (entity.mode=='full'){%>style="display:none"<%%}%>>
-                  <label class="fieldtitle"><%= t.booking_category_management.form.capacity.label %></label>
-                  <input type="text" maxlength="80" id="capacity" name="capacity" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.capacity%>" <%% } %>/>
-                  <p class="smaller_text less_contrast_text">Indica el número máximo de plazas admitidas en la actividad o evento</p>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle">Duración días</label>
-                  <input type="text" maxlength="2" id="duration_days" name="duration_days" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_days%>" <%% } %>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle">Duración horas (hh:mm)</label>
-                  <input type="text" maxlength="5" id="duration_hours" name="duration_hours" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_hours%>" <%% } %>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle">Color agenda</label>
-                  <input type="color" name="schedule_color" value="<%%=entity.schedule_color%>"/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.notify_customer_if_empty.label%></label>
-                  <input type="checkbox" name="notify_customer_if_empty" value="true" id="notify_customer_if_empty" <%% if (entity && entity.notify_customer_if_empty) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_activity_management.form.custom_pickup_places%></label>
-                  <input type="checkbox" name="custom_pickup_places" value="true" id="custom_pickup_places" <%% if (entity && entity.custom_pickup_places) { %>checked="checked"<%%}%>/>
-                </div>
-                <div id="pickup_places_container" class="formrow"  <%% if (!entity || !entity.custom_pickup_places) { %> style="display:none"<%%}%>>
-                  <label class="fieldtitle"><%= t.booking_activity_management.form.pickup_places %></label>
-                  <select name="pickup_return_place_definition_id" class="fieldcontrol" id="pickup_return_place_definition"></select>
-                </div>
-              </div>
-              <div class="grid_6">
-                <div class="left-margin">
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_address.label%></label>
-                  <input type="checkbox" name="request_customer_address" value="true" id="request_customer_address" <%% if (entity && entity.request_customer_address) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_information.label%></label>
-                  <input type="checkbox" name="request_customer_information" value="true" id="request_customer_information" <%% if (entity && entity.request_customer_information) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_document_id.label%></label>
-                  <input type="checkbox" name="request_customer_document_id" value="true" id="request_customer_document_id" <%% if (entity && entity.request_customer_document_id) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_phone.label%></label>
-                  <input type="checkbox" name="request_customer_phone" value="true" id="request_customer_phone" <%% if (entity && entity.request_customer_phone) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_email.label%></label>
-                  <input type="checkbox" name="request_customer_email" value="true" id="request_customer_email" <%% if (entity && entity.request_customer_email) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_height.label%></label>
-                  <input type="checkbox" name="request_customer_height" value="true" id="request_customer_height" <%% if (entity && entity.request_customer_height) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_weight.label%></label>
-                  <input type="checkbox" name="request_customer_weight" value="true" id="request_customer_weight" <%% if (entity && entity.request_customer_weight) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.request_customer_allergies_intolerances.label%></label>
-                  <input type="checkbox" name="request_customer_allergies_intolerances" value="true" id="request_customer_allergies_intolerances" <%% if (entity && entity.request_customer_allergies_intolerances) { %>checked="checked"<%%}%>/>
-                </div>
-                <div class="formrow">
-                  <label class="fieldtitle"><%= t.booking_category_management.form.uses_planning_resources.label%></label>
-                  <input type="checkbox" name="uses_planning_resources" value="true" id="uses_planning_resources" <%% if (entity && entity.uses_planning_resources) { %>checked="checked"<%%}%>/>
-                </div>
-                </div>
-              </div>
-            </div>
-            <div class="container_12">
-              <div class="grid_12">
-                <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                  <div class="navigation-bar-crud-buttons">
-                    <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div id="detail_tab" class="top-margin bottom-margin">
-          <div class="container_12">
-          <div class="grid_6">        
-          <form name="element" method="POST">
-              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-              <div class="formrow">
-                <label class="fieldtitle">Precio desde</label>
-                <input type="text" maxlength="12" id="from_price" name="from_price" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.from_price).toFixed(2)%>" <%% } %>/>
-              </div>
-              <div class="formrow">
-                <label class="fieldtitle">Precio desde (oferta)</label>
-                <input type="text" maxlength="12" id="from_price_offer" name="from_price_offer" class="fieldcontrol" <%% if (entity) { %> value="<%%=new Number(entity.from_price_offer).toFixed(2)%>" <%% } %>/>
-              </div>
-              <div class="formrow">
-                <label class="fieldtitle"><%= t.booking_activity_management.form.alias%></label>
-                <input type="text" class="fieldcontrol" name="alias" id="alias" <%% if (entity){%>value="<%%=entity.alias%>" <%%} else { %>value=""<%%}%>/>
-                <p class="smaller_text less_contrast_text">Esta opción permite establecer una url alternativa para visualizar el producto en el navegador</p>                
-              </div>                             
-              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                <div class="navigation-bar-crud-buttons">
-                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                </div>
-              </div>                                          
-          </form>
-          </div>
-          </div>
-        </div>        
-        <%% if (entity.occurence == 'cyclic') {%>
-        <div id="turns_tab" class="top-margin bottom-margin">
-          <form name="element" method="POST">
-          <div class="container_12">
-            <div class="grid_6">
-              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-              <%= partial :booking_activities_cyclic_turns_management %>
-              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                <div class="navigation-bar-crud-buttons">
-                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                </div>
-              </div>                
+       </div>
+     </div>
 
+     <% if @show_translations %>
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Traducciones</h3>
             </div>
-          </div>
-          </form>
-        </div>        
-        <%% } %>
-        <%% if (entity.occurence == 'multiple_dates') { %>
-        <div id="dates_tab" class="top-margin bottom-margin">
-          <%= partial :booking_activities_multiple_dates_management %>
-        </div> 
-        <%% } %>
-        <%% if (entity.occurence == 'one_time') {%>
-        <div id="date_tab" class="top-margin bottom-margin">
-          <form name="element" method="POST">
-          <div class="container_12">
-            <div class="grid_6">
-              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-              <%= partial :booking_activities_one_time_management %>
-              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                <div class="navigation-bar-crud-buttons">
-                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                </div>
-              </div>                
-
-            </div>
-          </div>
-          </form>
-        </div> 
-        <%% } %>
-        <div id="photos_tab" class="top-margin bottom-margin">
-              <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
-                                            :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
-                                            :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
-                                            :new_element_form_above => new_element_form_above,
-                                            :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
-                                            :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
-
-              <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
-                                            :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
-                                            :edit_element_form_ingroup => edit_element_form_ingroup,
-                                            :new_element_form => new_element_form,
-                                            :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
-                                            :new_element_form_ingroup => new_element_form_ingroup}) %>        
-        </div>
-        <div id="prices_tab" class="top-margin bottom-margin">
-          <%% if (entity.price_definition_1_id == null &&
-                  entity.price_definition_2_id == null &&
-                  entity.price_definition_3_id == null) { %>
-            <div class="container_12">
-              <div class="grid_6">        
-                <form name="element" method="POST">    
-                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                  <div id="category_price" class="element-form-detail">
-                  <div class="formrow">
-                    <label class="fieldtitle">Nombre tarifa</label>
-                    <input type="text" maxlength="80" id="price_1_description" name="price_1_description" class="fieldcontrol"/>
-                  </div>
-                    <%= partial(:price_definition_creation, :locals => {suffix: '_1'})%>
-                  </div>
-                  <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                    <div class="navigation-bar-crud-buttons">
-                       <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_rates.label%>"/>
-                    </div>
-                  </div>                       
-                </form>
+            <div class="block-content block-content-narrow">
+              <div id="translation_container">
               </div>
             </div>
-          <%% } else { %>
-               <div class="container_12">
-                  <div class="grid_12">
-                    <%= partial :booking_activity_price_management %>
-                  </div>
-               </div>
-          <%% } %>
-        </div>
-        <div id="calendar_tab" class="top-margin bottom-margin">
-          <%% if (entity.calendar_id == null) { %>
-          <div class="container_12">
-            <div class="grid_6">        
-              <form name="element" method="POST">  
-                  <%=t.booking_category_management.form.create_calendar.description%>  
-                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                  <input type="hidden" name="create_calendar" value="true"/>
-                  <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                    <div class="navigation-bar-crud-buttons">
-                       <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_calendar.label%>"/>
-                    </div>
-                  </div>                       
-              </form>
-            </div>
-          </div>
-          <%% } %> 
-          <div id="calendar_container">
-          </div>
-        </div>
-        <% if @show_translations %>
-        <div id="translation_tab">
-          <div id="translation_container">
-          </div>
-        </div>
-        <% end %>
-      </div>      
-    </div>   
+         </div>
+       </div>
+     </div>
+     <% end %>
+
     <%% } else { %>
 
         <div id="basic_data_tab" class="top-margin bottom-margin">
