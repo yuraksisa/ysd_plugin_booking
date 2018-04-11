@@ -240,8 +240,8 @@
             <div class="block-content block-content-narrow">
               <form name="variables" action="/api/variables" method="PUT"
                     data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-                <%= render_variable_checkbox_boolean('order.request_reservations', t.booking_settings.form.activities_request_reservation) %>
-                <p class="less_contrast_text "><%=t.booking_settings.form.activities_request_reservation_description%></p>
+                <%#= render_variable_checkbox_boolean('order.request_reservations', t.booking_settings.form.activities_request_reservation) %>
+                <!--p class="less_contrast_text "><%=t.booking_settings.form.activities_request_reservation_description%></p-->
                 <%= render_variable_input_text('order.item_hold_time', t.booking_settings.form.activities_item_hold_time, 2, 2) %>
                 <p class="less_contrast_text"><%=t.booking_settings.form.activities_item_hold_time_description%></p>
                 <div class="form-group">

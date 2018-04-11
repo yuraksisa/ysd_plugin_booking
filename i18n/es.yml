@@ -1380,6 +1380,18 @@ booking_activity_management:
       label: Código
       validation:
         required: El nombre de la actividad es obligatorio
+    description:
+      label: Descripción
+    detailed_info_what_includes:
+      label: ¿Qué incluye?
+    detailed_info_timetable_duration:
+      label: Duración
+    detailed_info_ages:
+      label: Edades
+    detailed_info_recommendations:
+      label: Recomendaciones
+    detailed_info_meeting_point:
+      label: Punto de encuentro
     multiple_prices_title: Múltiples tarifas basadas en
     none: Sólo 1 tarifa
     duration: Duración
@@ -1438,6 +1450,18 @@ booking_activity_management:
     active_filter:
       only: Sólo activos
       all: Todos
+    payment_title: Cobro online
+    payment_setup:
+      title: Configuración cobro online
+      default: Utiliza la configuración por defecto
+      custom: Configuración personalizada
+    custom_payment_title: Configuración cobro online
+    custom_payment_allow_deposit_payment: Permite el cobro del depósito
+    custom_payment_deposit: "% paga y señal"
+    custom_payment_allow_total_payment: Permite el cobro del total
+    allow_request_reservation:
+      title: Solicitud de reserva
+      label: Permitir solicitud (sin realizar pago)
 activity:
   reservation: Reservar
   mornings: Mañanas

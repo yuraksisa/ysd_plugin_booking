@@ -1,245 +1,184 @@
-                    <ul id="prices_tabs" class="content_tabs no-border no-background smaller_text">  
-                      <li class="no-border no-background top-space" style="border:none;background:none">
-                        <a name="price_tab" href="#price_tab">Detalle de la tarifa</a>
-                      </li>                       
-                      <%% if (entity.price_definition_1_id != null) { %>
-                      <li class="no-border no-background top-space" style="border:none;background:none">
-                        <a name="price_definition_1_tab" href="#price_definition_1_tab">Tarifa <%%=entity.price_1_description%></a>
-                      </li> 
-                      <%% } %>
-                      <%% if (entity.price_definition_2_id != null) { %>
-                      <li class="no-border no-background top-space" style="border:none;background:none">
-                        <a name="price_definition_2_tab" href="#price_definition_2_tab">Tarifa <%%=entity.price_2_description%></a>
-                      </li> 
-                      <%% } %>
-                      <%% if (entity.price_definition_3_id != null) { %>
-                      <li class="no-border no-background top-space" style="border:none;background:none">
-                        <a name="price_definition_3_tab" href="#price_definition_3_tab">Tarifa <%%=entity.price_3_description%></a>
-                      </li> 
-                      <%% } %>
-                      <%% if (entity.price_definition_1_id == null ||
-                              entity.price_definition_2_id == null ||
-                              entity.price_definition_3_id == null) { %>
-                        <li class="no-border no-background top-space" style="border:none;background:none">
-                          <a name="new_price_definition_tab" href="#new_price_definition_tab">Nueva tarifa</a>
-                        </li> 
-                      <%% } %>
-                    </ul>
-
-                    <div id="prices_content" class="content">
-
-                      <div id="price_tab" class="top-margin bottom-margin">
-                        <div class="container_12">
-                          <div class="grid_6">
-                            <form name="element" method="POST">    
-                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                              <div class="formrow">
-                                <label class="fieldtitle"><%=t.booking_activity_management.form.multiple_prices_title%></label>
-                                <select name="type_of_multiple_prices">
-                                  <option value="none" <%% if (entity && entity.type_of_multiple_prices=="none") { %> selected="selected" <%% } %>><%=t.booking_activity_management.form.none%></option>
-                                  <option value="duration" <%% if (entity && entity.type_of_multiple_prices=="duration") { %> selected="selected" <%% } %>><%=t.booking_activity_management.form.duration%></option>
-                                  <option value="ages" <%% if (entity && entity.type_of_multiple_prices=="ages") { %> selected="selected" <%% } %>><%=t.booking_activity_management.form.ages%></option>
-                                  <option value="accomodation" <%% if (entity && entity.type_of_multiple_prices=="accomodation") { %> selected="selected" <%% } %>><%=t.booking_activity_management.form.accomodation%></option>
-                                </select> 
-                              </div>
-                              <div class="formrow">
-                                <label class="fieldtitle"><%=t.booking_activity_management.form.capacities_on_multiple_prices%></label>
-                                <input type="checkbox" name="capacities_on_multiple_prices" value="true" id="capacities_on_multiple_prices" <%% if (entity && entity.capacities_on_multiple_prices) { %>checked="checked"<%%}%>/>                            
-                              </div>                          
-                              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                                <div class="navigation-bar-crud-buttons">
-                                   <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                                </div>
-                              </div>      
-                            </form> 
-                          </div>
-                        </div>
-                      </div>           
-
-                      <%% if (entity.price_definition_1_id != null) { %>
-                      <div id="price_definition_1_tab" class="top-margin bottom-margin">
-                        <div class="container_12">
-                          <div class="grid_12">
-                            <div id="prices_1_container">
+                      <div class="row">
+                        <div class="col-sm-12 col-md-10 col-md-offset-1">
+                          <div class="block ">
+                            <div class="block-header bg-gray-lighter">
+                              <h3 class="block-title">Tarifas</h3>
                             </div>
-                          </div>
-                        </div>                        
-                        <div class="container_12">
-                          <div class="grid_6">
-                            <form name="element" method="POST">    
-                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.price_name%></label>
-                                  <input type="text" maxlength="80" id="price_1_description" name="price_1_description" class="fieldcontrol" value="<%%=entity.price_1_description%>"/>
-                              </div>
-                              <div class="formrow">
-                                <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
-                                <input type="checkbox" name="price_1_affects_capacity" value="true" id="price_1_affects_capacity" <%% if (entity && entity.price_1_affects_capacity) { %>checked="checked"<%%}%>/>                            
-                              </div>
-                              <div class="formrow">
-                                <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
-                                <input type="text" maxlength="80" id="price_1_step_tickets" name="price_1_step_tickets" class="fieldcontrol" value="<%%=entity.price_1_step_tickets%>"/>
-                              </div>
-                              <%% if (entity.capacities_on_multiple_prices) { %>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
-                                  <input type="text" maxlength="80" id="price_1_total_capacity" name="price_1_total_capacity" class="fieldcontrol" value="<%%=entity.price_1_total_capacity%>"/>
-                              </div>
-                              <%% } %>    
-                              <%% if (entity.type_of_multiple_prices == 'duration') { %>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.duration_days%></label>
-                                  <input type="text" maxlength="80" id="price_1_description" name="price_1_duration_days" class="fieldcontrol" value="<%%=entity.price_1_duration_days%>"/>
-                              </div>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.duration_hours%></label>
-                                  <input type="text" maxlength="80" id="price_1_description" name="price_1_duration_hours" class="fieldcontrol" value="<%%=entity.price_1_duration_hours%>"/>
-                              </div>                
-                              <%% } %>                    
-                              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                                <div class="navigation-bar-crud-buttons">
-                                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                                </div>
-                              </div>                          
-                            </form>                                                          
-                          </div>
-                        </div>
-                      </div>
-                      <%% } %>
-                      <%% if (entity.price_definition_2_id != null) { %>
-                      <div id="price_definition_2_tab" class="top-margin bottom-margin">
-                        <div class="container_12">
-                          <div class="grid_12">
-                            <div id="prices_2_container">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="container_12">
-                          <div class="grid_6">
-                            <form name="element" method="POST">    
-                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.price_name%></label>
-                                  <input type="text" maxlength="80" id="price_2_description" name="price_2_description" class="fieldcontrol" value="<%%=entity.price_2_description%>"/>
-                              </div>
-                              <div class="formrow">
-                                <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
-                                <input type="checkbox" name="price_2_affects_capacity" value="true" id="price_2_affects_capacity" <%% if (entity && entity.price_2_affects_capacity) { %>checked="checked"<%%}%>/>                            
-                              </div>
-                              <div class="formrow">
-                                <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
-                                <input type="text" maxlength="80" id="price_2_step_tickets" name="price_2_step_tickets" class="fieldcontrol" value="<%%=entity.price_2_step_tickets%>"/>
-                              </div>
-                              <%% if (entity.capacities_on_multiple_prices) { %>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
-                                  <input type="text" maxlength="80" id="price_2_description" name="price_2_total_capacity" class="fieldcontrol" value="<%%=entity.price_2_total_capacity%>"/>
-                              </div>
-                              <%% } %>    
-                              <%% if (entity.type_of_multiple_prices == 'duration') { %>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.duration_days%></label>
-                                  <input type="text" maxlength="80" id="price_2_description" name="price_2_duration_days" class="fieldcontrol" value="<%%=entity.price_2_duration_days%>"/>
-                              </div>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.duration_hours%></label>
-                                  <input type="text" maxlength="80" id="price_2_description" name="price_2_duration_hours" class="fieldcontrol" value="<%%=entity.price_2_duration_hours%>"/>
-                              </div>                
-                              <%% } %>                                
-                              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                                <div class="navigation-bar-crud-buttons">
-                                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                                </div>
-                              </div>                          
-                            </form>                                                          
-                          </div>
-                        </div>                        
-                      </div>
-                      <%% } %>
-                      <%% if (entity.price_definition_3_id != null) { %>
-                      <div id="price_definition_3_tab" class="top-margin bottom-margin">
-                        <div class="container_12">
-                          <div class="grid_6">
-                            <form name="element" method="POST">    
-                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.price_name%></label>
-                                  <input type="text" maxlength="80" id="price_3_description" name="price_3_description" class="fieldcontrol" value="<%%=entity.price_3_description%>"/>
-                              </div>
-                              <div class="formrow">
-                                <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
-                                <input type="checkbox" name="price_3_affects_capacity" value="true" id="price_3_affects_capacity" <%% if (entity && entity.price_3_affects_capacity) { %>checked="checked"<%%}%>/>                            
-                              </div>
-                              <div class="formrow">
-                                <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
-                                <input type="text" maxlength="80" id="price_3_step_tickets" name="price_3_step_tickets" class="fieldcontrol" value="<%%=entity.price_3_step_tickets%>"/>
-                              </div>
-                              <%% if (entity.capacities_on_multiple_prices) { %>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
-                                  <input type="text" maxlength="80" id="price_3_description" name="price_3_total_capacity" class="fieldcontrol" value="<%%=entity.price_3_total_capacity%>"/>
-                              </div>
-                              <%% } %>    
-                              <%% if (entity.type_of_multiple_prices == 'duration') { %>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.duration_days%></label>
-                                  <input type="text" maxlength="80" id="price_3_description" name="price_3_duration_days" class="fieldcontrol" value="<%%=entity.price_3_duration_days%>"/>
-                              </div>
-                              <div class="formrow">
-                                  <label class="fieldtitle"><%=t.booking_activity_management.form.duration_hours%></label>
-                                  <input type="text" maxlength="80" id="price_3_description" name="price_3_duration_hours" class="fieldcontrol" value="<%%=entity.price_3_duration_hours%>"/>
-                              </div>                
-                              <%% } %>                                
-                              <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                                <div class="navigation-bar-crud-buttons">
-                                  <input type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                                </div>
-                              </div>                          
-                            </form>                                                          
-                          </div>
-                        </div>                        
-
-                        <div class="container_12">
-                          <div class="grid_12">
-                            <div id="prices_3_container">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <%% } %> 
-                      <%% if (entity.price_definition_1_id == null ||
-                              entity.price_definition_2_id == null ||
-                              entity.price_definition_3_id == null) { %>
-                      <div id="new_price_definition_tab" class="top-margin bottom-margin">
-                        <div class="container_12">
-                          <div class="grid_6">
-                            <%% var suffix = entity.price_definition_1_id == null ? '_1' :
-                                            (entity.price_definition_2_id == null ? '_2' : '_3'); %>
-                            <form name="element" method="POST">    
-                              <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                              <div id="category_price" class="element-form-detail">
+                            <div class="block-content block-content-narrow">
+                              <h4 class="content-heading">Características de las tarifas</h4>
+                              <form name="element" class="form-horizontal" method="POST">
+                                <input type="hidden" name="id" value="<%%=entity.id%>"/>
                                 <div class="formrow">
-                                  <label class="fieldtitle">Nombre tarifa</label>
-                                  <input type="text" maxlength="80" id="price_<%%=suffix%>_description" name="price_<%%=suffix%>_description" class="fieldcontrol"/>
+                                  <label class="fieldtitle"><%=t.booking_activity_management.form.multiple_prices_title%></label>
+                                  <select name="type_of_multiple_prices">
+                                    <option value="none" <%% if (entity && entity.type_of_multiple_prices=="none") { %> selected="selected" <%% } %>><%=t.booking_activity_management.form.none%></option>
+                                    <option value="duration" <%% if (entity && entity.type_of_multiple_prices=="duration") { %> selected="selected" <%% } %>><%=t.booking_activity_management.form.duration%></option>
+                                    <option value="ages" <%% if (entity && entity.type_of_multiple_prices=="ages") { %> selected="selected" <%% } %>><%=t.booking_activity_management.form.ages%></option>
+                                    <option value="accomodation" <%% if (entity && entity.type_of_multiple_prices=="accomodation") { %> selected="selected" <%% } %>><%=t.booking_activity_management.form.accomodation%></option>
+                                  </select>
                                 </div>
-                                <%% if (suffix == '_1') { %>
-                                  <%= partial(:price_definition_creation, :locals => {suffix: '_1'})%>  
-                                <%% } else if (suffix == '_2') { %>
-                                  <%= partial(:price_definition_creation, :locals => {suffix: '_2'})%>                                   
-                                <%% } else if (suffix == '_3') { %>
-                                  <%= partial(:price_definition_creation, :locals => {suffix: '_3'})%>                                   
-                                <%% } %> 
-                                
-                              </div>
-                            <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                              <div class="navigation-bar-crud-buttons">
-                                <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_rates.label%>"/>
-                              </div>
-                            </div>                       
-                          </form>
-
+                                <div class="formrow">
+                                  <label class="fieldtitle"><%=t.booking_activity_management.form.capacities_on_multiple_prices%></label>
+                                  <input type="checkbox" name="capacities_on_multiple_prices" value="true" id="capacities_on_multiple_prices" <%% if (entity && entity.capacities_on_multiple_prices) { %>checked="checked"<%%}%>/>
+                                </div>
+                                <div class="form-group">
+                                  <div class="col-md-12">
+                                    <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                                  </div>
+                                </div>
+                              </form>
+                              <%% if (entity.price_definition_1_id != null) { %>
+                              <h4 class="content-heading">Tarifa 1</h4>
+                                <form name="element" class="form-horizontal" method="POST">
+                                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.price_name%></label>
+                                    <input type="text" maxlength="80" id="price_1_description" name="price_1_description" class="fieldcontrol" value="<%%=entity.price_1_description%>"/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
+                                    <input type="checkbox" name="price_1_affects_capacity" value="true" id="price_1_affects_capacity" <%% if (entity && entity.price_1_affects_capacity) { %>checked="checked"<%%}%>/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
+                                    <input type="text" maxlength="80" id="price_1_step_tickets" name="price_1_step_tickets" class="fieldcontrol" value="<%%=entity.price_1_step_tickets%>"/>
+                                  </div>
+                                  <%% if (entity.capacities_on_multiple_prices) { %>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
+                                    <input type="text" maxlength="80" id="price_1_total_capacity" name="price_1_total_capacity" class="fieldcontrol" value="<%%=entity.price_1_total_capacity%>"/>
+                                  </div>
+                                  <%% } %>
+                                  <%% if (entity.type_of_multiple_prices == 'duration') { %>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.duration_days%></label>
+                                    <input type="text" maxlength="80" id="price_1_description" name="price_1_duration_days" class="fieldcontrol" value="<%%=entity.price_1_duration_days%>"/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.duration_hours%></label>
+                                    <input type="text" maxlength="80" id="price_1_description" name="price_1_duration_hours" class="fieldcontrol" value="<%%=entity.price_1_duration_hours%>"/>
+                                  </div>
+                                  <%% } %>
+                                  <div class="form-group">
+                                    <div class="col-md-12">
+                                      <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                                    </div>
+                                  </div>
+                                </form>
+                                <div id="prices_1_container">
+                                </div>
+                              <%% } %>
+                              <%% if (entity.price_definition_2_id != null) { %>
+                                <h4 class="content-heading">Tarifa 2</h4>
+                                <form name="element" class="form-horizontal" method="POST">
+                                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.price_name%></label>
+                                    <input type="text" maxlength="80" id="price_2_description" name="price_2_description" class="fieldcontrol" value="<%%=entity.price_2_description%>"/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
+                                    <input type="checkbox" name="price_2_affects_capacity" value="true" id="price_2_affects_capacity" <%% if (entity && entity.price_2_affects_capacity) { %>checked="checked"<%%}%>/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
+                                    <input type="text" maxlength="80" id="price_2_step_tickets" name="price_2_step_tickets" class="fieldcontrol" value="<%%=entity.price_2_step_tickets%>"/>
+                                  </div>
+                                  <%% if (entity.capacities_on_multiple_prices) { %>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
+                                    <input type="text" maxlength="80" id="price_2_description" name="price_2_total_capacity" class="fieldcontrol" value="<%%=entity.price_2_total_capacity%>"/>
+                                  </div>
+                                  <%% } %>
+                                  <%% if (entity.type_of_multiple_prices == 'duration') { %>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.duration_days%></label>
+                                    <input type="text" maxlength="80" id="price_2_description" name="price_2_duration_days" class="fieldcontrol" value="<%%=entity.price_2_duration_days%>"/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.duration_hours%></label>
+                                    <input type="text" maxlength="80" id="price_2_description" name="price_2_duration_hours" class="fieldcontrol" value="<%%=entity.price_2_duration_hours%>"/>
+                                  </div>
+                                  <%% } %>
+                                  <div class="form-group">
+                                    <div class="col-md-12">
+                                      <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                                    </div>
+                                  </div>
+                                </form>
+                                <div id="prices_2_container">
+                                </div>
+                              <%% } %>
+                              <%% if (entity.price_definition_3_id != null) { %>
+                                <h4 class="content-heading">Tarifa 3</h4>
+                                <form name="element" class="form-horizontal" method="POST">
+                                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.price_name%></label>
+                                    <input type="text" maxlength="80" id="price_3_description" name="price_3_description" class="fieldcontrol" value="<%%=entity.price_3_description%>"/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.affects_capacity%></label>
+                                    <input type="checkbox" name="price_3_affects_capacity" value="true" id="price_3_affects_capacity" <%% if (entity && entity.price_3_affects_capacity) { %>checked="checked"<%%}%>/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.step_tickets%></label>
+                                    <input type="text" maxlength="80" id="price_3_step_tickets" name="price_3_step_tickets" class="fieldcontrol" value="<%%=entity.price_3_step_tickets%>"/>
+                                  </div>
+                                  <%% if (entity.capacities_on_multiple_prices) { %>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.total_capacity%></label>
+                                    <input type="text" maxlength="80" id="price_3_description" name="price_3_total_capacity" class="fieldcontrol" value="<%%=entity.price_3_total_capacity%>"/>
+                                  </div>
+                                  <%% } %>
+                                  <%% if (entity.type_of_multiple_prices == 'duration') { %>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.duration_days%></label>
+                                    <input type="text" maxlength="80" id="price_3_description" name="price_3_duration_days" class="fieldcontrol" value="<%%=entity.price_3_duration_days%>"/>
+                                  </div>
+                                  <div class="formrow">
+                                    <label class="fieldtitle"><%=t.booking_activity_management.form.duration_hours%></label>
+                                    <input type="text" maxlength="80" id="price_3_description" name="price_3_duration_hours" class="fieldcontrol" value="<%%=entity.price_3_duration_hours%>"/>
+                                  </div>
+                                  <%% } %>
+                                  <div class="form-group">
+                                    <div class="col-md-12">
+                                      <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                                    </div>
+                                  </div>
+                                </form>
+                                <div id="prices_3_container">
+                                </div>
+                              <%% } %>
+                              <%% if ((entity.price_definition_1_id == null ||
+                                      entity.price_definition_2_id == null ||
+                                      entity.price_definition_3_id == null) && entity.type_of_multiple_prices!="none") { %>
+                              <h4 class="content-heading">Nueva tarifa</h4>
+                              <%% var suffix = entity.price_definition_1_id == null ? '_1' : (entity.price_definition_2_id == null ? '_2' : '_3'); %>
+                              <form name="element" class="form-horizontal" method="POST">
+                                <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                                <div id="category_price">
+                                  <div class="formrow">
+                                    <label class="fieldtitle">Nombre tarifa</label>
+                                    <input type="text" maxlength="80" id="price_<%%=suffix%>_description" name="price_<%%=suffix%>_description" class="fieldcontrol"/>
+                                  </div>
+                                  <%% if (suffix == '_1') { %>
+                                  <%= partial(:price_definition_creation, :locals => {suffix: '_1'})%>
+                                  <%% } else if (suffix == '_2') { %>
+                                  <%= partial(:price_definition_creation, :locals => {suffix: '_2'})%>
+                                  <%% } else if (suffix == '_3') { %>
+                                  <%= partial(:price_definition_creation, :locals => {suffix: '_3'})%>
+                                  <%% } %>
+                                </div>
+                                <div class="form-group">
+                                  <div class="col-md-12">
+                                    <input type="button" class="btn btn-sm btn-success update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+                                  </div>
+                                </div>
+                              </form>
+                              <%% } %>
+                              <br>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <%% } %>                                           
-                    </div>

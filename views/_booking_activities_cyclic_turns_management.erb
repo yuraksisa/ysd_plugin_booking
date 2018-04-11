@@ -1,5 +1,5 @@
              <div class="formrow">
-                <label class="fieldtitle bottom-margin">¿Funciona todo el año?</label>
+                <label class="fieldtitle">¿Funciona todo el año?</label>
                 <input type="radio" name="all_year" value="true" <%% if (entity.all_year){%>checked="checked"<%%}%>>Si</input>
                 <input type="radio" name="all_year" value="false" <%% if (!entity.all_year){%>checked="checked"<%%}%>>No</input>
              </div>
@@ -16,13 +16,13 @@
                </div>
              </div>
 
-             <div class="formrow top-margin-2lines top-space top-separator" style="margin-top: 1.5em; padding-top: 1.5em;">
-                <label class="fieldtitle bottom-margin">¿Funciona todos los días de la semana?</label>
+             <div class="formrow">
+                <label class="fieldtitle">¿Funciona todos los días de la semana?</label>
                 <input type="radio" name="all_days" value="true" <%% if (entity.all_days){%>checked="checked"<%%}%>>Si</input>
                 <input type="radio" name="all_days" value="false" <%% if (!entity.all_days){%>checked="checked"<%%}%>>No</input>
               </div>
 
-              <div id="days" class="formrow top-margin" <%%if (entity.all_days){%>style="display:none"<%%}%>>
+              <div id="days" class="formrow" <%%if (entity.all_days){%>style="display:none"<%%}%>>
                 <label class="fieldtitle bottom-margin">Días de las semana que funciona</label>              
                 <input type="checkbox" name="mondays" id="mondays" <%% if (entity.mondays) { %>checked="checked"<%%}%> value="true" class="weekday">Lunes</input>
                 <input type="checkbox" name="tuesdays" id="tuesdays" <%% if (entity.tuesdays) { %>checked="checked"<%%}%> value="true" class="weekday">Martes</input>
@@ -33,7 +33,7 @@
                 <input type="checkbox" name="sundays" id="sundays" <%% if (entity.sundays) { %>checked="checked"<%%}%> value="true" class="weekday">Domingos</input>
               </div> 
 
-              <div class="formrow top-margin-2lines top-space top-separator" style="margin-top: 1.5em; padding-top: 1.5em;">
+              <div class="formrow">
                  <label class="fieldtitle bottom-margin">¿Todos los días tienen los mismos horarios?</label>
                  <input type="radio" name="all_days_same_turns" value="true" <%% if (entity.all_days_same_turns){%>checked="checked"<%%}%>>Si</input>
                  <input type="radio" name="all_days_same_turns" value="false" <%% if (!entity.all_days_same_turns){%>checked="checked"<%%}%>>No</input>
@@ -41,21 +41,21 @@
 
               <div class="formrow all_days_turns" <%% if (!entity.all_days_same_turns) { %>style="display:none"<%% }%>>
                 <label class="fieldtitle">Turnos mañanas</label>
-                <input type="text" maxlength="80" id="morning_turns" name="morning_turns" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.morning_turns%>" <%% } %>/>
+                <input type="text" maxlength="80" id="morning_turns" name="morning_turns" class="fieldcontrol cyclic_turn" <%% if (entity) { %> value="<%%=entity.morning_turns%>" <%% } %>/>
               </div>   
               <div class="formrow all_days_turns" <%% if (!entity.all_days_same_turns) { %>style="display:none"<%% }%>>
                 <label class="fieldtitle">Turnos tardes</label>
-                <input type="text" maxlength="80" id="afternoon_turns" name="afternoon_turns" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.afternoon_turns%>" <%% } %>/>
+                <input type="text" maxlength="80" id="afternoon_turns" name="afternoon_turns" class="fieldcontrol cyclic_turn" <%% if (entity) { %> value="<%%=entity.afternoon_turns%>" <%% } %>/>
               </div>
               <div class="formrow all_days_turns" <%% if (!entity.all_days_same_turns) { %>style="display:none"<%% }%>>
                 <label class="fieldtitle">Turnos tardes</label>
-                <input type="text" maxlength="80" id="night_turns" name="night_turns" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.night_turns%>" <%% } %>/>
+                <input type="text" maxlength="80" id="night_turns" name="night_turns" class="fieldcontrol cyclic_turn" <%% if (entity) { %> value="<%%=entity.night_turns%>" <%% } %>/>
               </div>                                  
               
               <%% var showTurnsDetail = !entity.all_days_same_turns; %>
 
               <div id="turns_detail" class="formrow" <%% if (!showTurnsDetail){%>style="display:none"<%%}%>>
-                <table class="table bottom-margin-line bottom-separator">
+                <table class="table">
                   <thead class="table-header">
                     <tr>
                       <th class="table-cell" scope="col" style="width:5%"></th>
@@ -69,57 +69,57 @@
                     <tr id="mondays_turns" class="table-row" <%% if (!(entity.all_days || entity.mondays)) { %>style="display:none"<%%}%>>
                       <td class="table-cell"></td>
                       <td class="table-cell">Lunes</td>
-                      <td class="table-cell"><input type="text" name="monday_morning_turns" id="monday_morning_turns" class="fieldcontrol" value="<%%=entity.monday_morning_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="monday_afternoon_turns" id="monday_afternoon_turns" class="fieldcontrol" value="<%%=entity.monday_afternoon_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="monday_night_turns" id="monday_night_turns" class="fieldcontrol" value="<%%=entity.monday_night_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="monday_morning_turns" id="monday_morning_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.monday_morning_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="monday_afternoon_turns" id="monday_afternoon_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.monday_afternoon_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="monday_night_turns" id="monday_night_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.monday_night_turns%>"/></td>
                     </tr> 
 
                     <tr id="tuesdays_turns" class="table-row" <%% if (!(entity.all_days || entity.tuesdays)) { %>style="display:none"<%%}%>>
                       <td class="table-cell"></td>
                       <td class="table-cell">Martes</td>
-                      <td class="table-cell"><input type="text" name="tuesday_morning_turns" id="tuesday_morning_turns" class="fieldcontrol" value="<%%=entity.tuesday_morning_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="tuesday_afternoon_turns" id="tuesday_afternoon_turns" class="fieldcontrol" value="<%%=entity.tuesday_afternoon_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="tuesday_night_turns" id="tuesday_night_turns" class="fieldcontrol" value="<%%=entity.tuesday_night_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="tuesday_morning_turns" id="tuesday_morning_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.tuesday_morning_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="tuesday_afternoon_turns" id="tuesday_afternoon_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.tuesday_afternoon_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="tuesday_night_turns" id="tuesday_night_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.tuesday_night_turns%>"/></td>
                     </tr>
 
                     <tr id="wednesdays_turns" class="table-row" <%% if (!(entity.all_days || entity.wednesdays)) { %>style="display:none"<%%}%>>
                       <td class="table-cell"></td>
                       <td class="table-cell">Miércoles</td>
-                      <td class="table-cell"><input type="text" name="wednesday_morning_turns" id="wednesday_morning_turns" class="fieldcontrol" value="<%%=entity.wednesday_morning_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="wednesday_afternoon_turns" class="fieldcontrol" id="wednesday_afternoon_turns" value="<%%=entity.wednesday_afternoon_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="wednesday_night_turns" id="wednesday_night_turns" class="fieldcontrol" value="<%%=entity.wednesday_night_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="wednesday_morning_turns" id="wednesday_morning_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.wednesday_morning_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="wednesday_afternoon_turns" class="fieldcontrol" id="wednesday_afternoon_turns cyclic_turn" value="<%%=entity.wednesday_afternoon_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="wednesday_night_turns" id="wednesday_night_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.wednesday_night_turns%>"/></td>
                     </tr>
 
                     <tr id="thursdays_turns" class="table-row" <%% if (!(entity.all_days || entity.thursdays)) { %>style="display:none"<%%}%>>
                       <td class="table-cell"></td>
                       <td class="table-cell">Jueves</td>
-                      <td class="table-cell"><input type="text" name="thursday_morning_turns" id="thursday_morning_turns" class="fieldcontrol" value="<%%=entity.thursday_morning_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="thursday_afternoon_turns" id="thursday_afternoon_turns" class="fieldcontrol" value="<%%=entity.thursday_afternoon_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="thursday_night_turns" id="thursday_night_turns" class="fieldcontrol" value="<%%=entity.thursday_night_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="thursday_morning_turns" id="thursday_morning_turns cyclic_turn" class="fieldcontrol" value="<%%=entity.thursday_morning_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="thursday_afternoon_turns" id="thursday_afternoon_turns cyclic_turn" class="fieldcontrol" value="<%%=entity.thursday_afternoon_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="thursday_night_turns" id="thursday_night_turns cyclic_turn" class="fieldcontrol" value="<%%=entity.thursday_night_turns%>"/></td>
                     </tr>
 
                     <tr id="fridays_turns" class="table-row" <%% if (!(entity.all_days || entity.fridays)) { %>style="display:none"<%%}%>>
                       <td class="table-cell"></td>
                       <td class="table-cell">Viernes</td>
-                      <td class="table-cell"><input type="text" name="friday_morning_turns" id="friday_morning_turns" class="fieldcontrol" value="<%%=entity.friday_morning_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="friday_afternoon_turns" id="friday_afternoon_turns" class="fieldcontrol" value="<%%=entity.friday_afternoon_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="friday_night_turns" id="friday_night_turns" class="fieldcontrol" value="<%%=entity.friday_night_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="friday_morning_turns" id="friday_morning_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.friday_morning_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="friday_afternoon_turns" id="friday_afternoon_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.friday_afternoon_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="friday_night_turns" id="friday_night_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.friday_night_turns%>"/></td>
                     </tr>
 
                     <tr id="saturdays_turns" class="table-row" <%% if (!(entity.all_days || entity.saturdays)) { %>style="display:none"<%%}%>>
                       <td class="table-cell"></td>
                       <td class="table-cell">Sábado</td>
-                      <td class="table-cell"><input type="text" name="saturday_morning_turns" id="saturday_morning_turns" class="fieldcontrol" value="<%%=entity.saturday_morning_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="saturday_afternoon_turns" id="saturday_afternoon_turns" class="fieldcontrol" value="<%%=entity.saturday_afternoon_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="saturday_night_turns" id="saturday_night_turns" class="fieldcontrol" value="<%%=entity.saturday_night_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="saturday_morning_turns" id="saturday_morning_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.saturday_morning_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="saturday_afternoon_turns" id="saturday_afternoon_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.saturday_afternoon_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="saturday_night_turns" id="saturday_night_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.saturday_night_turns%>"/></td>
                     </tr>
 
                     <tr id="sundays_turns" class="table-row" <%% if (!(entity.all_days || entity.sundays)) { %>style="display:none"<%%}%>>
                       <td class="table-cell"></td>
                       <td class="table-cell">Domingo</td>
-                      <td class="table-cell"><input type="text" name="sunday_morning_turns" id="sunday_morning_turns" class="fieldcontrol" value="<%%=entity.sunday_morning_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="sunday_afternoon_turns" id="sunday_afternoon_turns" class="fieldcontrol" value="<%%=entity.sunday_afternoon_turns%>"/></td>
-                      <td class="table-cell"><input type="text" name="sunday_night_turns" id="sunday_night_turns" class="fieldcontrol" value="<%%=entity.sunday_night_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="sunday_morning_turns" id="sunday_morning_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.sunday_morning_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="sunday_afternoon_turns" id="sunday_afternoon_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.sunday_afternoon_turns%>"/></td>
+                      <td class="table-cell"><input type="text" name="sunday_night_turns" id="sunday_night_turns" class="fieldcontrol cyclic_turn" value="<%%=entity.sunday_night_turns%>"/></td>
                     </tr>
                                                                                                                                                   
                   </tbody>

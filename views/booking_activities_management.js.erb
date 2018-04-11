@@ -148,6 +148,36 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       var selectorModel = new SelectSelector('pickup_return_place_definition',
            dataSourceModel, valueModel, true );
 
+      $('input[name=custom_payment_allow_deposit_payment]').bind('change', function() {
+          if ($(this).is(':checked')) {
+              $('.custom-payment-deposit-setup').show();
+          }
+          else {
+              $('.custom-payment-deposit-setup').hide();
+          }
+      });
+
+      if (entity && entity.occurence == 'cyclic') {
+
+          $('#turns_form').validate({
+
+              submitHandler: function (form) {
+                  return false;
+              }
+
+          });
+
+          $('.cyclic_turn').each(function() {
+              $(this).rules('add', {
+                  time24: true,
+                  messages: {
+                      time24: '<%=t.validations.time_format_invalid%>'
+                  }
+              });
+          });
+      }
+
+
     },
   
     onNew : function() {
@@ -199,26 +229,6 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
 
     configForm: function(entity) {
       $('#calendar_container').empty();
-
-
-      $(".content > div").hide(); // Initially hide all content
-      $(".content_tabs li:first").attr("id","current"); // Activate first tab
-      $(".content > div:first").fadeIn(); // Show first tab content
-      $('.content_tabs a').click(function(e) {
-        e.preventDefault();
-        if ($(this).attr("name") == 'preview') {
-          ($('#home_frame')[0]).contentWindow.location.reload();
-        }
-        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
-         return;
-        }
-        else{
-          $(".content > div").hide(); //Hide all content
-          $(".content_tabs li").attr("id",""); //Reset id's
-          $(this).parent().attr("id","current"); // Activate this
-          $('#' + $(this).attr('name')).fadeIn(); // Show content for current tab
-        }
-      });
 
       $('input[name=all_year]').bind('change', function(event){
         if ($('input[name=all_year]:checked').val() == 'true') {
@@ -478,6 +488,32 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
               data.uses_planning_resources = false;
           }
       }
+
+      if ($('#allow_request_reservation').length > 0) {
+          if ($('#allow_request_reservation').prop('checked')) {
+              data.allow_request_reservation = true;
+          }
+          else {
+              data.allow_request_reservation = false;
+          }
+      }
+      if ($('#custom_payment_allow_deposit_payment').length > 0) {
+          if ($('#custom_payment_allow_deposit_payment').prop('checked')) {
+              data.custom_payment_allow_deposit_payment = true;
+          }
+          else {
+              data.custom_payment_allow_deposit_payment = false;
+          }
+      }
+      if ($('#custom_payment_allow_total_payment').length > 0) {
+          if ($('#custom_payment_allow_total_payment').prop('checked')) {
+              data.custom_payment_allow_total_payment = true;
+          }
+          else {
+              data.custom_payment_allow_total_payment = false;
+          }
+      }
+
 
       return data;
       

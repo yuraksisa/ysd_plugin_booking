@@ -42,7 +42,7 @@
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/svariables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-              <%= render_variable_checkbox_boolean('order.payment', t.booking_settings.form.activities_payment) %>
+              <%#= render_variable_checkbox_boolean('order.payment', t.booking_settings.form.activities_payment) %>
               <%= render_variable_input_text('order.payment_cadence', t.booking_settings.form.activities_payment_cadence, 2, 2) %>
               <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.activities_payment_cadence_description%></p>
               <%= render_variable_checkbox_boolean('order.allow_deposit_payment', t.booking_settings.form.activities_allow_deposit_payment) %>
