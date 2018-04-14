@@ -97,9 +97,6 @@
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
          <%%= entity.capacity %>
       </td>
-      <!--td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
-         <%%= entity.stock_control ? '<i class="fa fa-times"></i>' : '' %>
-      </td-->
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
          <%%= entity.active ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
       </td>
@@ -201,18 +198,21 @@
                     <label class="col-md-3 control-label">Precio desde</label>
                     <div class="col-md-9">
                         <input type="text" maxlength="12" id="from_price" name="from_price" class="form-control" <%% if (entity) { %> value="<%%=new Number(entity.from_price).toFixed(2)%>"<%%}%>/>
+                        <p class="text-muted">Es el precio que se mostrará en el listado de actividades de la página web de reserva. No se trata de la tarifa, es un dato meramente informativo</p>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-md-3 control-label">Precio desde (oferta)</label>
+                    <label class="col-md-3 control-label">Precio oferta</label>
                     <div class="col-md-9">
                         <input type="text" maxlength="12" id="from_price_offer" name="from_price_offer" class="form-control" <%% if (entity) { %> value="<%%=new Number(entity.from_price_offer).toFixed(2)%>"<%%}%>/>
+                        <p class="text-muted">Es el precio de oferta que se mostrará en el listado de actividades de la página web de reserva. No se trata de la tarifa, es un dato meramente informativo</p>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-md-3 control-label"><%= t.booking_activity_management.form.alias%></label>
                     <div class="col-md-9">
                         <input type="text" id="alias" name="alias" class="form-control" <%% if (entity){%>value="<%%=entity.alias%>" <%%} else { %>value=""<%%}%>/>
+                        <p class="text-muted">Permite indicar la URL desde la que podrá acceder a la ficha de la actividad en la página web de reservas</p>
                     </div>
                   </div>
                   <div class="form-group">
@@ -255,127 +255,84 @@
        <div class="col-sm-12 col-md-10 col-md-offset-1">
          <div class="block ">
             <div class="block-header bg-gray-lighter">
-              <h3 class="block-title">Características</h3>
+              <h3 class="block-title">Duración</h3>
             </div>
             <div class="block-content block-content-narrow">
               <form name="element" class="form-horizontal" method="POST">
-                  <div class="col-lg-6">
-                    <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                    <div class="formrow" <%% if (entity.mode=='full'){%>style="display:none"<%%}%>>
-                      <label class="fieldtitle"><%= t.booking_category_management.form.capacity.label %></label>
-                      <input type="text" maxlength="80" id="capacity" name="capacity" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.capacity%>" <%% } %>/>
-                      <p class="smaller_text less_contrast_text">Indica el número máximo de plazas admitidas en la actividad o evento</p>
-                    </div>
-                    <div class="formrow">
-                      <label class="fieldtitle">Duración días</label>
-                      <input type="text" maxlength="2" id="duration_days" name="duration_days" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_days%>" <%% } %>/>
-                    </div>
-                    <div class="formrow">
-                      <label class="fieldtitle">Duración horas (hh:mm)</label>
-                      <input type="text" maxlength="5" id="duration_hours" name="duration_hours" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.duration_hours%>" <%% } %>/>
-                    </div>
-                    <div class="formrow">
-                      <label class="fieldtitle">Color agenda</label>
-                      <input type="color" name="schedule_color" value="<%%=entity.schedule_color%>"/>
-                    </div>
-                    <div class="formrow">
-                      <label class="fieldtitle"><%= t.booking_category_management.form.notify_customer_if_empty.label%></label>
-                      <input type="checkbox" name="notify_customer_if_empty" value="true" id="notify_customer_if_empty" <%% if (entity && entity.notify_customer_if_empty) { %>checked="checked"<%%}%>/>
-                    </div>
-                    <div class="formrow">
-                      <label class="fieldtitle"><%= t.booking_activity_management.form.custom_pickup_places%></label>
-                      <input type="checkbox" name="custom_pickup_places" value="true" id="custom_pickup_places" <%% if (entity && entity.custom_pickup_places) { %>checked="checked"<%%}%>/>
-                    </div>
-                    <div id="pickup_places_container" class="formrow"  <%% if (!entity || !entity.custom_pickup_places) { %> style="display:none"<%%}%>>
-                      <label class="fieldtitle"><%= t.booking_activity_management.form.pickup_places %></label>
-                      <select name="pickup_return_place_definition_id" class="fieldcontrol" id="pickup_return_place_definition"></select>
+                  <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                  <div class="form-group">
+                     <div class="col-md-12">
+                       <p class="alert alert-warning">La duración es imprescindible para la gestión de la agenda.</p>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-md-3 control-label">Días</label>
+                     <div class="col-md-9">
+                     <input type="text" maxlength="2" id="duration_days" name="duration_days" class="form-control" <%% if (entity) { %> value="<%%=entity.duration_days%>" <%% } %>/>
+                     <p class="text-muted">Indique la duración de la actividad en días, en el caso de que la actividad se lleve a cabo durante uno o más días completos.</p>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-md-3 control-label">Horas</label>
+                     <div class="col-md-9">
+                       <input type="text" maxlength="5" id="duration_hours" name="duration_hours" class="form-control" <%% if (entity) { %> value="<%%=entity.duration_hours%>" <%% } %>/>
+                       <p class="text-muted">Indique la duración de la actividad en horas, en el caso de que la actividad dure unas horas, es decir no días completos.</p>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-md-3 control-label">Color agenda</label>
+                     <div class="col-md-9">
+                       <input type="color" name="schedule_color" class="form-control" value="<%%=entity.schedule_color%>"/>
+                       <p class="text-muted">Permite indicar el color con el que se verás las actividades en la agenda.</p>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                      <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
                     </div>
                   </div>
-                  <div class="col-lg-6">
-                    <div class="form-group">
-                       <label class="col-md-12">Datos a solicitar al realizar reserva</label>
-                       <div class="col-md-12">
-                         <div class="checkbox">
-                           <label for="request_customer_address">
-                             <input type="checkbox" name="request_customer_address" id="request_customer_address" <%% if (entity.request_customer_address) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_address.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="request_customer_information">
-                             <input type="checkbox" name="request_customer_information" id="request_customer_information" <%% if (entity.request_customer_information) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_information.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="request_customer_document_id">
-                             <input type="checkbox" name="request_customer_document_id" id="request_customer_document_id" <%% if (entity.request_customer_document_id) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_document_id.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="request_customer_phone">
-                             <input type="checkbox" name="request_customer_phone" id="request_customer_phone" <%% if (entity.request_customer_phone) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_phone.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="request_customer_email">
-                             <input type="checkbox" name="request_customer_email" id="request_customer_email" <%% if (entity.request_customer_email) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_email.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="request_customer_phone">
-                             <input type="checkbox" name="request_customer_phone" id="request_customer_phone" <%% if (entity.request_customer_phone) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_address.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="request_customer_height">
-                             <input type="checkbox" name="request_customer_height" id="request_customer_height" <%% if (entity.request_customer_height) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_height.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="request_customer_weight">
-                             <input type="checkbox" name="request_customer_weight" id="request_customer_weight" <%% if (entity.request_customer_weight) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_weight.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="request_customer_allergies_intolerances">
-                             <input type="checkbox" name="request_customer_allergies_intolerances" id="request_customer_allergies_intolerances" <%% if (entity.request_customer_allergies_intolerances) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_allergies_intolerances.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
-                           <label for="uses_planning_resources">
-                             <input type="checkbox" name="uses_planning_resources" id="uses_planning_resources" <%% if (entity.uses_planning_resources) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.uses_planning_resources.label%>
-                           </label>
-                         </div>
-                       </div>
-                    </div>
-                </div>
-               <div class="form-group">
-                <div class="col-md-12">
-                    <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                </div>
-              </div>
               </form>
             </div>
          </div>
        </div>
      </div>
 
+     <%% if (entity.mode!='full') {%>
      <div class="row">
        <div class="col-sm-12 col-md-10 col-md-offset-1">
          <div class="block ">
             <div class="block-header bg-gray-lighter">
-              <h3 class="block-title">Turnos</h3>
+              <h3 class="block-title">Capacidad</h3>
             </div>
             <div class="block-content block-content-narrow">
+              <form name="element" class="form-horizontal" method="POST">
+                    <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                    <div class="form-group">
+                       <label class="col-md-3 control-label"><%= t.booking_category_management.form.capacity.label %></label>
+                       <div class="col-md-9">
+                         <input type="text" maxlength="80" id="capacity" name="capacity" class="form-control" <%% if (entity) { %> value="<%%=entity.capacity%>" <%% } %>/>
+                         <p class="text-muted">Indica el número máximo de plazas que se pueden vender de la actividad.</p>
+                       </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-md-9 col-md-offset-3">
+                          <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                      </div>
+                    </div>
+              </form>
+            </div>
+         </div>
+       </div>
+     </div>
+     <%% } %>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title"><%% if (entity.occurence == 'cyclic') {%>Turnos<%% } else if (entity.occurence == 'multiple_dates'){%>Fechas<%%}else{%>Fecha<%%}%> </h3>
+            </div>
+            <div class="block-content <%% if (entity.occurence != 'multiple_dates') {%>block-content-narrow<%%}%>">
               <%% if (entity.occurence == 'cyclic') {%>
               <div id="turns_tab" class="top-margin bottom-margin">
                 <form id="turns_form" class="form-horizontal" name="element" method="POST">
@@ -416,6 +373,87 @@
                 </form>
               </div>
               <%% } %>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Datos a solicitar en la reserva</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="element" class="form-horizontal" method="POST">
+                    <div class="form-group">
+                       <div class="col-md-6">
+                         <div class="checkbox">
+                           <label for="request_customer_address">
+                             <input type="checkbox" name="request_customer_address" id="request_customer_address" <%% if (entity.request_customer_address) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_address.label%>
+                           </label>
+                         </div>
+                         <div class="checkbox">
+                           <label for="request_customer_information">
+                             <input type="checkbox" name="request_customer_information" id="request_customer_information" <%% if (entity.request_customer_information) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_information.label%>
+                           </label>
+                         </div>
+                         <div class="checkbox">
+                           <label for="request_customer_document_id">
+                             <input type="checkbox" name="request_customer_document_id" id="request_customer_document_id" <%% if (entity.request_customer_document_id) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_document_id.label%>
+                           </label>
+                         </div>
+                         <div class="checkbox">
+                           <label for="request_customer_phone">
+                             <input type="checkbox" name="request_customer_phone" id="request_customer_phone" <%% if (entity.request_customer_phone) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_phone.label%>
+                           </label>
+                         </div>
+                         <div class="checkbox">
+                           <label for="request_customer_email">
+                             <input type="checkbox" name="request_customer_email" id="request_customer_email" <%% if (entity.request_customer_email) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_email.label%>
+                           </label>
+                         </div>
+                       </div>
+                       <div class="col-md-6">
+                         <div class="checkbox">
+                           <label for="request_customer_phone">
+                             <input type="checkbox" name="request_customer_phone" id="request_customer_phone" <%% if (entity.request_customer_phone) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_address.label%>
+                           </label>
+                         </div>
+                         <div class="checkbox">
+                           <label for="request_customer_height">
+                             <input type="checkbox" name="request_customer_height" id="request_customer_height" <%% if (entity.request_customer_height) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_height.label%>
+                           </label>
+                         </div>
+                         <div class="checkbox">
+                           <label for="request_customer_weight">
+                             <input type="checkbox" name="request_customer_weight" id="request_customer_weight" <%% if (entity.request_customer_weight) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_weight.label%>
+                           </label>
+                         </div>
+                         <div class="checkbox">
+                           <label for="request_customer_allergies_intolerances">
+                             <input type="checkbox" name="request_customer_allergies_intolerances" id="request_customer_allergies_intolerances" <%% if (entity.request_customer_allergies_intolerances) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_allergies_intolerances.label%>
+                           </label>
+                         </div>
+
+                       </div>
+                    </div>
+
+               <div class="form-group">
+                <div class="col-md-12">
+                    <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                </div>
+              </div>
+              </form>
             </div>
          </div>
        </div>
@@ -504,6 +542,58 @@
                         <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
                     </div>
                   </div>
+              </form>
+            </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="row">
+       <div class="col-sm-12 col-md-10 col-md-offset-1">
+         <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Otras características</h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="element" class="form-horizontal" method="POST">
+                    <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                    <div class="form-group">
+                       <div class="col-md-9 col-md-offset-3">
+                         <%% if (entity.mode!='full'){%>
+                         <div class="checkbox">
+                           <label for="notify_customer_if_empty">
+                             <input type="checkbox" name="notify_customer_if_empty" id="notify_customer_if_empty" <%% if (entity.notify_customer_if_empty) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.notify_customer_if_empty.label%>
+                           </label>
+                           <p class="text-muted">Permite indicar durante el proceso de reservas en la web que todavía no hay plazas contratadas por otros clientes</p>
+                         </div>
+                         <%% } %>
+                         <div class="checkbox">
+                           <label for="uses_planning_resources">
+                             <input type="checkbox" name="uses_planning_resources" id="uses_planning_resources" <%% if (entity.uses_planning_resources) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.uses_planning_resources.label%>
+                           </label>
+                             <p class="text-muted">Permite indicar si la actividad requiere el uso de recursos del inventario</p>
+                         </div>
+                         <div class="checkbox">
+                           <label for="custom_pickup_places">
+                             <input type="checkbox" name="custom_pickup_places" id="custom_pickup_places" <%% if (entity.custom_pickup_places) {%>checked<%%}%>>
+                             <%= t.booking_activity_management.form.custom_pickup_places%>
+                           </label>
+                           <p class="text-muted">Permite establecer un conjunto de lugares en los que se recojerá a los clientes para realizar la actividad. Indicado para la recogida de los clientes en diversos hoteles.</p>
+                         </div>
+                       </div>
+                       <div class="col-md-12">
+                          <div id="pickup_places_container" <%% if (!entity || !entity.custom_pickup_places) { %> style="display:none"<%%}%>>
+                               <select name="pickup_return_place_definition_id" class="form-control" id="pickup_return_place_definition"></select>
+                          </div>
+                       </div>
+                    </div>
+               <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                </div>
+              </div>
               </form>
             </div>
          </div>

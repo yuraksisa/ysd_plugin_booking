@@ -79,7 +79,8 @@
                                 <% end %>
           number_of_adults: <%= booking.number_of_adults || 0 %> ,
           number_of_children: <%= booking.number_of_children || 0 %> ,
-          sales_channel_code: '<%= booking.sales_channel_code %>',
+          sales_channel_code: <% if booking.sales_channel_code %>'<%= booking.sales_channel_code %>'<%else%>null<%end%>,
+          promotion_code: <% if booking.promotion_code %>'<%=booking.promotion_code%>'<%else%>null<%end%>,
           booking_lines: [
             <% booking.booking_lines.each do |item| %>
               {'id':<%=item.id%>, 'item_id':'<%=item.item_id%>', 'item_description':'<%=item.item_description%>',
@@ -143,7 +144,8 @@
                                           return_place_other: pickup_place_other,
                                           date_of_birth: this.booking.driver_date_of_birth ? this.booking.driver_date_of_birth.toString("yyyy-MM-dd") : null,
                                           driver_driving_license_date: this.booking.driver_driving_license_date  ? this.booking.driver_driving_license_date.toString("yyyy-MM-dd") : null,
-                                          sales_channel_code: this.booking.sales_channel_code ? this.booking.sales_channel_code : null});
+                                          sales_channel_code: this.booking.sales_channel_code ? this.booking.sales_channel_code : null,
+                                          promotion_code: this.booking.promotion_code ? this.booking.promotion_code : null});
 
             $.ajax(
                 {

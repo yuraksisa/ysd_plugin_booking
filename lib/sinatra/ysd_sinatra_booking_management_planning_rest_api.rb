@@ -89,6 +89,9 @@ module Sinatra
             # Retrieve sales channel
             sales_channel_code = model_request[:sales_channel_code] if model_request.has_key?(:sales_channel_code)
             sales_channel_code = nil if sales_channel_code and sales_channel_code.empty?
+            # Retrieve promotion code
+            promotion_code = model_request[:promotion_code] if model_request.has_key?(:promotion_code)
+            promotion_code = nil if promotion_code and promotion_code.empty?
           else
             content_type :json
             status 422
@@ -109,6 +112,8 @@ module Sinatra
                                                                         product_code: nil,
                                                                         web_public: false,
                                                                         sales_channel_code: sales_channel_code,
+                                                                        apply_promotion_code: !promotion_code.nil?,
+                                                                        promotion_code: promotion_code,
                                                                         include_stock: true})
 
           content_type :json
@@ -125,8 +130,6 @@ module Sinatra
 
           if @booking = BookingDataSystem::Booking.get(params[:id])
 
-            p "date_from:#{@booking.date_from} date_to:#{@booking.date_to} days: #{@booking.days}"
-
             # Prepare the products
             products = ::Yito::Model::Booking::BookingCategory.search(@booking.date_from,
                                                                       @booking.date_to,
@@ -136,6 +139,8 @@ module Sinatra
                                                                         product_code: nil,
                                                                         web_public: false,
                                                                         sales_channel_code: (@booking.sales_channel_code.nil? or @booking.sales_channel_code.empty?) ? nil : @booking.sales_channel_code,
+                                                                        apply_promotion_code: (@booking.promotion_code.nil? ? false : true),
+                                                                        promotion_code: @booking.promotion_code,
                                                                         include_stock: true})
 
             # Prepare the extras
@@ -348,7 +353,9 @@ module Sinatra
                                                                         full_information: true,
                                                                         product_code: nil,
                                                                         web_public: false,
-                                                                        include_stock: true})
+                                                                        include_stock: true,
+                                                                        apply_promotion_code: false,
+                                                                        promotion_code: nil})
 
             data = {
                 prereservation: {id: @prereservation.id,

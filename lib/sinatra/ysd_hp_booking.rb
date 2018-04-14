@@ -30,6 +30,8 @@ module Sinatra
         addon_finances = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_finances)
         addon_massive_price_adjust = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_massive_price_adjust)
         addon_offer_promotion_code = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_offer_promotion_code)
+        addon_promotion_code = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_promotion_code)
+        addon_offer = RequestStore.store[:mybooking_addons].include?(:mybooking_offer)
         addon_journal = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_journal)
         addon_tryton = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_tryton)
         addon_simple_invoicing = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_simple_invoicing)
@@ -39,6 +41,8 @@ module Sinatra
         addon_finances = (settings.respond_to?(:mybooking_addon_finances) ? settings.mybooking_addon_finances : false)
         addon_massive_price_adjust = (settings.respond_to?(:mybooking_addon_massive_price_adjust) ? settings.mybooking_addon_massive_price_adjust : false)
         addon_offer_promotion_code = (settings.respond_to?(:mybooking_addon_offer_promotion_code) ? settings.mybooking_addon_offer_promotion_code : false)
+        addon_promotion_code = (settings.respond_to?(:mybooking_addon_promotion_code) ? settings.mybooking_addon_promotion_code : false)
+        addon_offer =  (settings.respond_to?(:mybooking_addon_offer) ? settings.mybooking_addon_offer : false)
         addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
         addon_tryton = (settings.respond_to?(:mybooking_addon_tryton) ? settings.mybooking_addon_tryton : false)
         addon_simple_invoicing = (settings.respond_to?(:mybooking_addon_simple_invoicing) ? settings.mybooking_addon_simple_invoicing : false)
@@ -49,6 +53,8 @@ module Sinatra
        addon_finances: addon_finances,
        addon_massive_price_adjust: addon_massive_price_adjust,
        addon_offer_promotion_code: addon_offer_promotion_code,
+       addon_offer: addon_offer,
+       addon_promotion_code: addon_promotion_code,
        addon_journal: addon_journal,
        addon_tryton: addon_tryton,
        addon_simple_invoicing: addon_simple_invoicing,

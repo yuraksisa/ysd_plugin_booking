@@ -989,7 +989,7 @@ booking_category_management:
     stock:
       label: Stock 
     capacity:
-      label: Capacidad
+      label: Plazas disponibles
     sort_order:
       label: Orden
     deposit:
@@ -1404,7 +1404,7 @@ booking_activity_management:
     step_tickets: Venta de tickets en múltiplos
     duration_days: Duración en días
     duration_hours: Duración en horas
-    custom_pickup_places: Permite indicar lugares de devolución de clientes
+    custom_pickup_places: Servicio de recogida de clientes (lugares)
     pickup_places: Lugares de devolución de clientes
     occurrence: Frecuencia
     occurrence_one_time: Una vez (determinada por la empresa)

@@ -593,6 +593,9 @@ module Sinatra
           # Retrieve sales channel
           sales_channel_code = data[:sales_channel_code]
           sales_channel_code = nil if sales_channel_code and sales_channel_code.empty?
+          # Retrieve promotion code
+          promotion_code = data[:promotion_code]
+          promotion_code = nil if promotion_code and promotion_code.empty?
 
           date_of_birth = DateTime.strptime(data[:date_of_birth],'%Y-%m-%d') if data.has_key?(:date_of_birth) && !data[:date_of_birth].nil? && !data[:date_of_birth].empty?
           driver_driving_license_date = DateTime.strptime(data[:driver_driving_license_date],'%Y-%m-%d') if data.has_key?(:driver_driving_license_date) && !data[:driver_driving_license_date].nil? && !data[:driver_driving_license_date].empty?
@@ -617,7 +620,9 @@ module Sinatra
                                                                       full_information: true,
                                                                       product_code: nil,
                                                                       web_public: false,
-                                                                      sales_channel_code: sales_channel_code})
+                                                                      sales_channel_code: sales_channel_code,
+                                                                      apply_promotion_code: !promotion_code.nil?,
+                                                                      promotion_code: promotion_code})
 
           # Prepare the extras
           extras = ::Yito::Model::Booking::RentingExtraSearch.search(date_from,
@@ -998,7 +1003,7 @@ module Sinatra
               booking = booking_line.booking
               booking.reload
               content_type :json
-              @booking.to_json
+              booking.to_json
             else
               body "Producto no especificado"
               status 500

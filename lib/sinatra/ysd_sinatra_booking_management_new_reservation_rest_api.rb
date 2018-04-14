@@ -33,7 +33,10 @@ module Sinatra
                                                                    full_information: true,
                                                                    product_code: nil,
                                                                    web_public: false,
-                                                                   sales_channel_code: shopping_cart.sales_channel_code}).to_json
+                                                                   sales_channel_code: shopping_cart.sales_channel_code,
+                                                                   apply_promotion_code: (shopping_cart.promotion_code and !shopping_cart.promotion_code.empty?) ? true : false,
+                                                                   promotion_code: shopping_cart.promotion_code
+                                                                }).to_json
 
         # Prepare the extras
         e_json = ::Yito::Model::Booking::RentingExtraSearch.search(shopping_cart.date_from,
@@ -72,7 +75,7 @@ module Sinatra
 
           # TODO Check parameters
           date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children =
-          driver_age_rule_id = sales_channel_code = nil
+          driver_age_rule_id = sales_channel_code = promotion_code = nil
 
           if model_request[:date_from] && model_request[:date_to]
             # Retrieve date/time from - to
@@ -91,6 +94,9 @@ module Sinatra
             # Retrieve sales channel
             sales_channel_code = model_request[:sales_channel_code] if model_request.has_key?(:sales_channel_code)
             sales_channel_code = nil if sales_channel_code and sales_channel_code.empty?
+            # Retrieve promotion code
+            promotion_code = model_request[:promotion_code] if model_request.has_key?(:promotion_code)
+            promotion_code = nil if promotion_code and promotion_code.empty?
           else
             content_type :json
             status 422
@@ -111,7 +117,8 @@ module Sinatra
                                                 pickup_place, custom_pickup_place,
                                                 return_place, custom_return_place,
                                                 number_of_adults, number_of_children,
-                                                driver_age_rule_id, sales_channel_code)
+                                                driver_age_rule_id, sales_channel_code,
+                                                promotion_code)
           else
             shopping_cart =::Yito::Model::Booking::ShoppingCartRenting.create(
                 date_from: date_from, time_from: time_from,
@@ -125,6 +132,7 @@ module Sinatra
                 number_of_adults: number_of_adults, number_of_children: number_of_children,
                 driver_age_rule_id: driver_age_rule_id,
                 sales_channel_code: sales_channel_code,
+                promotion_code: promotion_code,
                 customer_language: settings.default_language)
             session['back_office_shopping_cart_renting_id'] = shopping_cart.id
           end
