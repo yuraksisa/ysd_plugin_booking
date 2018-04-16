@@ -36,7 +36,6 @@
             <!-- Pickup place -->
             <% if booking_item_family.pickup_return_place %>
                 <div class="form-group">
-
                   <label class="col-sm-3 control-label">
                     <%=t.new_booking.pickup_place%>
                   </label>
@@ -160,19 +159,27 @@
 
 
   <div class="row">
-    <div class="col-lg-7">
+    <div class="col-lg-12">
       <div id="products_list">
       </div>
     </div>
-    <div class="col-lg-5">
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
       <div id="extras_list">
       </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
       <div id="customer" style="display:none">
         <div class="block block-bordered">
           <div class="block-header bg-gray-lighter">
             <h3 class="block-title"><%=t.admin_new_reservation.customer_title%></h3>
           </div>
-          <div class="block-content">
+          <div class="block-content block-content-narrow">
             <form name="customer">
               <div class="formrow">
                 <label for="customer_name" class="fieldtitle"><%= t.admin_new_reservation.form.customer_name %> <span class="mandatoryfield">*</span></label>
@@ -203,10 +210,13 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
+  <div class="row">
+    <div class="col-lg-12">
       <div id="summary">
       </div>
-
     </div>
   </div>
 
@@ -219,7 +229,7 @@
         <div class="block-header bg-gray-lighter">
           <h3 class="block-title">Productos</h3>
         </div>
-        <div class="block-content">
+        <div class="block-content block-content-narrow">
           <form name="products_selection">
             <table id="products_table" class="table table-hover">
               <thead class="table-header">
@@ -248,7 +258,9 @@
                    <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
                    <td class="table-cell centered_text"><%%=products[idx].name%></td>
                    <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
-                   <td class="table-cell centered_text"><%%=new Number(products[idx].price).toFixed(2)%></td>
+                   <td class="table-cell centered_text"><%% if (products[idx].price != products[idx].base_price){%>
+                        <span style="text-decoration:line-through;"><%%=new Number(products[idx].base_price).toFixed(2)%></span>&nbsp;
+                        <span class="badge">oferta</span>&nbsp;<%%}%><%%=new Number(products[idx].price).toFixed(2)%></td>
                  </tr>
                 <%% } %>
                </tbody>
@@ -264,7 +276,7 @@
         <div class="block-header bg-gray-lighter">
           <h3 class="block-title"><%=t.admin_new_reservation.extras_title%></h3>
         </div>
-        <div class="block-content">
+        <div class="block-content block-content-narrow">
           <form name="extras_selection">
             <table id="extras_table" class="table">
               <thead class="table-header">
@@ -306,7 +318,7 @@
         <div class="block-header bg-gray-lighter">
           <h3 class="block-title"><%=t.admin_new_reservation.summary_title%></h3>
         </div>
-        <div class="block-content">
+        <div class="block-content block-content-narrow">
 
           <div class="list">
             <ul>

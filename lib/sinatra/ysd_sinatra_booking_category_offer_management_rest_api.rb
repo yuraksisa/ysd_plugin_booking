@@ -75,12 +75,22 @@ module Sinatra
         #
         app.post "/api/booking-offer", :allowed_usergroups => ['booking_manager', 'rates_manager', 'staff']  do
 
-          data_request = body_as_json(::Yito::Model::Rates::Discount)
-          data = ::Yito::Model::Rates::Discount.create(data_request)
+          data_request = body_as_json(::Yito::Model::Booking::BookingCategoryOffer)
+          data = ::Yito::Model::Booking::BookingCategoryOffer.new
+          # Offer
+          data.discount = ::Yito::Model::Rates::Discount.new
+          data.discount.attributes = data_request[:discount]
+          # Affected categories
+          data_request[:booking_categories].each do |category|
+            if (!data.booking_categories.any? {|item| item.code == category} and booking_category = ::Yito::Model::Booking::BookingCategory.get(category))
+              data.booking_categories << booking_category
+            end
+          end
+          data.save
 
           status 200
           content_type :json
-          data.to_json
+          data.to_json(relationships: {discount: {}, booking_categories: {only: [:code, :name]}})
 
         end
 
@@ -89,15 +99,29 @@ module Sinatra
         #
         app.put "/api/booking-offer", :allowed_usergroups => ['booking_manager', 'rates_manager', 'staff']  do
 
-          data_request = body_as_json(::Yito::Model::Rates::Discount)
+          data_request = body_as_json(::Yito::Model::Booking::BookingCategoryOffer)
 
-          if data = ::Yito::Model::Rates::Discount.get(data_request.delete(:id).to_i)
-            data.attributes=data_request
+          if data = ::Yito::Model::Booking::BookingCategoryOffer.get(data_request.delete(:id).to_i)
+            if data_request[:discount]
+              data.discount ||= ::Yito::Model::Rates::Discount.new
+              data.discount.attributes = data_request[:discount]
+            end
+            if data_request.has_key?(:booking_categories) and data_request[:booking_categories].is_a?(Array)
+              # Remove existing and not selected booking categories
+              data.offer_booking_categories.all(conditions: {'booking_category_code'.to_sym.not => data_request[:booking_categories] }).destroy
+              # Add not existing booking categories
+              data_request[:booking_categories].each do |category|
+                if (!data.booking_categories.any? {|item| item.code == category} and booking_category = ::Yito::Model::Booking::BookingCategory.get(category))
+                  data.booking_categories << booking_category
+                end
+              end
+            end
             data.save
+            content_type :json
+            data.to_json(relationships: {discount: {}, booking_categories: {only: [:code, :name]}})
+          else
+            status 404
           end
-
-          content_type :json
-          data.to_json
 
         end
 
@@ -106,16 +130,23 @@ module Sinatra
         #
         app.delete "/api/booking-offer", :allowed_usergroups => ['booking_manager', 'rates_manager', 'staff']  do
 
-          data_request = body_as_json(::Yito::Model::Rates::Discount)
+          data_request = body_as_json(::Yito::Model::Booking::BookingCategoryOffer)
 
+          result = false
           key = data_request.delete(:id).to_i
 
-          if data = ::Yito::Model::Rates::Discount.get(key)
-            data.destroy
+          data = ::Yito::Model::Booking::BookingCategoryOffer.get(key)
+          unless data.nil?
+            ::Yito::Model::Booking::BookingCategoryOffer.transaction do
+              data.discount.destroy
+              data.offer_booking_categories.destroy
+              data.destroy
+            end
           end
 
           content_type :json
-          true.to_json
+          result.to_json
+
 
         end
 
