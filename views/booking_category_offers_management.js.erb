@@ -1,0 +1,94 @@
+require(['jquery', 'YSDEntityManagement', 'YSDForms',
+        'jquery.validate','json2',
+        'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation',
+        'autonumeric'],
+    function($, EntityManagement, YSDForms) {
+
+
+        function DiscountHook() {
+
+            this.entityKey = function(entity) {
+                return entity.id;
+            }
+
+            this.onEdit = function(entity) {
+                $('#date_from').focus();
+                this.configForm(entity);
+            };
+
+            this.onNew = function() {
+                this.configForm(null);
+            }
+
+            this.onRenderEntities = function(entities) {
+                $('.elements-search').show();
+            }
+
+            this.configForm = function(entity) {
+
+                var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
+
+                $('#date_from').datepicker(
+                    {numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+                    locale);
+                $('#date_to').datepicker(
+                    {numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+                    locale);
+
+                $('#source_date_from').datepicker(
+                    {numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+                    locale);
+                $('#source_date_to').datepicker(
+                    {numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+                    locale);
+
+                if (entity) {
+                    $('#date_from').datetimepicker('setDate', entity.date_from);
+                    $('#date_to').datetimepicker('setDate', entity.date_to);
+                    $('#source_date_from').datetimepicker('setDate', entity.source_date_from);
+                    $('#source_date_to').datetimepicker('setDate', entity.source_date_to);
+                }
+
+                $('#value').autoNumeric('init',{aSep:''});
+
+                this.configValidation();
+
+            }
+
+            this.configValidation = function() {
+
+                $('#discount_management_form').validate({
+
+                        submitHandler: function(form)
+                        {
+                            return false;
+                        },
+
+                        rules : { // rules
+                        },
+
+                        messages : { // messages
+                        }
+
+                    }
+                );
+
+
+            }
+
+        };
+
+        var urls = {
+            query_url  : '/api/booking-offers',
+            create_url : '/api/booking-offer',
+            update_url : '/api/booking-offer',
+            delete_url : '/api/booking-offer',
+            get_url    : '/api/booking-offer'
+        };
+
+        var discountHook = new DiscountHook();
+        var reateFactorManager = new EntityManagement(urls, 'discount',
+            <%=discount_page_size%>, discountHook,
+            {prefix: '/admin/booking'});
+
+    });
