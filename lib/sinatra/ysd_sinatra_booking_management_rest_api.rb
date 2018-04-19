@@ -305,7 +305,7 @@ module Sinatra
 
             page = [params[:page].to_i, 1].max
             page_size = 20
-            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:creation_date.desc]}
+            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:id.desc]}
 
             if request.media_type == "application/json"
               request.body.rewind
@@ -317,7 +317,7 @@ module Sinatra
                 if search_request['status'] == 'pending'
                   data, total = BookingDataSystem::Booking.all_and_count(
                       :conditions => {:status => [:pending_confirmation], :date_from.gte => today},
-                      :order => :creation_date.desc)
+                      :order => :id.desc)
                 elsif search_request['status'] == 'in_process'
                   data, total = BookingDataSystem::Booking.all_and_count(
                       {:conditions => {:status => [:confirmed, :in_progress],

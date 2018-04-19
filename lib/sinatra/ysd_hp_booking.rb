@@ -35,6 +35,7 @@ module Sinatra
         addon_tryton = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_tryton)
         addon_simple_invoicing = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_simple_invoicing)
         addon_sales_channels = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_sales_channels)
+        addon_import = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_import)
       else
         addon_crm = (settings.respond_to?(:mybooking_addon_crm) ? settings.mybooking_addon_crm : false)
         addon_finances = (settings.respond_to?(:mybooking_addon_finances) ? settings.mybooking_addon_finances : false)
@@ -44,7 +45,8 @@ module Sinatra
         addon_journal = (settings.respond_to?(:mybooking_addon_journal) ? settings.mybooking_addon_journal : false)
         addon_tryton = (settings.respond_to?(:mybooking_addon_tryton) ? settings.mybooking_addon_tryton : false)
         addon_simple_invoicing = (settings.respond_to?(:mybooking_addon_simple_invoicing) ? settings.mybooking_addon_simple_invoicing : false)
-        addon_sales_channels = (settings.respond_to?(:mybooking_addon_sales_channels) ? settings.mybooking_addon_sales_channels : false) 
+        addon_sales_channels = (settings.respond_to?(:mybooking_addon_sales_channels) ? settings.mybooking_addon_sales_channels : false)
+        addon_import = (settings.respond_to?(:mybooking_addon_import) ? settings.mybooking_addon_import : false)
       end
 
       {addon_crm: addon_crm,
@@ -55,7 +57,8 @@ module Sinatra
        addon_journal: addon_journal,
        addon_tryton: addon_tryton,
        addon_simple_invoicing: addon_simple_invoicing,
-       addon_sales_channels: addon_sales_channels}
+       addon_sales_channels: addon_sales_channels,
+       addon_import: addon_import}
 
     end
 
