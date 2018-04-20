@@ -91,8 +91,8 @@
                     <label class="col-sm-3">Regla de las fechas de reserva</label>
                     <div class="col-sm-8">
                       <select name="reservation_dates_rule" class="form-control" id="reservation_dates_rule">
-                        <option value="from_included"  <%% if (entity.reservation_dates_rule == 'from_included'){%>selected<%%}%> >Fecha inicio reserva del cliente incluida</option>
-                        <option value="all_included" <%% if (entity.reservation_dates_rule == 'all_included'){%>selected<%%}%> >Fecha de inicio y fin de la reserva del cliente incluida</option>
+                        <option value="from_included"  <%% if (entity && entity.reservation_dates_rule == 'from_included'){%>selected<%%}%> >Fecha inicio reserva del cliente incluida</option>
+                        <option value="all_included" <%% if (entity && entity.reservation_dates_rule == 'all_included'){%>selected<%%}%> >Fecha de inicio y fin de la reserva del cliente incluida</option>
                       </select>
                     </div>
                   </div>
