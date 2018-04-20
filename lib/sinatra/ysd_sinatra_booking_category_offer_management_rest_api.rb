@@ -77,6 +77,7 @@ module Sinatra
 
           data_request = body_as_json(::Yito::Model::Booking::BookingCategoryOffer)
           data = ::Yito::Model::Booking::BookingCategoryOffer.new
+          data.reservation_dates_rule = data_request[:reservation_dates_rule]
           # Offer
           data.discount = ::Yito::Model::Rates::Discount.new
           data.discount.attributes = data_request[:discount]
@@ -102,6 +103,7 @@ module Sinatra
           data_request = body_as_json(::Yito::Model::Booking::BookingCategoryOffer)
 
           if data = ::Yito::Model::Booking::BookingCategoryOffer.get(data_request.delete(:id).to_i)
+            data.reservation_dates_rule = data_request[:reservation_dates_rule]
             if data_request[:discount]
               data.discount ||= ::Yito::Model::Rates::Discount.new
               data.discount.attributes = data_request[:discount]
