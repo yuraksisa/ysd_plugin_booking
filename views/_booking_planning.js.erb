@@ -406,6 +406,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                booking.planning_color = $(this).attr('data-planning-color');
                booking.detail = $(this).attr('data-detail');
                booking.id2 = $(this).attr('data-id-resource');
+               booking.category = $(this).attr('data-category');
+               booking.notes = $(this).attr('data-notes');
                var html = tmpl('planning_reservation_detail')({booking: booking});
                return html;
             },
@@ -603,7 +605,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
             if (item.booking_item_reference != null) {
                 this.showItemInPlanning(item.origin, item.id, item.id2, item.item_id, item.booking_item_reference,
                                         item.date_from, item.time_from, item.date_to, item.time_to,
-                                        item.title, item.planning_color, item.detail);
+                                        item.title, item.planning_color, item.detail, item.notes);
             }
 
         }
@@ -614,7 +616,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
     },
 
     showItemInPlanning(origin, id, idResource, category, resource, dateFrom, timeFrom,
-                       dateTo, timeTo, title, backgroundColor, detail) { /* Show an item in the planning */
+                       dateTo, timeTo, title, backgroundColor, detail, notes) { /* Show an item in the planning */
 
         var dFrom = dateFrom;
         var dTo = dateTo;
@@ -654,7 +656,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 dateFrom: dateFrom, timeFrom: timeFrom,
                 dateTo: dateTo, timeTo: timeTo,
                 category: category, resource: resource,
-                title: title, detail: detail,
+                title: title, detail: detail, notes: notes,
                 backgroundColor: backgroundColor,
                 borderColor: this.lightenDarkenColor(backgroundColor, -40),
                 color: this.textColor(backgroundColor)
@@ -1027,7 +1029,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                           bookingPlanningModel.planningData.push(item);
                           bookingPlanningView.showItemInPlanning(item.origin, item.id, item.id2, item.item_id,
                               item.booking_item_reference, item.date_from, item.time_from,
-                              item.date_to, item.time_to, item.title, item.planning_color, item.detail)
+                              item.date_to, item.time_to, item.title, item.planning_color, item.detail, item.notes)
                       });
                   }
 
@@ -1180,7 +1182,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                           bookingPlanningModel.planningData.push(item);
                           bookingPlanningView.showItemInPlanning(item.origin, item.id, item.id2, item.item_id,
                               item.booking_item_reference, item.date_from, item.time_from,
-                              item.date_to, item.time_to, item.title, item.planning_color, item.detail)
+                              item.date_to, item.time_to, item.title, item.planning_color, item.detail, item.notes);
                       });
 
                       bookingPlanningView.setupDraggable('.planning_reservation[data-id=' + data[0].id + ']');

@@ -202,9 +202,10 @@
                      data-title="<%%=title%>"
                      data-planning-color="<%%=backgroundColor%>"
                      data-detail="<%%=detail%>"
+                     data-notes="<%%=notes%>"
                      class="planning_reservation"
                      style="<%=@planning_style=='compact' ? 'padding: 5px;' : 'padding:2px; font-size: 10px;'%>display: inline-block; position: absolute; border: 1px solid; border-color: <%%=borderColor%>; color: <%%=color%>; background-color: <%%=backgroundColor%>; overflow:hidden; opacity: 0.75">
-    <span style="white-space: nowrap; overflow: hidden; padding-right: 2px">#<%%=id%> - <%%= title %></span>
+    <span style="white-space: nowrap; overflow: hidden; padding-right: 2px"><%% if (notes && notes.length>0){%><i class="fa fa-exclamation-triangle"></i><%%}%> #<%%=id%> - <%%= title %></span>
   </div>
 </script>
 
@@ -228,6 +229,22 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="push-5">
+            <%%=booking.category%>
+          </div>
+        </div>
+      </div>
+      <%% if (booking.notes && !booking.notes.length == 0) {%>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="push-5">
+            <%%=booking.notes%>
+          </div>
+        </div>
+      </div>
+      <%% } %>
       <div class="row" style="font-size:12px">
         <div class="col-sm-12">
           <div class="push-5">
@@ -266,6 +283,17 @@
         <div class="row">
           <div class="col-sm-12">
             <button type="button" class="btn btn-primary modify_prereservation_button" rel="<%%=booking.id%>">Editar</button>
+            <button type="button" class="destroy_prereservation_button btn btn-danger" rel="<%%=booking.id2%>">Eliminar</button>
+          </div>
+        </div>
+        <%% } %>
+      <% else %>
+        <%% if (booking.origin == 'booking') { %>
+        <br>
+        <%% } else if (booking.origin == 'prereservation') {%>
+        <br>
+        <div class="row">
+          <div class="col-sm-12">
             <button type="button" class="destroy_prereservation_button btn btn-danger" rel="<%%=booking.id2%>">Eliminar</button>
           </div>
         </div>

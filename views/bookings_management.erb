@@ -203,6 +203,22 @@
         </div>
       </div>
 
+      <!-- Simple invoicing -->
+      <% if booking_addon_simple_invoicing %>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="block">
+            <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%=t.booking_management.form.external_invoicing_tab%></h3>
+            </div>
+            <div class="block-content block-content-full">
+                  <%= partial :booking_management_external_invoicing_tab %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% end %>
+
       <!-- Resources -->
 
       <div class="row">
@@ -323,22 +339,6 @@
             </div>
             <div class="block-content block-content-full">
                   <%= partial :booking_management_rental_location %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% end %>
-
-      <!-- Simple invoicing -->
-      <% if booking_addon_simple_invoicing %>
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="block">
-            <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%=t.booking_management.form.external_invoicing_tab%></h3>
-            </div>
-            <div class="block-content block-content-full">
-                  <%= partial :booking_management_external_invoicing_tab %>
             </div>
           </div>
         </div>

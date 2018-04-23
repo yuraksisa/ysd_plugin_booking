@@ -256,7 +256,8 @@ module Sinatra
                      "title": "#{@booking.customer_name} #{@booking.customer_surname}",
                      "detail":"#{value.resource_user_name} #{value.resource_user_surname} #{value.customer_height} #{value.customer_weight}",
                      "id2": value.id,
-                     "planning_color": @booking.planning_color}
+                     "planning_color": @booking.planning_color,
+                     "notes": @booking.notes}
               end
               content_type :json
               result.to_json
@@ -318,7 +319,8 @@ module Sinatra
                        "title": "#{@booking.customer_name} #{@booking.customer_surname}",
                        "detail":"#{value.resource_user_name} #{value.resource_user_surname} #{value.customer_height} #{value.customer_weight}",
                        "id2": value.id,
-                       "planning_color": @booking.planning_color}
+                       "planning_color": @booking.planning_color,
+                       "notes": @booking.notes}
                 end
                 content_type :json
                 result.to_json
@@ -435,7 +437,8 @@ module Sinatra
                      "title": @prereservation.title,
                      "detail": @prereservation.notes,
                      "id2": value.id,
-                     "planning_color": @prereservation.planning_color}
+                     "planning_color": @prereservation.planning_color,
+                     "notes": @prereservation.notes}
               end
               content_type :json
               result.to_json
@@ -483,7 +486,8 @@ module Sinatra
                          "title": @prereservation.title,
                          "detail": @prereservation.notes,
                          "id2": value.id,
-                         "planning_color": @prereservation.planning_color}
+                         "planning_color": @prereservation.planning_color,
+                         "notes": @prereservation.notes}
                   end
                   content_type :json
                   result.to_json

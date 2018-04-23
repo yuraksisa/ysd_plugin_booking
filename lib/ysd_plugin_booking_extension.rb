@@ -77,7 +77,13 @@ module Huasi
           {value: 'compact',
            description: 'Planning style: compact or extended',
            module: :booking}
-      )      
+      )
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.assignation_hours_return_pickup'},
+          {:value => '2',
+           :description => 'Planning : Assignation hours between return - pickup',
+           :module => :booking})
       
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.notification_email'},

@@ -113,7 +113,7 @@
                 <td class="table-cell"><%= item.detail%></td>
                 <td class="table-cell"><%= item.date_from.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_from %> <% end %></td>
                 <td class="table-cell"><%= item.date_to.strftime('%d.%m.%Y') %> <%if @product_family.time_to_from%><%=item.time_to %> <% end %></td>
-                <td class="table-cell"><%= item.preassigned_item_reference %>*</td>
+                <td class="table-cell"><% if item.preassigned_item_reference && !item.preassigned_item_reference.empty?%><%= item.preassigned_item_reference %>*<%else%>No stock disponible<%end%></td>
               </tr>
             <% end %>
             </tbody>
