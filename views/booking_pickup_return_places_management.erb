@@ -102,6 +102,10 @@
                 <label class="fieldtitle"><%= t.booking_places_management.form.price.label %></label>
                 <input type="text" maxlength="5" id="price" name="price" class="fieldcontrol" <%% if (entity) { %> value="<%%= new Number(entity.price).toFixed(2) %>" <%% } else { %> value="0" <%% } %> />
               </div>
+              <div class="formrow">
+                <label class="fieldtitle"><%= t.booking_places_management.form.sort_order.label %></label>
+                <input type="text" maxlength="3" id="sort_order" name="sort_order" class="fieldcontrol" <%% if (entity) { %> value="<%%=entity.sort_order%>" <%% } %>/>
+              </div>
             <% if multiple_rental_locations %>
             <div class="formrow">
               <label class="fieldtitle"><%= t.booking_places_management.form.rental_location.label %></label>

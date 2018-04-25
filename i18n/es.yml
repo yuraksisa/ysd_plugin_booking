@@ -1141,6 +1141,8 @@ booking_places_management:
     name_required: Nombre obligatorio
     rental_location:
       label: Oficina de gestión
+    sort_order:
+      label: Orden
 booking:
   days: !!pl
     1: 1 día
