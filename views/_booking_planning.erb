@@ -206,7 +206,7 @@
                      data-notes="<%%=notes%>"
                      class="planning_reservation"
                      style="<%=@planning_style=='compact' ? 'padding: 5px;' : 'padding:2px; font-size: 10px;'%>display: inline-block; position: absolute; border: 1px solid; border-color: <%%=borderColor%>; color: <%%=color%>; background-color: <%%=backgroundColor%>; overflow:hidden; opacity: 0.75">
-    <span style="white-space: nowrap; overflow: hidden; padding-right: 2px"><%% if (notes && notes.length>0){%><i class="fa fa-exclamation-triangle"></i><%%}%> #<%%=id%> - <%%= title %></span>
+    <span style="white-space: nowrap; overflow: hidden; padding-right: 2px"><%% if (category != requestedCategory) { %><i class="fa fa-exclamation-triangle"></i><%%}%><%% if (notes && notes.length>0){%><i class="fa fa-sticky-note-o"></i><%%}%> #<%%=id%> - <%%= title %></span>
   </div>
 </script>
 
