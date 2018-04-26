@@ -155,6 +155,12 @@ module Sinatra
         # Booking configuration (notifications) - activities customer messages templates
         #
         app.get '/admin/booking/config/notifications/activities-customer-templates', :allowed_usergroups => ['booking_manager', 'staff'] do
+          if @show_translations = settings.multilanguage_site
+            @tmpl_request = ContentManagerSystem::Template.first({:name => 'order_customer_req_notification'})
+            @tmpl_request_pay_now = ContentManagerSystem::Template.first({:name => 'order_customer_req_pay_now_notification'})
+            @tmpl_confirmation = ContentManagerSystem::Template.first({:name => 'order_customer_notification'})
+            @tmpl_payment_enabled = ContentManagerSystem::Template.first({:name => 'order_customer_notification_payment_enabled'})
+          end
           load_page(:config_booking_activities_notifications_customer_templates)
         end
 

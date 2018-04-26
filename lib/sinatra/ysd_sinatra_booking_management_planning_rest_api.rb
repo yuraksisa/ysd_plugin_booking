@@ -246,6 +246,7 @@ module Sinatra
                 result <<
                     {"booking_item_reference": value.booking_item_reference,
                      "item_id": value.booking_item_category,
+                     "requested_item_id": value.booking_line.item_id,
                      "id": @booking.id,
                      "origin": "booking",
                      "date_from": @booking.date_from.strftime("%Y-%m-%d"),
@@ -309,6 +310,7 @@ module Sinatra
                   result <<
                       {"booking_item_reference": value.booking_item_reference,
                        "item_id": value.booking_item_category,
+                       "requested_item_id": value.booking_line.item_id,
                        "id": @booking.id,
                        "origin": "booking",
                        "date_from": @booking.date_from.strftime("%Y-%m-%d"),
@@ -427,6 +429,7 @@ module Sinatra
                 result <<
                     {"booking_item_reference": value.booking_item_reference,
                      "item_id": value.booking_item_category,
+                     "requested_item_id": value.booking_item_category,
                      "id": @prereservation.id,
                      "origin": "prereservation",
                      "date_from": @prereservation.date_from.strftime("%Y-%m-%d"),
@@ -476,6 +479,7 @@ module Sinatra
                     result <<
                         {"booking_item_reference": value.booking_item_reference,
                          "item_id": value.booking_item_category,
+                         "requested_item_id": value.booking_item_category,
                          "id": @prereservation.id,
                          "origin": "prereservation",
                          "date_from": @prereservation.date_from.strftime("%Y-%m-%d"),

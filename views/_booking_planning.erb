@@ -195,6 +195,7 @@
   <div id="<%%=origin%><%%=id%>" data-origin="<%%=origin%>"
                      data-id="<%%=id%>"
                      data-category="<%%=category%>"
+                     data-requested-category="<%%=requestedCategory%>"
                      data-date-from="<%%=dateFrom%>" data-time-from="<%%=timeFrom%>"
                      data-date-to="<%%=dateTo%>" data-time-to="<%%=timeTo%>"
                      data-resource="<%%=resource%>"
@@ -232,7 +233,7 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="push-5">
-            <%%=booking.category%>
+            <%%=booking.category%> <%% if (booking.category != booking.requestedCategory) {%> (<%%=booking.requestedCategory%>)<%%}%>
           </div>
         </div>
       </div>
