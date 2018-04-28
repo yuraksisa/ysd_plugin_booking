@@ -49,13 +49,13 @@ require(['jquery','YSDForms'], function($, YSDForms) {
 
         updateRentingPaymentSettings: function() {
             if ($('input[name=booking\\.payment]').is(':checked')) {
-                $('#renting_payment_settings').show();
+                //$('#renting_payment_settings').show();
                 $('#booking\\.payment_amount_setup').bind('change', function(){
                    bookingPaymentSettingsController.rentBookingPaymentAmountSetupChange();
                 });
             }
             else {
-                $('#renting_payment_settings').hide();
+                //$('#renting_payment_settings').hide();
                 $('#booking.payment_amount_setup').unbind('change');
             }
         },
@@ -73,13 +73,13 @@ require(['jquery','YSDForms'], function($, YSDForms) {
 
         updateOrdersPaymentSettings: function() {
             if ($('input[name=order\\.payment]').is(':checked')) {
-                $('#order_payment_settings').show();
+                //$('#order_payment_settings').show();
                 $('#order\\.payment_amount_setup').bind('change', function(){
                     bookingPaymentSettingsController.orderBookingPaymentAmountSetupChange();
                 });
             }
             else {
-                $('#order_payment_settings').hide();
+                //$('#order_payment_settings').hide();
                 $('#order\\.payment_amount_setup').unbind('change');
             }
         },

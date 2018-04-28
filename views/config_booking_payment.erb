@@ -16,6 +16,8 @@
           <form name="variables" action="/api/variables" method="PUT"
                 data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
             <%= render_variable_checkbox_boolean('booking.payment', t.booking_settings.form.payment) %>
+            <p class="less_contrast_text"><%=t.booking_settings.form.payment_description%></p>
+            <hr>
             <div id="renting_payment_settings">
               <%= render_variable_select('booking.payment_amount_setup',
                                          t.booking_settings.form.pay_group.title,
@@ -23,13 +25,13 @@
                                           total: t.booking_settings.form.pay_group.total}) %>
               <div id="renting_deposit_settings">
                 <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
-                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.deposit_description%></p>
+                <p class="less_contrast_text"><%=t.booking_settings.form.deposit_description%></p>
                 <%= render_variable_checkbox_boolean('booking.allow_pending_payment', t.booking_settings.form.pay_group.allow_pending_payment) %>
-                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.pay_group.allow_pending_payment_description%></p>
+                <p class="less_contrast_text"><%=t.booking_settings.form.pay_group.allow_pending_payment_description%></p>
               </div>
               <hr>
               <%= render_variable_input_text('booking.payment_cadence', t.booking_settings.form.payment_cadence, 2, 2) %>
-              <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.payment_cadence_description%></p>
+              <p class="less_contrast_text"><%=t.booking_settings.form.payment_cadence_description%></p>
             </div>
             <div class="form-group">
               <div class="col-xs-12">
@@ -53,20 +55,22 @@
             <form name="variables" action="/api/svariables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <%= render_variable_checkbox_boolean('order.payment', t.booking_settings.form.activities_payment) %>
+              <p class="less_contrast_text"><%=t.booking_settings.form.payment_description%></p>
+              <hr>
               <div id="order_payment_settings">
                 <%= render_variable_select('order.payment_amount_setup',
-                                           t.booking_settings.form.payment_group.title,
+                                           t.booking_settings.form.pay_group.title,
                                            {deposit: t.booking_settings.form.pay_group.deposit,
                                             total: t.booking_settings.form.pay_group.total}) %>
                 <div id="order_deposit_settings">
                   <%= render_variable_input_text('order.deposit', t.booking_settings.form.deposit, 2, 2) %>
-                  <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.deposit_description%></p>
+                  <p class="less_contrast_text"><%=t.booking_settings.form.deposit_description%></p>
                   <%= render_variable_checkbox_boolean('order.allow_pending_payment', t.booking_settings.form.pay_group.allow_pending_payment) %>
-                  <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.pay_group.allow_pending_payment_description%></p>
+                  <p class="less_contrast_text"><%=t.booking_settings.form.pay_group.allow_pending_payment_description%></p>
                 </div>
                 <hr>
                 <%= render_variable_input_text('order.payment_cadence', t.booking_settings.form.activities_payment_cadence, 2, 2) %>
-                <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.activities_payment_cadence_description%></p>
+                <p class="less_contrast_text"><%=t.booking_settings.form.activities_payment_cadence_description%></p>
               </div>
               <div class="form-group">
                 <div class="col-xs-12">

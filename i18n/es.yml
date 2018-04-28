@@ -115,7 +115,7 @@ booking_settings:
     deposit_payment_group: Paga y señal
     total_payment_group: Total
     pay_group:
-      title: Cantidad a pagar al realizar la reserva
+      title: Cantidad a pagar online
       deposit: Paga y señal
       total: Total
       allow_pending_payment: Permite pagar la cantidad pendiente
@@ -123,7 +123,7 @@ booking_settings:
     product_allow_deposit: Permitir definir una fianza en los productos.
     product_allow_deposit_description: Es un importe que se retiene al cliente en concepto de posibles daños sobre el producto. Se retorna al realizar la devolución del producto en buen estado
     deposit: "% de paga y señal sobre el total de la reserva"
-    deposit_description: En el caso de que se quiera permitir recibir una cantidad en concepto de paga y señal, indicar el porcentaje. Utilizar 0 si sólo se desea recibir el pago total.
+    deposit_description: "Indique el % sobre el total de reserva que quiere establecer como la cantidad de paga y señal"
     deposit_includes_product_deposit: "La paga y señal incluye la fianza"
     deposit_includes_product_deposit_description: Marque esta opción si desea que el importe de paga y señal se calcule incluyendo la fianza de los productos contratados.
     total_cost_includes_deposit: "El total incluye la fianza"
@@ -145,7 +145,8 @@ booking_settings:
     pickup_return_timetable: Horario entrega/devolución
     pickup_return_timetable_description: Permite indicar el horario de entrega/devolución
     pickup_return_timetable_out_price: Precio entrega/devolución fuera de horas
-    payment: Pago online habilitado
+    payment: Pago online habilitado al realizar reserva
+    payment_description: Habilite esta opción si desea permitir que el usuario pueda realizar el pago al realizar la reserva. Si no marca esta opción, deberá habilitar el pago de forma explícita para cada reserva.
     morning_turns: Mañana
     afternoon_turns: Tarde 
     night_turns: Noche
@@ -176,7 +177,7 @@ booking_settings:
     activities_item_hold_time_description: Número de horas desde la recepción del pedido durante las cuales se puede realizar el pago (parcial o total) para confirmarlo. Pasado este tiempo no se podrá realizar el pago del pedido a no ser que se habilite explícitamente para el pedido.
     activities_request_reservation: Permitir realizar sólo solicitud (sin pago online)
     activities_request_reservation_description: Permite realizar sólo la solicitud de una actividad sin tener que realizar el pago online. Permite captar la solicitud del cliente y disponer de sus datos de contacto.
-    activities_payment: Pago online habilitado
+    activities_payment: Pago online habilitado al realizar reserva
     activities_deposit: "% de paga y señal sobre el total de la reserva"
     activities_allow_deposit_payment: Permitir el pago de la paga y señal
     activities_allow_total_payment: Permitir el pago total del pedido
