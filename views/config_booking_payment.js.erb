@@ -1,8 +1,105 @@
 require(['jquery','YSDForms'], function($, YSDForms) {
 
+
+    bookingPaymentSettingsModel = {
+
+    };
+
+    bookingPaymentSettingsController = {
+
+        rentBookingPaymentChange: function() {
+            bookingPaymentSettingsView.updateRentingPaymentSettings();
+        },
+
+        rentBookingPaymentAmountSetupChange: function () {
+            bookingPaymentSettingsView.updateRentingPaymentDepositSettings();
+        },
+
+        orderBookingPaymentChange: function() {
+            bookingPaymentSettingsView.updateOrdersPaymentSettings();
+        },
+
+        orderBookingPaymentAmountSetupChange: function () {
+            bookingPaymentSettingsView.updateOrdersPaymentDepositSettings();
+        },
+
+    };
+
+    bookingPaymentSettingsView = {
+
+        init: function() {
+
+            YSDForms.improve();
+            <% if booking_renting %>
+            this.updateRentingPaymentSettings();
+            this.updateRentingPaymentDepositSettings();
+            $('input[name=booking\\.payment]').bind('change', function() {
+               bookingPaymentSettingsController.rentBookingPaymentChange();
+            });
+            $('#')
+            <% end %>
+            <% if booking_activities %>
+            this.updateOrdersPaymentSettings();
+            this.updateOrdersPaymentDepositSettings();
+            $('input[name=order\\.payment]').bind('change', function() {
+                bookingPaymentSettingsController.orderBookingPaymentChange();
+            });
+            <% end %>
+        },
+
+        updateRentingPaymentSettings: function() {
+            if ($('input[name=booking\\.payment]').is(':checked')) {
+                $('#renting_payment_settings').show();
+                $('#booking\\.payment_amount_setup').bind('change', function(){
+                   bookingPaymentSettingsController.rentBookingPaymentAmountSetupChange();
+                });
+            }
+            else {
+                $('#renting_payment_settings').hide();
+                $('#booking.payment_amount_setup').unbind('change');
+            }
+        },
+
+        updateRentingPaymentDepositSettings: function() {
+            if ($('input[name=booking\\.payment]').is(':checked')) {
+                if ($('#booking\\.payment_amount_setup').val() == 'deposit') {
+                    $('#renting_deposit_settings').show();
+                }
+                else {
+                    $('#renting_deposit_settings').hide();
+                }
+            }
+        },
+
+        updateOrdersPaymentSettings: function() {
+            if ($('input[name=order\\.payment]').is(':checked')) {
+                $('#order_payment_settings').show();
+                $('#order\\.payment_amount_setup').bind('change', function(){
+                    bookingPaymentSettingsController.orderBookingPaymentAmountSetupChange();
+                });
+            }
+            else {
+                $('#order_payment_settings').hide();
+                $('#order\\.payment_amount_setup').unbind('change');
+            }
+        },
+
+        updateOrdersPaymentDepositSettings: function() {
+            if ($('input[name=order\\.payment]').is(':checked')) {
+                if ($('#order\\.payment_amount_setup').val() == 'deposit') {
+                    $('#order_deposit_settings').show();
+                }
+                else {
+                    $('#order_deposit_settings').hide();
+                }
+            }
+        },
+
+    };
+
     $(document).ready(function() {
 
-        YSDForms.improve();
+        bookingPaymentSettingsView.init();
     });
 
 });

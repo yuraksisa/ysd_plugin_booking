@@ -114,6 +114,12 @@ booking_settings:
     activities: Gestión de actividades o eventos
     deposit_payment_group: Paga y señal
     total_payment_group: Total
+    pay_group:
+      title: Cantidad a pagar al realizar la reserva
+      deposit: Paga y señal
+      total: Total
+      allow_pending_payment: Permite pagar la cantidad pendiente
+      allow_pending_payment_description: Permite pagar el importe pendiente (tras pagar el depósito)
     product_allow_deposit: Permitir definir una fianza en los productos.
     product_allow_deposit_description: Es un importe que se retiene al cliente en concepto de posibles daños sobre el producto. Se retorna al realizar la devolución del producto en buen estado
     deposit: "% de paga y señal sobre el total de la reserva"

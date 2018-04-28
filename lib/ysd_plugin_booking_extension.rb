@@ -34,22 +34,21 @@ module Huasi
     #
     def install(context={})
 
-      #
-      # Common settings
-      #
+      # Business configuration
 
       SystemConfiguration::Variable.first_or_create(
-        {name: 'booking.front_end_prefix'},
-        {value: '',
-                  description: 'The front-end site url if the front-end is detached from the backoffice',
-                  module: :booking}
-      )
-      
+          {:name => 'booking.item_family'},
+          {:value => 'place',
+           :description => 'Booking family: place or other',
+           :module => :booking})
+
       SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.mode'},
-        {:value => 'rent',
-         :description => 'Booking mode: rent',
-         :module => :booking})
+          {:name => 'booking.item_type'},
+          {:value => 'apartment',
+           :description => 'Booking Type : car, apartment, bike, motorbike, room',
+           :module => :booking})
+
+      # Planning
 
       SystemConfiguration::Variable.first_or_create(
           {name: 'booking.assignation.automatic_resource_assignation'},
@@ -59,10 +58,10 @@ module Huasi
       )
 
       SystemConfiguration::Variable.first_or_create(
-         {name: 'booking.assignation.allow_different_category'},
-         {value: 'true',
-                   description: 'It allows to assign a different category resource to a reservation',
-                   module: :booking}
+          {name: 'booking.assignation.allow_different_category'},
+          {value: 'true',
+           description: 'It allows to assign a different category resource to a reservation',
+           module: :booking}
       )
 
       SystemConfiguration::Variable.first_or_create(
@@ -84,55 +83,39 @@ module Huasi
           {:value => '2',
            :description => 'Planning : Assignation hours between return - pickup',
            :module => :booking})
-      
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.notification_email'},
-        {:value => '',
-         :description => 'Bookings notification email',
-         :module => :booking})      
+
+      # Online payment
 
       SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.deposit'},
-        {:value => '40',
-         :description => 'Deposit percentage or 0 if no deposit management',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.products.allow_deposit'},
+          {:name => 'booking.payment'},
           {:value => 'false',
-           :description => 'It allows to setup if the products can define a deposit',
+           :description => 'Integrate the payment in the booking process. Values: true, false',
            :module => :booking})
 
+      SystemConfiguration::Variable.first_or_create({name: 'booking.payment_amount_setup'},
+                                                    {value: 'deposit',
+                                                     description: 'deposit or total',
+                                                     module: :booking}
+      )
 
       SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.booking_amount_includes_deposit'},
-          {:value => 'true',
-           :description => 'The deposit (booking amount) to confirm the reservation includes the deposit',
+          {:name => 'booking.deposit'},
+          {:value => '40',
+           :description => 'Deposit percentage or 0 if no deposit management',
            :module => :booking})
 
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.total_cost_includes_deposit'},
-          {:value => 'false',
-           :description => 'The deposit is included in the total cost',
-           :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.allow_total_payment'},
-        {:value => 'true',
-         :description => 'Allow total payment. Values: true, false',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.payment'},
-        {:value => 'false',
-         :description => 'Integrate the payment in the booking process. Values: true, false',
-         :module => :booking})
+      SystemConfiguration::Variable.first_or_create({name: 'booking.allow_pending_payment'},
+                  {value: 'true',
+                  description: 'Allow to pay the pending amount (after the deposit payment)',
+                  module: :booking})
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.payment_cadence'},
         {:value => '48',
          :description => 'Cadence in hours from the reservation date to today',
          :module => :booking})
+
+      # Reservation settings
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.item_hold_time'},
@@ -147,33 +130,9 @@ module Huasi
            :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.send_notifications'},
-          {:value => 'true',
-           :description => 'Send notifications by email',
-           :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.send_notifications_backoffice_reservations'},
-          {:value => 'true',
-           :description => 'Send notifications for reservations created in the backoffice',
-           :module => :booking})      
-
-      SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.min_days'},
         {:value => '1',
          :description => 'Minimum number of days you must book',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.item_family'},
-        {:value => 'place',
-         :description => 'Booking family: place or other',
-         :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.item_type'},
-        {:value => 'apartment',
-         :description => 'Booking Type : car, apartment, bike, motorbike, room',
          :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
@@ -232,6 +191,8 @@ module Huasi
           {:value => '',
            :description => 'Pickup and return places timetable out of season'})
 
+      # Reservation settings : driver
+
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.driver_min_age.rules'},
           {:value => 'false',
@@ -249,15 +210,66 @@ module Huasi
            :description => 'Allow editing the driver age and driver license date in the driver block'}
       )
 
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.renting'},
-        {:value => 'true',
-         :description => 'Allow renting integration'})
+      # Reservation settings : adults / children
 
       SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.activities'},
-        {:value => 'false',
-         :description => 'Allow activities integration'})
+          {:name => 'booking.min_adults'},
+          {:value => '',
+           :description => 'Booking min adults',
+           :module => :booking}
+      )
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.max_adults'},
+          {:value => '',
+           :description => 'Booking max adults',
+           :module => :booking}
+      )
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.max_adults_extra'},
+          {:value => '',
+           :description => 'Booking max adults (extra)',
+           :module => :booking}
+      )
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.min_children'},
+          {:value => '',
+           :description => 'Booking min children',
+           :module => :booking}
+      )
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.max_children'},
+          {:value => '',
+           :description => 'Booking max children',
+           :module => :booking}
+      )
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.max_children_extra'},
+          {:value => '',
+           :description => 'Booking max children (extra)',
+           :module => :booking}
+      )
+
+      # Notifications
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.notification_email'},
+          {:value => '',
+           :description => 'Bookings notification email',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.send_notifications'},
+          {:value => 'true',
+           :description => 'Send notifications by email',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.send_notifications_backoffice_reservations'},
+          {:value => 'true',
+           :description => 'Send notifications for reservations created in the backoffice',
+           :module => :booking})
+
+      # SEO
       
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.page_title'},
@@ -276,6 +288,8 @@ module Huasi
         {:value => 'booking',
          :description => 'Booking page keywords',
          :module => :booking})
+
+      # Turns
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.morning_turns'},
@@ -314,47 +328,8 @@ module Huasi
          :module => :booking}
         )
 
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.min_adults'},
-        {:value => '',
-         :description => 'Booking min adults',
-         :module => :booking}
-        )
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.max_adults'},
-        {:value => '',
-         :description => 'Booking max adults',
-         :module => :booking}
-        )
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.max_adults_extra'},
-        {:value => '',
-         :description => 'Booking max adults (extra)',
-         :module => :booking}
-        )
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.min_children'},
-        {:value => '',
-         :description => 'Booking min children',
-         :module => :booking}
-        )
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.max_children'},
-        {:value => '',
-         :description => 'Booking max children',
-         :module => :booking}
-        )
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.max_children_extra'},
-        {:value => '',
-         :description => 'Booking max children (extra)',
-         :module => :booking}
-        )
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.people_resources'},
-        {:value => '',
-         :description => 'Booking people resources',
-         :module => :booking})
+      # Timetable (scheduler)
+
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.scheduler_start_time'},
         {:value => '',
@@ -365,22 +340,13 @@ module Huasi
         {:value => '',
          :description => 'Booking scheduler finish time',
          :module => :booking})
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.renting_calendar_season_mode'},
-        {:value => 'first_day',
-         :description => 'Calendar for season: first_day, default',
-         :module => :booking})
+
+      # Price calculation
 
       SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.multiple_rental_locations'},
-          {:value => 'false',
-           :description => 'There are multiple rental locations',
-           :module => :booking})
-
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.multiple_rental_locations_allow_operator_all_locations'},
-          {:value => 'false',
-           :description => 'Check if the booking operators can show all locations in pickup/return report',
+          {:name => 'booking.renting_calendar_season_mode'},
+          {:value => 'first_day',
+           :description => 'Calendar for season: first_day, default',
            :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
@@ -406,6 +372,47 @@ module Huasi
           {:value => 'false',
            :description => 'Each product category has it\'s own factor definition instance',
            :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.products.allow_deposit'},
+          {:value => 'false',
+           :description => 'It allows to setup if the products can define a deposit',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.booking_amount_includes_deposit'},
+          {:value => 'true',
+           :description => 'The deposit (booking amount) to confirm the reservation includes the deposit',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.total_cost_includes_deposit'},
+          {:value => 'false',
+           :description => 'The deposit is included in the total cost',
+           :module => :booking})
+
+      # Multiple rental locations
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.multiple_rental_locations'},
+          {:value => 'false',
+           :description => 'There are multiple rental locations',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.multiple_rental_locations_allow_operator_all_locations'},
+          {:value => 'false',
+           :description => 'Check if the booking operators can show all locations in pickup/return report',
+           :module => :booking})
+
+      # Frontend
+
+      SystemConfiguration::Variable.first_or_create(
+          {name: 'booking.front_end_prefix'},
+          {value: '',
+           description: 'The front-end site url if the front-end is detached from the backoffice',
+           module: :booking}
+      )
 
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.inner_reservation_engine'},
@@ -726,44 +733,42 @@ module Huasi
           today = Date.today
           year = today.year
 
-          booking_mode = SystemConfiguration::Variable.get_value('booking.mode','rent')
           use_factors = SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool
 
           booking_renting, booking_activities = app.mybooking_plan
           addons = app.mybooking_addons
 
-          if booking_mode == 'rent'
-            menu_locals = {booking_renting: booking_renting,
-                           booking_activities: booking_activities,
-                           addons: addons,
-                           use_factors: use_factors,
-                           use_inner_reservation_engine: SystemConfiguration::Variable.get_value('booking.inner_reservation_engine','false').to_bool}
-            if booking_renting
-              menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
-              menu_locals.store(:today_pickup, BookingDataSystem::Booking.pickup_list(today, today, nil, true).size) #BookingDataSystem::Booking.count_pickup(today))
-              menu_locals.store(:today_return, BookingDataSystem::Booking.return_list(today, today, nil, true).size)#BookingDataSystem::Booking.count_delivery(today))
-              menu_locals.store(:pending_assignation, BookingDataSystem::Booking.pending_of_assignation.size)
-            end
-            if booking_activities
-              menu_locals.store(:pending_confirmation_activities, ::Yito::Model::Order::Order.count_pending_confirmation_orders(year))
-              menu_locals.store(:today_start_activities, ::Yito::Model::Order::Order.count_start(today))
-            end
-            menu_locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
-            if block_name == 'booking_admin_menu'
-              begin
-                product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-                if product_family.code == 'hostel'
-                  app.partial(:booking_menu_hostel, :locals => menu_locals)
-                else
-                  app.partial(:booking_menu, :locals => menu_locals)
-                end
-              rescue => error
-                p "error: #{error.inspect}"
-              end
-            else
-              app.partial(:booking_operator_menu, :locals => menu_locals)
-            end
+          menu_locals = {booking_renting: booking_renting,
+                         booking_activities: booking_activities,
+                         addons: addons,
+                         use_factors: use_factors,
+                         use_inner_reservation_engine: SystemConfiguration::Variable.get_value('booking.inner_reservation_engine','false').to_bool}
+          if booking_renting
+            menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
+            menu_locals.store(:today_pickup, BookingDataSystem::Booking.pickup_list(today, today, nil, true).size) #BookingDataSystem::Booking.count_pickup(today))
+            menu_locals.store(:today_return, BookingDataSystem::Booking.return_list(today, today, nil, true).size)#BookingDataSystem::Booking.count_delivery(today))
+            menu_locals.store(:pending_assignation, BookingDataSystem::Booking.pending_of_assignation.size)
           end
+          if booking_activities
+            menu_locals.store(:pending_confirmation_activities, ::Yito::Model::Order::Order.count_pending_confirmation_orders(year))
+            menu_locals.store(:today_start_activities, ::Yito::Model::Order::Order.count_start(today))
+          end
+          menu_locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
+          if block_name == 'booking_admin_menu'
+            begin
+              product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+              if product_family.code == 'hostel'
+                app.partial(:booking_menu_hostel, :locals => menu_locals)
+              else
+                app.partial(:booking_menu, :locals => menu_locals)
+              end
+            rescue => error
+              p "error: #{error.inspect}"
+            end
+          else
+            app.partial(:booking_operator_menu, :locals => menu_locals)
+          end
+
       end
       
     end

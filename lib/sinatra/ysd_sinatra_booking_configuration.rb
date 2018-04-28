@@ -14,8 +14,7 @@ module Sinatra
 
           booking_renting, booking_activities = mybooking_plan
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :calendar_modes => {
                         :first_day =>  t.booking_settings.form.calendar_mode.first_day,
                         :default => t.booking_settings.form.calendar_mode.default
@@ -34,8 +33,7 @@ module Sinatra
 
           booking_renting, booking_activities = mybooking_plan
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :calendar_modes => {
                         :first_day =>  t.booking_settings.form.calendar_mode.first_day,
                         :default => t.booking_settings.form.calendar_mode.default
@@ -56,8 +54,7 @@ module Sinatra
           booking_renting, booking_activities = mybooking_plan
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           use_factors = SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :calendar_modes => {
                         :first_day =>  t.booking_settings.form.calendar_mode.first_day,
                         :default => t.booking_settings.form.calendar_mode.default
@@ -92,8 +89,7 @@ module Sinatra
           booking_renting, booking_activities = mybooking_plan
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :multiple_locations => multiple_locations}
           locals.store(:booking_item_family, booking_item_family)
           locals.store(:booking_renting, booking_renting)
@@ -109,8 +105,7 @@ module Sinatra
         app.get '/admin/booking/config/payment', :allowed_usergroups => ['booking_manager', 'staff'] do
           booking_renting, booking_activities = mybooking_plan
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
           locals.store(:booking_item_family, booking_item_family)
           locals.store(:booking_renting, booking_renting)
           locals.store(:booking_activities, booking_activities)
@@ -123,8 +118,7 @@ module Sinatra
         app.get '/admin/booking/config/notifications', :allowed_usergroups => ['booking_manager', 'staff'] do
           booking_renting, booking_activities = mybooking_plan
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:booking_mode => SystemConfiguration::Variable.get_value('booking.mode','rent'),
-                    :families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
           locals.store(:booking_item_family, booking_item_family)
           locals.store(:booking_renting, booking_renting)
           locals.store(:booking_activities, booking_activities)
