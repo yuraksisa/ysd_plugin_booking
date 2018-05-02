@@ -316,8 +316,8 @@ module Sinatra
                 first_year_date = Date.civil(today.year, 1, 1)
                 if search_request['status'] == 'pending'
                   data, total = BookingDataSystem::Booking.all_and_count(
-                      :conditions => {:status => [:pending_confirmation], :date_from.gte => today},
-                      :order => :id.desc)
+                      {:conditions => {:status => [:pending_confirmation],
+                                       :date_from.gte => today}}.merge(offset_order_query))
                 elsif search_request['status'] == 'in_process'
                   data, total = BookingDataSystem::Booking.all_and_count(
                       {:conditions => {:status => [:confirmed, :in_progress],

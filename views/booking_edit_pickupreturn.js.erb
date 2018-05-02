@@ -56,7 +56,7 @@
 
           return_place: "<%=booking.custom_return_place ? 'other' : (booking.return_place ? booking.return_place.gsub("\n","<br/>") : '')%>",
           custom_return_place: <%=booking.custom_return_place%>,
-          return_place_other: "<%=booking.custom_return_place ? booking.return_place_other : ''%>",
+          return_place_other: "<%=booking.custom_return_place ? booking.return_place : ''%>",
 
           days: <%=booking.days%>,
           date_to_price_calculation: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to_price_calculation.strftime('%d/%m/%y')%>"),

@@ -415,9 +415,14 @@ module Sinatra
                 # Process
                 references = model_request[:references]
                 references.each do |category, references|
-                  references.each do |reference|
-                    @prereservation.prereservation_lines << BookingDataSystem::BookingPrereservationLine.new(booking_item_category: category,
-                                                                                                             booking_item_reference: reference)
+                  if references.is_a?(Array)
+                    references.each do |reference|
+                      @prereservation.prereservation_lines << BookingDataSystem::BookingPrereservationLine.new(booking_item_category: category,
+                                                                                                               booking_item_reference: reference)
+                    end
+                  elsif references.is_a?(String)
+                    @prereservation.preservation_lines << BookingDataSystem::BookingPrereservationLine.new(booking_item_category: category,
+                                                                                                           booking_item_reference: references)
                   end
                 end
               end
