@@ -261,6 +261,7 @@ module Sinatra
            if booking = BookingDataSystem::Booking.get(params[:id])
              product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
              if contract_template = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+               contract_template = contract_template.translate(booking.customer_language)
                content_type 'application/pdf'
                eval contract_template.text
              else

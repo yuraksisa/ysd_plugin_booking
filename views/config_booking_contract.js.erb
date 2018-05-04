@@ -4,5 +4,14 @@ require(['jquery', 'YSDForms'], function($, YSDForms) {
 
       YSDForms.improve();
 
+      // Embed translations
+      <% if @show_translations and @tmpl %>
+      $.ajax({url: '/admin/cms/translate/template/'+ <%=@tmpl.id%>, dataType: 'text'}).done(function(html) {
+          var dom = $('<html />').prop('innerHTML', html);
+          $('#contract_container').html(dom.find('body #page_wrapper'));
+          $('head').append(dom.find('script:not([src])'));
+      });
+      <% end %>
+
   });
 });
