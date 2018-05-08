@@ -176,6 +176,16 @@ module Sinatra
         end
 
         #
+        # Booking configuration frontend
+        #
+        app.get '/admin/booking/config/front-end-setup', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          @renting_plan, @activities_plan = mybooking_plan
+
+          load_page(:config_booking_frontend_setup)
+        end
+
+        #
         # Booking configuration frontend theme
         #
         app.get '/admin/booking/config/front-end-theme', :allowed_usergroups => ['booking_manager', 'staff'] do
@@ -188,15 +198,27 @@ module Sinatra
         #
         # Booking configuration frontend
         #
-        app.get '/admin/booking/config/front-end', :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get '/admin/booking/config/front-end-contents', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          @renting_plan, @activities_plan = mybooking_plan
 
           @pages = ContentManagerSystem::Content.all(conditions: { type: 'page' },
                                                      order: [:title])
           @primary_links_menu = ::Site::Menu.first(name: 'primary_links')
           @secondary_links_menu = ::Site::Menu.first(name: 'secondary_links')
+
+          if @renting_plan and @activities_plan
+            if (@show_activities_menu = SystemConfiguration::Variable.get_value('booking.frontend.activities_menu','false').to_bool)
+              @primary_links_activities_menu = ::Site::Menu.first(name: 'primary_links_activities')
+              @secondary_links_activities_menu = ::Site::Menu.first(name: 'secondary_links_activities')
+            end
+          else
+            @show_activities_menu = false
+          end
+
           @translations = settings.multilanguage_site
 
-          load_page(:config_booking_frontend)
+          load_page(:config_booking_frontend_contents)
         end
 
 

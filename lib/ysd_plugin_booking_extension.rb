@@ -700,10 +700,7 @@ module Huasi
         :theme => Themes::ThemeManager.instance.selected_theme.name},
        {:name => 'booking_operator_menu',
         :module_name => :booking,
-        :theme => Themes::ThemeManager.instance.selected_theme.name},
-       {:name => 'booking_activities_shopping_cart',
-        :module_name => :booking,
-        :theme => Themes::ThemeManager.instance.selected_theme.name}       
+        :theme => Themes::ThemeManager.instance.selected_theme.name}
       ]
         
     end
@@ -726,9 +723,6 @@ module Huasi
       locals = {}
 
       case block_name
-        when 'booking_activities_shopping_cart'
-          shopping_cart = ::Yito::Model::Order::ShoppingCart.get(app.session[:shopping_cart_id]) || ::Yito::Model::Order::ShoppingCart.new
-          app.partial(:activities_shopping_cart, :locals => {shopping_cart: shopping_cart}) 
         when 'booking_operator_menu', 'booking_admin_menu'
           today = Date.today
           year = today.year

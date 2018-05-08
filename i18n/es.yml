@@ -208,6 +208,9 @@ booking_settings:
     driver_min_age_driving_license_years_max: Número de años carnet conducir pago fianza
     driver_min_age_driving_license_years_max_description: Número de años carnet conducir pago fianza
     driver_min_age_driving_license_years_deposit: Importe fianza
+    frontend:
+      activities_menu: Venta de actividades tiene menús (principal y secundarios) propios
+      activities_menu_description: En el caso de tener un plan con alquiler y actividades, desea que la pantallas del proceso de actividades tenga un menú propio e independiente de las pantallas de alquiler
 booking_notification_settings:
   renting_customer_notification_template_title: Plantillas notificaciones alquiler clientes
   renting_manager_notification_template_title: Plantillas notificaciones alquiler gestor

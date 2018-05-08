@@ -37,6 +37,7 @@
 
     <div class="row">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <hr>
         <div class="block ">
           <div class="block-header bg-gray-lighter">
             <ul class="block-options">
@@ -44,7 +45,7 @@
                 <button class="new_menu_item_button" rel="<%=@primary_links_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
-            <h3 class="block-title">Menú principal</h3>
+            <h3 class="block-title">Menú principal <% if @show_activities_menu %>alquiler<%end%></h3>
           </div>
           <div id="primary_links_container" class="block-content block-content-narrow">
             <%= partial :menu, locals: {menu: @primary_links_menu} %>
@@ -64,7 +65,7 @@
                 <button class="new_menu_item_button" rel="<%=@secondary_links_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
-            <h3 class="block-title">Menú secundario</h3>
+            <h3 class="block-title">Menú secundario <% if @show_activities_menu %>alquiler<%end%></h3>
           </div>
           <div id="secondary_links_container" class="block-content block-content-narrow">
             <%= partial :menu, locals: {menu: @secondary_links_menu} %>
@@ -72,6 +73,51 @@
         </div>
       </div>
     </div>
+
+    <% if @show_activities_menu %>
+
+      <!-- Web primary links activities menu -->
+
+      <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <hr>
+          <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <ul class="block-options">
+                <li>
+                  <button class="new_menu_item_button" rel="<%=@primary_links_activities_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
+                </li>
+              </ul>
+              <h3 class="block-title">Menú principal actividades</h3>
+            </div>
+            <div id="primary_links_activities_container" class="block-content block-content-narrow">
+              <%= partial :menu, locals: {menu: @primary_links_activities_menu} %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Web secundary links activities menu -->
+
+      <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <ul class="block-options">
+                <li>
+                  <button class="new_menu_item_button" rel="<%=@secondary_links_activities_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
+                </li>
+              </ul>
+              <h3 class="block-title">Menú secundario actividades</h3>
+            </div>
+            <div id="secondary_links_activities_container" class="block-content block-content-narrow">
+              <%= partial :menu, locals: {menu: @secondary_links_activities_menu} %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
 
   </div>
 </div>
