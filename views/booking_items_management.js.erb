@@ -37,6 +37,12 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       });
       $('#change_reference_modal_button').bind('click', function(){
           $('input[name=new_reference]').val(entity.reference);
+          $('input[name=new_reference]').unbind('input');
+          $('input[name=new_reference]').bind('input', function(){
+              $(this).val(function(_, v){
+                  return v.replace(/[^a-zA-Z0-9\-\_]/g,'');
+              });
+          });
           $('#change_reference_container').modal('show');
       });
 
