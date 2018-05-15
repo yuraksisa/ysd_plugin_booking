@@ -15,7 +15,31 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       this.entity = entity;
       $('#reference').attr('readonly', true);
       $('#name').focus();
-      this.configForm(); 
+      this.configForm();
+      $('#change_reference_button').bind('click', function(){
+         var request = {new_reference: $('input[name=new_reference]').val()};
+         var requestJSON = JSON.stringify(request);
+         $.ajax({
+              type: 'PUT',
+              url : '/api/booking-item/'+entity.reference+'/change',
+              data: requestJSON,
+              dataType: 'json',
+              success: function(data, textStatus, jqXHR) {
+                  bookingItemManager.model.synchronizeCurrentEntity(data);
+                  bookingItemManager.model.change_state('entity_updated_successfully');
+                  alert('<%=t.booking_item_management.change_reference_form.reference_change_success%>');
+                  $('#change_reference_container').modal('hide');
+              },
+              error: function(textStatus, jqXHR) {
+                  alert('<%=t.booking_item_management.change_reference_form.reference_change_error%>');
+              }
+         });
+      });
+      $('#change_reference_modal_button').bind('click', function(){
+          $('input[name=new_reference]').val(entity.reference);
+          $('#change_reference_container').modal('show');
+      });
+
     },
   
     onNew : function() {
@@ -60,11 +84,11 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       });
 
-     $('#cost').autoNumeric('init',{aSep:''});
+      $('#cost').autoNumeric('init',{aSep:''});
 
       var categoryDataSource = new RemoteDataSource('/api/booking-categories?all=true',{'id':'code','description':'name'});
       var categoryValue = (this.entity && this.entity.category_code)?this.entity.category_code:null;
-      var categorySelector = new SelectSelector('category[code]', categoryDataSource, categoryValue); 
+      var categorySelector = new SelectSelector('category[code]', categoryDataSource, categoryValue);
 
     },
       
@@ -115,7 +139,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
   // Add the complement hooks
   hooks = hooks.concat(EntityManagementComplementHooks.complements);
                  
-  var contentsManager = new EntityManagement(urls, 'booking_item', 20, hooks,
+  var bookingItemManager = new EntityManagement(urls, 'booking_item', 20, hooks,
     {prefix: '/admin/booking',hold_form_after_action:true});
 
   

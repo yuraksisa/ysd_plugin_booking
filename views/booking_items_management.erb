@@ -1,5 +1,42 @@
 <%= include('entity-management') %>
 
+<!-- ======================================== -->
+<!--            Reservation modal             -->
+<!-- ======================================== -->
+<div class="modal fade" id="change_reference_container" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul class="block-options">
+          <li>
+            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+          </li>
+        </ul>
+        <h3 class="modal-title"><%=t.booking_item_management.change_reference_form.title%></h3>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          <p><%=t.booking_item_management.change_reference_form.change_reference_warning%></p>
+        </div>
+        <form name="change_reference_form" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><%=t.booking_item_management.change_reference_form.new_reference.label%></label>
+            <div class="col-sm-3">
+              <input type="text" name="new_reference" id="new_reference" size="50" maxlength="50"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-12">
+              <button id="change_reference_button" class="btn btn-minw btn-square btn-primary pull-right" type="button"><i class="fa fa-save push-5-r"></i><%=t.entitymanagement.update%></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Renders the element description -->
 <script type="text/tmpl" id="elements_title">
   <h2 class="entity-title"><%=t.booking_item_management.form.title%></h2> 
@@ -170,8 +207,11 @@
                       <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
                       <div class="form-group">
                          <label class="col-md-3 control-label"><%= t.booking_item_management.form.reference.label %></label>
-                         <div class="col-md-9">
+                         <div class="col-md-5">
                            <span class="form-control"><%%=entity.reference%></span>
+                         </div>
+                         <div class="col-md-3">
+                           <button id="change_reference_modal_button" type="button" class="btn btn-default"><%= t.booking_item_management.form.change_reference.label %></button>
                          </div>
                       </div>
                       <div class="form-group">

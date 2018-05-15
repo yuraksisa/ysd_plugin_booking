@@ -1085,6 +1085,8 @@ booking_item_management:
     title: Stock
     reference: 
       label: Referencia
+    change_reference:
+      label: Cambiar
     category:
       label: Producto      
     name:
@@ -1120,6 +1122,13 @@ booking_item_management:
       label: Stock propio
     assignable:
       label: Asignable
+  change_reference_form:
+    title: Cambiar referencia
+    new_reference:
+      label: Nueva referencia
+    change_reference_warning: Por favor, <b>no</b> utilice esta opción para reemplazar un item del stock. Sólo en el caso de que se haya equivocado o quiera utilizar una nueva referencia para el mismo elemento.
+    reference_change_success: La referencia se ha cambiado.
+    reference_change_error: Lo sentimos, se ha producido un error al cambiar la referencia.
 booking_places_definition_management:
   title: Entrega y devolución
   table:

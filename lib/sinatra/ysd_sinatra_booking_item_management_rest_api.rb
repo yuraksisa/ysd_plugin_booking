@@ -8,7 +8,7 @@ module Sinatra
         #
         ["/api/booking-items","/api/booking-items/page/:page"].each do |path|
           
-          app.post path do
+          app.post path, :allowed_usergroups => ['bookings_manager','staff'] do
 
             page = [params[:page].to_i, 1].max  
             page_size = 20
@@ -41,7 +41,7 @@ module Sinatra
         
         end
         
-        app.get "/api/booking-items" do
+        app.get "/api/booking-items", :allowed_usergroups => ['bookings_manager','staff'] do
 
           booking_items = ::Yito::Model::Booking::BookingItem.all(:order => [:planning_order.asc, :category_code.asc, :reference.asc])
 
@@ -54,7 +54,7 @@ module Sinatra
         #
         # Get a booking items
         #
-        app.get "/api/booking-item/:id" do
+        app.get "/api/booking-item/:id", :allowed_usergroups => ['bookings_manager','staff'] do
         
           booking_item = ::Yito::Model::Booking::BookingItem.get(params['id'])
           
@@ -68,7 +68,7 @@ module Sinatra
         # Create a new booking item
         #
         #
-        app.post "/api/booking-item" do
+        app.post "/api/booking-item", :allowed_usergroups => ['bookings_manager','staff'] do
         
           booking_item_request = body_as_json(::Yito::Model::Booking::BookingItem)
           booking_item = ::Yito::Model::Booking::BookingItem.create(booking_item_request)
@@ -83,7 +83,7 @@ module Sinatra
         #
         # Updates a content
         #
-        app.put "/api/booking-item" do
+        app.put "/api/booking-item", :allowed_usergroups => ['bookings_manager','staff'] do
           
           booking_item_request = body_as_json(::Yito::Model::Booking::BookingItem)
                               
@@ -96,11 +96,36 @@ module Sinatra
           booking_item.to_json        
         
         end
+
+        #
+        # Change a booking item reference and updates the resource
+        #
+        app.put "/api/booking-item/:reference/change", :allowed_usergroups => ['bookings_manager','staff'] do
+
+          begin
+            request.body.rewind
+            model_request = JSON.parse(URI.unescape(request.body.read)).symbolize_keys!
+          rescue JSON::ParserError
+            halt 422, {error: 'Invalid request. Expected a JSON with data params'}.to_json
+          end
+
+          if (booking_item = ::Yito::Model::Booking::BookingItem.get(params[:reference]))
+            booking_item.transaction do
+              booking_item.change_reference(model_request[:new_reference].strip)
+            end
+            booking_item = ::Yito::Model::Booking::BookingItem.get(model_request[:new_reference])
+            content_type :json
+            booking_item.to_json
+          else
+            halt 404 # Booking item reference not found
+          end
+
+        end
         
         #
         # Deletes a content
         #
-        app.delete "/api/booking-item" do
+        app.delete "/api/booking-item", :allowed_usergroups => ['bookings_manager','staff'] do
         
           booking_item_request = body_as_json(::Yito::Model::Booking::BookingItem)
           
