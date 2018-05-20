@@ -20,6 +20,15 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       $('#type').prop('disabled', 'true');
       this.configForm(entity);
 
+      if (entity.contract_id != null) {
+          $.ajax({url: '/admin/cms/templates/'+ entity.contract_id+'/edit',
+              dataType: 'text'}).done(function(html) {
+              var dom = $('<html />').prop('innerHTML', html);
+              $('#contract_container').html(dom.find('body #page_wrapper'));
+              $('head').append(dom.find('script:not([src])'));
+          });
+      }
+
       if (entity.price_definition_1_id != null) {
         $.ajax({url: '/admin/rates/prices/'+ entity.price_definition_1_id, 
                 dataType: 'text'}).done(function(html) {
@@ -312,14 +321,6 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
     },
 
     adaptFormData : function(data) {
-            
-      if (data.calendar && data.calendar.id == '') {
-        data.calendar = null;
-      }
-
-      if (data.create_calendar) {
-        data.calendar = {'name' : data.code, 'description': data.name};
-      }
 
       ["sundays","mondays","tuesdays","wednesdays","thursdays",
        "fridays","saturdays"].forEach(function(entry){
@@ -487,6 +488,19 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           else {
               data.uses_planning_resources = false;
           }
+      }
+
+      if ($('#own_contract').length > 0) {
+          if ($('#own_contract').prop('checked')) {
+              data.own_contract = true;
+          }
+          else {
+              data.own_contract = false;
+          }
+      }
+
+      if (data.contract && data.contract.id == '') {
+          data.contract = null;
       }
 
       if ($('#allow_request_reservation').length > 0) {

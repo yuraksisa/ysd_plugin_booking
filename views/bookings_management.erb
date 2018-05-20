@@ -259,21 +259,22 @@
         </div>
       </div>
 
-      <!-- Flight and destination accommodation -->
+      <!-- Flight -->
+      <% if booking_item_family.flight %>
       <div class="row">
-        <!-- Flight -->
-        <% if booking_item_family.flight %>
-        <div class="col-lg-6">
-          <div class="block">
-            <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%=t.booking_management.form.flight_title%></h3>
-            </div>
-            <div class="block-content block-content-full">
-              <%= partial :booking_management_flight %>
-            </div>
+        <div class="block">
+          <div class="block-header bg-gray-lighter">
+              <h3 class="block-title"><%=t.booking_management.form.flight_title%></h3>
+          </div>
+          <div class="block-content block-content-full">
+            <%= partial :booking_management_flight %>
           </div>
         </div>
-        <% end %>
+      </div>
+      <% end %>
+
+      <!-- Destination accommodation and notes -->
+      <div class="row">
         <!-- Destination accommodation -->
         <div class="col-lg-6">
           <div class="block">
@@ -286,7 +287,7 @@
           </div>
         </div>
         <!-- Notes -->
-        <div class="<% if booking_item_family.flight %>col-lg-12<%else%>col-lg-6<%end%>">
+        <div class="col-lg-6">
           <div class="block">
             <div class="block-header bg-gray-lighter">
                 <h3 class="block-title"><%= t.booking_management.form.anotations %></h3>

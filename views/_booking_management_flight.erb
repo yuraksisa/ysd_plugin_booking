@@ -1,5 +1,15 @@
       <form name="flight">
           <input type="hidden" name="id" value="<%%=entity.id%>"/>
+        <div class="col-lg-6">
+          <div class="element_template">
+            <div class="entity-field">
+              <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.flight_airport_origin %></span>
+              <span class="entity-fieldvalue">
+                  <input type="text" maxlength="100" size="25" name="flight_airport_origin" id="flight_airport_origin"
+                         value="<%%=entity.flight_airport_origin%>"/>
+                </span>
+            </div>
+          </div>
           <div class="element_template">
             <div class="entity-field">
               <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.flight_company %></span>
@@ -27,9 +37,50 @@
               </span>
             </div>
           </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="element_template">
+            <div class="entity-field">
+              <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.flight_airport_departure %></span>
+              <span class="entity-fieldvalue">
+                  <input type="text" maxlength="100" size="25" name="flight_airport_destination" id="flight_airport_destination"
+                         value="<%%=entity.flight_airport_destination%>"/>
+                </span>
+            </div>
+          </div>
+          <div class="element_template">
+            <div class="entity-field">
+              <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.flight_company_departure %></span>
+              <span class="entity-fieldvalue">
+                <input type="text" maxlength="80" size="25" name="flight_company_departure" id="flight_company_departure"
+                       value="<%%=entity.flight_company_departure%>"/>
+              </span>
+            </div>
+          </div>
+          <div class="element_template">
+            <div class="entity-field">
+              <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.flight_number_departure %></span>
+              <span class="entity-fieldvalue">
+                <input type="text" maxlength="10" size="25" name="flight_number_departure" id="flight_number_departure"
+                       value="<%%=entity.flight_number_departure%>"/>
+              </span>
+            </div>
+          </div>
+          <div class="element_template">
+            <div class="entity-field">
+              <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.flight_time_departure %></span>
+              <span class="entity-fieldvalue">
+                <input type="text" maxlength="5" size="25" name="flight_time_departure" id="flight_time_departure"
+                       value="<%%=entity.flight_time_departure%>"/>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
           <div class="navigation-bar bottom-margin">
             <div class="navigation-bar-crud-buttons right-float right-margin">
               <input type="submit" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
             </div>
           </div>
+        </div>
       </form>

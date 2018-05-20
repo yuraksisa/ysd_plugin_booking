@@ -794,9 +794,14 @@ booking_management:
     free_access_id: Acceso directo
     payment_method: Forma de pago 
     flight_title: Vuelo
+    flight_airport_origin: Aeropuerto origen
     flight_company: Compañía
     flight_number: Número de vuelo
     flight_time: Hora de llegada
+    flight_airport_departure: Aeropuerto vuelo retorno
+    flight_company_departure: Compañía (vuelo retorno)
+    flight_number_departure: Número de vuelo (retorno)
+    flight_time_departure: Hora (vuelo retorno)
     booking_single_text: Se trata de una reserva individual
     booking_group_text: Se trata de una reserva vinculada a otra reserva
     booking_single: Desvincular la reserva
@@ -1085,6 +1090,8 @@ booking_item_management:
     title: Stock
     reference: 
       label: Referencia
+      required: La referencia es obligatoria
+      exist: La referencia ya existe en el sistema
     change_reference:
       label: Cambiar
     category:
@@ -1426,6 +1433,7 @@ booking_activity_management:
     duration_days: Duración en días
     duration_hours: Duración en horas
     custom_pickup_places: Servicio de recogida de clientes (lugares)
+    own_contract: Contrato personalizado
     pickup_places: Lugares de devolución de clientes
     occurrence: Frecuencia
     occurrence_one_time: Una vez (determinada por la empresa)

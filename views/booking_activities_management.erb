@@ -389,15 +389,15 @@
                     <div class="form-group">
                        <div class="col-md-6">
                          <div class="checkbox">
-                           <label for="request_customer_address">
-                             <input type="checkbox" name="request_customer_address" id="request_customer_address" <%% if (entity.request_customer_address) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_address.label%>
-                           </label>
-                         </div>
-                         <div class="checkbox">
                            <label for="request_customer_information">
                              <input type="checkbox" name="request_customer_information" id="request_customer_information" <%% if (entity.request_customer_information) {%>checked<%%}%>>
                              <%= t.booking_category_management.form.request_customer_information.label%>
+                           </label>
+                         </div>
+                         <div class="checkbox">
+                           <label for="request_customer_address">
+                             <input type="checkbox" name="request_customer_address" id="request_customer_address" <%% if (entity.request_customer_address) {%>checked<%%}%>>
+                             <%= t.booking_category_management.form.request_customer_address.label%>
                            </label>
                          </div>
                          <div class="checkbox">
@@ -420,12 +420,6 @@
                          </div>
                        </div>
                        <div class="col-md-6">
-                         <div class="checkbox">
-                           <label for="request_customer_phone">
-                             <input type="checkbox" name="request_customer_phone" id="request_customer_phone" <%% if (entity.request_customer_phone) {%>checked<%%}%>>
-                             <%= t.booking_category_management.form.request_customer_address.label%>
-                           </label>
-                         </div>
                          <div class="checkbox">
                            <label for="request_customer_height">
                              <input type="checkbox" name="request_customer_height" id="request_customer_height" <%% if (entity.request_customer_height) {%>checked<%%}%>>
@@ -582,6 +576,13 @@
                            </label>
                            <p class="text-muted">Permite establecer un conjunto de lugares en los que se recojerá a los clientes para realizar la actividad. Indicado para la recogida de los clientes en diversos hoteles.</p>
                          </div>
+                         <div class="checkbox">
+                           <label for="own_contract">
+                             <input type="checkbox" name="own_contract" id="own_contract" <%% if (entity.own_contract) {%>checked<%%}%>>
+                             <%= t.booking_activity_management.form.own_contract%>
+                           </label>
+                           <p class="text-muted">Permite definir un contrato personalizado para los pedidos que incluyan esta actividad.</p>
+                         </div>
                        </div>
                        <div class="col-md-12">
                           <div id="pickup_places_container" <%% if (!entity || !entity.custom_pickup_places) { %> style="display:none"<%%}%>>
@@ -600,35 +601,20 @@
        </div>
      </div>
 
-     <!--div class="row">
+
+     <div id="contract_block" class="row" <%%if (!entity || (entity && !entity.own_contract)){%>style="display:none"<%%}%>>
        <div class="col-sm-12 col-md-10 col-md-offset-1">
          <div class="block ">
             <div class="block-header bg-gray-lighter">
-              <h3 class="block-title">Calendario</h3>
+              <h3 class="block-title">Contrato</h3>
             </div>
-            <div class="block-content">
-              <%% if (entity.calendar_id == null) { %>
-              <div class="container_12">
-                <div class="grid_6">
-                  <form name="element" method="POST">
-                      <%=t.booking_category_management.form.create_calendar.description%>
-                      <input type="hidden" name="id" value="<%%=entity.id%>"/>
-                      <input type="hidden" name="create_calendar" value="true"/>
-                      <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                        <div class="navigation-bar-crud-buttons">
-                           <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_calendar.label%>"/>
-                        </div>
-                      </div>
-                  </form>
-                </div>
-              </div>
-              <%% } %>
-              <div id="calendar_container">
+            <div class="block-content block-content-narrow">
+              <div id="contract_container">
               </div>
             </div>
          </div>
        </div>
-     </div-->
+     </div>
 
      <div class="row">
        <div class="col-sm-12 col-md-10 col-md-offset-1">

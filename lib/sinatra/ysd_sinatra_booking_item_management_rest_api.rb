@@ -3,6 +3,23 @@ module Sinatra
     module BookingItemManagementRESTApi
 
       def self.registered(app)
+
+        #
+        # Check if a stock item reference exists
+        #
+        app.post '/api/booking-item/check-not-exists', :allowed_usergroups => ['bookings_manager','staff'] do
+
+          if params[:reference]
+            booking_item = ::Yito::Model::Booking::BookingItem.get(params[:reference])
+            content_type :json
+            booking_item.nil?.to_json
+          else
+            halt 404, "Item reference not found"
+          end
+
+        end
+
+
         #                    
         # Query booking items
         #
@@ -40,7 +57,10 @@ module Sinatra
           end
         
         end
-        
+
+        #
+        # Get all the booking items
+        #
         app.get "/api/booking-items", :allowed_usergroups => ['bookings_manager','staff'] do
 
           booking_items = ::Yito::Model::Booking::BookingItem.all(:order => [:planning_order.asc, :category_code.asc, :reference.asc])
@@ -63,7 +83,7 @@ module Sinatra
           booking_item.to_json
         
         end
-        
+
         #
         # Create a new booking item
         #
@@ -81,7 +101,7 @@ module Sinatra
         end
         
         #
-        # Updates a content
+        # Updates a booking item
         #
         app.put "/api/booking-item", :allowed_usergroups => ['bookings_manager','staff'] do
           
@@ -140,6 +160,7 @@ module Sinatra
           true.to_json
         
         end
+
 
       end
     end

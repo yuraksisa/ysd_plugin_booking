@@ -1,6 +1,6 @@
 
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
-         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "autonumeric", "YSDjson2"],
+         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "autonumeric", "YSDjson2", "jquery.validate"],
          function($, EntityManagement, EntityManagementComplementHooks, RemoteDataSource, SelectSelector) {
     
   var bookingItemHook = {
@@ -11,29 +11,102 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       return entity.reference;
     },
 
-    onEdit : function(entity) {
+    onNew : function() { /* On new stock item */
+        this.entity = null;
+        $('#reference').focus();
+        $('#reference').bind('input', function(){
+            $(this).val(function(_, v){
+                //return v.replace(/\s+/g, '');
+                return v.replace(/[^a-zA-Z0-9\-\_]/g,'');
+            });
+        });
+        $('form[name=element]').validate({
+            submitHandler: function(form)
+            {
+                return false;
+            },
+            rules: {
+                reference: {
+                    required: true,
+                    remote: {
+                        url: '/api/booking-item/check-not-exists',
+                        type: 'post',
+                        data: {
+                            reference: function () {
+                                return $('#reference').val();
+                            }
+                        }
+                    }
+                }
+            },
+            messages: {
+                reference: {
+                    required: '<%=t.booking_item_management.form.reference.required%>',
+                    remote: '<%=t.booking_item_management.form.reference.exist%>'
+                }
+            },
+            errorClass : 'text-danger'
+        });
+        this.configForm();
+    },
+
+    onEdit : function(entity) { /* On edit stock item */
       this.entity = entity;
       $('#reference').attr('readonly', true);
       $('#name').focus();
-      this.configForm();
-      $('#change_reference_button').bind('click', function(){
-         var request = {new_reference: $('input[name=new_reference]').val()};
-         var requestJSON = JSON.stringify(request);
-         $.ajax({
-              type: 'PUT',
-              url : '/api/booking-item/'+entity.reference+'/change',
-              data: requestJSON,
-              dataType: 'json',
-              success: function(data, textStatus, jqXHR) {
-                  bookingItemManager.model.synchronizeCurrentEntity(data);
-                  bookingItemManager.model.change_state('entity_updated_successfully');
-                  alert('<%=t.booking_item_management.change_reference_form.reference_change_success%>');
-                  $('#change_reference_container').modal('hide');
-              },
-              error: function(textStatus, jqXHR) {
-                  alert('<%=t.booking_item_management.change_reference_form.reference_change_error%>');
+      $('form[name=change_reference_form]').validate({
+          submitHandler: function(form)
+          {
+              return false;
+          },
+          rules: {
+              new_reference: {
+                  required: true,
+                  remote: {
+                      url: '/api/booking-item/check-not-exists',
+                      type: 'post',
+                      data: {
+                          reference: function () {
+                              return $('#new_reference').val();
+                          }
+                      }
+                  }
               }
-         });
+          },
+          messages: {
+              new_reference: {
+                  required: '<%=t.booking_item_management.form.reference.required%>',
+                  remote: '<%=t.booking_item_management.form.reference.exist%>'
+              }
+          },
+          errorClass : 'text-danger'
+      });
+
+      this.configForm();
+
+      $('#change_reference_button').bind('click', function(){
+         if ($('form[name=change_reference_form]').valid()) {
+             var request = {new_reference: $('input[name=new_reference]').val()};
+             var requestJSON = JSON.stringify(request);
+             $.ajax({
+                 type: 'PUT',
+                 url: '/api/booking-item/' + entity.reference + '/change',
+                 data: requestJSON,
+                 dataType: 'json',
+                 success: function (data, textStatus, jqXHR) {
+                     bookingItemManager.model.synchronizeCurrentEntity(data);
+                     bookingItemManager.model.change_state('entity_updated_successfully');
+                     alert('<%=t.booking_item_management.change_reference_form.reference_change_success%>');
+                     $('#change_reference_container').modal('hide');
+                 },
+                 error: function (textStatus, jqXHR) {
+                     alert('<%=t.booking_item_management.change_reference_form.reference_change_error%>');
+                 }
+             });
+         }
+         else {
+             alert('<%=t.entitymanagement.errors_in_form%>');
+         }
       });
       $('#change_reference_modal_button').bind('click', function(){
           $('input[name=new_reference]').val(entity.reference);
@@ -47,19 +120,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       });
 
     },
-  
-    onNew : function() {
-      this.entity = null;
-      $('#reference').focus();
-      $('#reference').bind('input', function(){
-        $(this).val(function(_, v){
-          //return v.replace(/\s+/g, '');
-          return v.replace(/[^a-zA-Z0-9\-\_]/g,'');
-        });
-      });      
-      this.configForm();
-    },
-        
+
     onRenderEntities: function() {
 
       $('.elements-search').show(); 
@@ -68,7 +129,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
 
         
     /* ------- Internal function --------- */
-    
+
     configForm : function(entity) {
 
       $("#content > div").hide(); // Initially hide all content
