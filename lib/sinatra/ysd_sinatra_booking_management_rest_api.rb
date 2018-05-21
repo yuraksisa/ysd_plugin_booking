@@ -1217,22 +1217,22 @@ module Sinatra
               updated_attributes.store(:stock_plate, data[:booking_item_stock_plate]) if booking_line_resource.booking_item_stock_plate != data[:booking_item_stock_plate]
               booking_line_resource.booking_item_stock_plate = data[:booking_item_stock_plate]
             end
-            if data.has_key?(:booking_item_characteristic_1) and (!data[:booking_item_characteristic_1].nil? and !data[:booking_item_characteristic_1].empty?)
+            if data.has_key?(:booking_item_characteristic_1) and (!data[:booking_item_characteristic_1].nil? and !data[:booking_item_characteristic_1].to_s.empty?)
               updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_characteristic_1(data[:booking_item_characteristic_1], booking_line_resource.booking_item_characteristic_1) if booking_line_resource.booking_item_characteristic_1 != data[:booking_item_characteristic_1]
               updated_attributes.store(:characteristic_1, data[:booking_item_characteristic_1]) if booking_line_resource.booking_item_characteristic_1 != data[:booking_item_characteristic_1]
               booking_line_resource.booking_item_characteristic_1 = data[:booking_item_characteristic_1]
             end
-            if data.has_key?(:booking_item_characteristic_2) and (!data[:booking_item_characteristic_2].nil? and !data[:booking_item_characteristic_2].empty?)
+            if data.has_key?(:booking_item_characteristic_2) and (!data[:booking_item_characteristic_2].nil? and !data[:booking_item_characteristic_2].to_s.empty?)
               updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_characteristic_2(data[:booking_item_characteristic_2], booking_line_resource.booking_item_characteristic_2) if booking_line_resource.booking_item_characteristic_2 != data[:booking_item_characteristic_2]
               updated_attributes.store(:characteristic_2, data[:booking_item_characteristic_2]) if booking_line_resource.booking_item_characteristic_2 != data[:booking_item_characteristic_2]
               booking_line_resource.booking_item_characteristic_2 = data[:booking_item_characteristic_2]
             end
-            if data.has_key?(:booking_item_characteristic_3) and (!data[:booking_item_characteristic_3].nil? and !data[:booking_item_characteristic_3].empty?)
+            if data.has_key?(:booking_item_characteristic_3) and (!data[:booking_item_characteristic_3].nil? and !data[:booking_item_characteristic_3].to_s.empty?)
               updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_characteristic_3(data[:booking_item_characteristic_3], booking_line_resource.booking_item_characteristic_3) if booking_line_resource.booking_item_characteristic_3 != data[:booking_item_characteristic_3]
               updated_attributes.store(:characteristic_3, data[:booking_item_characteristic_3]) if booking_line_resource.booking_item_characteristic_3 != data[:booking_item_characteristic_3]
               booking_line_resource.booking_item_characteristic_3 = data[:booking_item_characteristic_3]
             end
-            if data.has_key?(:booking_item_characteristic_4) and (!data[:booking_item_characteristic_4].nil? and !data[:booking_item_characteristic_4].empty?)
+            if data.has_key?(:booking_item_characteristic_4) and (!data[:booking_item_characteristic_4].nil? and !data[:booking_item_characteristic_4].to_s.empty?)
               updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_characteristic_4(data[:booking_item_characteristic_4], booking_line_resource.booking_item_characteristic_4) if booking_line_resource.booking_item_characteristic_4 != data[:booking_item_characteristic_4]
               updated_attributes.store(:characteristic_4, data[:booking_item_characteristic_4]) if booking_line_resource.booking_item_characteristic_4 != data[:booking_item_characteristic_4]
               booking_line_resource.booking_item_characteristic_4 = data[:booking_item_characteristic_4]
