@@ -38,6 +38,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
     dateFrom: null,                      /* Date from to be shown */
     dateTo: null,                        /* Date to to be shown */
     numberOfDays: <%=@planning_style=='compact' ? 16 : 31%>,                    /* Number of days to be shown */
+    cycle24Hours: <%=@product_family.cycle_of_24_hours%>,
 
     references: null,                    /* The loaded references (table rows) */
     planningData : null,                 /* The loaded data - reservation to show */
@@ -70,6 +71,26 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
             tableColumnWidth: 20,
             tableLineHeight: 10,
         }
+    },
+
+    checkConflicts: function(reference) {
+        var source = this.planningData.find(function(element){return element.id2 == bookingPlanningModel.selectedItemId});
+        if (source) {
+            console.log(reference);
+            console.log(source);
+            // check no conflicts
+            var overlap = this.planningData.find(function(element){
+                return (element.booking_item_reference == reference) &&
+                    ((source.date_from <= element.date_from && source.date_to <= element.date_to) ||
+                     (source.date_from >= element.date_from && source.date_to <= element.date_to)
+                     (source.date_from >= element.date_from && source.date_to >= element.date_to));
+            });
+            console.log(overlap);
+            if (overlap != null) {
+                return true;
+            }
+        }
+        return false;
     },
 
     loadData: function() { /* Load the planning data */
@@ -320,6 +341,14 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
       bookingPlanningView.hideAssignationResource();
 
+    },
+
+    lockDragAndDrop: function() {
+        $('.planning_reservation').draggable('disable');
+    },
+
+    unlockDragAndDrop: function() {
+       $('.planning_reservation').draggable('enable');
     }
 
   };
@@ -374,6 +403,15 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
         $('#close_assignation_resource_button').bind('click', function() {
             bookingPlanningController.closeAssignationResourceButtonClick();
+        });
+
+        $('#planning_locker').bind('change', function(){
+           if ($('#planning_locker').is(':checked')) {
+             bookingPlanningController.lockDragAndDrop();
+           }
+           else {
+             bookingPlanningController.unlockDragAndDrop();
+           }
         });
 
         $(window).scroll(function() {
@@ -466,6 +504,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 cursor: "move",
                 containment: '#planning_table tbody',
                 scroll: true,
+                opacity: 0.4,
+                handle: '.planning_reservation',
 
                 start: function (event, ui) {
                     bookingPlanningModel.selectedReference = $(this).attr('data-resource');
@@ -507,7 +547,16 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                         return true;
                     }
                     <% end %>
-                    <!-- TODO Warning different category -->
+                    /*
+                    var reference = $($('#planning_table tbody tr')[posTop]).attr('id');
+                    if (bookingPlanningModel.checkConflicts(reference)) {
+                        var result = !confirm('El recurso ya tiene una reserva asignada. ¿Está seguro?');
+                        if (result) {
+                            $(window).scrollTop(bookingPlanningModel.startDragWindowScrollTop);
+                        }
+                        return result;
+                    }
+                    */
                     <% unless @assignation_allow_busy_resource %>
                     //if ($('#'+resource).length > 0 && $($('#'+resource)[0].firstChild).hasClass('unavailable')) {
                     //    alert('Lo sentimos. El recurso ' + resource + ' no está disponible');
@@ -623,6 +672,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
     showItemInPlanning(origin, id, idResource, category, requestedCategory, resource, dateFrom, timeFrom,
                        dateTo, timeTo, title, backgroundColor, detail, notes) { /* Show an item in the planning */
 
+        var exceedsDateFrom = false;
+        var exceedsDateTo = false;
         var dFrom = dateFrom;
         var dTo = dateTo;
         var from = bookingPlanningModel.dateFrom.toString('yyyy-MM-dd'); //.toISOString().substring(0,10);
@@ -635,9 +686,11 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
         if (dFrom < from) {
             dFrom = from;
+            exceedsDateFrom = true;
         }
         if (dTo > to) {
             dTo = to;
+            exceedsDateTo = true;
         }
         var days = (new Date(dTo) - new Date(dFrom))/(1000*60*60*24) + 1;
 
@@ -647,14 +700,36 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
             var positionDateFrom = $('th.date_header[rel=' + dFrom + ']').position();
             var positionDateTo = $('th.date_header[rel=' + dTo + ']').position();
             var height = $('tr[id=' + resource + ']').height();
-            var oneDayWidth = $('th.date_header[rel=' + dFrom + ']').width() + 4 + 2; // +4 padding +2 border
+            var oneDayWidth = parseInt($('th.date_header').css('width').replace('px','')); //$('th.date_header').width() + 4 + 2; // + 4 padding + 2 border
 
             var top = positionResource.top;
             var left = positionDateFrom.left;
-            var width = days * oneDayWidth;
+            var width = positionDateTo.left - left + oneDayWidth;
+
+            if (bookingPlanningModel.cycle24Hours) { // Start at 50% and ends at 50% of the cell
+
+                if (!exceedsDateFrom) {
+                    left += oneDayWidth / 2;
+                }
+                else {
+                    width += (oneDayWidth / 2);
+                }
+
+                width -= oneDayWidth;
+
+                // Adjust
+                /*
+                if (width <= 0) {
+                    width = oneDayWidth / 2;
+                }
+                else*/ if (exceedsDateTo) {
+                    width += (oneDayWidth / 2);
+                }
+            }
+
 
             top += $('#planning_table').position().top;
-            left += 16; // 2 + 14 (
+            left += $('#planning_table').position().left;
 
             var html = tmpl('planning_reservation')({
                 id: id, origin: origin, idResource: idResource,
@@ -772,7 +847,12 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
             row.removeClass('highlight');
             row.closest('table').find('.data:nth-child(' + (column.index() + 1) + ')').removeClass('highlight');
         });
-
+        if ($('#planning_locker').is(':checked')) {
+            bookingPlanningController.lockDragAndDrop();
+        }
+        else {
+            bookingPlanningController.unlockDragAndDrop();
+        }
 
   		  break;
 

@@ -51,7 +51,20 @@ module Sinatra
           end
           @min_days = SystemConfiguration::Variable.get_value('booking.min_days', '1').to_i
 
+          @conflicts = BookingDataSystem::Booking.overbooking_conflicts
+
           load_page(:bookings_planning)
+
+        end
+
+        #
+        # Get the possible assignation conflicts
+        #
+        app.get '/admin/booking/planning/conflicts', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          @conflicts = BookingDataSystem::Booking.overbooking_conflicts
+
+          load_page(:planning_conflicts)
 
         end
 

@@ -75,7 +75,7 @@
     <div class="col-xs-2 col-md-4 col-lg-3">
       <h2 class="entity-title" style="position:relative; top: 2px"><%=t.bookings_planning.title%></h2>
     </div>
-    <div class="col-xs-8 col-md-6 col-lg-5">
+    <div class="col-xs-8 col-md-6 col-lg-6">
       <form class="text-center">
         <div class="form-row">
           <button id="prior_week_button" type="button" class="btn btn-default"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i></button>
@@ -83,12 +83,18 @@
           <input type="text" id="planning_date">
           <button id="next_day_button" type="button" class="btn btn-default"><i class="fa fa-angle-right"></i></button>
           <button id="next_week_button" type="button" class="btn btn-default"><i class="fa fa-angle-right"></i><i class="fa fa-angle-right"></i></button>
+          <label class="css-input switch switch-sm switch-primary">
+            <input type="checkbox" class="auto-submit-change-control" name="planning_locker" value="true" id="planning_locker" checked/>Bloqueado&nbsp;<span></span>
+          </label>
         </div>
       </form>
     </div>
-    <div class="col-xs-2 col-md-2 col-lg-4 pull-right">
+    <div class="col-xs-2 col-md-2 col-lg-3 pull-right">
       <% if @pending_of_asignation_bookings.size > 0 %>
-      <button id="pending_asignation_button" class="btn btn-minw btn-primary pull-right" style="margin-left: 10px">Pendientes asignar<span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -9px; left: 1px; color: white; text-decoration: none; font-size: 0.7em"><%=@pending_of_asignation_bookings.size%></span></button>
+        <button id="pending_asignation_button" class="btn btn-minw btn-primary pull-right" style="margin-left: 10px">Pendientes<span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -9px; left: 1px; color: white; text-decoration: none; font-size: 0.7em"><%=@pending_of_asignation_bookings.size%></span></button>
+      <% end %>
+      <% if @conflicts.size > 0 %>
+        <button id="conflicts_button" class="btn btn-minw btn-primary pull-right" style="margin-left: 10px">Conflictos<span style="background: red; padding: 2px 7px; border-radius: 50%; position: relative; top: -9px; left: 1px; color: white; text-decoration: none; font-size: 0.7em"><%=@conflicts.size%></span></button>
       <% end %>
     </div>
   </div>

@@ -1,0 +1,50 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_settings.form.backoffice_configuration_title%></h2>
+</div>
+
+<div class="admin_content_wrapper" style="background-color: #f5f5f5; margin: 0">
+  <br>
+  <div class="row">
+    <div class="col-lg-10 col-lg-offset-1">
+      <div class="block">
+        <div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Posibles conflictos planning</h3>
+        </div>
+        <div class="block-content">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Recurso</th>
+              <th>Reserva #1</th>
+              <th>Fechas reserva #1</th>
+              <th>Reserva #2</th>
+              <th>Fechas reserva #2</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @conflicts.each do |conflict| %>
+            <tr>
+              <td><b><%=conflict.booking_item_reference_1%></b></td>
+              <td><%=conflict.booking_id_1%></td>
+              <td><%=SystemConfiguration::Settings.instance.format_date(conflict.date_from_1, :default, 'es')%>
+                  <% if @product_family.time_to_from %><%=conflict.time_from_1%><%end%> -
+                  <span class="text-primary"><%=SystemConfiguration::Settings.instance.format_date(conflict.date_to_1, :default, 'es')%>
+                  <% if @product_family.time_to_from %><%=conflict.time_to_1%><%end%></span></td>
+              <td><%=conflict.booking_id_2%></td>
+              <td><span class="text-danger"><%=SystemConfiguration::Settings.instance.format_date(conflict.date_from_2, :default, 'es')%>
+                <% if @product_family.time_to_from %><%=conflict.time_from_2%><%end%></span> -
+                  <%=SystemConfiguration::Settings.instance.format_date(conflict.date_to_2, :default, 'es')%>
+                  <% if @product_family.time_to_from %><%=conflict.time_to_2%><%end%>
+              </td>
+            </tr>
+            <% end %>
+            </tbody>
+          </table>
+          <p class="text-center">Hay <%=@conflicts.size%> posibles conflictos</p>
+        </div>
+      </div>
+      <!-- END Default Table -->
+    </div>
+  </div>
+
+</div>

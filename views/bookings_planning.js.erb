@@ -31,6 +31,10 @@ require(['jquery', 'jquery.ui', 'jquery.ui.touch-punch', 'jquery.ui.datepicker-e
           $('#pending_asignation_container').modal('show');
       },
 
+      conflictsButtonClick: function() {
+          window.open('/admin/booking/planning/conflicts','_blank');
+      },
+
       manualAssignResourceButtonClick: function(button) {
           var data = {
               bookingId: button.attr('data-booking-id'),
@@ -68,6 +72,9 @@ require(['jquery', 'jquery.ui', 'jquery.ui.touch-punch', 'jquery.ui.datepicker-e
 
   	  $('#pending_asignation_button').bind('click', function(){
   	     planningController.pendingAssignationButtonClick();
+      });
+      $('#conflicts_button').bind('click', function(){
+          planningController.conflictsButtonClick();
       });
     }
 
