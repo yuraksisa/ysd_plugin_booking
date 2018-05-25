@@ -2,18 +2,45 @@ module Sinatra
   module BookingHelpers
 
     #
-    # Get the plan
+    # Get the plan : :lite - :pro - :enterprise
     #
     def mybooking_plan
 
+      plan = :lite
+
+      unless mb_plan = RequestStore.store[:mybooking_plan]
+        mb_plan = settings.respond_to?(:mybooking_plan) ? settings.mybooking_plan : nil
+      end
+
+      if mb_plan
+        plan = if [:lite_renting, :lite_activities, :lite_renting_activities].include?(mb_plan)
+                 :lite
+               elsif [:pro_renting, :pro_activities, :pro_renting_activities].include?(mb_plan)
+                 :pro
+               elsif [:enterprise_renting, :enterprise_activities, :enterprise_renting_activities].include?(mb_plan)
+                 :enterprise
+               end
+      end
+
+      plan
+
+    end
+
+    #
+    # Get the plan type : [renting, activities]
+    #
+    def mybooking_plan_type
+
       booking_renting = true
       booking_activities = false
-      unless mybooking_plan = RequestStore.store[:mybooking_plan]
-        mybooking_plan = settings.respond_to?(:mybooking_plan) ? settings.mybooking_plan : nil
+
+      unless mb_plan_type = RequestStore.store[:mybooking_plan]
+        mb_plan_type = settings.respond_to?(:mybooking_plan) ? settings.mybooking_plan : nil
       end
-      if mybooking_plan
-        booking_renting = [:pro_renting, :pro_plus].include?(mybooking_plan)
-        booking_activities = [:pro_activities, :pro_plus].include?(mybooking_plan)
+
+      if mb_plan_type
+        booking_renting = [:pro_renting, :pro_renting_activities].include?(mb_plan_type)
+        booking_activities = [:pro_activities, :pro_renting_activities].include?(mb_plan_type)
       end
 
       [booking_renting, booking_activities]
@@ -37,6 +64,8 @@ module Sinatra
         addon_sales_channels = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_sales_channels)
         addon_import = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_import)
         addon_analysis_basic = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_analysis_basic)
+        addon_analysis_extension = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_analysis_extension)
+        addon_web = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_web)
       else
         addon_crm = (settings.respond_to?(:mybooking_addon_crm) ? settings.mybooking_addon_crm : false)
         addon_finances = (settings.respond_to?(:mybooking_addon_finances) ? settings.mybooking_addon_finances : false)
@@ -49,6 +78,8 @@ module Sinatra
         addon_sales_channels = (settings.respond_to?(:mybooking_addon_sales_channels) ? settings.mybooking_addon_sales_channels : false)
         addon_import = (settings.respond_to?(:mybooking_addon_import) ? settings.mybooking_addon_import : false)
         addon_analysis_basic = (settings.respond_to?(:mybooking_addon_analysis_basic) ? settings.mybooking_addon_analysis_basic : false)
+        addon_analysis_extension = (settings.respond_to?(:mybooking_addon_analysis_extension) ? settings.mybooking_addon_analysis_extension : false)
+        addon_analysis_extension = (settings.respond_to?(:mybooking_addon_web) ? settings.mybooking_addon_web : false)
       end
 
       {addon_crm: addon_crm,
@@ -61,7 +92,9 @@ module Sinatra
        addon_simple_invoicing: addon_simple_invoicing,
        addon_sales_channels: addon_sales_channels,
        addon_import: addon_import,
-       addon_analysis_basic: addon_analysis_basic}
+       addon_analysis_basic: addon_analysis_basic,
+       addon_analysis_extension: addon_analysis_extension,
+       addon_web: addon_web}
 
     end
 

@@ -6,19 +6,32 @@ require(['YSDGui','jquery',
   };
 
   monthlyOccupationController = {
-
+     monthChanged: function() {
+         monthlyOccupationView.navigate();
+     },
+     yearChanged: function() {
+         monthlyOccupationView.navigate();
+     },
+     infoChanged: function() {
+         monthlyOccupationView.navigate();
+     }
   };
 
   monthlyOccupationView = {
-	init: function(){
-         $('.occupation-detail').bind('click', function() {
-           if ($(this).attr('data-url')) {
-             $('#occupation-detail').load($(this).attr('data-url') + ' .admin_content_wrapper');
-             YSDGui.showElement(document.getElementById('occupation-detail'), true);
-           }
-         });
-      $("#monthly_occupation_table").tableHeadFixer({"left" : 1});
-	}
+	 init: function() {
+	     $('#month').bind('change', function() {
+           monthlyOccupationController.monthChanged();
+       });
+       $('#year').bind('change', function() {
+           monthlyOccupationController.yearChanged();
+       });
+       $('#info').bind('change', function() {
+           monthlyOccupationController.infoChanged();
+       });
+    },
+    navigate: function() {
+        window.location.href='/admin/booking/monthly-occupation?month='+$('#month').val()+'&year='+$('#year').val()+'&info='+$('#info').val();
+    }
   };
 
   monthlyOccupationView.init();

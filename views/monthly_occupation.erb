@@ -19,7 +19,7 @@
 <div class="top-navigation-bar">
 <h2 class="entity-title"><%=t.monthly_occupation.title%></h2>
 </div>
-<div class="top-margin bottom-margin-1line">
+<!--div class="top-margin bottom-margin-1line">
 	<div class="more_contrast_text centered_text top-margin-1line bottom-margin-2lines">
 		<span id="prev" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@previous_period.month%>&year=<%=@previous_period.year%>">&lt;</a></span>
 		<span class="all-space">
@@ -27,40 +27,157 @@
 	    </span>
 		<span id="next" class="all-space over_cursor background-color-2 color-2 all-border-solid"><a href="?month=<%=@next_period.month%>&year=<%=@next_period.year%>">&gt;</a></span> 
 	</div>
-</div>
-<div class="admin_content_wrapper">
-  <div style="overflow: auto; max-height: 500px">
-    <table id="monthly_occupation_table" class="table table-striped table-responsive" style="table-layout: fixed; margin: 0">
-      <thead class="table-header">
-        <tr>
-          <th class="table-cell" scope="col" style="width: 150px"></th>
-          <% (1..@days).each do |day| %>
-          <th class="table-cell centered_text" scope="col" style="width: 70px"><%=day%></th>
-          <% end %>     
-        </tr>
-      </thead>
-      <tbody>
-        <% total_x = 0 %>
-        <% total_y = 0 %>
-        <% @data.each do |product, occupation| %>        
-        <tr>
-          <td class="table-cell"><%= product %></td>
-          <% occupation.each do |day, value| %>
-            <% x, y = value[:occupation].split('/') %>
-            <% total_x = total_x + x.to_f %>
-            <% total_y = total_y + y.to_f %>
-            <% percentage = x.to_f / y.to_f * 100 %>
-            <% date = Date.new(@year, @month, day) %>
-            <td class="table-cell centered_text occupation-detail" <% if percentage >= 100 %>style="background:red; color: white; cursor: hand; cursor: pointer; font-weight: 400"<%elsif percentage >= 75 and !percentage.infinite?%>style="background:orange; cursor: hand; cursor: pointer; font-weight: 400"<%elsif percentage > 0 and !percentage.infinite?%>style="background:yellow; cursor: hand; cursor: pointer; font-weight: 400"<%end%> <%if percentage > 0%>data-url="/admin/booking/occupation-detail?date=<%=date%>&category=<%=product%>&layout=no"<%end%>><%= (percentage.nan? or percentage.infinite?) ? "-" : "#{value[:occupation]}" %></td>
-          <% end %>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-  <div class="guiblock">
-    <div class="centered_text">
-       <%=t.monthly_occupation.summary%> <span class="more_contrast_text"><%=(total_x / total_y * 100).round(2)%>%</span> (<%=total_x.to_i%>/<%=total_y.to_i%>)
+</div-->
+<div class="content admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
+  <br>
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <!-- My Block -->
+      <div class="block">
+        <div class="block-header">
+          <div class="text-center ma-top-20">
+            <select class="custom-select" id="month">
+              <option value="1" <% if @month==1%>selected<%end%>>Enero</option>
+              <option value="2" <% if @month==2%>selected<%end%>>Febrero</option>
+              <option value="3" <% if @month==3%>selected<%end%>>Marzo</option>
+              <option value="4" <% if @month==4%>selected<%end%>>Abril</option>
+              <option value="5" <% if @month==5%>selected<%end%>>Mayo</option>
+              <option value="6" <% if @month==6%>selected<%end%>>Junio</option>
+              <option value="7" <% if @month==7%>selected<%end%>>Julio</option>
+              <option value="8" <% if @month==8%>selected<%end%>>Agosto</option>
+              <option value="9" <% if @month==9%>selected<%end%>>Septiembre</option>
+              <option value="10" <% if @month==10%>selected<%end%>>Octubre</option>
+              <option value="11" <% if @month==11%>selected<%end%>>Noviembre</option>
+              <option value="12" <% if @month==12%>selected<%end%>>Diciembre</option>
+            </select>
+            &nbsp;
+            <select class="custom-select" id="year">
+              <option value="2018" <%if @year==2018%>selected<%end%>>2018</option>
+              <option value="2017" <%if @year==2017%>selected<%end%>>2017</option>
+              <option value="2016" <%if @year==2016%>selected<%end%>>2016</option>
+            </select>
+            &nbsp;
+            <select class="custom-select" id="info">
+              <option value="percentage" <% if @info == 'percentage'%>selected<%end%>>Porcentaje</option>
+              <option value="values" <% if @info == 'values'%>selected<%end%>>Valores</option>
+              <option value="rational" <% if @info == 'rational'%>selected<%end%>>Proporción</option>
+            </select>
+          </div>
+        </div>
+        <div class="block-content">
+          <div class="">
+            <table id="occupation_table" class="table table-bordered ocupation" style="position: relative; left: -1em">
+              <thead>
+              <tr>
+                <th></th>
+                <% (1..@days).each do |day| %>
+                  <th><%=day%></th>
+                <% end %>
+                <th>Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @data.each do |product, occupation| %>
+                <% if occupation[1][:total] > 0 %>
+                <tr>
+                  <th><%= product %><br>(<%=occupation[1][:total]%>)</th>
+                  <% occupation.each do |day, value| %>
+                    <% the_class = if value[:percentage] >= 100
+                                     "danger"
+                                   elsif value[:percentage] >= 75
+                                     "warning"
+                                   elsif value[:percentage] > 0
+                                     "success"
+                                   else
+                                     "caution"
+                                   end %>
+                    <% the_class = "total" if product == :total || day == :total %>
+                    <% if @info == 'rational' %>
+                    <td class="<%=the_class%>"><%= value[:occupied]%>/<%=value[:total]%></td>
+                    <% elsif @info == 'values' %>
+                    <td class="<%=the_class%>"><%= value[:occupied]%></td>
+                    <% else %>
+                    <td class="<%=the_class%>"><%="%.f" % value[:percentage]%><small>%</small></td>
+                    <% end %>
+                  <% end %>
+                </tr>
+                <% end %>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+
+          <!--div class="row ma-top-30">
+            <div class="col-lg-4">
+              <div class="block block-themed">
+                <div class="block-header bg-amethyst">
+                  <h3 class="block-title">Ocupación anual</h3>
+                </div>
+                <div class="block-content block-content-full text-center">
+                  <div class="js-pie-chart pie-chart" data-percent="30" data-line-width="2" data-size="150" data-bar-color="#a48ad4" data-track-color="#eeeeee">
+                    <span class="h4">30%</span>
+                  </div>
+                </div>
+                <div class="block-content bg-gray-lighter">
+                  <div class="row items-push text-center">
+                    <div class="col">
+                      <div class="push-5">
+                        <i class="fa fa-arrow-up text-success"></i>
+                        + 30% Este año
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="block block-themed">
+                <div class="block-header bg-primary">
+                  <h3 class="block-title">Ocupación mes</h3>
+                </div>
+                <div class="block-content block-content-full text-center">
+                  <div class="js-pie-chart pie-chart" data-percent="70" data-line-width="2" data-size="150" data-bar-color="#5c90d2" data-track-color="#eeeeee">
+                    <span class="h4">70%</span>
+                  </div>
+                </div>
+                <div class="block-content bg-gray-lighter">
+                  <div class="row items-push text-center">
+                    <div class="col">
+                      <div class="push-5">
+                        <i class="fa fa-arrow-down text-danger"></i>
+                        - 70% Este año
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="block block-themed">
+                <div class="block-header bg-modern">
+                  <h3 class="block-title">Ocupación plena</h3>
+                </div>
+                <div class="block-content block-content-full text-center">
+                  <div class="js-pie-chart pie-chart" data-percent="70" data-line-width="2" data-size="150" data-bar-color="#14adc4" data-track-color="#eeeeee">
+                    <span class="h4">60%</span>
+                  </div>
+                </div>
+                <div class="block-content bg-gray-lighter">
+                  <div class="row items-push text-center">
+                    <div class="col">
+                      <div class="push-5">
+                        <i class="fa fa-arrow-up text-success"></i>
+                        + 60% Este año
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div-->
+      <!-- END My Block -->
     </div>
   </div>
 </div>

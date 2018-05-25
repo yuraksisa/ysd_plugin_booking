@@ -62,6 +62,7 @@ module Sinatra
           @month = params[:month].to_i == 0 ? today.month : params[:month].to_i
           @year = params[:year].to_i == 0 ? today.year : params[:year].to_i
           @product = params[:product]
+          @info = params[:info] || 'percentage'
 
           @period = Date.civil(@year, @month)
           @next_period = @period >> 1

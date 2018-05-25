@@ -12,7 +12,7 @@ module Sinatra
         #
         app.get "/admin/booking/setup", :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          @booking_renting, @booking_activities = mybooking_plan
+          @booking_renting, @booking_activities = mybooking_plan_type
 
           load_page(:setup)
 
@@ -25,7 +25,7 @@ module Sinatra
         #
         app.get "/admin/booking/setup-renting-1", :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          if mybooking_plan.first
+          if mybooking_plan_type.first
             @current_type_of_business = SystemConfiguration::Variable.get_value('booking.item_family', nil)
             @types_of_business = ::Yito::Model::Booking::ProductFamily.all(order: [:presentation_order])
             load_page(:setup_renting_step_1)
@@ -55,7 +55,7 @@ module Sinatra
         #
         app.get "/admin/booking/setup-renting-2", :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          if mybooking_plan.first
+          if mybooking_plan_type.first
             load_page(:setup_renting_step_2)
           else
             status 404
@@ -68,7 +68,7 @@ module Sinatra
         #
         app.post "/admin/booking/setup-renting-2", :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          if mybooking_plan.first
+          if mybooking_plan_type.first
 
             if min_days = params['booking.min_days'.to_sym]
               SystemConfiguration::Variable.set_value('booking.min_days', min_days)
@@ -87,7 +87,7 @@ module Sinatra
         #
         app.get "/admin/booking/setup-renting-3", :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          if mybooking_plan.first
+          if mybooking_plan_type.first
             load_page(:setup_renting_step_3)
           else
             status 404
@@ -109,7 +109,7 @@ module Sinatra
         #
         app.get "/admin/booking/setup-renting-4", :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          if mybooking_plan.first
+          if mybooking_plan_type.first
             load_page(:setup_renting_step_4)
           else
             status 404

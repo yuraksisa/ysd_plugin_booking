@@ -12,7 +12,7 @@ module Sinatra
         #
         app.get '/admin/booking/config/general', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          booking_renting, booking_activities = mybooking_plan
+          booking_renting, booking_activities = mybooking_plan_type
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :calendar_modes => {
@@ -31,7 +31,7 @@ module Sinatra
         #
         app.get '/admin/booking/config/business', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          booking_renting, booking_activities = mybooking_plan
+          booking_renting, booking_activities = mybooking_plan_type
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :calendar_modes => {
@@ -51,7 +51,7 @@ module Sinatra
         app.get '/admin/booking/config/reservations', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           pickup_return_timetables = {"" => t.booking_settings.form.no_pickup_return_timetable}.merge(Hash[ *::Yito::Model::Calendar::Timetable.all.collect { |tt| [tt.id.to_s, tt.name] }.flatten])
-          booking_renting, booking_activities = mybooking_plan
+          booking_renting, booking_activities = mybooking_plan_type
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           use_factors = SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
@@ -86,7 +86,7 @@ module Sinatra
         #
         app.get '/admin/booking/config/backoffice', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          booking_renting, booking_activities = mybooking_plan
+          booking_renting, booking_activities = mybooking_plan_type
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
@@ -103,7 +103,7 @@ module Sinatra
         # Booking configuration (payment)
         #
         app.get '/admin/booking/config/payment', :allowed_usergroups => ['booking_manager', 'staff'] do
-          booking_renting, booking_activities = mybooking_plan
+          booking_renting, booking_activities = mybooking_plan_type
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
           locals.store(:booking_item_family, booking_item_family)
@@ -116,7 +116,7 @@ module Sinatra
         # Booking configuration (notifications)
         #
         app.get '/admin/booking/config/notifications', :allowed_usergroups => ['booking_manager', 'staff'] do
-          booking_renting, booking_activities = mybooking_plan
+          booking_renting, booking_activities = mybooking_plan_type
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],}
           locals.store(:booking_item_family, booking_item_family)
@@ -180,7 +180,7 @@ module Sinatra
         #
         app.get '/admin/booking/config/front-end-setup', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          @renting_plan, @activities_plan = mybooking_plan
+          @renting_plan, @activities_plan = mybooking_plan_type
 
           load_page(:config_booking_frontend_setup)
         end
@@ -200,7 +200,7 @@ module Sinatra
         #
         app.get '/admin/booking/config/front-end-contents', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          @renting_plan, @activities_plan = mybooking_plan
+          @renting_plan, @activities_plan = mybooking_plan_type
 
           @pages = ContentManagerSystem::Content.all(conditions: { type: 'page' },
                                                      order: [:title])

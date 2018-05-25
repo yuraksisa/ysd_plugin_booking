@@ -729,7 +729,7 @@ module Huasi
 
           use_factors = SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool
 
-          booking_renting, booking_activities = app.mybooking_plan
+          booking_renting, booking_activities = app.mybooking_plan_type
           addons = app.mybooking_addons
 
           menu_locals = {booking_renting: booking_renting,

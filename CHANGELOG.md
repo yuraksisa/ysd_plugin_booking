@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.144] - 2018-05-25
+### Updated
+- Occupation reservation: New design + New functionality
+- Plans refactoring
+
 ## [0.4.143] - 2018-05-23
 ### Updated
 - Planning: 24Hours / Full day difference

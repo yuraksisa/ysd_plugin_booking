@@ -22,7 +22,7 @@ module Sinatra
         #
         app.get '/admin/booking/dashboard', :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          @booking_renting, @booking_activities = mybooking_plan
+          @booking_renting, @booking_activities = mybooking_plan_type
 
           @today = Date.today
           @year = DateTime.now.year
