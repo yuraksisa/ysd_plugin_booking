@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.145] - 2018-05-27
+### Updated
+- Planning: Force full day in 24 hours cycle
+- Planning: Conflicts and pending alerts
+
 ## [0.4.144] - 2018-05-25
 ### Updated
 - Occupation reservation: New design + New functionality

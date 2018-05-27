@@ -422,7 +422,7 @@ module Sinatra
                     end
                   elsif references.is_a?(String)
                     @prereservation.prereservation_lines << BookingDataSystem::BookingPrereservationLine.new(booking_item_category: category,
-                                                                                                           booking_item_reference: references)
+                                                                                                             booking_item_reference: references)
                   end
                 end
               end

@@ -105,6 +105,16 @@ booking_settings:
         title: Tipo de planning
         compact: Compacto
         extended: Extendido
+      planning_full_day: Mostrar el planning con el día completo
+      planning_full_day_description: >
+                                     <p>Determinados negocios, la reserva se contabiliza durante el día (se entrega y se devuelve el mismo día). Alquiler de kayaks, bicicletas, ... siguen esta configuración.
+                                     En este caso, en el planning se muestra el día entero cuando una reserva.</p>
+                                     <p>Otros negocios, la reserva suele entregarse un día y devolverse al día siguiente. Es lo que llamamos
+                                     ciclo de 24 horas. Rent a cars, hostales, ... siguen esta configuración.
+                                     En este caso, en el planning se muestra el día de la entrega el segundo 50% de la celda coloreado y el día de la
+                                     devolución, el primer 50% coloreado.</p>
+                                     <p>En los negocios con ciclo de 24 horas, si marca esta opción, el planning se mostrará como en el primer
+                                     caso, es decir, mostrará el día de la entrega y el la de devolución completamente pintado.</p>
     pickup_return_backoffice:
       allow_operator_all_locations: Permite que el usuario operador pueda consultar entregas y recogidas de múltiples oficinas
     front_end:

@@ -79,6 +79,13 @@ module Huasi
       )
 
       SystemConfiguration::Variable.first_or_create(
+                                       {name: 'booking.assignation.planning_full_day'},
+                                       {value: 'false',
+                                       description: 'Planning full day: show the planning as if was not 24hours cycle',
+                                       module: :booking}
+      )
+
+      SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.assignation_hours_return_pickup'},
           {:value => '2',
            :description => 'Planning : Assignation hours between return - pickup',

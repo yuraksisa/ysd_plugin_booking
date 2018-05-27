@@ -38,7 +38,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
     dateFrom: null,                      /* Date from to be shown */
     dateTo: null,                        /* Date to to be shown */
     numberOfDays: <%=@planning_style=='compact' ? 16 : 31%>,                    /* Number of days to be shown */
-    cycle24Hours: <%=@product_family.cycle_of_24_hours%>,
+    cycle24Hours: <%=@product_family.cycle_of_24_hours && !@planning_full_day%>,
 
     references: null,                    /* The loaded references (table rows) */
     planningData : null,                 /* The loaded data - reservation to show */

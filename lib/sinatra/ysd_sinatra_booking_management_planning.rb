@@ -33,6 +33,7 @@ module Sinatra
           @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           @pending_of_asignation_bookings = BookingDataSystem::Booking.pending_of_assignation
           @planning_style = SystemConfiguration::Variable.get_value('booking.assignation.planning_style','compact')
+          @planning_full_day = SystemConfiguration::Variable.get_value('booking.assignation.planning_full_day','false').to_bool
 
           # Prepare sales channels
           addons = mybooking_addons
