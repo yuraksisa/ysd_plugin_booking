@@ -54,6 +54,8 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       this.entity = entity;
       $('#reference').attr('readonly', true);
       $('#name').focus();
+      $('form[name=change_reference_form]').data('validator', null);
+      $("form[name=change_reference_form]").unbind('validate');
       $('form[name=change_reference_form]').validate({
           submitHandler: function(form)
           {
@@ -84,6 +86,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
 
       this.configForm();
 
+      $('#change_reference_button').unbind('click');
       $('#change_reference_button').bind('click', function(){
          if ($('form[name=change_reference_form]').valid()) {
              var request = {new_reference: $('input[name=new_reference]').val()};

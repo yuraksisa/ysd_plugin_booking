@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.146] - 2018-05-28
+### Updated
+- Stock: Bug changing reference
+
 ## [0.4.145] - 2018-05-27
 ### Updated
 - Planning: Force full day in 24 hours cycle
