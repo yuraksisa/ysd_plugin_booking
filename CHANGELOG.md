@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.147] - 2018-05-29
+### Updated
+- Reservation: New reservation from customer
+
 ## [0.4.146] - 2018-05-28
 ### Updated
 - Stock: Bug changing reference

@@ -35,7 +35,11 @@
               <td class="table-cell"><%= booking.customer_email %></td>
               <td class="table-cell centered_text"><%= booking.num_of_reservations%></td>
               <td class="table-cell">
+                <% if booking.customer_phone and !booking.customer_phone.empty? %>
                 <a href="/admin/booking/bookings?search=<%=URI.escape(booking.customer_phone, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))%>" target="_blank">ver reservas</a>
+                <% elsif booking.customer_surname and !booking.customer_surname.empty? %>
+                <a href="/admin/booking/bookings?search=<%=URI.escape(booking.customer_surname, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))%>" target="_blank">ver reservas</a>
+                <% end %>
               </td>
               <td class="table-cell">  
                 <form name="new_booking_copying_data" action="/admin/booking/new" method="POST">
