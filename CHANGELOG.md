@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.149] - 2018-06-07
+### Updated
+- Planning: Bug on drag&drop reservation
+
 ## [0.4.148] - 2018-06-07
 ### Updated
 - Planning: Bring to front when multiple reservations

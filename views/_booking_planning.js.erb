@@ -254,7 +254,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
         var dFrom = bookingPlanningModel.dateFrom.toISOString().substring(0,10);
 
-        var headerHeight = parseInt($('th.date_header[rel='+dFrom+']').css('height').replace('px',''));
+        var headerHeight = parseInt($('th.date_header').css('height').replace('px',''));
         var resourceWidth = parseInt($('td.planning_reference').css('width').replace('px',''));
         var resourceHeight = parseInt($('td.planning_reference').css('height').replace('px',''));
         var oneDayWidth = parseInt($('th.date_header').css('width').replace('px',''));
