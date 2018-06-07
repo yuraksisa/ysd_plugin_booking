@@ -172,7 +172,7 @@
 <!--            Reservation modal             -->
 <!-- ======================================== -->
 <div class="modal fade" id="reservation_container" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <ul class="block-options">
@@ -192,7 +192,8 @@
 <!-- Template that represents a reservation in the planning  -->
 <!-- ======================================================= -->
 <script type="text/template" id="planning_reservation">
-  <div id="<%%=origin%><%%=id%>" data-origin="<%%=origin%>"
+  <div id="<%%=origin%><%%=id%>"
+                     data-origin="<%%=origin%>"
                      data-id="<%%=id%>"
                      data-category="<%%=category%>"
                      data-requested-category="<%%=requestedCategory%>"
@@ -200,13 +201,15 @@
                      data-date-to="<%%=dateTo%>" data-time-to="<%%=timeTo%>"
                      data-resource="<%%=resource%>"
                      data-id-resource="<%%=idResource%>"
-                     data-title="<%%=title%>"
+                     data-booking-title="<%%=booking_title%>"
                      data-planning-color="<%%=backgroundColor%>"
                      data-detail="<%%=detail%>"
                      data-notes="<%%=notes%>"
                      class="planning_reservation"
-                     style="<%=@planning_style=='compact' ? 'padding: 5px;' : 'padding:2px; font-size: 10px;'%>display: inline-block; position: absolute; border: 1px solid; border-color: <%%=borderColor%>; color: <%%=color%>; background-color: <%%=backgroundColor%>; overflow:hidden; opacity: 0.6">
-    <span style="white-space: nowrap; overflow: hidden; padding-right: 2px"><%% if (category != requestedCategory) { %><i class="fa fa-exclamation-triangle"></i><%%}%><%% if (notes && notes.length>0){%><i class="fa fa-sticky-note-o"></i><%%}%> #<%%=id%> - <%%= title %></span>
+                     style="<%=@planning_style=='compact' ? 'padding: 5px;' : 'padding:2px; font-size: 10px;'%>display: inline-block; position: absolute; border: 1px solid; border-color: <%%=borderColor%>; color: <%%=color%>; background-color: <%%=backgroundColor%>; overflow:hidden; opacity: 0.8"
+ >
+    <span style="white-space: nowrap; overflow: hidden; padding-right: 2px"
+          title="<%%=dateFrom%> <% if @product_family.time_to_from %><%%=timeFrom%><%end%> - <%%=dateTo%> <% if @product_family.time_to_from %><%%=timeTo%><%end%>"><%% if (category != requestedCategory) { %><i class="fa fa-exclamation-triangle"></i><%%}%><%% if (notes && notes.length>0){%><i class="fa fa-sticky-note-o"></i><%%}%> #<%%=id%> - <%%= booking_title %></span>
   </div>
 </script>
 
@@ -642,6 +645,46 @@
       <%% } %>
     </div>
   <%% } %>
+</script>
+
+<!-- ========================================================================================== -->
+<!--                             Script select reservation                                      -->
+<!-- ========================================================================================== -->
+<script type="text/tmpl" id="script_select_reservation">
+  <table id="products_table" class="table table-hover">
+    <thead class="table-header">
+      <tr>
+        <th class="table-header-title centered_text" scope="col" style="width:5%"></th>
+        <th class="table-header-title centered_text" scope="col" style="width:15%">#</th>
+        <th class="table-header-title centered_text" scope="col" style="width:20%">Titulo</th>
+        <th class="table-header-title centered_text" scope="col" style="width:20%">Producto</th>
+        <th class="table-header-title centered_text" scope="col" style="width:20%">Desde</th>
+        <th class="table-header-title centered_text" scope="col" style="width:20%">Hasta</th>
+        <th class="table-header-title centered_text" scope="col" style="width:10%">Color</th>
+      </tr>
+    </thead>
+    <tbody id="elements_tbody" class="table-tbody">
+      <%% for (var idx=0;idx<overlapped.length;idx++) { %>
+        <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
+         <td class="table-cell centered_text">
+            <input type="radio" name="id" value="<%%=overlapped[idx].origin%><%%=overlapped[idx].id%>" class="reservation_chooser"></input>
+         </td>
+         <td class="table-cell centered_text"><%%=overlapped[idx].id %></td>
+         <td class="table-cell centered_text"><%%=overlapped[idx].title%></td>
+         <td class="table-cell centered_text"><%%=overlapped[idx].item_id%> <%% if (overlapped[idx].item_id != overlapped[idx].requested_item_id) { %>(<%%=overlapped[idx].requested_item_id%>)<%%}%></td>
+         <td class="table-cell centered_text"><%%=overlapped[idx].date_from%> <% if @product_family.time_to_from %><%%=overlapped[idx].time_from%><%end%></td>
+         <td class="table-cell centered_text"><%%=overlapped[idx].date_to%> <% if @product_family.time_to_from %><%%=overlapped[idx].time_to%><%end%></td>
+         <td class="table-cell centered_text">
+            <form name="color" style="display: inline-block; position: relative; top: 3px">
+              <input type="hidden" name="id" value="<%%=overlapped[idx].id%>"/>
+              <input type="hidden" name="type" value="<%%=overlapped[idx].origin%>"/>
+              <input type="color" name="planning_color" class="color" value="<%%=overlapped[idx].planning_color%>" style="width:32px; height: 32px"/>
+            </form>
+         </td>
+       </tr>
+      <%% } %>
+     </tbody>
+  </table>
 </script>
 
 <!-- ========================================================================================== -->

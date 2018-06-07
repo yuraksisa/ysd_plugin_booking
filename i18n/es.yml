@@ -105,6 +105,10 @@ booking_settings:
         title: Tipo de planning
         compact: Compacto
         extended: Extendido
+      assignation_hours_return_pickup: Horas entre la devolución y la entrega del recurso a la siguiente reserva
+      assignation_hours_return_pickup_description: >
+                                                   <p>Permite indicar el número de horas que han de transcurrir entre la devolución de un recurso y la entrega a la siguiente reserva,
+                                                   de manera que el recurso se pueda recibir y preparar para la siguiente entrega en el mismo día.</p>
       planning_full_day: Mostrar el planning con el día completo
       planning_full_day_description: >
                                      <p>Determinados negocios, la reserva se contabiliza durante el día (se entrega y se devuelve el mismo día). Alquiler de kayaks, bicicletas, ... siguen esta configuración.

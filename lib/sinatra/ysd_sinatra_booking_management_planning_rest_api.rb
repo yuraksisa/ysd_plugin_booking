@@ -121,6 +121,111 @@ module Sinatra
 
         end
 
+        # -------------------------- Reassign reservation --------------------------------------------------------
+        #
+        # (re)Assign reservation / prereservation
+        #
+        app.post '/api/booking/planning/reassign', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+
+          id = params[:id]
+          resource = params[:resource]
+          type = params[:type]
+
+          if type == 'booking'
+            if booking_line_resource = BookingDataSystem::BookingLineResource.get(id)
+              if booking_item = ::Yito::Model::Booking::BookingItem.get(resource)
+                booking_line_resource.transaction do
+                  booking_line_resource.booking_item_category = booking_item.category.code if booking_item.category
+                  booking_line_resource.booking_item_reference = booking_item.reference
+                  booking_line_resource.booking_item_stock_model = booking_item.stock_model
+                  booking_line_resource.booking_item_stock_plate = booking_item.stock_plate
+                  booking_line_resource.booking_item_characteristic_1 = booking_item.characteristic_1
+                  booking_line_resource.booking_item_characteristic_2 = booking_item.characteristic_2
+                  booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3
+                  booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4
+                  booking_line_resource.save
+                  # Newsfeed
+                  ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
+                                                           action: 'assign_booking_resource',
+                                                           identifier: booking_line_resource.booking_line.booking.id.to_s,
+                                                           description: BookingDataSystem.r18n.t.booking_news_feed.assign_booking_resource(booking_line_resource.booking_item_reference,
+                                                                                                                                           booking_line_resource.booking_line.id,
+                                                                                                                                           booking_line_resource.booking_line.item_id),
+                                                           attributes_updated: {category: booking_line_resource.booking_item_category,
+                                                                                reference: booking_line_resource.booking_item_reference,
+                                                                                stock_model: booking_line_resource.booking_item_stock_model,
+                                                                                stock_plate: booking_line_resource.booking_item_stock_plate,
+                                                                                characteristic_1: booking_line_resource.booking_item_characteristic_1,
+                                                                                characteristic_2: booking_line_resource.booking_item_characteristic_2,
+                                                                                characteristic_3: booking_line_resource.booking_item_characteristic_3,
+                                                                                characteristic_4: booking_line_resource.booking_item_characteristic_4}.to_json)
+                end
+                booking = booking_line_resource.booking_line.booking
+                booking_line = booking_line_resource.booking_line
+                result = {"booking_item_reference": booking_line_resource.booking_item_reference,
+                          "item_id": booking_line_resource.booking_item_category,
+                          "requested_item_id": booking_line.item_id,
+                          "id": booking.id,
+                          "origin": "booking",
+                          "date_from": booking.date_from.strftime("%Y-%m-%d"),
+                          "time_from": booking.time_from,
+                          "date_to": booking.date_to.strftime("%Y-%m-%d"),
+                          "time_to":booking.time_to,
+                          "days": booking.days,
+                          "title": "#{booking.customer_name} #{booking.customer_surname}",
+                          "detail":"#{booking_line_resource.resource_user_name} #{booking_line_resource.resource_user_surname} #{booking_line_resource.customer_height} #{booking_line_resource.customer_weight}",
+                          "id2": booking_line_resource.id,
+                          "planning_color": booking.planning_color,
+                          "notes": booking.notes}
+                status 200
+                content_type :json
+                result.to_json
+              else
+                status 404
+              end
+            else
+              status 404
+            end
+          elsif type == 'prereservation'
+            if prereservation_line = BookingDataSystem::BookingPrereservationLine.get(id)
+              if booking_item = ::Yito::Model::Booking::BookingItem.get(resource)
+                prereservation_line.booking_item_category = booking_item.category.code if booking_item.category
+                prereservation_line.booking_item_reference = booking_item.reference
+                prereservation_line.save
+                prereservation = prereservation_line.prereservation
+                result = {
+                 "booking_item_reference": prereservation_line.booking_item_reference,
+                 "item_id": prereservation_line.booking_item_category,
+                 "requested_item_id": prereservation_line.booking_item_category,
+                 "id": prereservation.id,
+                 "origin": "prereservation",
+                 "date_from": prereservation.date_from.strftime("%Y-%m-%d"),
+                 "time_from": prereservation.time_from,
+                 "date_to": prereservation.date_to.strftime("%Y-%m-%d"),
+                 "time_to": prereservation.time_to,
+                 "days": prereservation.days,
+                 "title": prereservation.title,
+                 "detail": prereservation.notes,
+                 "id2": prereservation_line.id,
+                 "planning_color": prereservation.planning_color,
+                 "notes": prereservation.notes}
+                status 200
+                content_type :json
+                result.to_json
+              else
+                status 404
+              end
+            else
+              status 404
+            end
+          else
+            status 404
+          end
+
+        end
+
+
+
         # -------------------------- Bookings (reservations) -----------------------------------------------------
 
         #

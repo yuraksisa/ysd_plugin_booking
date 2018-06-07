@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.148] - 2018-06-07
+### Updated
+- Planning: Bring to front when multiple reservations
+- Planning: Tooltip date/time
+- Planning: Ask for before overlap
+
 ## [0.4.147] - 2018-05-29
 ### Updated
 - Reservation: New reservation from customer

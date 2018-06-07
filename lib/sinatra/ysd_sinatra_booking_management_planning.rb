@@ -34,6 +34,7 @@ module Sinatra
           @pending_of_asignation_bookings = BookingDataSystem::Booking.pending_of_assignation
           @planning_style = SystemConfiguration::Variable.get_value('booking.assignation.planning_style','compact')
           @planning_full_day = SystemConfiguration::Variable.get_value('booking.assignation.planning_full_day','false').to_bool
+          @planning_hours_between_return_pickup = SystemConfiguration::Variable.get_value('booking.assignation_hours_return_pickup', '2').to_i
 
           # Prepare sales channels
           addons = mybooking_addons

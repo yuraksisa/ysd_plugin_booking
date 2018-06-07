@@ -39,6 +39,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
     dateTo: null,                        /* Date to to be shown */
     numberOfDays: <%=@planning_style=='compact' ? 16 : 31%>,                    /* Number of days to be shown */
     cycle24Hours: <%=@product_family.cycle_of_24_hours && !@planning_full_day%>,
+    hoursBetweenReturnPickup: <%=@planning_hours_between_return_pickup%>,
 
     references: null,                    /* The loaded references (table rows) */
     planningData : null,                 /* The loaded data - reservation to show */
@@ -74,23 +75,27 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
     },
 
     checkConflicts: function(reference) {
-        var source = this.planningData.find(function(element){return element.id2 == bookingPlanningModel.selectedItemId});
+        // Get the source (the dragging item)
+        var source = this.planningData.find(function(element){
+                           return element.id2 == bookingPlanningModel.selectedItemId &&
+                                  element.origin == bookingPlanningModel.selectedItemOrigin;
+                     });
+        var overlap = null;
         if (source) {
-            console.log(reference);
-            console.log(source);
             // check no conflicts
-            var overlap = this.planningData.find(function(element){
-                return (element.booking_item_reference == reference) &&
-                    ((source.date_from <= element.date_from && source.date_to <= element.date_to) ||
-                     (source.date_from >= element.date_from && source.date_to <= element.date_to)
-                     (source.date_from >= element.date_from && source.date_to >= element.date_to));
+            overlap = this.planningData.find(function(element){
+                var source_date_from = Date.parseExact(source.date_from + " " + source.time_from,'yyyy-M-d HH:mm').add(-bookingPlanningModel.hoursBetweenReturnPickup).hours();
+                var source_date_to = Date.parseExact(source.date_to + " " + source.time_to,'yyyy-M-d HH:mm').add(bookingPlanningModel.hoursBetweenReturnPickup).hours();
+                var element_date_from = Date.parseExact(element.date_from + " " + element.time_from,'yyyy-M-d HH:mm');
+                var element_date_to = Date.parseExact(element.date_to + " " + element.time_to,'yyyy-M-d HH:mm');
+                return (element.booking_item_reference == reference) &&                     // same reference
+                       (!(element.origin == source.origin && element.id2 == source.id2)) && // different item
+                    ((source_date_from >= element_date_from && source_date_from <= element_date_to) ||
+                     (source_date_from <= element_date_from && source_date_to >= element_date_to) ||
+                     (source_date_to >= element_date_from && source_date_to <= element_date_to));
             });
-            console.log(overlap);
-            if (overlap != null) {
-                return true;
-            }
         }
-        return false;
+        return {source: source, overlap: overlap};
     },
 
     loadData: function() { /* Load the planning data */
@@ -137,12 +142,20 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
     },
 
     reassignResource: function() { /* Reassign a resource */
-      var url = '/admin/booking/planning-reassign-reservation';
+      //var url = '/admin/booking/planning-reassign-reservation';
+      var url = '/api/booking/planning/reassign';
       url+='?id='+this.selectedItemId+'&resource='+this.newReference+'&type='+this.selectedItemOrigin;
       $.ajax({
           type: 'POST',
           url : url,
           success: function(data, textStatus, jqXHR) {
+            // Update the model with the updated data
+            var idx = bookingPlanningModel.planningData.findIndex(function(element){
+                return element.id2 == data.id2;
+            });
+            if (idx > -1) {
+                bookingPlanningModel.planningData[idx] = data;
+            }
             bookingPlanningView.update('reassigned');
           },
           error: function(textStatus, jqXHR) {
@@ -241,23 +254,24 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
         var dFrom = bookingPlanningModel.dateFrom.toISOString().substring(0,10);
 
-        var headerHeight = $('th.date_header[rel='+dFrom+']').height() + 10; // padding
-        var resourceWidth = $('td.planning_reference').width() + 6;
-        var resourceHeight = $('td.planning_reference').height() + 10 + 2; //padding + border
-        var oneDayWidth = $('th.date_header[rel='+dFrom+']').width() + 4; // +4 padding
+        var headerHeight = parseInt($('th.date_header[rel='+dFrom+']').css('height').replace('px',''));
+        var resourceWidth = parseInt($('td.planning_reference').css('width').replace('px',''));
+        var resourceHeight = parseInt($('td.planning_reference').css('height').replace('px',''));
+        var oneDayWidth = parseInt($('th.date_header').css('width').replace('px',''));
 
         var position = $(jQuerySelector).position();
         var top = position.top;
         var left = position.left;
+        var height = parseInt($(jQuerySelector).css('height').replace('px',''));
 
         top -= $('#planning_table').position().top; // Take into account planning table position
         left += 2;
 
-        var posTop = Math.floor((top) / resourceHeight); // Math.floor((top - headerHeight) / resourceHeight);
-        var posLeft = Math.floor((left - resourceWidth) / oneDayWidth);
+        var posTop = Math.floor( (top + (height/2)) / resourceHeight);
+        var posLeft = Math.floor( (left - resourceWidth) / oneDayWidth);
 
         // Adjust the top to fit in a cell
-        var newTop = posTop * resourceHeight + $('#planning_table').position().top; // + headerHeight;
+        var newTop = posTop * resourceHeight + $('#planning_table').position().top;
         $(jQuerySelector).css({top: newTop});
 
 
@@ -290,7 +304,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
           <% if @assignation_allow_diferent_categories %>
           if (referenceCategory != bookingPlanningModel.assignationResourceData.bookingCategory) {
-              var confirmation = confirm('¿Desea asignar el recuro ' + reference + ' de la categoría ' +
+              var confirmation = confirm('¿Desea asignar el recurso ' + reference + ' de la categoría ' +
                                           referenceCategory + ' a la reserva de la categoría ' +
                                           bookingPlanningModel.assignationResourceData.bookingCategory + '?');
           }
@@ -439,7 +453,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                var booking = {};
                booking.origin = $(this).attr('data-origin');
                booking.id = $(this).attr('data-id');
-               booking.title = $(this).attr('data-title');
+               booking.title = $(this).attr('data-booking-title');
                booking.date_from = $(this).attr('data-date-from');
                booking.time_from = $(this).attr('data-time-from');
                booking.date_to = $(this).attr('data-date-to');
@@ -458,6 +472,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
        // Setup event when the popover is shown
        $(jQuerySelector).on('shown.bs.popover', function () {
+            $('.color').unbind('change');
             $('.color').bind('change', function () {
                 var id = $(this).parent().find('input[name=id]').val();
                 var type = $(this).parent().find('input[name=type]').val();
@@ -488,8 +503,66 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
     popoverOn: function() { /* activate popover to show reservation information */
         $('.planning_reservation').bind('click', function(e){
+            // Hide the current selected item
             $('.planning_reservation').not(this).popover('hide');
-            $(this).popover('toggle');
+            // Check if there are overlapped elements
+            var origin = $(this).attr('data-origin');
+            var reference = $(this).attr('data-resource');
+            var idResource= $(this).attr('data-id-resource');
+            var dateFrom = $(this).attr('data-date-from');
+            var timeFrom = $(this).attr('data-time-from');
+            var dateTo = $(this).attr('data-date-to');
+            var timeTo = $(this).attr('data-time-to');
+            var overlapped = bookingPlanningModel.planningData.filter(function(element){
+                // Same reference
+                if (element.booking_item_reference != reference) {
+                    return false;
+                }
+                if (bookingPlanningModel.cycle24Hours) {
+                    var source_date_from = Date.parseExact(dateFrom + " " + timeFrom, 'yyyy-M-d HH:mm'); //.add(-bookingPlanningModel.hoursBetweenReturnPickup).hours();
+                    var source_date_to = Date.parseExact(dateTo + " " + timeTo, 'yyyy-M-d HH:mm'); //.add(bookingPlanningModel.hoursBetweenReturnPickup).hours();
+                    var element_date_from = Date.parseExact(element.date_from + " " + element.time_from, 'yyyy-M-d HH:mm');
+                    var element_date_to = Date.parseExact(element.date_to + " " + element.time_to, 'yyyy-M-d HH:mm');
+                }
+                else {
+                    var source_date_from = Date.parseExact(dateFrom, 'yyyy-M-d');
+                    var source_date_to = Date.parseExact(dateTo, 'yyyy-M-d');
+                    var element_date_from = Date.parseExact(element.date_from, 'yyyy-M-d');
+                    var element_date_to = Date.parseExact(element.date_to, 'yyyy-M-d');
+                }
+
+                var value = (source_date_from >= element_date_from && source_date_from <= element_date_to) ||
+                            (source_date_from <= element_date_from && source_date_to >= element_date_to) ||
+                            (source_date_to >= element_date_from && source_date_to <= element_date_to);
+                return value;
+            });
+
+            if (overlapped != null && overlapped.length > 1) {
+                var html = tmpl('script_select_reservation')({overlapped: overlapped});
+                $('#reservation_container .modal-title').html('Traer reserva al frente');
+                $('#reservation_container .modal-body').html(html);
+                $('.reservation_chooser').unbind('change');
+                $('.reservation_chooser').bind('change', function(){
+                   var selector = overlapped.map(function(element) {
+                                                    return '#'+element.origin+element.id;
+                                                 }).join(',');
+                   var maxZindex = Math.max.apply(null, $(selector).toArray().map(function (element) { return parseInt($(element).css('z-index')); }));
+
+                   var id = $(this).val(); // TODO Choose the max z-index from the candidates
+                   $('#'+id).css('z-index', maxZindex+1);
+                });
+                $('.color').unbind('change');
+                $('.color').bind('change', function () {
+                    var id = $(this).parent().find('input[name=id]').val();
+                    var type = $(this).parent().find('input[name=type]').val();
+                    var color =$(this).val();
+                    bookingPlanningController.colorChanged(id, type, color);
+                });
+                $('#reservation_container').modal('show');
+            }
+            else {
+                $(this).popover('toggle');
+            }
         });
     },
 
@@ -530,13 +603,14 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 revert: function() {
                     var dFrom = bookingPlanningModel.dateFrom.toISOString().substring(0,10);
 
-                    var resourceHeight = $('td.planning_reference').height() + 10 + 2; //padding + border
+                    var resourceHeight = parseInt($('td.planning_reference').css('height').replace('px',''));
 
                     var position = $(this).position();
                     var top = position.top;
                     top -= $('#planning_table').position().top; // Take into account planning table position
-                    var posTop = Math.floor((top) / resourceHeight);
+                    var height = parseInt($(this).css('height').replace('px',''));
 
+                    var posTop = Math.floor( (top + (height/2)) / resourceHeight);
 
                     <% unless @assignation_allow_diferent_categories %>
                     var category = $($('#planning_table tbody tr')[posTop]).attr('rel');
@@ -547,22 +621,37 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                         return true;
                     }
                     <% end %>
-                    /*
+
                     var reference = $($('#planning_table tbody tr')[posTop]).attr('id');
-                    if (bookingPlanningModel.checkConflicts(reference)) {
-                        var result = !confirm('El recurso ya tiene una reserva asignada. ¿Está seguro?');
+                    var conflicts = bookingPlanningModel.checkConflicts(reference);
+
+                    <% if @assignation_allow_busy_resource %>
+                    if (conflicts.overlap != null) {
+                        <% if @product_family.time_to_from %>
+                        var msg = "entrega : " + conflicts.source.date_from  + " " +
+                                  conflicts.source.time_from  + " devolución : " + conflicts.source.date_to
+                                  + " " + conflicts.source.time_to;
+                        var msg_overlap = "entrega : " + conflicts.overlap.date_from  + " " +
+                                          conflicts.overlap.time_from + " devolución : " + conflicts.overlap.date_to
+                                          + " " + conflicts.overlap.time_to;
+                        <% else %>
+                        var msg = "entrega : " + conflicts.source.date_from + " devolución : " + conflicts.source.date_to;
+                        var msg_overlap = "entrega : " + conflicts.overlap.date_from + " devolución : " + conflicts.overlap.date_to;
+                        <% end %>
+                        var result = !confirm('El recurso ' + reference + ' ya tiene una reserva o bloqueo asignada #' + conflicts.overlap.id + ' de ' + conflicts.overlap.title +  ' (' + msg_overlap  + ') ' +
+                                              'que se solapa con la reserva o bloqueo #' + conflicts.source.id + ' de ' + conflicts.source.title  + ' (' + msg + '). ¿Está seguro?');
                         if (result) {
                             $(window).scrollTop(bookingPlanningModel.startDragWindowScrollTop);
                         }
                         return result;
                     }
-                    */
-                    <% unless @assignation_allow_busy_resource %>
-                    //if ($('#'+resource).length > 0 && $($('#'+resource)[0].firstChild).hasClass('unavailable')) {
-                    //    alert('Lo sentimos. El recurso ' + resource + ' no está disponible');
-                    //    return true;
-                    //}
+                    <% else %>
+                    if (conflicts.overlap != null) {
+                       alert('Lo sentimos. El recurso ' + resource + ' no está disponible');
+                       return true;
+                    }
                     <% end %>
+
                     return false;
                 }
             }
@@ -718,11 +807,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 width -= oneDayWidth;
 
                 // Adjust
-                /*
-                if (width <= 0) {
-                    width = oneDayWidth / 2;
-                }
-                else*/ if (exceedsDateTo) {
+                if (exceedsDateTo) {
                     width += (oneDayWidth / 2);
                 }
             }
@@ -736,12 +821,11 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 dateFrom: dateFrom, timeFrom: timeFrom,
                 dateTo: dateTo, timeTo: timeTo,
                 category: category, resource: resource, requestedCategory: requestedCategory,
-                title: title, detail: detail, notes: notes,
+                booking_title: title, detail: detail, notes: notes,
                 backgroundColor: backgroundColor,
                 borderColor: this.lightenDarkenColor(backgroundColor, -40),
                 color: this.textColor(backgroundColor)
             });
-
             $(html).height(height).css({top: top, left: left, width: width}).appendTo('#parent');
         }
         else {

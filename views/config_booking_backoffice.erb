@@ -36,6 +36,8 @@
               <%= render_variable_checkbox_boolean('booking.assignation.automatic_resource_assignation', t.booking_settings.form.assignation.automatic_resource_assignation) %>
               <p class="less_contrast_text "><%=t.booking_settings.form.assignation.automatic_resource_assignation_description%></p>
               <%= render_variable_select('booking.assignation.planning_style', t.booking_settings.form.assignation.planning_style.title, {compact:  t.booking_settings.form.assignation.planning_style.compact, extended:  t.booking_settings.form.assignation.planning_style.extended}) %>
+              <%= render_variable_input_text('booking.assignation_hours_return_pickup', t.booking_settings.form.assignation.assignation_hours_return_pickup, 2, 2) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.assignation_hours_return_pickup_description%></p>
               <%= render_variable_checkbox_boolean('booking.assignation.planning_full_day', t.booking_settings.form.assignation.planning_full_day) %>
               <p class="less_contrast_text "><%=t.booking_settings.form.assignation.planning_full_day_description%></p>
               <div class="form-group">
