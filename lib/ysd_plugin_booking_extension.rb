@@ -101,7 +101,7 @@ module Huasi
 
       SystemConfiguration::Variable.first_or_create({name: 'booking.payment_amount_setup'},
                                                     {value: 'deposit',
-                                                     description: 'deposit or total',
+                                                     description: 'deposit, total or deposit_and_total ',
                                                      module: :booking}
       )
 

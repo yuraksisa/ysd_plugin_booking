@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.150] - 2018-06-10
+### Updated
+- Booking payment: deposit - total - deposit and total
+
 ## [0.4.149] - 2018-06-07
 ### Updated
 - Planning: Bug on drag&drop reservation

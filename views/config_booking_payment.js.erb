@@ -62,7 +62,7 @@ require(['jquery','YSDForms'], function($, YSDForms) {
 
         updateRentingPaymentDepositSettings: function() {
             if ($('input[name=booking\\.payment]').is(':checked')) {
-                if ($('#booking\\.payment_amount_setup').val() == 'deposit') {
+                if ($('#booking\\.payment_amount_setup').val() == 'deposit' || $('#booking\\.payment_amount_setup').val() == 'deposit_and_total') {
                     $('#renting_deposit_settings').show();
                 }
                 else {
@@ -86,7 +86,7 @@ require(['jquery','YSDForms'], function($, YSDForms) {
 
         updateOrdersPaymentDepositSettings: function() {
             if ($('input[name=order\\.payment]').is(':checked')) {
-                if ($('#order\\.payment_amount_setup').val() == 'deposit') {
+                if ($('#order\\.payment_amount_setup').val() == 'deposit' || $('#order\\.payment_amount_setup').val() == 'deposit_and_total') {
                     $('#order_deposit_settings').show();
                 }
                 else {

@@ -22,7 +22,8 @@
               <%= render_variable_select('booking.payment_amount_setup',
                                          t.booking_settings.form.pay_group.title,
                                          {deposit: t.booking_settings.form.pay_group.deposit,
-                                          total: t.booking_settings.form.pay_group.total}) %>
+                                          total: t.booking_settings.form.pay_group.total,
+                                          deposit_and_total: t.booking_settings.form.pay_group.deposit_and_total}) %>
               <div id="renting_deposit_settings">
                 <%= render_variable_input_text('booking.deposit', t.booking_settings.form.deposit, 2, 2) %>
                 <p class="less_contrast_text"><%=t.booking_settings.form.deposit_description%></p>

@@ -132,6 +132,7 @@ booking_settings:
       title: Cantidad a pagar online
       deposit: Paga y señal
       total: Total
+      deposit_and_total: Paga y señal + Total
       allow_pending_payment: Permite pagar la cantidad pendiente
       allow_pending_payment_description: Permite pagar el importe pendiente (tras pagar el depósito)
     product_allow_deposit: Permitir definir una fianza en los productos.
