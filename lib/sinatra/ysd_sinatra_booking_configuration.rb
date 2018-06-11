@@ -169,8 +169,12 @@ module Sinatra
         # Booking configuration contract
         #
         app.get '/admin/booking/config/contract', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          @renting_plan, @activities_plan = mybooking_plan_type
+
           if @show_translations = settings.multilanguage_site
-            @tmpl = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+            @tmpl = ContentManagerSystem::Template.first({:name => 'booking_contract'}) if @renting_plan
+            @tmpl_orders = ContentManagerSystem::Template.first({name: 'order_contract'}) if @activities_plan
           end
           load_page(:config_booking_contract)
         end

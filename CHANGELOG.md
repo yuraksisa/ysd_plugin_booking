@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.151] - 2018-06-11
+### Updated
+- Order contract
+
 ## [0.4.150] - 2018-06-10
 ### Updated
 - Booking payment: deposit - total - deposit and total

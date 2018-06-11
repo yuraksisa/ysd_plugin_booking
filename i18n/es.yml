@@ -253,6 +253,9 @@ booking_business_settings:
 booking_contract:
   title: Contrato
   template_title: Plantilla
+  renting_title: Contrato de alquiler
+  activities_title: Contrato de actividades
+  translations: Traducciones
 booking_front_end_theme:
   title: Tema
 booking_front_end:

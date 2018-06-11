@@ -5,31 +5,44 @@
   <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
 
   <div id="content">
-
     <br>
-
     <div class="row">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
-          <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_contract.template_title%></h3>
-          </div>
-          <div class="block-content block-content-narrow">
-            <form name="templates" action="/api/templates" method="PUT"
-                  data-remote="ajax" data-remote-method="PUT" class="all-space">
-              <%= render_template_editor 'booking_contract','','', 20 %>
-              <div class="form-group">
-                <div class="col-xs-12">
-                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+          <ul class="nav nav-tabs" data-toggle="tabs">
+            <% if @renting_plan %>
+            <li class="active">
+              <a id="renting_contract" href="#btabs-static-renting-contract"><%=t.booking_contract.renting_title%></a>
+            </li>
+            <% end %>
+            <% if @activities_plan %>
+            <li class="">
+              <a id="activities_contract" href="#btabs-static-activities-contract"><%=t.booking_contract.activities_title%></a>
+            </li>
+            <% end %>
+          </ul>
+          <div class="block-content tab-content">
+            <% if @renting_plan %>
+            <div class="tab-pane active" id="btabs-static-renting-contract">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                  <form name="templates" action="/api/templates" method="PUT"
+                        data-remote="ajax" data-remote-method="PUT" class="all-space">
+                    <%= render_template_editor 'booking_contract','','', 20 %>
+                    <div class="form-group">
+                      <div class="col-xs-12">
+                        <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </div>
-            </form>
-            <% if @show_translations and @tmpl %>
+              <% if @show_translations and @tmpl %>
               <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
                   <div class="block block-bordered">
                     <div class="block-header bg-gray-lighter">
-                      <h3 class="block-title">Traducciones</h3>
+                      <h3 class="block-title"><%=t.booking_contract.translations%></h3>
                     </div>
                     <div class="block-content block-content-narrow">
                       <div id="contract_container">
@@ -38,12 +51,45 @@
                   </div>
                 </div>
               </div>
+              <% end %>
+            </div>
+            <% end %>
+            <% if @activities_plan %>
+            <div class="tab-pane <% if !@renting_plan%>active<%end%>" id="btabs-static-activities-contract">
+                <div class="row">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                    <form name="templates" action="/api/templates" method="PUT"
+                          data-remote="ajax" data-remote-method="PUT" class="all-space">
+                      <%= render_template_editor 'order_contract','','', 20 %>
+                      <div class="form-group">
+                        <div class="col-xs-12">
+                          <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <% if @show_translations and @tmpl_orders %>
+                  <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <div class="block block-bordered">
+                        <div class="block-header bg-gray-lighter">
+                          <h3 class="block-title"><%=t.booking_contract.translations%></h3>
+                        </div>
+                        <div class="block-content block-content-narrow">
+                          <div id="contract_activities_container">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+            </div>
             <% end %>
           </div>
         </div>
       </div>
     </div>
 
-
-</div>
+  </div>
 </div>
