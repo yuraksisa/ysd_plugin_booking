@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.152] - 2018-06-11
+### Updated
+- Order contract bug
+
 ## [0.4.151] - 2018-06-11
 ### Updated
 - Order contract

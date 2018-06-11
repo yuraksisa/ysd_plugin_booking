@@ -176,6 +176,7 @@ module Sinatra
             @tmpl = ContentManagerSystem::Template.first({:name => 'booking_contract'}) if @renting_plan
             @tmpl_orders = ContentManagerSystem::Template.first({name: 'order_contract'}) if @activities_plan
           end
+
           load_page(:config_booking_contract)
         end
 
