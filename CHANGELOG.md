@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.153] - 2018-06-13
+### Updated
+- Planning: Link to reservation
+
 ## [0.4.152] - 2018-06-11
 ### Updated
 - Order contract bug

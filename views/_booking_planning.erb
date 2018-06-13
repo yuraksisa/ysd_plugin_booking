@@ -669,7 +669,13 @@
          <td class="table-cell centered_text">
             <input type="radio" name="id" value="<%%=overlapped[idx].origin%><%%=overlapped[idx].id%>" class="reservation_chooser"></input>
          </td>
-         <td class="table-cell centered_text"><%%=overlapped[idx].id %></td>
+         <td class="table-cell centered_text">
+            <%% if (overlapped[idx].origin == 'booking') { %>
+            <a href="/admin/booking/bookings/<%%=overlapped[idx].id%>" target="_blank"><%%=overlapped[idx].id %></a>
+            <%% } else { %>
+            <%%= overlapped[idx].id %>
+            <%% } %>
+         </td>
          <td class="table-cell centered_text"><%%=overlapped[idx].title%></td>
          <td class="table-cell centered_text"><%%=overlapped[idx].item_id%> <%% if (overlapped[idx].item_id != overlapped[idx].requested_item_id) { %>(<%%=overlapped[idx].requested_item_id%>)<%%}%></td>
          <td class="table-cell centered_text"><%%=overlapped[idx].date_from%> <% if @product_family.time_to_from %><%%=overlapped[idx].time_from%><%end%></td>
