@@ -656,11 +656,12 @@
       <tr>
         <th class="table-header-title centered_text" scope="col" style="width:5%"></th>
         <th class="table-header-title centered_text" scope="col" style="width:15%">#</th>
-        <th class="table-header-title centered_text" scope="col" style="width:20%">Titulo</th>
-        <th class="table-header-title centered_text" scope="col" style="width:20%">Producto</th>
-        <th class="table-header-title centered_text" scope="col" style="width:20%">Desde</th>
-        <th class="table-header-title centered_text" scope="col" style="width:20%">Hasta</th>
+        <th class="table-header-title centered_text" scope="col" style="width:15%">Titulo</th>
+        <th class="table-header-title centered_text" scope="col" style="width:15%">Producto</th>
+        <th class="table-header-title centered_text" scope="col" style="width:15%">Desde</th>
+        <th class="table-header-title centered_text" scope="col" style="width:15%">Hasta</th>
         <th class="table-header-title centered_text" scope="col" style="width:10%">Color</th>
+        <th class="table-header-title centered_text" scope="col" style="width:20%">Acciones</th>
       </tr>
     </thead>
     <tbody id="elements_tbody" class="table-tbody">
@@ -676,7 +677,7 @@
             <%%= overlapped[idx].id %>
             <%% } %>
          </td>
-         <td class="table-cell centered_text"><%%=overlapped[idx].title%></td>
+         <td class="table-cell centered_text"><%%=overlapped[idx].title%><p><%%=overlapped[idx].notes%></p></td>
          <td class="table-cell centered_text"><%%=overlapped[idx].item_id%> <%% if (overlapped[idx].item_id != overlapped[idx].requested_item_id) { %>(<%%=overlapped[idx].requested_item_id%>)<%%}%></td>
          <td class="table-cell centered_text"><%%=overlapped[idx].date_from%> <% if @product_family.time_to_from %><%%=overlapped[idx].time_from%><%end%></td>
          <td class="table-cell centered_text"><%%=overlapped[idx].date_to%> <% if @product_family.time_to_from %><%%=overlapped[idx].time_to%><%end%></td>
@@ -686,6 +687,22 @@
               <input type="hidden" name="type" value="<%%=overlapped[idx].origin%>"/>
               <input type="color" name="planning_color" class="color" value="<%%=overlapped[idx].planning_color%>" style="width:32px; height: 32px"/>
             </form>
+         </td>
+         <td class="table-cell centered_text">
+            <% if @product_family.multiple_items? %>
+              <%% if (overlapped[idx].origin == 'booking') { %>
+                <button type="button" class="btn btn-primary modify_reservation_button" rel="<%%=overlapped[idx].id%>">Editar</button>
+              <%% } else if (overlapped[idx].origin == 'prereservation') {%>
+                <button type="button" class="btn btn-primary modify_prereservation_button" rel="<%%=overlapped[idx].id%>">Editar</button>
+                <p></p>
+                <button type="button" class="destroy_prereservation_button btn btn-danger" rel="<%%=overlapped[idx].id2%>">Eliminar</button>
+              <%% } %>
+            <% else %>
+              <%% if (overlapped[idx].origin == 'booking') { %>
+              <%% } else if (overlapped[idx].origin == 'prereservation') {%>
+                <button type="button" class="destroy_prereservation_button btn btn-danger" rel="<%%=overlapped[idx].id2%>">Eliminar</button>
+              <%% } %>
+            <% end %>
          </td>
        </tr>
       <%% } %>

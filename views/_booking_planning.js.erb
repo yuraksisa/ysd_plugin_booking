@@ -558,6 +558,30 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                     var color =$(this).val();
                     bookingPlanningController.colorChanged(id, type, color);
                 });
+                // Destroy pre-reservation button click
+                $('.destroy_prereservation_button').unbind('click');
+                $('.destroy_prereservation_button').bind('click', function() {
+                    $('#reservation_container').modal('hide');
+                    destroyStockBlockingController.destroyPrereservationClick($(this).attr('rel'));
+                });
+                // Add resources to prereservation button click
+                $('.modify_prereservation_button').unbind('click');
+                $('.modify_prereservation_button').bind('click', function() {
+                    $('#reservation_container').modal('hide');
+                    var id = $(this).attr('rel');
+                    setTimeout(function(){
+                        planningModifyStockBlockingView.show(id);
+                    }, 500);
+                });
+                // Add quantity to reservation button click
+                $('.modify_reservation_button').unbind('click');
+                $('.modify_reservation_button').bind('click', function() {
+                    $('#reservation_container').modal('hide');
+                    var id = $(this).attr('rel');
+                    setTimeout(function() {
+                        planningModifyReservationView.show(id);
+                    }, 500);
+                });
                 $('#reservation_container').modal('show');
             }
             else {
@@ -1070,6 +1094,15 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
               url : url,
               contentType : 'application/json; charset=utf-8',
               success: function(data, textStatus, jqXHR) {
+                  var idx = bookingPlanningModel.planningData.findIndex(function(element){
+                      if (element.origin == 'prereservation' && element.id2 == destroyStockBlockingModel.id) {
+                          return true;
+                      }
+                      return false;
+                  });
+                  if (idx > -1) {
+                      bookingPlanningModel.planningData.splice(idx, 1);
+                  }
                   destroyStockBlockingView.update('destroyed_preservation');
               },
               error: function(textStatus, jqXHR) {
