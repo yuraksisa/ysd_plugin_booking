@@ -7,16 +7,19 @@ require(['YSDGui','jquery',
 
   occupationController = {
     occupationDetailClick: function(dataUrl) {
-      $('#occupation-detail').load(dataUrl + ' .admin_content_wrapper');
-      YSDGui.showElementInMode(document.getElementById('occupation-detail'), true, null, 'absolute', 0, 200);
+      $('#occupation_dialog_container .modal-title').html('Ocupación');
+      $('#occupation_dialog_container .modal-body').load(dataUrl + ' .admin_content_wrapper');
+      $('#occupation_dialog_container').modal('show');
     },
+
     editIconClicked: function(date, time, activityCode) {
       var url = '/admin/booking/planned-activity?date='+date+'&time='+time+'&activity_code='+activityCode;
       $.ajax({url: url, dataType: 'text'}).done(function(html) {
         var dom = $('<html />').prop('innerHTML', html);
-        $('#dialog_container').html(dom.find('body #planned_activity_selector'));
+        $('#occupation_dialog_container .modal-title').html('Editar');
+        $('#occupation_dialog_container .modal-body').html(dom.find('body #planned_activity_selector'));
         $('head').append(dom.find('script:not([src])'));
-        YSDGui.showElement(document.getElementById('dialog_container'), true);
+        $('#occupation_dialog_container').modal('show');
       });
 
     }

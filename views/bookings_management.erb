@@ -1,5 +1,26 @@
 <%= include('entity-management') %>
 
+<!-- ======================================== -->
+<!--            Reservation modal             -->
+<!-- ======================================== -->
+<div class="modal fade" id="booking_management_modal_container" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul class="block-options">
+          <li>
+            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+          </li>
+        </ul>
+        <h3 class="modal-title"></h3>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Renders the element description -->
 
 <script type="text/tmpl" id="elements_title">

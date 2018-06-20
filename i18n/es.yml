@@ -322,6 +322,8 @@ booking_console:
   confirmed: Confirmadas
   new_booking: Nueva reserva
   new_customer_booking: Nueva reserva de cliente
+  new_booking_renting: Nuevo alquiler
+  new_customer_booking_renting: Nuevo alquiler de cliente
   availability: Calendarios
   summary: Resumen
   pickup_return: Entrega y devolución

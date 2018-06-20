@@ -42,8 +42,9 @@ require(["YSDGui","jquery", "jquery.calendar"],
           maxTime: '22:00:00',               
           eventClick: function(event) {
             if (event.url) {
-              $('#dialog_container').load(event.url + ' .admin_content_wrapper');
-              YSDGui.showElement(document.getElementById('dialog_container'), true);
+              $('#occupation_dialog_container .modal-title').html('Ocupación');
+              $('#occupation_dialog_container .modal-body').load(event.url + ' .admin_content_wrapper');
+              $('#occupation_dialog_container').modal('show');
               return false;
             }
           }

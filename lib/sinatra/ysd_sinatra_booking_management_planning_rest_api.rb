@@ -321,6 +321,13 @@ module Sinatra
                                                            planning_color: '#f3b760',
                                                            created_by_manager: true) #TODO pass the planning color
 
+              days_calculus = BookingDataSystem::Booking.calculate_days(date_from, time_from, date_to, time_to)
+              
+              if (days_calculus and days_calculus[:valid])
+                @booking.days = days_calculus[:days]
+                @booking.date_to_price_calculation = days_calculus[:date_to_price_calculation]
+              end
+
               model_request[:products].each do |code, quantity|
                 @booking.add_booking_line(code, quantity.to_i)
               end

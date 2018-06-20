@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.155] - 2018-06-20
+### Updated
+- Planning: Check conflicts
+
 ## [0.4.154] - 2018-06-13
 ### Updated
 - Planning: Edit reservation and stock blocking in multiple selection

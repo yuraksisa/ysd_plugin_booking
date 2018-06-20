@@ -8,6 +8,12 @@ require(['jquery',
 
   activitiesController = {
 
+    detailButtonClick: function(url) {
+        $('#occupation_dialog_container .modal-title').html('Ocupación');
+        $('#occupation_dialog_container .modal-body').load(url + ' .admin_content_wrapper');
+        $('#occupation_dialog_container').modal('show');
+    },
+
     searchButtonClick: function() {
       var date_from = $('#date_from').datepicker('getDate').toString('yyyy-MM-dd');
       var date_to = $('#date_to').datepicker('getDate').toString('yyyy-MM-dd');
@@ -87,6 +93,11 @@ require(['jquery',
 
          $('#search').bind('click', function() {
            activitiesController.searchButtonClick();
+         });
+
+         $('.occupation-detail-button').bind('click', function() {
+            var url = $(this).attr('data-url');
+            activitiesController.detailButtonClick(url);
          });
 
     }

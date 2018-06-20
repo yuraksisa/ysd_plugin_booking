@@ -84,10 +84,10 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
         if (source) {
             // check no conflicts
             overlap = this.planningData.find(function(element){
-                var source_date_from = Date.parseExact(source.date_from + " " + source.time_from,'yyyy-M-d HH:mm').add(-bookingPlanningModel.hoursBetweenReturnPickup).hours();
-                var source_date_to = Date.parseExact(source.date_to + " " + source.time_to,'yyyy-M-d HH:mm').add(bookingPlanningModel.hoursBetweenReturnPickup).hours();
-                var element_date_from = Date.parseExact(element.date_from + " " + element.time_from,'yyyy-M-d HH:mm');
-                var element_date_to = Date.parseExact(element.date_to + " " + element.time_to,'yyyy-M-d HH:mm');
+                var source_date_from = Date.parseExact(source.date_from + " " + source.time_from,'yyyy-M-d H:mm').add(-bookingPlanningModel.hoursBetweenReturnPickup).hours();
+                var source_date_to = Date.parseExact(source.date_to + " " + source.time_to,'yyyy-M-d H:mm').add(bookingPlanningModel.hoursBetweenReturnPickup).hours();
+                var element_date_from = Date.parseExact(element.date_from + " " + element.time_from,'yyyy-M-d H:mm');
+                var element_date_to = Date.parseExact(element.date_to + " " + element.time_to,'yyyy-M-d H:mm');
                 return (element.booking_item_reference == reference) &&                     // same reference
                        (!(element.origin == source.origin && element.id2 == source.id2)) && // different item
                     ((source_date_from >= element_date_from && source_date_from <= element_date_to) ||

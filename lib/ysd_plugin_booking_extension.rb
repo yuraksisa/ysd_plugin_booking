@@ -585,6 +585,42 @@ module Huasi
          :extras_price_definition_units_management_value => 1
         })
 
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'boat_charter'},
+                                                          {
+                                                              :name => 'Charter (naútico)',
+                                                              :presentation_order => 5,
+                                                              :frontend => :dates,
+                                                              :driver => true,
+                                                              :driver_date_of_birth => false,
+                                                              :driver_license => false,
+                                                              :guests => false,
+                                                              :flight => false,
+                                                              :height => false,
+                                                              :height_mandatory => false,
+                                                              :weight => false,
+                                                              :weight_mandatory => false,
+                                                              :pickup_return_place => false,
+                                                              :time_to_from => false,
+                                                              :time_start => '10:00',
+                                                              :time_end => '20:00',
+                                                              :start_date_literal => :pickup,
+                                                              :driver_literal => :contact,
+                                                              :cycle_of_24_hours => false,
+                                                              :named_resources => false,
+                                                              :fuel => false,
+                                                              :product_type => :resource,
+                                                              :product_price_definition_type => :season,
+                                                              :product_price_definition_season_definition => season_definition,
+                                                              :product_price_definition_factor_definition => factor_definition,
+                                                              :product_price_definition_units_management => :detailed,
+                                                              :product_price_definition_units_management_value => 7,
+                                                              :extras_price_definition_type => :no_season,
+                                                              :extras_price_definition_season_definition => season_definition,
+                                                              :extras_price_definition_factor_definition => factor_definition,
+                                                              :extras_price_definition_units_management => :unitary,
+                                                              :extras_price_definition_units_management_value => 1
+                                                          })
+
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'other'},
     {
         :name => 'Otros',

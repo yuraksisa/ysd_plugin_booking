@@ -148,17 +148,6 @@ module Sinatra
         end  
 
         #
-        # Pending of confirmation activities
-        #
-        app.get '/admin/booking/reports/pending-confirmation-activities', :allowed_usergroups => ['booking_manager', 'staff'] do
-         
-          @orders = ::Yito::Model::Order::Order.pending_of_confirmation
-          load_page(:report_pending_confirmation_activities)
-
-        end 
-
-
-        #
         # Booking activities
         #
         app.get '/admin/booking/activities/?*', :allowed_usergroups => ['booking_manager','staff'] do

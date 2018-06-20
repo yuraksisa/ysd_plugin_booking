@@ -1207,12 +1207,12 @@ module Sinatra
             # Assign from booking request
             updated_summary = []
             updated_attributes = {}
-            if data.has_key?(:booking_item_stock_model) and (!data[:booking_item_stock_model].nil? and !data[:booking_item_stock_model].empty?)
+            if data.has_key?(:booking_item_stock_model) and (!data[:booking_item_stock_model].nil? and !data[:booking_item_stock_model].to_s.empty?)
               updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_stock_model(data[:booking_item_stock_model], booking_line_resource.booking_item_stock_model) if booking_line_resource.booking_item_stock_model != data[:booking_item_stock_model]
               updated_attributes.store(:stock_model, data[:booking_item_stock_model]) if booking_line_resource.booking_item_stock_model != data[:booking_item_stock_model]
               booking_line_resource.booking_item_stock_model = data[:booking_item_stock_model]
             end
-            if data.has_key?(:booking_item_stock_plate) and (!data[:booking_item_stock_plate].nil? and !data[:booking_item_stock_plate].empty?)
+            if data.has_key?(:booking_item_stock_plate) and (!data[:booking_item_stock_plate].nil? and !data[:booking_item_stock_plate].to_s.empty?)
               updated_summary << BookingDataSystem.r18n.t.booking_news_feed.updated_stock_plate(data[:booking_item_stock_plate], booking_line_resource.booking_item_stock_plate) if booking_line_resource.booking_item_stock_plate != data[:booking_item_stock_plate]
               updated_attributes.store(:stock_plate, data[:booking_item_stock_plate]) if booking_line_resource.booking_item_stock_plate != data[:booking_item_stock_plate]
               booking_line_resource.booking_item_stock_plate = data[:booking_item_stock_plate]

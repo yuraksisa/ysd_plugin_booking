@@ -178,6 +178,10 @@
                      <div class="top-margin all-space">
                         <% if booking_item_family.frontend == :shopcart %>
                         <button id="new_booking_line_button" class="btn btn-default">Añadir producto</button>
+                        <% else %>
+                         <%% if (entity.booking_lines.length == 0) { %>
+                         <button id="new_booking_line_button" class="btn btn-default">Añadir producto</button>
+                         <%% } %>
                         <% end %>
                         <button id="new_booking_extra_button" class="btn btn-default">Añadir extra</button>
                         <button id="booking_supplements_button" class="btn btn-default">Suplementos reserva</button>

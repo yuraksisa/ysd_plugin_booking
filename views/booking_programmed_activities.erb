@@ -35,22 +35,30 @@
             <tr>
               <th class="table-cell left_text" scope="col" style="width:150px">Fecha</th>
               <th class="table-cell left_text" scope="col" style="width:260px">Actividad</th>
-              <th class="table-cell right_text" scope="col" style="width:150px">Plazas confirmadas</th>
-              <th class="table-cell right_text" scope="col" style="width:150px">Plazas pendientes</th>
+              <th class="table-cell centered_text" scope="col" style="width:100px">Estado</th>
+              <th class="table-cell right_text" scope="col" style="width:140px">Pl. confirmadas</th>
+              <th class="table-cell right_text" scope="col" style="width:130px">Pl. pendientes</th>
               <th class="table-cell" scope="col"></th>
             </tr>
         </thead>
         <tbody>   
         <% @activities.each do |activity| %>  
-          <tr class="table-row <%if activity.confirmed == 0%>less_contrast_text italic_text<%end%>">
-            <td class="table-cell"><%=activity.date.strftime('%d-%m-%Y')%> <%=activity.time%></td>
-            <td class="table-cell"><%=activity.item_description%></td>
-            <td class="table-cell right_text"><%="%.0f" % activity.confirmed%></td>
-            <td class="table-cell right_text"><%="%.0f" % activity.pending_confirmation %></td>
+          <tr class="table-row">
+            <td class="table-cell <%if activity.confirmed == 0%>less_contrast_text italic_text<%end%>"><%=activity.date.strftime('%d-%m-%Y')%> <%=activity.time%></td>
+            <td class="table-cell <%if activity.confirmed == 0%>less_contrast_text italic_text<%end%>"><%=activity.item_description%></td>
+            <td class="table-cell centered_text">
+              <% if activity.confirmed == 0 %>
+                <span class="label label-warning smaller_text">Pendiente</span>
+              <% else %>
+                <span class="label label-success smaller_text">Confirmada</span>
+              <% end %>
+            </td>
+            <td class="table-cell right_text <%if activity.confirmed == 0%>less_contrast_text italic_text<%end%>"><%="%.0f" % activity.confirmed%></td>
+            <td class="table-cell right_text <%if activity.confirmed == 0%>less_contrast_text italic_text<%end%>"><%="%.0f" % activity.pending_confirmation %></td>
             <td class="table-cell">
-              <div class="form-button green-button" style="margin-left: 5em">
-                <a href="/admin/booking/activity-detail?date=<%=activity.date.strftime('%Y-%m-%d')%>&time=<%=activity.time%>&item_id=<%=activity.item_id%>">Ver detalle</a>
-              </div>
+              <button type="button" class="btn btn-default occupation-detail-button" data-url="/admin/booking/activity-detail?date=<%=activity.date.strftime('%Y-%m-%d')%>&time=<%=activity.time%>&item_id=<%=activity.item_id%>&layout=no">
+                Ver detalle
+              </button>
             </td>
           </tr>
         <% end %>
@@ -58,4 +66,22 @@
       </table>
     <% end %>
   </div>  
+</div>
+
+<!-- Modal dialog to show information -->
+<div id="occupation_dialog_container" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pendingAssignationModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul class="block-options">
+          <li>
+            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+          </li>
+        </ul>
+        <h3 class="modal-title"></h3>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
 </div>
