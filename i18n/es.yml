@@ -94,6 +94,13 @@ booking_settings:
       dates: Selección fechas (para 1 producto)
       categories: Selección producto (para 1 producto)
       shoppingcart: Reserva múltiples productos
+    general:
+      title: General
+      report_pickup_return_pdf:
+        title: Informe entregas y recogidas (PDF)
+        description: Indica la versión del report PDF que desea utilizar. v1 es el report original. v2 es el nuevo report. Incluye información del vuelo de retorno y reorganización de columnas
+        v1: Versión 1
+        v2: Versión 2
     assignation:
       allow_different_category: Permitir asignar diferentes categorías
       allow_different_category_description: Permite que a una reserva pueda asignarse un recurso de diferente categoría, por ejemplo un coche de categoría superior
@@ -812,6 +819,7 @@ booking_management:
     external_invoice_number: Número factura (sistema externo)
     external_invoice_date: Fecha factura (sistema externo)
     free_access_id: Acceso directo
+    step2_confirmation: Acceso directo confirmación paso 2
     payment_method: Forma de pago 
     flight_title: Vuelo
     flight_airport_origin: Aeropuerto origen

@@ -1,8 +1,17 @@
 # Changelog
 
 ## [0.4.155] - 2018-06-20
+### Added
+- Report pickup/return V2
+- Bookings management: Step-2 confirmation link
+
+## [0.4.155] - 2018-06-20
 ### Updated
 - Planning: Check conflicts
+- Programmed activities: Improvement
+- Activities occupation: Bootstrap modal
+- Activities scheduler: Bootstrap modal
+- Removed pending confirmation activities
 
 ## [0.4.154] - 2018-06-13
 ### Updated

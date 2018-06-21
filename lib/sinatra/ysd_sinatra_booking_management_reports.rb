@@ -132,7 +132,11 @@ module Sinatra
 
           # Build report
           content_type 'application/pdf'
-          pdf = ::Yito::Model::Booking::Pdf::PickupReturn.new(from, to, rental_location_code,addon_journal).build.render
+          if SystemConfiguration::Variable.get_value('booking.reports.pickup_return', 'v1') == 'v1'
+            pdf = ::Yito::Model::Booking::Pdf::PickupReturn.new(from, to, rental_location_code,addon_journal).build.render
+          else
+            pdf = ::Yito::Model::Booking::Pdf::PickupReturnV2.new(from, to, rental_location_code,addon_journal).build.render
+          end
 
         end
 

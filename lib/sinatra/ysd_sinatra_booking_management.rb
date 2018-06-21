@@ -193,6 +193,7 @@ module Sinatra
           @multilanguage = settings.multilanguage_site
           @languages = Model::Translation::TranslationLanguage.all
           @default_language = settings.default_language
+          @step2_confirmation = SystemConfiguration::Variable.get_value('booking.frontend.confirmation_step_2', 'false').to_bool
 
           if @addon_sales_channels
             @sales_channels = ::Yito::Model::SalesChannel::SalesChannel.all

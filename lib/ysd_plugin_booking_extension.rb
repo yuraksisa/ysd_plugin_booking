@@ -51,6 +51,13 @@ module Huasi
       # Planning
 
       SystemConfiguration::Variable.first_or_create(
+          {name: 'booking.reports.pickup_return'},
+          {value: 'v1',
+           description: 'Show the pickup/return report version',
+           module: :booking}
+      )
+
+      SystemConfiguration::Variable.first_or_create(
           {name: 'booking.assignation.automatic_resource_assignation'},
           {value: 'true',
            description: 'It assigns automatically an available item on confirm the reservation',
