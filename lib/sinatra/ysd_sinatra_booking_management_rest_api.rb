@@ -39,59 +39,6 @@ module Sinatra
         end
 
         #
-        # Booking statistics
-        #
-        app.get '/api/booking/statistics', :allowed_usergroups => ['booking_manager', 'staff']  do
-
-          year = params[:year] || Date.today.year
-
-          received = BookingDataSystem::Booking.reservations_received(year)
-          confirmed = BookingDataSystem::Booking.reservations_confirmed(year)
-          
-          result = {}
-
-          (1..12).each do |element| 
-            period = "#{year}-#{element.to_s.rjust(2, '0')}"
-            result.store(period, {requests: 0, confirmed: 0})
-          end          
-
-          received.each do |item|
-            result.store(item.period, :requests => item.occurrences, :confirmed => 0)
-          end
-          
-          confirmed.each do |item|
-            result.fetch(item.period).store(:confirmed, item.occurrences)
-          end
-
-          result.to_json
-
-        end
-
-        #
-        # Incoming money
-        #
-        app.get '/api/booking/incoming-money', :allowed_usergroups => ['booking_manager', 'staff']  do
-
-          year = params[:year] || Date.today.year
-
-          data = BookingDataSystem::Booking.incoming_money_summary(year)
-
-          result = {}
-
-          (1..12).each do |element| 
-            period = "#{year}-#{element.to_s.rjust(2, '0')}"
-            result.store(period, {total: 0})
-          end  
-
-          data.each do |item|
-            result.store(item.period, :total => sprintf("%.2f", item.total))
-          end
-
-          result.to_json
-
-        end 
-
-        #
         # Bookings scheduler
         #
         app.get '/api/booking/scheduler/:booking_item_reference', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do

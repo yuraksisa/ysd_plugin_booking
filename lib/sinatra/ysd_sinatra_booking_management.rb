@@ -140,19 +140,6 @@ module Sinatra
           load_page(:bookings_scheduler, :locals => {:booking_item => nil, :year => year, :month => month})
         end
 
-        # --------------------------------- SUMARY -----------------------------------------------------
-
-        #
-        # Bookings summary
-        #
-        app.get '/admin/booking/summary', :allowed_usergroups => ['booking_manager', 'staff'] do
-          first = BookingDataSystem::Booking.first(order: :creation_date.asc, limit: 1)
-          first_year = first ? first.creation_date.year : Date.today.year
-          current_year = Date.today.year
-          load_page(:bookings_statistics, :locals => {first_year: first_year, current_year: current_year})
-        end
-
-
         # -------------------------- ADMIN BOOKINGS ------------------------------------
 
         #

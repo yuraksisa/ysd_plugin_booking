@@ -50,36 +50,33 @@
         </div>
       </div>
     </div>
-    <% end %>
 
-
-  <% if booking_renting and multiple_locations%>
-      <div class="row">
-        <div class="col-sm-12 col-md-10 col-md-offset-1">
-          <div class="block ">
-            <div class="block-header bg-gray-lighter">
-              <h3 class="block-title"><%=t.booking_settings.form.pick_up_return_report%></h3>
-            </div>
-            <div class="block-content block-content-narrow">
-              <form name="variables" action="/api/variables" method="PUT"
-                    data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-                <%= render_variable_select('booking.reports.pickup_return', t.booking_settings.form.general.report_pickup_return_pdf.title,
-                                           {v1:  t.booking_settings.form.general.report_pickup_return_pdf.v1,
-                                            v2:  t.booking_settings.form.general.report_pickup_return_pdf.v2}) %>
-                <p class="less_contrast_text "><%=t.booking_settings.form.general.report_pickup_return_pdf.description%></p>
-                <% if multiple_locations %>
-                <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_allow_operator_all_locations', t.booking_settings.form.pickup_return_backoffice.allow_operator_all_locations) %>
-                <% end %>
-                <div class="form-group">
-                  <div class="col-xs-12">
-                    <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
-                  </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_settings.form.pick_up_return_report%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_select('booking.reports.pickup_return', t.booking_settings.form.general.report_pickup_return_pdf.title,
+                                         {v1:  t.booking_settings.form.general.report_pickup_return_pdf.v1,
+                                          v2:  t.booking_settings.form.general.report_pickup_return_pdf.v2}) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.general.report_pickup_return_pdf.description%></p>
+              <% if multiple_locations %>
+              <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_allow_operator_all_locations', t.booking_settings.form.pickup_return_backoffice.allow_operator_all_locations) %>
+              <% end %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
                 </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
+    </div>
   <% end %>
 
 </div>

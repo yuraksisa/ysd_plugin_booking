@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.157] - 2018-07-01
+### Updated
+- Summary information refactoring
+
 ## [0.4.155] - 2018-06-20
 ### Added
 - Report pickup/return V2

@@ -823,15 +823,15 @@ module Huasi
     # Return the pages managed by the module
     # @return [Hash] Name - Url
     #
-    def public_pages
-
-      pages = {}
-      pages.store(t.booking_pages.new_booking, '/p/booking/start')
-      pages.store(t.booking_pages.booking_summary, '/p/booking/summary')
-
-      return pages
-
-    end
+    #def public_pages
+    #
+    #  pages = {}
+    #  pages.store(t.booking_pages.new_booking, '/p/booking/start')
+    #  pages.store(t.booking_pages.booking_summary, '/p/booking/summary')
+    #
+    #  return pages
+    #
+    #end
 
     # ========= Page Building ============
 
@@ -872,11 +872,11 @@ module Huasi
     # @return [Array]
     #   An array which contains the css resources used by the module
     #
-    def page_script(context={}, page)
-    
-      ['/booking_js.js'] if ((defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == '3.0')) || (!defined?MY_BOOKING_FRONTEND) 
-    
-    end
+    #def page_script(context={}, page)
+    #
+    #  ['/booking_js.js'] if ((defined?MY_BOOKING_FRONTEND) && (MY_BOOKING_FRONTEND == '3.0')) || (!defined?MY_BOOKING_FRONTEND)
+    #
+    #end
 
     # --------- Menus --------------------
     
@@ -976,23 +976,23 @@ module Huasi
     #
     # Ignore the following path prefixes in language processor
     #
-    def ignore_path_prefix_language(context={})
-      %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
-    end
+    #def ignore_path_prefix_language(context={})
+    #  %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
+    #end
 
     #
     # Ignore the following path prefix in cms
     #
-    def ignore_path_prefix_cms(context={})
-      %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
-    end
+    #def ignore_path_prefix_cms(context={})
+    #  %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
+    #end
 
     #
     # Ignore the following path prefix in breadcrumb
     #
-    def ignore_path_prefix_breadcrumb(context={})
-      %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
-    end
+    #def ignore_path_prefix_breadcrumb(context={})
+    #  %w(/p/booking/payment-gateway /p/booking/pay /p/booking/summary /p/mybooking /p/activities/add-to-shopping-cart /p/activity/remove-to-shopping-cart /p/activities/shopping-cart /p/activities/shopping-cart-checkout)
+    #end
 
   end
 end
