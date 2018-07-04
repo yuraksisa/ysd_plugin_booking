@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.158] - 2018-07-04
+### Updated
+- Planning : Assign 7 days before (and not assigned)
+- Planning : Remove item
+- Planning : Hide automatic assignation
+
 ## [0.4.157] - 2018-07-01
 ### Updated
 - Summary information refactoring

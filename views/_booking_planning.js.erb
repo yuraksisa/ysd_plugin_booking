@@ -964,7 +964,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
   		  break;
 
-          case 'assigned': // Assigned reservation
+      case 'assigned': // Assigned reservation
+
         $.toast({
             heading: 'Asignación de stock',
             text: 'La asignación se ha realizado correctamente',
@@ -975,34 +976,44 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
             stack: false
         });
 
+        // Add the reservation to the model
         var item = {
               origin: 'booking',
-              id: bookingPlanningModel.assignationResourceData.bookingId,
-              id2: bookingPlanningModel.assignationResourceData.bookingResourceId,
-              item_id: bookingPlanningModel.assignationResourceData.bookingCategory,
               booking_item_reference: bookingPlanningModel.newReference,
               date_from: bookingPlanningModel.assignationResourceData.bookingFrom,
               time_from: bookingPlanningModel.assignationResourceData.bookingTimeFrom,
               date_to: bookingPlanningModel.assignationResourceData.bookingTo,
               time_to: bookingPlanningModel.assignationResourceData.bookingTimeTo,
+              id: bookingPlanningModel.assignationResourceData.bookingId,
+              id2: bookingPlanningModel.assignationResourceData.bookingResourceId,
+              item_id: bookingPlanningModel.assignationResourceData.bookingCategory,
+              requested_item_id: bookingPlanningModel.assignationResourceData.bookingCategory,
+              notes: null,
               title: bookingPlanningModel.assignationResourceData.bookingCustomer,
               planning_color: 'rgb(102, 255, 102)'
           };
         bookingPlanningModel.planningData.push(item);
 
-        var parent = $('#booking-line-resource-'+bookingPlanningModel.assignationResourceData.bookingResourceId).parent();
+        // Remove the element from pending assignation table
+        var parent = $('#booking-line-resource-'+bookingPlanningModel.assignationResourceData.bookingResourceId).parents('tr');
         $('#booking-line-resource-'+bookingPlanningModel.assignationResourceData.bookingResourceId).remove();
-        if (parent.children().length == 0) {
-           parent.parent().remove();
+        if (parent.find('.booking-line-resource').length == 0) {
+           parent.remove();
         }
+
+        // Remove a position from the pending assignation button
         var reservationCount = parseInt($('#pending_asignation_button span').html())-1;
         if (reservationCount > 0) {
             $('#pending_asignation_button span').html(reservationCount);
             $('#pending_reservations_count').html('('+reservationCount+')');
+            $('a[href="/admin/booking/planning"]').find('span').html(reservationCount);
         }
         else {
             $('#pending_asignation_button').hide();
+            $('a[href="/admin/booking/planning"]').find('span').remove();
         }
+
+        // Hide the assignation resource summary
         bookingPlanningView.hideAssignationResource();
         break;
 
