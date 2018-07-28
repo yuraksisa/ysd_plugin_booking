@@ -1,0 +1,183 @@
+require(['jquery','ysdtemplate', 'autonumeric','jquery.formparams','jquery.toast'],
+    function($,tmpl) {
+        pickupReturnPlaceDefinitionEditionModel = {
+            data: null,
+            addListener: function(type, listener) {
+                this.events.addEventListener(type, listener);
+            },
+            removeListener: function(type, listener) {
+                this.events.removeEventListener(type, listener);
+            },
+            add: function() {
+                var id = $('#pickup_return_places_table').attr('data-pickup-return-place-definition-id');
+                var request = $('form[name=new_pickup_place]').formParams();
+                request.is_pickup = (request.is_pickup == 'on' ? true : false);
+                request.is_return = (request.is_return == 'on' ? true : false);
+                var requestJSON = JSON.stringify(request);
+                var url = '/api/booking-place-def/'+id+'/pickup-return-place';
+                $.ajax({
+                    type: 'POST',
+                    data : requestJSON,
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        pickupReturnPlaceDefinitionEditionModel.data = data.pickup_return_places;
+                        pickupReturnPlaceDefinitionEditionView.update('added');
+                        $.toast({
+                            heading: 'Lugar de entrega/devolución creado',
+                            text: 'Lugar de entrega/devolución creado con éxito',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error creando lugar de entrega/devolución');
+                    }
+                });
+            },
+            update: function(form) {
+                var request = $(form).formParams();
+                request.is_pickup = (request.is_pickup == 'on' ? true : false);
+                request.is_return = (request.is_return == 'on' ? true : false);
+                var url = '/api/booking-pickup-up-return-place/'+request.id;
+                delete request['id'];
+                var requestJSON = JSON.stringify(request);
+                $.ajax({
+                    type: 'PUT',
+                    data : requestJSON,
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        pickupReturnPlaceDefinitionEditionModel.data = data.pickup_return_places;
+                        pickupReturnPlaceDefinitionEditionView.update('updated');
+                        $.toast({
+                            heading: 'Lugar de entrega/devolución actualizado',
+                            text: 'Lugar de entrega/devolución actualizado con éxito',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error actualizando lugar de entrega/devolución');
+                    }
+                });
+            },
+            delete: function(form) {
+                var request = $(form).formParams();
+                var url = '/api/booking-pickup-up-return-place/'+request.id;
+                $.ajax({
+                    type: 'DELETE',
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        pickupReturnPlaceDefinitionEditionModel.data = data.pickup_return_places;
+                        pickupReturnPlaceDefinitionEditionView.update('deleted');
+                        $.toast({
+                            heading: 'Lugar de entrega/devolución eliminado',
+                            text: 'Lugar de entrega/devolución eliminado',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error eliminando lugar de entrega/devolución');
+                    }
+                });
+            }
+        };
+        pickupReturnPlaceDefinitionEditionController = {
+            updateBtnClick: function(form) {
+                pickupReturnPlaceDefinitionEditionModel.update(form);
+            },
+            deleteBtnClick: function(form) {
+                if (confirm('<%=t.pickup_return_place_edition.confirm_delete%>')) {
+                    pickupReturnPlaceDefinitionEditionModel.delete(form);
+                }
+            },
+            createBtnClick: function() {
+                pickupReturnPlaceDefinitionEditionModel.add();
+            },
+            translateBtnClick: function(id) {
+                $.ajax({url: '/admin/booking/translate/pickup-return-place/' + id, dataType: 'text'}).done(function(html) {
+                    var dom = $('<html />').prop('innerHTML', html);
+                    $('#pickup_return_place_translation_modal .modal-body').html(dom.find('body #page_wrapper'));
+                    // The translation appends two scripts, the first step is to remove them before add another element
+                    $('head #booking_pickup_return_place_translation_template_form').next().remove();
+                    $('head #booking_pickup_return_place_translation_template_form').remove();
+                    $('head').append(dom.find('script:not([src])'));
+                    $('#pickup_return_place_translation_modal').modal('show');
+                });
+            }
+        };
+        pickupReturnPlaceDefinitionEditionView = {
+
+            init: function() {
+                this.setupEvents();
+            },
+
+            setupEvents: function() {
+                this.setupEditionButtons();
+                $('#create_pickup_place_btn').bind('click', function(){
+                    pickupReturnPlaceDefinitionEditionController.createBtnClick();
+                });
+                $('#new_price').autoNumeric('init',{aSep:''});
+            },
+
+            setupEditionButtons: function() {
+                $('.update_pickup_place_btn').unbind('click');
+                $('.update_pickup_place_btn').bind('click', function(){
+                    pickupReturnPlaceDefinitionEditionController.updateBtnClick($(this)[0].form);
+                });
+
+                $('.delete_pickup_place_btn').unbind('click');
+                $('.delete_pickup_place_btn').bind('click', function(){
+                    pickupReturnPlaceDefinitionEditionController.deleteBtnClick($(this)[0].form);
+                });
+
+                <% if @show_translations %>
+                $('.translate_pickup_place_btn').unbind('click');
+                $('.translate_pickup_place_btn').bind('click', function(){
+                    pickupReturnPlaceDefinitionEditionController.translateBtnClick($(this).attr('data-pickup-place-id'));
+                });
+                <% end %>
+
+                $('.update_price_control').autoNumeric('init',{aSep:''});
+
+
+            },
+
+            refresh: function() {
+
+                var html = tmpl('pickup_return_place_script')({pickup_return_places: pickupReturnPlaceDefinitionEditionModel.data});
+                $('#pickup_return_places_table tr.pickup_return_place').remove();
+                $('#pickup_return_places_table tbody tr:first').before(html);
+                this.setupEditionButtons();
+
+            },
+
+            update: function(action) {
+                switch (action) {
+                    case 'added':
+                        this.refresh();
+                        $('form[name=new_pickup_place]')[0].reset();
+                        break;
+                    case 'updated':
+                        this.refresh();
+                        break;
+                    case 'deleted':
+                        this.refresh();
+                        break;
+                }
+            }
+
+        };
+
+        pickupReturnPlaceDefinitionEditionView.init();
+
+    });

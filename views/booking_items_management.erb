@@ -39,7 +39,7 @@
 
 <!-- Renders the element description -->
 <script type="text/tmpl" id="elements_title">
-  <h2 class="entity-title"><%=t.booking_item_management.form.title%></h2> 
+  <h2 class="entity-title"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['product'] %></h2>
 </script>
 
 <!-- Renders the element description -->
@@ -66,27 +66,33 @@
   <table id="elements_table" class="table table-striped">
      <thead class="table-header">
        <tr>
-         <th class="table-header-title" scope="col" style="width:10%">
-            <%= t.booking_item_management.form.category.label %>
-         </th>
          <th class="table-header-title" scope="col" style="width:15%">
-            <%= t.booking_item_management.form.reference.label %>
+            <%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['product_singular'] %>
          </th>
-         <th class="table-header-title" scope="col" style="width:20%">
-            <%= t.booking_item_management.form.name.label %>
-         </th>       
+         <th class="table-header-title" scope="col" <% if @booking_item_family.vehicle_rental? %>style="width:10%"<%else%>style="width:15%"<%end%>>
+            <%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_singular'] %>
+         </th>
+         <% if @booking_item_family.stock_model %>
          <th class="table-header-title" scope="col" style="width:15%">
-            <%= t.booking_item_management.form.model.label %>
+            <%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['stock_model'] %>
          </th>
+         <% end %>
+         <% if @booking_item_family.stock_plate %>
          <th class="table-header-title" scope="col" style="width:15%">
-            <%= t.booking_item_management.table.plate %>
+            <%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['stock_reference'] %>
          </th>
+         <% end %>
+         <th class="table-header-title" scope="col" style="width:30%">
+            <%= t.booking_item_management.form.description.label %>
+         </th>
+         <% if @booking_item_family.vehicle_rental? %>
          <th class="table-header-title centered_text" scope="col" style="width:100px">
             <%= t.booking_item_management.table.own_property %>
          </th>
          <th class="table-header-title" scope="col" style="width:100px">
             <%= t.booking_item_management.table.assignable %>
          </th>
+         <% end %>
          <th class="table-header-title" scope="col">
          </th>         
        </tr>
@@ -101,26 +107,32 @@
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row element-navigation-detail" id="element_row_<%%=index%>" rel="<%%= index %>" <%%if (!entity.active){%>style="color:#BBB"<%%}%>>
       <td class="table-cell">
-         <%%= entity.category_code %>
-      </td>
-      <td class="table-cell">
          <strong><%%= entity.reference %></strong>
       </td>
       <td class="table-cell">
-         <%%= entity.name %>
+         <%%= entity.category_code %>
       </td>
+      <% if @booking_item_family.stock_model %>
       <td class="table-cell">
          <%%= entity.stock_model %>
       </td>
+      <% end %>
+      <% if @booking_item_family.stock_plate %>
       <td class="table-cell">
          <%%= entity.stock_plate %>
       </td>
+      <% end %>
+      <td class="table-cell">
+         <%%= entity.description %>
+      </td>
+      <% if @booking_item_family.vehicle_rental? %>
       <td class="table-cell centered_text">
          <%%= entity.own_property ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
       </td>
       <td class="table-cell centered_text">
          <%%= entity.assignable ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  %>
       </td>
+      <% end %>
       <td class="table-cell">
       </td>
     </tr>
@@ -135,13 +147,14 @@
 <!-- Renders the form to edit an element -->
 
 <script type="text/tmpl" id="element_template_form">
-        
+
+     <div class="content">
      <%% if (entity) { %>
 
         <!-- Summary -->
 
         <div class="row">
-            <div class="col-xs-4 col-sm-3 col-md-offset-1">
+            <div <% if @booking_item_family.vehicle_rental? %>class="col-xs-4 col-sm-4"<%else%>class="col-xs-12 col-sm-12"<%end%>>
                 <a class="block block-link-hover3 text-center" href="javascript:void(0)">
                     <div class="block-content block-content-full">
                         <form name="element" class="form-horizontal" method="POST">
@@ -158,6 +171,7 @@
                     <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Activo</div>
                 </a>
             </div>
+            <% if @booking_item_family.vehicle_rental? %>
             <div class="col-xs-4 col-sm-4">
                 <a class="block block-link-hover3 text-center" href="javascript:void(0)">
                     <div class="block-content block-content-full">
@@ -175,7 +189,7 @@
                     <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Stock propio</div>
                 </a>
             </div>
-            <div class="col-xs-4 col-sm-3">
+            <div class="col-xs-4 col-sm-4">
                 <a class="block block-link-hover3 text-center" href="javascript:void(0)">
                     <div class="block-content block-content-full">
                         <form name="element" class="form-horizontal" method="POST">
@@ -192,12 +206,13 @@
                     <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Asignable</div>
                 </a>
             </div>
+            <% end %>
         </div>
 
         <!-- Main information -->
 
         <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="col-sm-12 col-md-12">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
                 <h3 class="block-title">Datos básicos</h3>
@@ -206,7 +221,7 @@
                   <form name="element" class="form-horizontal" method="POST">
                       <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
                       <div class="form-group">
-                         <label class="col-md-3 control-label"><%= t.booking_item_management.form.reference.label %></label>
+                         <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['product_singular'] %></label>
                          <div class="col-md-5">
                            <span class="form-control"><%%=entity.reference%></span>
                          </div>
@@ -215,17 +230,33 @@
                          </div>
                       </div>
                       <div class="form-group">
-                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.category.label %></label>
+                        <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_singular'] %></label>
                         <div class="col-md-8">
                           <select name="category[code]" id="category[code]" class="form-control"/>
                         </div>
                       </div>
-                      <div class="form-group">
+                      <!--div class="form-group">
                         <label class="col-md-3 control-label"><%= t.booking_item_management.form.name.label %></label>
                         <div class="col-md-9">
                         <input type="text" maxlength="80" id="name" name="name" class="form-control" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
                          </div>
+                      </div-->
+                      <% if @booking_item_family.stock_model %>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['stock_model'] %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="stock_model" name="stock_model" class="form-control" <%% if (entity) { %> value="<%%=entity.stock_model%>" <%% } %>/>
+                         </div>
                       </div>
+                      <% end %>
+                      <% if @booking_item_family.stock_plate %>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['stock_reference'] %></label>
+                        <div class="col-md-9">
+                        <input type="text" maxlength="80" id="characteristic_1" name="stock_plate" class="form-control" <%% if (entity) { %> value="<%%=entity.stock_plate%>" <%% } %>/>
+                         </div>
+                      </div>
+                      <% end %>
                       <div class="form-group">
                         <label class="col-md-3 control-label"><%= t.booking_item_management.form.description.label %></label>
                         <div class="col-md-9">
@@ -243,44 +274,11 @@
           </div>
         </div>
 
-        <!-- Reference - Product -->
-
-        <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title">Referencia</h3>
-              </div>
-              <div class="block-content block-content-narrow">
-                  <form name="element" class="form-horizontal" method="POST">
-                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
-                      <div class="form-group">
-                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.model.label %></label>
-                        <div class="col-md-9">
-                        <input type="text" maxlength="80" id="stock_model" name="stock_model" class="form-control" <%% if (entity) { %> value="<%%=entity.stock_model%>" <%% } %>/>
-                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="col-md-3 control-label"><%= t.booking_item_management.form.plate.label %></label>
-                        <div class="col-md-9">
-                        <input type="text" maxlength="80" id="characteristic_1" name="stock_plate" class="form-control" <%% if (entity) { %> value="<%%=entity.stock_plate%>" <%% } %>/>
-                         </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-md-9 col-md-offset-3">
-                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                        </div>
-                      </div>
-                  </form>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- Characteristics -->
 
         <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="col-sm-12 col-md-12">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
                 <h3 class="block-title">Características</h3>
@@ -326,7 +324,7 @@
         <!-- Other information -->
 
         <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="col-sm-12 col-md-12">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
                 <h3 class="block-title">Otros datos</h3>
@@ -352,9 +350,9 @@
         </div>
 
         <!-- Cost -->
-
+        <% if @addon_finances %>
         <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="col-sm-12 col-md-12">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
                 <h3 class="block-title">Costes</h3>
@@ -378,6 +376,7 @@
             </div>
           </div>
         </div>
+        <% end %>
 
      </div>
     </div>
@@ -385,7 +384,7 @@
     <%% } else { %> 
 
         <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="col-sm-12 col-md-12">
             <div class="block block-content-full">
               <div class="block-header bg-gray-lighter">
                 <h3 class="block-title">Nuevo stock</h3>
@@ -422,5 +421,6 @@
         </div>
 
     <%% } %>
+    </div>
      
 </script>

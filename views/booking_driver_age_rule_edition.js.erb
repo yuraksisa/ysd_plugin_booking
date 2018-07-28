@@ -1,0 +1,220 @@
+require(['jquery','ysdtemplate', 'autonumeric','jquery.formparams','jquery.toast'],
+    function($,tmpl) {
+
+        driverAgeRuleEditionModel = {
+            data: null,
+            addListener: function(type, listener) {
+                this.events.addEventListener(type, listener);
+            },
+            removeListener: function(type, listener) {
+                this.events.removeEventListener(type, listener);
+            },
+            add: function() {
+                var id = $('#driver_age_rules_table').attr('data-driver-age-rule-definition-id');
+                var request = $('form[name=new_driver_age_rule]').formParams();
+                console.log(request);
+                request.allowed = (request.allowed == 'on' ? true : false);
+                var requestJSON = JSON.stringify(request);
+                var url = '/api/booking-driver-age-rule-definition/'+id+'/driver-age-rule';
+                $.ajax({
+                    type: 'POST',
+                    data : requestJSON,
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        driverAgeRuleEditionModel.data = data.driver_age_rules;
+                        driverAgeRuleEditionView.update('added');
+                        $.toast({
+                            heading: 'Regla de edad de conductor creada',
+                            text: 'Regla de edad de conductor creada con éxito',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error creando regla de edad de conductor');
+                    }
+                });
+            },
+            update: function(form) {
+                var request = $(form).formParams();
+                request.allowed = (request.allowed == 'on' ? true : false);
+                var url = '/api/booking-driver-age-rule/'+request.id;
+                delete request['id'];
+                var requestJSON = JSON.stringify(request);
+                $.ajax({
+                    type: 'PUT',
+                    data : requestJSON,
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        driverAgeRuleEditionModel.data = data.driver_age_rules;
+                        driverAgeRuleEditionView.update('updated');
+                        $.toast({
+                            heading: 'Regla de edad de conductor creada actualizada',
+                            text: 'Regla de edad de conductor creada actualizada con éxito',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error actualizando regla de edad de conductor');
+                    }
+                });
+            },
+            delete: function(form) {
+                var request = $(form).formParams();
+                var url = '/api/booking-driver-age-rule/'+request.id;
+                $.ajax({
+                    type: 'DELETE',
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        driverAgeRuleEditionModel.data = data.driver_age_rules;
+                        driverAgeRuleEditionView.update('deleted');
+                        $.toast({
+                            heading: 'Regla de edad de conductor eliminada',
+                            text: 'Regla de edad de conductor eliminada',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error eliminando regla de edad de conductor');
+                    }
+                });
+            }
+        };
+        driverAgeRuleEditionController = {
+            updateBtnClick: function(form) {
+                driverAgeRuleEditionModel.update(form);
+            },
+            deleteBtnClick: function(form) {
+                if (confirm('<%=t.driver_age_rule_edition.confirm_delete%>')) {
+                    driverAgeRuleEditionModel.delete(form);
+                }
+            },
+            createBtnClick: function() {
+                driverAgeRuleEditionModel.add();
+            }
+        };
+        driverAgeRuleEditionView = {
+
+            init: function() {
+                this.setupEvents();
+            },
+
+            setupEvents: function() {
+                this.setupEditionButtons();
+                $('#create_driver_age_rule_btn').bind('click', function(){
+                    driverAgeRuleEditionController.createBtnClick();
+                });
+                $('form[name=new_driver_age_rule] input[name=deposit]').autoNumeric('init',{aSep:''});
+                $('form[name=new_driver_age_rule] input[name=suplement]').autoNumeric('init',{aSep:''});
+            },
+
+            setupDriverAgeRuleControls: function() {
+
+                // Age rule
+                $('.driver_age_rule_type_selector').bind('change', function() {
+
+                    if ($(this).val() == 'age') {
+                        $($(this)).parent().parent().parent().find('.age_condition_group').show();
+                        $($(this)).parent().parent().parent().find('.join_conditions_group').hide();
+                        $($(this)).parent().parent().parent().find('.driving_license_years_group').hide();
+                        $($(this)).parent().parent().parent().find('.driving_license_years_from_input').val('0');
+                        $($(this)).parent().parent().parent().find('.driving_license_years_to_input').val('0');
+                    }
+                    else if ($(this).val() == 'driving_license_years') {
+                        $($(this)).parent().parent().parent().find('.age_condition_group').hide();
+                        $($(this)).parent().parent().parent().find('.join_conditions_group').hide();
+                        $($(this)).parent().parent().parent().find('.driving_license_years_group').show();
+                        $($(this)).parent().parent().parent().find('.age_from_input').val('0');
+                        $($(this)).parent().parent().parent().find('.age_to_input').val('0');
+                    }
+                    else if ($(this).val() == 'both_age_driving_license_years') {
+                        $($(this)).parent().parent().parent().find('.age_condition_group').show();
+                        $($(this)).parent().parent().parent().find('.join_conditions_group').show();
+                        $($(this)).parent().parent().parent().find('.driving_license_years_group').show();
+                    }
+
+                });
+
+                // Age condition
+                $('.age_condition_selector').bind('change', function() {
+                    if ($(this).val() == '<->') {
+                        $($(this)).parent().parent().parent().find('.age_to_input').show();
+                    }
+                    else {
+                        $($(this)).parent().parent().parent().find('.age_to_input').val('0');
+                        $($(this)).parent().parent().parent().find('.age_to_input').hide();
+                    }
+                });
+
+                // Driving license condition
+                $('.driving_license_years_condition_selector').bind('change', function() {
+                    if ($(this).val() == '<->') {
+                        $($(this)).parent().parent().parent().find('.driving_license_years_to_input').show();
+                    }
+                    else {
+                        $($(this)).parent().parent().parent().find('.driving_license_years_to_input').val('0');
+                        $($(this)).parent().parent().parent().find('.driving_license_years_to_input').hide();
+                    }
+                });
+            },
+
+            setupEditionButtons: function() {
+
+                $('.update_driver_age_rule_btn').unbind('click');
+                $('.update_driver_age_rule_btn').bind('click', function(){
+                    driverAgeRuleEditionController.updateBtnClick($(this)[0].form);
+                });
+
+                $('.delete_driver_age_rule_btn').unbind('click');
+                $('.delete_driver_age_rule_btn').bind('click', function(){
+                    driverAgeRuleEditionController.deleteBtnClick($(this)[0].form);
+                });
+
+                $('.driver_age_price_control').autoNumeric('init',{aSep:''});
+
+                this.setupDriverAgeRuleControls();
+
+            },
+
+            refresh: function() {
+
+                var html = tmpl('driver_age_rule_script')({driver_age_rules: driverAgeRuleEditionModel.data});
+                $('#driver_age_rules_table tr.driver_age_rule').remove();
+                $('#driver_age_rules_table tbody tr:first').before(html);
+                this.setupEditionButtons();
+
+            },
+
+            update: function(action) {
+                switch (action) {
+                    case 'added':
+                        this.refresh();
+                        $('form[name=new_driver_age_rule]')[0].reset();
+                        break;
+                    case 'updated':
+                        this.refresh();
+                        break;
+                    case 'deleted':
+                        this.refresh();
+                        break;
+                }
+            }
+
+        };
+
+        driverAgeRuleEditionView.init();
+    
+    
+    }
+);

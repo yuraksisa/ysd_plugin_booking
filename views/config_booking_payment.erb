@@ -53,7 +53,7 @@
             <h3 class="block-title"><%=t.booking_settings.form.activities_group%></h3>
           </div>
           <div class="block-content block-content-narrow">
-            <form name="variables" action="/api/svariables" method="PUT"
+            <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <%= render_variable_checkbox_boolean('order.payment', t.booking_settings.form.activities_payment) %>
               <p class="less_contrast_text"><%=t.booking_settings.form.payment_description%></p>

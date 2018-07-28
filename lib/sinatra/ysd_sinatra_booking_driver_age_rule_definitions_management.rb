@@ -15,6 +15,19 @@ module Sinatra
 
         end
 
+        #
+        # Pickup/return places edition
+        #
+        app.get '/admin/booking/booking-driver-age-rules/:id', :allowed_usergroups => ['booking_manager', 'staff'] do
+
+          if @driver_age_rules_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(params[:id])
+            load_page :booking_driver_age_rule_edition
+          else
+            status 404
+          end
+
+        end
+
       end
 
     end

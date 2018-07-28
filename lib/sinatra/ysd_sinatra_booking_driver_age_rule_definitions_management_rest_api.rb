@@ -109,6 +109,78 @@ module Sinatra
         
         end
 
+        # ---------------------------------------------------------------------------------------
+
+        #
+        # Append a driver age rule
+        #
+        app.post '/api/booking-driver-age-rule-definition/:id/driver-age-rule', allowed_usergroups: ['rates_manager','staff'] do
+
+          if driver_age_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.get(params[:id])
+
+            request_data = body_as_json(::Yito::Model::Booking::BookingDriverAgeRule)
+
+            driver_age_rule = ::Yito::Model::Booking::BookingDriverAgeRule.new(request_data)
+            driver_age_rule.driver_age_rule_definition = driver_age_rule_definition
+            driver_age_rule.save
+
+            driver_age_rule_definition.reload
+
+            content_type :json
+            {driver_age_rules: driver_age_rule_definition.driver_age_rules.to_a}.to_json
+
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Updates a driver age rule
+        #
+        app.put '/api/booking-driver-age-rule/:id', allowed_usergroups: ['rates_manager','staff'] do
+
+          if driver_age_rule = ::Yito::Model::Booking::BookingDriverAgeRule.get(params[:id])
+
+            request_data = body_as_json(::Yito::Model::Booking::BookingDriverAgeRule)
+            driver_age_rule.attributes = request_data
+            driver_age_rule.save
+
+            driver_age_rule_definition = driver_age_rule.driver_age_rule_definition
+            driver_age_rule_definition.reload
+
+            content_type :json
+            {driver_age_rules: driver_age_rule_definition.driver_age_rules.to_a}.to_json
+
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Deletes a driver age rule
+        #
+        app.delete '/api/booking-driver-age-rule/:id', allowed_usergroups: ['rates_manager','staff'] do
+
+          if driver_age_rule = ::Yito::Model::Booking::BookingDriverAgeRule.get(params[:id])
+
+            driver_age_rule_definition = driver_age_rule.driver_age_rule_definition
+
+            driver_age_rule.destroy
+
+            driver_age_rule_definition.reload
+
+            content_type :json
+            {driver_age_rules: driver_age_rule_definition.driver_age_rules.to_a}.to_json
+
+          else
+            status 404
+          end
+
+        end
+
+
       end
     end
   end

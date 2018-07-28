@@ -21,14 +21,14 @@ module Sinatra
         # ------------------------------ Renting setup ------------------------------------------------
 
         #
-        # Renting setup step 1
+        # Setup step 1
         #
-        app.get "/admin/booking/setup-renting-1", :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get "/admin/booking/setup-step-1", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           if mybooking_plan_type.first
             @current_type_of_business = SystemConfiguration::Variable.get_value('booking.item_family', nil)
             @types_of_business = ::Yito::Model::Booking::ProductFamily.all(order: [:presentation_order])
-            load_page(:setup_renting_step_1)
+            load_page(:setup_step_1)
           else
             status 404
           end
@@ -36,9 +36,9 @@ module Sinatra
         end
 
         #
-        # Renting setup step 1 (POST)
+        # Setup step 1 (POST)
         #
-        app.post "/admin/booking/setup-renting-1", :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.post "/admin/booking/setup-step-1", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           if params[:type_of_business]
             if params[:type_of_business] != SystemConfiguration::Variable.get_value('booking.item_family', nil)
@@ -46,17 +46,21 @@ module Sinatra
             end
           end
 
-          redirect '/admin/booking/setup-renting-2'
+          redirect '/admin/booking/setup-step-2'
 
         end
 
         #
-        # Renting setup step 2
+        # Setup step 2
         #
-        app.get "/admin/booking/setup-renting-2", :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get "/admin/booking/setup-step-2", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           if mybooking_plan_type.first
-            load_page(:setup_renting_step_2)
+            @calendar_modes =  {
+                :first_day =>  t.booking_settings.form.calendar_mode.first_day,
+                :default => t.booking_settings.form.calendar_mode.default
+            }
+            load_page(:setup_step_2)
           else
             status 404
           end
@@ -64,9 +68,9 @@ module Sinatra
         end
 
         #
-        # Renting setup step 2 (POST)
+        # Setup step 2 (POST)
         #
-        app.post "/admin/booking/setup-renting-2", :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.post "/admin/booking/setup-step-2", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           if mybooking_plan_type.first
 
@@ -74,7 +78,7 @@ module Sinatra
               SystemConfiguration::Variable.set_value('booking.min_days', min_days)
             end
 
-            redirect '/admin/booking/setup-renting-3'
+            redirect '/admin/booking/setup-step-3'
 
           else
             status 404
@@ -83,12 +87,12 @@ module Sinatra
         end
 
         #
-        # Renting setup step 3
+        # Setup step 3
         #
-        app.get "/admin/booking/setup-renting-3", :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get "/admin/booking/setup-step-3", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           if mybooking_plan_type.first
-            load_page(:setup_renting_step_3)
+            load_page(:setup_step_3)
           else
             status 404
           end
@@ -96,21 +100,21 @@ module Sinatra
         end
 
         #
-        # Renting setup step 3 (POST)
+        # Setup step 3 (POST)
         #
-        app.post "/admin/booking/setup-renting-3", :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.post "/admin/booking/setup-step-3", :allowed_usergroups => ['booking_manager', 'staff'] do
 
-          redirect '/admin/booking/setup-renting-4'
+          redirect '/admin/booking/setup-step-4'
 
         end
 
         #
-        # Renting setup step 4
+        # Setup step 4
         #
-        app.get "/admin/booking/setup-renting-4", :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.get "/admin/booking/setup-step-4", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           if mybooking_plan_type.first
-            load_page(:setup_renting_step_4)
+            load_page(:setup_step_4)
           else
             status 404
           end
@@ -118,32 +122,21 @@ module Sinatra
         end
 
         #
-        # Renting setup step 4 (POST)
+        # Setup step 4 (POST)
         #
-        app.post "/admin/booking/setup-renting-4", :allowed_usergroups => ['booking_manager', 'staff'] do
+        app.post "/admin/booking/setup-step-4", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           redirect '/admin/booking/setup'
 
         end
 
 
-        # ----------------------------- Activities setup ----------------------------------------------
-
-        #
-        #
-        #
-        app.get "/admin/booking/setup-activities-1", :allowed_usergroups => ['booking_manager', 'staff'] do
-
-        end
-
-        # --------------------- Configuration ----------------------------------------------------------
-
         #
         # Booking configuration
         #
-        app.get "/admin/booking/config", :allowed_usergroups => ['booking_manager', 'staff'] do
-          load_page(:console_booking_configuration)
-        end
+        #app.get "/admin/booking/config", :allowed_usergroups => ['booking_manager', 'staff'] do
+        #  load_page(:console_booking_configuration)
+        #end
 
       end
     end

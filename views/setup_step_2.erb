@@ -1,0 +1,65 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.setup_wizard.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="block">
+        <div class="block-content">
+        <form name="variables" action="/admin/booking/setup-step-2" method="POST">
+          <h3><%=t.setup_step_2.title%></h3>
+          <br>
+          <p><%=t.setup_step_2.description%></p>
+
+          <h4>Temporadas</h4>
+          <br>
+          <div class="form-group">
+            <div class="col-lg-12">
+              <div class="radio">
+                <label for="same_seasons">
+                  <input type="radio" id="same_seasons" name="booking.new_season_definition_instance_for_category" value="true" checked> Las mismas temporadas para todos los productos
+                </label>
+              </div>
+              <div class="radio">
+                <label for="product_seasons">
+                  <input type="radio" id="product_seasons" name="booking.new_season_definition_instance_for_category" value="false"> Cada producto define sus propias temporadas
+                </label>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Desde</th>
+                  <th>Hasta</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>01/01</td>
+                  <td>31/12</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-lg-12">
+              <%= render_variable_select('booking.renting_calendar_season_mode', '', @calendar_modes) %>
+            </div>
+          </div>
+
+          <div class="pull-right">
+            <hr>
+            <a href="/admin/booking/setup-step-1" role="button" class="btn btn-warning"><%=t.setup_wizard.previous_step%></a>
+            <button type="submit" class="btn btn-primary">
+              <%=t.setup_wizard.next_step%>
+            </button>
+          </div>
+        </form>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -143,7 +143,7 @@ bookingNewController = {
     dateFromChanged: function() {
 
         var dateFrom = $('#date_from').datepicker('getDate');
-        var dateTo = $('#date_from').datepicker('getDate');
+        var dateTo = $('#date_to').datepicker('getDate');
 
         <% if booking_item_family.cycle_of_24_hours %>
         dateTo.add(bookingNewModel.minDays).days();
@@ -152,7 +152,7 @@ bookingNewController = {
         <% end %>
 
         $('#date_to').datepicker('setDate', dateTo );
-        $('#date_to').datepicker('option', 'minDate', dateTo);
+        $('#date_to').datepicker('option', 'minDate', dateFrom);
 
     },
 

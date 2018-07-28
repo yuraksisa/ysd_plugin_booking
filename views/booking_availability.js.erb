@@ -1,12 +1,12 @@
-require(['YSDGui','jquery', 
-         'jquery.ui', 'jquery.ui.datepicker-es','datejs'], function(YSDGui, $) {
+require(['YSDGui', 'YSDForms', 'jquery',
+         'jquery.ui', 'jquery.ui.datepicker-es','datejs', 'jquery.validate'], function(YSDGui, YSDForms, $) {
 
 
-  reservationsModel = {
+  resourcesOccupationModel = {
 
   };
 
-  reservationsController = {
+  resourcesOccupationController = {
 
     searchButtonClick: function() {
       var date_from = $('#date_from').datepicker('getDate').toString('yyyy-MM-dd');
@@ -14,13 +14,18 @@ require(['YSDGui','jquery',
       $('#from').val(date_from);
       $('#to').val(date_to);
       $('#date_from').prop('disabled',true);
-      $('#date_to').prop('disabled',true);      
-      $('form[name=report_charges_form]').submit();
+      $('#date_to').prop('disabled',true);
+      if ($('form[name=availability_form]').valid()) {
+          $('form[name=availability_form]').submit();
+      }
+      else {
+          alert('Por favor, revise los errores');
+      }
     }
 
   };
 
-  reservationsView = {
+  resourcesOccupationView = {
 
     getUrlVars : function() {
           var vars = [], hash;
@@ -50,11 +55,7 @@ require(['YSDGui','jquery',
                   useLocalTimezone: true, 
                   numberOfMonths:1, 
                   maxDate: new Date().add(365).days(),
-                  dateFormat: 'dd/mm/yy',
-                  onSelect: function(dateText) {
-                    bookingPickupedController.dateFromChanged();
-                    bookingPickupedController.dateChanged();
-                  }},
+                  dateFormat: 'dd/mm/yy'},
                   locale
                   );
          
@@ -71,10 +72,7 @@ require(['YSDGui','jquery',
                   useLocalTimezone: true,
                   numberOfMonths:1, 
                   maxDate: new Date().add(365).days(),
-                  dateFormat: 'dd/mm/yy',
-                  onSelect: function(dateText) {
-                    bookingPickupedController.dateChanged();
-                  }},
+                  dateFormat: 'dd/mm/yy'},
                   locale
                   );         
          if (date_to != null) {
@@ -85,20 +83,65 @@ require(['YSDGui','jquery',
          }
 
          $('#search').bind('click', function() {
-           reservationsController.searchButtonClick();
+           resourcesOccupationController.searchButtonClick();
          });
 
-         $('.occupation-detail').bind('click', function() {
-           if ($(this).attr('data-url')) {
-             $('#occupation-detail').load($(this).attr('data-url') + ' .admin_content_wrapper');
-             YSDGui.showElement(document.getElementById('occupation-detail'), true);
-           }
+         // Validation
+         YSDForms.appendValidators();
+
+         $('form[name=availability_form]').validate({
+
+              submitHandler: function(form)
+              {
+                  return true;
+              },
+
+              rules : {
+                  'time_from': {
+                      time24: true
+                  },
+                  'time_to': {
+                      time24: true
+                  }
+              },
+
+              messages : {
+                  'time_from': {
+                      time24: '<%=t.validations.time_format_invalid%>'
+                  },
+                  'time_to': {
+                      time24: '<%=t.validations.time_format_invalid%>'
+                  }
+              }
+
          });
 
+         this.initTable();
+
+    },
+
+    initTable: function() {
+        // For each table
+        $('.js-table-sections').each(function () {
+            var $table = jQuery(this);
+
+            // When a row is clicked in tbody.js-table-sections-header
+            $('.js-table-sections-header > tr > td', $table).on('click', function (
+                e) {
+                var $row = $(this).parent('tr');
+                var $tbody = $row.parent('tbody');
+
+                if (!$tbody.hasClass('open')) {
+                    $('tbody', $table).removeClass('open');
+                }
+
+                $tbody.toggleClass('open');
+            });
+        });
     }
 
   };
 
-  reservationsView.init();
+  resourcesOccupationView.init();
 
 });

@@ -1,0 +1,22 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.setup_wizard.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="setup_renting_step_3" action="/admin/booking/setup-step-3" method="POST">
+        <h3><%=t.setup_step_3.title%></h3>
+        <p><%=t.setup_step_3.description%></p>
+        <br>
+        <h4>Características</h4>
+        <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2) %>
+        <hr>
+        <div class="formrow-botonera">
+          <a href="/admin/booking/setup-step-2" role="button" class="btn btn-warning"><%=t.setup_wizard.previous_step%></a>
+          <input type="submit" value="<%=t.setup_wizard.next_step%>" class="button blue-button">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

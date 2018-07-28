@@ -8,40 +8,55 @@
   
   bookingEditModel = {
 
+        bookingId: <%= booking.id %>,
         calculator: null,
         products: null,
+        availableResources: null,
+        resources: null,
+        bookingResources: null,
+        fullAvailability: null,
+        changesInAvailability: null,
+        pendingReassign: null,
         extras: null,
         allowCustomPlaces : <%=pickup_return_places_configuration == 'list+custom'%>,
 
-        pickup_places : {
-          <%  booking_pickup_return_places.each do |item| %>
-             <% if item.is_pickup %>
-            "<%=item.name%>" : "<%=item.name%>",
-            <% end %>
-          <% end %>
-        },
-        pickup_placesRates: {
+        <% if booking_item_family.pickup_return_place %>
+          pickup_places : {
             <%  booking_pickup_return_places.each do |item| %>
-              <% if item.is_pickup %>
-            "<%=item.name%>" : new Number('<%=item.price%>'),
+               <% if item.is_pickup %>
+              "<%=item.name%>" : "<%=item.name%>",
               <% end %>
             <% end %>
-        },
-        return_places: {
-            <%  booking_pickup_return_places.each do |item| %>
-              <% if item.is_return %>
-            "<%=item.name%>" : "<%=item.name%>",
+          },
+          pickup_placesRates: {
+              <%  booking_pickup_return_places.each do |item| %>
+                <% if item.is_pickup %>
+              "<%=item.name%>" : new Number('<%=item.price%>'),
+                <% end %>
               <% end %>
-            <% end %>
-        },
-        return_placesRates: {
-            <%  booking_pickup_return_places.each do |item| %>
-              <% if item.is_return %>
-            "<%=item.name%>" : new Number('<%=item.price%>'),
+          },
+          return_places: {
+              <%  booking_pickup_return_places.each do |item| %>
+                <% if item.is_return %>
+              "<%=item.name%>" : "<%=item.name%>",
+                <% end %>
               <% end %>
-            <% end %>
-        },
-        custom_pickup_return_place_price: new Number('<%=booking_custom_pickup_return_place_cost%>'),
+          },
+          return_placesRates: {
+              <%  booking_pickup_return_places.each do |item| %>
+                <% if item.is_return %>
+              "<%=item.name%>" : new Number('<%=item.price%>'),
+                <% end %>
+              <% end %>
+          },
+          custom_pickup_return_place_price: new Number('<%=booking_custom_pickup_return_place_cost%>'),
+        <% else %>
+          pickup_places : {},
+          pickup_placesRates: {},
+          return_places: {},
+          return_placesRates: {},
+          custom_pickup_return_place_price: 0,
+        <% end %>
 
         booking : {
 
@@ -98,6 +113,14 @@
                'quantity':new Number('<%=extra.quantity%>')
               },
             <% end %>
+          ],
+          booking_resources: [
+              <% booking.booking_line_resources.each do |resource| %>
+                <% unless resource.booking_item_reference.nil? %>
+                {'reference' : '<%=resource.booking_item_reference%>',
+                 'category'  : '<%=resource.booking_item_category%>'},
+                <% end %>
+              <% end %>
           ]
 
         },
@@ -105,12 +128,18 @@
      
         update: function() {
 
-        	 var request = JSON.stringify(this.booking);
+             var stock = $('select[name=stock_assignation]').val();
+
+             var request = JSON.stringify(this.booking);
+        	   var url = '/api/booking/<%=booking.id%>/pickup-return';
+        	   if (stock && stock != '') {
+        	     url += '?stock-assignation='+stock;
+             }
 
              $.ajax( 
        	         {
        	           type : 'PUT',
-       	           url :  '/api/booking/<%=booking.id%>/price', 
+       	           url : url,
        	           data : request,
                    dataType: 'json', 
                    contentType: 'application/json; charset=utf-8', /* Data type sent to the server */
@@ -145,12 +174,14 @@
                                           date_of_birth: this.booking.driver_date_of_birth ? this.booking.driver_date_of_birth.toString("yyyy-MM-dd") : null,
                                           driver_driving_license_date: this.booking.driver_driving_license_date  ? this.booking.driver_driving_license_date.toString("yyyy-MM-dd") : null,
                                           sales_channel_code: this.booking.sales_channel_code ? this.booking.sales_channel_code : null,
-                                          promotion_code: this.booking.promotion_code ? this.booking.promotion_code : null});
+                                          promotion_code: this.booking.promotion_code ? this.booking.promotion_code : null,
+                                          resources: this.booking.booking_resources,
+                                          id: this.bookingId});
 
             $.ajax(
                 {
                     type : 'POST',
-                    url :  '/api/booking/prices',
+                    url :  '/api/booking/verify-reservation-pickup-return-changes',
                     data : request,
                     dataType: 'json',
                     contentType: 'application/json; charset=utf-8', /* Data type sent to the server */
@@ -159,10 +190,19 @@
                         // Update prices
                         self.calculator = data.calculator;
                         self.products = {};
+                        self.availableResources = data.available_resources;
+                        self.resources = data.resources;
+                        self.bookingResources = data.booking_resources;
+                        self.fullAvailability = data.full_availability;
+                        self.changesInAvailability = data.changes_in_availability;
+                        self.pendingReassign = data.pending_reassign;
                         for (var idx=0; idx<data.products.length; idx++) {
                            self.products[data.products[idx].code] = {price: new Number(data.products[idx].price),
                                                                      base_price :  new Number(data.products[idx].base_price),
-                                                                     deposit:  new Number(data.products[idx].deposit)};
+                                                                     deposit:  new Number(data.products[idx].deposit),
+                                                                     availableCount: data.products[idx].stock - data.products[idx].busy,
+                                                                     isAvailable: data.products[idx].availability,
+                                                                     resources: data.products[idx].resources};
                         }
                         self.extras = {};
                         for (var idx=0; idx<data.extras.length; idx++) {
@@ -215,6 +255,13 @@
                             self.booking.return_place_cost = new Number(self.calculator.return_place_cost).valueOf();
 
                             bookingEditView.showNewPrices();
+                            $('#update_button').unbind('click');
+                            $('#update_button').bind('click', function() {
+                                if (confirm('¿Está seguro que desea realizar los cambios?')) {
+                                    bookingEditController.updateButtonClick();
+                                }
+                            });
+
                             $('.price').autoNumeric('init',{aSep:''});
                             $('#situation_change').fadeIn();
                             $('#update_button').show();
@@ -325,12 +372,14 @@
       $('#date_to').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to.strftime('%d/%m/%y')%>"));
 
       $('#recalculate_button').bind('click', function() {
-         bookingEditController.recalculateButtonClick();
+         if ($('form[name=reservation]').valid()) {
+             bookingEditController.recalculateButtonClick();
+         }
+         else {
+             alert('Por favor, revise los errores');
+         }
       });
 
-      $('#update_button').bind('click', function() {
-         bookingEditController.updateButtonClick();
-      });
       $('#pickup_place').bind('change',
           function() {
              bookingEditController.change_pickup_place_select($('#pickup_place option:selected').val());
@@ -420,15 +469,51 @@
       }
       //
       bookingEditView.loadExtras();
+
+      // Validation
+      YSDForms.appendValidators();
+
+      $('form[name=reservation]').validate({
+
+          submitHandler: function(form)
+          {
+              return false;
+          },
+
+          rules : {
+              'time_from': {
+                  time24: true
+              },
+              'time_to': {
+                  time24: true
+              }
+          },
+
+          messages : {
+              'time_from': {
+                  time24: '<%=t.validations.time_format_invalid%>'
+              },
+              'time_to': {
+                  time24: '<%=t.validations.time_format_invalid%>'
+              }
+          }
+
+      });
+
     },
 
     loadExtras: function() {
-    	$('#extras').html(tmpl('script_extras', {booking: bookingEditModel.booking}));
+    	$('#extras').html(tmpl('script_current_situation', {booking: bookingEditModel.booking}));
     },
 
     showNewPrices: function() {
 
-      $('#new_prices').html(tmpl('script_new_extras', {booking: bookingEditModel.booking}));
+      $('#new_prices').html(tmpl('script_new_situation', {booking: bookingEditModel.booking, products: bookingEditModel.products,
+                                                          resources: bookingEditModel.resources,
+                                                          availableResources: bookingEditModel.availableResources,
+                                                          fullAvailability: bookingEditModel.fullAvailability,
+                                                          changesInAvailability: bookingEditModel.changesInAvailability,
+                                                          pendingReassign: bookingEditModel.pendingReassign}));
       $('.extra-cost').bind('blur', function(event) {
            bookingEditController.extraCostBlur($(event.currentTarget).attr('rel'), $(event.currentTarget).val());
       }); 

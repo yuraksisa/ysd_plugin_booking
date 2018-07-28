@@ -17,7 +17,7 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_helper Sinatra::YSD::BookingManagementRESTApiHelper
    sinatra_extension Sinatra::YSD::BookingReports
    sinatra_extension Sinatra::YSD::BookingPlanning
-   sinatra_extension Sinatra::YSD::BookingOccupation
+   sinatra_extension Sinatra::YSD::BookingAvailabilityOccupation
    sinatra_extension Sinatra::YSD::BookingBilling
    sinatra_extension Sinatra::YitoExtension::BookingNewReservation
    sinatra_extension Sinatra::YitoExtension::BookingNewReservationRESTApi

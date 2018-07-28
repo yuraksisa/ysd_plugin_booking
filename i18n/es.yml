@@ -47,8 +47,10 @@ booking_configuration_templates:
 booking_settings:
   form:
     title: Configuración General
+    frontend_configuration_title: Página web de reservas
     reservation_configuration_title: Configuración de las reservas
-    backoffice_configuration_title: Configuración de la herramienta de gestión
+    rates_configuration_title: Configuración de las tarifas
+    backoffice_configuration_title: Configuración avanzada
     online_payment: Configuración del pago online
     planning_resources: Planning y recursos
     pick_up_return_report: Entregas y recogidas
@@ -79,14 +81,14 @@ booking_settings:
     reservation:
       title: Reserva
     calendar_mode:
-      title: Selección temporada(s)
+      title: Cálculo de la tarifa
       default: Promedio de las temporadas afectadas
       first_day: La fecha de inicio de la reserva determina la temporada
     planning:
       title: Planning y recursos
     rates:
       title: Cálculo de las tarifas
-      description: En el caso de que las tarifas sean por temporadas, determina la forma en la que se calculará el precio cuando las fechas de la reserva incluyen varias temporadas
+      description: Determina la forma en la que se calculará el precio cuando las fechas de la reserva incluyen varias temporadas
     deposit_group:
       title: Fianza
     reservation_starts_with:
@@ -160,10 +162,11 @@ booking_settings:
     custom_pickup_return_place: Permitir otros lugares de entrega/devolución
     custom_pickup_return_place_price: Precio otro lugar de entrega/devolución
     no_pickup_return_timetable: No aplica
-    pickup_return_main_season: Horario base
+    pickup_return_timetable_title: Horario
+    pickup_return_main_season: Horario temporada
     pickup_return_out_of_season: Horario fuera de temporada
-    pickup_return_main_season_from: Desde
-    pickup_return_main_season_to: Hasta
+    pickup_return_main_season_from: Horario temporada desde
+    pickup_return_main_season_to: Horario temporada hasta
     pickup_return_timetable: Horario entrega/devolución
     pickup_return_timetable_description: Permite indicar el horario de entrega/devolución
     pickup_return_timetable_out_price: Precio entrega/devolución fuera de horas
@@ -190,6 +193,7 @@ booking_settings:
     turns_group: Turnos
     people_group: Gente   
     rent_group: Alquiler
+    days_hours_group: Días de reserva, caducidad y cadencia
     activities_group: Actividades 
     item_hold_time: Caducidad de la reserva (en horas)
     item_hold_time_description: Número de horas desde la recepción de la reserva durante las cuales se puede realizar el pago (parcial o total) para confirmar la reserva. Pasado este tiempo no se podrá realizar el pago de la reserva a no ser que se habilite explícitamente para la reserva.
@@ -212,7 +216,7 @@ booking_settings:
     booking_pay_now_conversion_id: Pago online reserva conversion_id
     booking_pay_now_conversion_label: Pago online reserva conversion_label
     driver_min_age_title: Conductor joven
-    driver_min_age_rules: Política (limitaciones/suplementos) para conductores jóvenes
+    driver_min_age_rules: Política específica para los conductores según su edad
     driver_min_age_edition: Permite editar la fecha de nacimiento del conductor y la fecha de expedición de la licencia en el formulario de datos del conductor
     driver_min_age_reservation_rule: Regla para el formulario de reserva
     driver_min_age_rules_description: Permite indicar si la empresa tiene una política con limitaciones para los conductores jóvenes. En caso de no tenerla desactivar la opción.
@@ -240,7 +244,7 @@ booking_notification_settings:
   activities_manager_notification_template_title: Plantillas notificaciones actividades gestor
 booking_business_settings:
   title: Empresa
-  renting_title: Negocio
+  renting_title: Tipo de negocio
   company:
     title: Empresa
     name: Nombre empresa
@@ -272,6 +276,7 @@ booking_front_end:
     inner_label: Usar el motor de reservas interno
     inner_description: Marque esta opción si desea utilizar el motor de reservas interno. En el caso de que sea una web externa la utilizada para realizar las reservas online desmarque esta opción
     external_web_prefix_url: URL de la web externa
+    external_url: Indique la URL donde está alojada la página web de su empresa que conecta con mybooking (p.e. http://midominio.com)
   languages_title: Idiomas
 booking_rates:
   title: Tarifas    
@@ -382,8 +387,8 @@ booking_return:
 booking_list:
   id: "#"
   item: Producto
-  date_from: Entrega
-  date_to: Devolución
+  date_from: Fecha
+  date_to: Fecha
   place: Lugar
   customer: Cliente
   customer_phone: Teléfono
@@ -749,9 +754,9 @@ booking_management:
     extras_title: Extras
     extra_description: Descripción
     extra_quantity: Cantidad 
-    extra_cost: Coste total 
+    extra_cost: Precio Total
     extra_unit_cost: Precio
-    extra_cost_1unit: Coste u.
+    extra_cost_1unit: Precio Unidad
     charges_title: Cobros
     charge_date: Fecha
     charge_payment_method: Forma pago
@@ -984,25 +989,31 @@ booking_category_management:
     prices: Precios  
     scheduler: Agenda
   form:
+    basic_data_group: Datos básicos
+    other_data_group: Otros datos
+    translations_group: Traducciones
+    media_group: Imágenes
+    rates_group: Tarifas
+    deposit_group: Fianza
+    stock_group: Stock
+    stock_detail_group: Detalle del stock
+    sales_channels_group: Canales de venta
+    calendar_group: Calendario
+    product_group_description: >
+                               <p>Página web de detalle con la información detallada y desde la que se puede ver la <b>disponibilidad</b> y <b>realizar la reserva</b>.</p>
+                               <p>El sistema crea automáticamente una página web accessible desde la URL definida en el campo alias</p>
     stock_not_match: El stock del producto no coincide con el stock definido.
+    active_widget:
+      label: Activo
+    ready_widget:
+      label: Preparado
+    not_ready_widget:
+      label: No preparado
+    stock_widget:
+      label: Stock
+    web_public_widget:
+      label: Público
     product_not_ready: El producto no está listo para la venta. Se necesita código, nombre y tarifa
-    new_product_detail: >
-                        <h3>Nuevo producto</h3>
-                        <p>Está creando un nuevo producto que ofrecerá en alquiler a sus clientes.
-                        </p>
-                        <p>Al crear un nuevo producto debe indicar el tipo de producto.</p>
-                        <ul>
-                          <li>Categoría de recursos en alquiler</li>
-                          <li>Recurso en alquiler</li>
-                        </ul> 
-                        <p>Una <em>categoría de recursos en alquiler</em> dispondrá de un
-                        conjunto de referencias que se engloban en la categoría. Ejemplos de
-                        este tipo de producto son coches, motocicletas, bicicletas, kayaks.</p>
-                        <p>Un <em>recurso en alquiler</em> suele refererirse a solo bien, normalmente
-                        con unas características que le hacen único. Un sala de ensayo, una sala de
-                        conciertos, una casa suelen ser casos de recursos en alquiler.</p>
-    type:
-      label: Tipo
     code:
       label: Código
       validation:
@@ -1033,8 +1044,13 @@ booking_category_management:
       label: Stock 
     capacity:
       label: Plazas disponibles
+      description: Establece la capacidad en personas
+    capacity_children:
+      label: Plazas de niños disponibles
+      description: Establece la capacidad de niños (complementarios a las plazas)
     sort_order:
       label: Orden
+      description: Esta opción permite establecer el orden en el listado de venta de la web
     deposit:
       label: Fianza
     active:
@@ -1045,10 +1061,16 @@ booking_category_management:
       label: Avisar al cliente si no hay reservas
     alias:
       label: Alias
+      description: Esta opción permite establecer una url alternativa para visualizar el producto en el navegador
     from_price:
       label: Precio desde (portada)
+      description: Permite definir el precio desde para la portada
     from_price_offer:
       label: Precio desde en oferta (portada)
+      description: Permite definir el precio desde para la portada (cuando hay oferta)
+    color:
+      label: color
+      description: Esta opción permite definir el color que se utilizará para representarlo en las gráficas
     request_customer_address:
       label: Solicitar dirección del cliente
     request_customer_information:
@@ -1078,6 +1100,7 @@ booking_category_management:
     active_filter:
       only: Sólo activos
       all: Todos
+    sales_channel_group: Canales de venta
 booking_extra_management:
   title: Extras
   description: Gestión de extras
@@ -1127,7 +1150,7 @@ booking_item_management:
     name:
       label: Nombre
     description:
-      label: Descripción
+      label: Notas
     calendar:
       label: Calendario
     price_definition:
@@ -1197,6 +1220,19 @@ booking_places_management:
       label: Oficina de gestión
     sort_order:
       label: Orden
+pickup_return_place_edition:
+  confirm_delete: ¿Está seguro que desea eliminar el lugar de entrega/recogida?
+  table:
+    create_button: Añadir
+    update_button: Actualizar
+    delete_button: Eliminar
+    translate_button: Traducir
+driver_age_rule_edition:
+  confirm_delete: ¿Está seguro que desea eliminar el lugar de entrega/recogida?
+  table:
+    create_button: Añadir
+    update_button: Actualizar
+    delete_button: Eliminar
 booking:
   days: !!pl
     1: 1 día
@@ -1396,9 +1432,9 @@ booking_driver_age_rules_management:
     conditions_group: Condiciones
     age_rule_type:
       label: Tipo
-      age: Edad conductor
-      driving_license_years: Años carnet de conducir
-      both_age_driving_license_years: Edad conductor y años carnet de conducir
+      age: Edad
+      driving_license_years: Carnet
+      both_age_driving_license_years: Edad y carnet
     join_conditions:
       label: Conector condiciones
       and: Y
@@ -1574,26 +1610,9 @@ report_pending_confirmation_activities:
 report_in_progress:
   title: Reservas en curso
   summary: Hay <strong>%1</strong> reservas y <strong>%2</strong> recursos en curso
-period_occupation:
-  title: Comprobar disponibilidad
-  summary: Resumen
-  detail: Detalle
 monthly_occupation:
   title: Ocupación
   summary: Ocupación total
-occupation_detail:
-  title: Detalle ocupación
-  date: Fecha
-  product: Producto 
-  requested: Solicitado %1 
-  summary: Hay <strong>%1</strong> reservas
-  not_assigned: No asignado
-  prereservation: Bloqueado 
-  available_stock: Stock disponible
-  not_available_stock: No hay productos disponibles
-  available_stock_summary: !!pl
-    1: Hay <strong>%1</strong> producto disponible
-    n: Hay <strong>%1</strong> productos disponibles
 new_reservation_activity:
   go_to_pay_line1: Pagar
   go_to_pay_line2: (Confirmar el pedido)
@@ -1692,26 +1711,25 @@ booking_journal:
 setup_booking:
   title: Configuración mybooking
   welcome: >
-           <h3>Bienvido/a a mybooking!</h3>
+           <h3>Bienvenido/a a mybooking!</h3>
            <br>
            <p>Desde aquí puede proceder a configurar su negocio para empezar a alquilar u organizar actividades.</p>
-  renting: Empezar la configuración del alquiler
-  activities: Empezar la configuración de las actividades
-setup_renting:
-  title: Configuración sistema de alquiler
+  start: Empezar la configuración
+setup_wizard:
+  title: Configuración mybooking
   next_step: Siguiente
   previous_step: Anterior
   finish: Finalizar
-setup_renting_step_1:
+setup_step_1:
   title: Tipo de negocio
   description: Seleccione la opción que corresponde con su tipo de negocio
-setup_renting_step_2:
+setup_step_2:
+  title: Tarifas
+  description: ¿Cómo calcula las tarifas de sus productos o servicios?
+setup_step_3:
   title: Tipo de negocio
   description: Seleccione la opción que corresponde con su tipo de negocio
-setup_renting_step_3:
-  title: Tipo de negocio
-  description: Seleccione la opción que corresponde con su tipo de negocio
-setup_renting_step_4:
+setup_step_4:
   title: Tipo de negocio
   description: Seleccione la opción que corresponde con su tipo de negocio
 booking_rental_locations_management:
@@ -1737,3 +1755,6 @@ booking_category_sales_channels_setup:
   title: Configurar canales de venta
 booking_category_sales_channels_edit:
   title: Canal de venta %1
+booking_category_search:
+  description: "%1 ....... %2%3  -- (%4 disponibles las fechas seleccionadas)"
+  description_same_product: "%1 ....... %2%3  -- (SELECCION ACTUAL)"

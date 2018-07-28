@@ -5,8 +5,53 @@ module Sinatra
 
       def self.registered(app)
 
+        # ------------------------------ QUERYING DATA FOR THE PLANNING ---------------------------------------------
+
         #
         # Planning summary
+        # -----------------------------------------------------------------------------------------------------------
+        #
+        # Get the planning information (reservations and stock blockings) to fill the grid
+        #
+        # Request parameters::
+        #
+        # from::
+        #   Date from
+        # to::
+        #   Date to
+        # product::
+        #   category code. Show resources that belongs to the category
+        # reference::
+        #   item reference. Show only the selected resource
+        #
+        # Returns::
+        #
+        # references -> Hash with the references. The key is the stock reference and the value is the category
+        #          {
+        #            "K1-01" : "K1"
+        #          }
+        # result -> Array with the reservations and stock blockings to show in the planning
+        #          [
+        #              {
+        #               "booking_item_reference":"K1-01",
+        #               "item_id":"K1",
+        #               "requested_item_id":"K1",
+        #               "id":22,
+        #               "origin":"booking",
+        #               "date_from":"2018-08-01",
+        #               "time_from":"10:00",
+        #               "date_to":"2018-08-13",
+        #               "time_to":"20:00",
+        #               "days":12,
+        #               "title":"Cersei Lannister",
+        #               "detail":null,
+        #               "id2":50,
+        #               "planning_color":"#66ff66",
+        #               "notes":null,
+        #               "confirmed":0,
+        #               "auto_assigned_item_reference": false
+        #               }
+        #          ]
         #
         app.get '/api/booking/planning-summary/?*', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -30,11 +75,11 @@ module Sinatra
             end
           end
 
-          @options = nil
+          @options = {include_future_pending_confirmation: true}
           if params[:reference]
-            @options = {mode: :stock, reference: params[:reference]}
+            @options.merge!({mode: :stock, reference: params[:reference]})
           elsif params[:product]
-            @options = {mode: :product, product: params[:product]}
+            @options.merge!({mode: :product, product: params[:product]})
           end
 
           result = BookingDataSystem::Booking.planning(@date_from, @date_to, @options)
@@ -43,25 +88,24 @@ module Sinatra
           result.to_json
         end
 
-        #
-        # Bookings (planning)
-        #
-        app.get '/api/booking/planning', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
-          condition = booking_planning_conditions(params)
-
-          bookings = condition.build_datamapper(BookingDataSystem::Booking).all(
-              :order => [:date_from.asc]
-          )
-
-          bookings.to_json(:only => [:id, :date_from, :time_from, :date_to, :time_to, :customer_name,
-                                     :customer_surname, :planning_color],
-                           :relationships => {:booking_line_resources => {}})
-
-        end
+        # -------------------------- SEARCH FOR NEW RESERVATION / STOCK BLOCKING ------------------------------------
 
         #
-        # Search for products in planning
+        # Search for products in planning to create a new reservation or stock blocking
+        # -----------------------------------------------------------------------------------------------------------
+        #
+        # Search availiability to create a new reservation or stock blocking in the planning
+        #
+        # Request parameters::
+        #
+        # from::
+        #   Date from
+        # to::
+        #   Date to
+        # product::
+        #   category code. Show resources that belongs to the category
+        # reference::
+        #   item reference. Show only the selected resource
         #
         app.post '/api/booking/planning/search', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -104,7 +148,9 @@ module Sinatra
 
           # Prepare the products
           products = ::Yito::Model::Booking::BookingCategory.search(date_from,
+                                                                    time_from,
                                                                     date_to,
+                                                                    time_to,
                                                                     data[:days],
                                                                     {
                                                                         locale: settings.default_language,
@@ -121,9 +167,46 @@ module Sinatra
 
         end
 
-        # -------------------------- Reassign reservation --------------------------------------------------------
+        # --------------------------------- REASSIGNATION --------------------------------------------------------
+
         #
-        # (re)Assign reservation / prereservation
+        # Assign or reassign a reservation or prereservation
+        # --------------------------------------------------------------------------------------------------------
+        #
+        # RequestParams::
+        #
+        # type::
+        #   Indicates if a booking or a prereservation
+        #   'booking' or 'prereservation'
+        #
+        # id::
+        #   If the type is 'booking' the booking line resource id
+        #   If the type is 'prereservation' is the booking line reservation id
+        #
+        # resource::
+        #   The reference of the stock item to be reassigned
+        #
+        # Returns::
+        #
+        # A JSON with the assignation data
+        #
+        # { "booking_item_reference":
+        #   "item_id":
+        #   "requested_item_id":
+        #   "id":
+        #   "origin":
+        #   "date_from":
+        #   "time_from":
+        #   "date_to":
+        #   "time_to":
+        #   "days":
+        #   "title":
+        #   "detail":
+        #   "id2":
+        #   "planning_color":
+        #   "notes":
+        #   "confirmed":
+        # }
         #
         app.post '/api/booking/planning/reassign', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -135,30 +218,7 @@ module Sinatra
             if booking_line_resource = BookingDataSystem::BookingLineResource.get(id)
               if booking_item = ::Yito::Model::Booking::BookingItem.get(resource)
                 booking_line_resource.transaction do
-                  booking_line_resource.booking_item_category = booking_item.category.code if booking_item.category
-                  booking_line_resource.booking_item_reference = booking_item.reference
-                  booking_line_resource.booking_item_stock_model = booking_item.stock_model
-                  booking_line_resource.booking_item_stock_plate = booking_item.stock_plate
-                  booking_line_resource.booking_item_characteristic_1 = booking_item.characteristic_1
-                  booking_line_resource.booking_item_characteristic_2 = booking_item.characteristic_2
-                  booking_line_resource.booking_item_characteristic_3 = booking_item.characteristic_3
-                  booking_line_resource.booking_item_characteristic_4 = booking_item.characteristic_4
-                  booking_line_resource.save
-                  # Newsfeed
-                  ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
-                                                           action: 'assign_booking_resource',
-                                                           identifier: booking_line_resource.booking_line.booking.id.to_s,
-                                                           description: BookingDataSystem.r18n.t.booking_news_feed.assign_booking_resource(booking_line_resource.booking_item_reference,
-                                                                                                                                           booking_line_resource.booking_line.id,
-                                                                                                                                           booking_line_resource.booking_line.item_id),
-                                                           attributes_updated: {category: booking_line_resource.booking_item_category,
-                                                                                reference: booking_line_resource.booking_item_reference,
-                                                                                stock_model: booking_line_resource.booking_item_stock_model,
-                                                                                stock_plate: booking_line_resource.booking_item_stock_plate,
-                                                                                characteristic_1: booking_line_resource.booking_item_characteristic_1,
-                                                                                characteristic_2: booking_line_resource.booking_item_characteristic_2,
-                                                                                characteristic_3: booking_line_resource.booking_item_characteristic_3,
-                                                                                characteristic_4: booking_line_resource.booking_item_characteristic_4}.to_json)
+                  booking_line_resource.assign_resource(resource)
                 end
                 booking = booking_line_resource.booking_line.booking
                 booking_line = booking_line_resource.booking_line
@@ -176,7 +236,10 @@ module Sinatra
                           "detail":"#{booking_line_resource.resource_user_name} #{booking_line_resource.resource_user_surname} #{booking_line_resource.customer_height} #{booking_line_resource.customer_weight}",
                           "id2": booking_line_resource.id,
                           "planning_color": booking.planning_color,
-                          "notes": booking.notes}
+                          "notes": booking.notes,
+                          "confirmed": ([:confirmed, :in_progress, :done].include?(booking.status) ? 1 : 0),
+                          "auto_assigned_item_reference": false
+                         }
                 status 200
                 content_type :json
                 result.to_json
@@ -208,7 +271,10 @@ module Sinatra
                  "detail": prereservation.notes,
                  "id2": prereservation_line.id,
                  "planning_color": prereservation.planning_color,
-                 "notes": prereservation.notes}
+                 "notes": prereservation.notes,
+                 "confirmed": 1,
+                 "auto_assigned_item_reference": false
+                }
                 status 200
                 content_type :json
                 result.to_json
@@ -224,12 +290,25 @@ module Sinatra
 
         end
 
-
-
-        # -------------------------- Bookings (reservations) -----------------------------------------------------
+        # -------------------------- MANAGE BOOKINGS IN PLANNING ----------------------------------------------------
 
         #
-        # Get a reservation to update its quantities in the planning
+        # Load a reservation
+        # -----------------------------------------------------------------------------------------------------------
+        #
+        # Load a reservation to update the requested products in the planning
+        #
+        # Request parameters::
+        #
+        # id::
+        #   The reservation id
+        #
+        # Returns::
+        #   A JSON with the following attributes
+        #
+        #   booking : The reservation information
+        #   products: Products search to get availability and prices
+        #   extras: Extras search to get availability and prices
         #
         app.get '/api/booking/planning/booking/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -237,7 +316,9 @@ module Sinatra
 
             # Prepare the products
             products = ::Yito::Model::Booking::BookingCategory.search(@booking.date_from,
+                                                                      @booking.time_from,
                                                                       @booking.date_to,
+                                                                      @booking.time_to,
                                                                       @booking.days,
                                                                       { locale: settings.default_language,
                                                                         full_information: true,
@@ -263,10 +344,11 @@ module Sinatra
                           return_place: @booking.return_place,
                           booking_lines: @booking.booking_lines,
                           booking_extras: @booking.booking_extras,
-                          title: "#{@booking.customer_name} #{@booking.customer_surname}"},
+                          title: "#{@booking.customer_name} #{@booking.customer_surname}"
+                         },
                 products: products,
                 extras: extras
-            }
+              }
 
             content_type :json
             data.to_json
@@ -278,6 +360,7 @@ module Sinatra
 
         #
         # Create a reservation in the planning
+        # ------------------------------------------------------------------------------------------------------------
         #
         app.post '/api/booking/planning/booking', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -370,7 +453,10 @@ module Sinatra
                      "detail":"#{value.resource_user_name} #{value.resource_user_surname} #{value.customer_height} #{value.customer_weight}",
                      "id2": value.id,
                      "planning_color": @booking.planning_color,
-                     "notes": @booking.notes}
+                     "notes": @booking.notes,
+                     "confirmed": ([:confirmed, :in_progress, :done].include?(@booking.status) ? 1 : 0),
+                     "auto_assigned_item_reference": false
+                    }
               end
               content_type :json
               result.to_json
@@ -384,6 +470,7 @@ module Sinatra
 
         #
         # Update a reservation in the planning
+        # -----------------------------------------------------------------------------------------------------------
         #
         app.put '/api/booking/planning/booking/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -434,7 +521,10 @@ module Sinatra
                        "detail":"#{value.resource_user_name} #{value.resource_user_surname} #{value.customer_height} #{value.customer_weight}",
                        "id2": value.id,
                        "planning_color": @booking.planning_color,
-                       "notes": @booking.notes}
+                       "notes": @booking.notes,
+                       "confirmed": ([:confirmed, :in_progress, :done].include?(@booking.status) ? 1 : 0),
+                       "auto_assigned_item_reference": false
+                      }
                 end
                 content_type :json
                 result.to_json
@@ -451,11 +541,16 @@ module Sinatra
 
         end
 
-        # -------------------------- Pre-reservations (stock blocking) -------------------------------------------
-
+        # -------------------------- MANAGE STOCK BLOCKINGS IN PLANNING ------------------------------------------
 
         #
-        # Get a prereservation to update its references in the planning
+        # Load a stock blocking
+        # -----------------------------------------------------------------------------------------------------------
+        #
+        # Request parameters::
+        #
+        # id::
+        #   The stock blocking id
         #
         app.get '/api/booking/planning/prereservation/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -463,7 +558,9 @@ module Sinatra
 
             # Prepare the products
             products = ::Yito::Model::Booking::BookingCategory.search(@prereservation.date_from,
+                                                                      @prereservation.time_from,
                                                                       @prereservation.date_to,
+                                                                      @prereservation.time_to,
                                                                       @prereservation.days,
                                                                       { locale: settings.default_language,
                                                                         full_information: true,
@@ -495,7 +592,8 @@ module Sinatra
         end
 
         #
-        # Create a stock-blocking (pre-reservation) in the planning
+        # Create a stock-blocking
+        # ------------------------------------------------------------------------------------------------------------
         #
         app.post '/api/booking/planning/prereservation', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -513,12 +611,12 @@ module Sinatra
               notes = model_request[:notes]
 
               @prereservation = BookingDataSystem::BookingPrereservation.new(date_from: date_from,
-                                                           time_from: time_from,
-                                                           date_to: date_to,
-                                                           time_to: time_to,
-                                                           planning_color: '#cccccc',
-                                                           title: title,
-                                                           notes: notes) #TODO pass the planning color
+                                                                             time_from: time_from,
+                                                                             date_to: date_to,
+                                                                             time_to: time_to,
+                                                                             planning_color: '#cccccc',
+                                                                             title: title,
+                                                                             notes: notes) #TODO pass the planning color
 
               #
               # Assign the references
@@ -558,7 +656,10 @@ module Sinatra
                      "detail": @prereservation.notes,
                      "id2": value.id,
                      "planning_color": @prereservation.planning_color,
-                     "notes": @prereservation.notes}
+                     "notes": @prereservation.notes,
+                     "confirmed": 1,
+                     "auto_assigned_item_reference": false
+                    }
               end
               content_type :json
               result.to_json
@@ -571,7 +672,13 @@ module Sinatra
         end
 
         #
-        # Update pre-reservation information
+        # Update a stock blocking
+        # -----------------------------------------------------------------------------------------------------------
+        #
+        # Request parameters::
+        #
+        # id::
+        #   The stock blocking id
         #
         app.put '/api/booking/planning/prereservation/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -608,7 +715,10 @@ module Sinatra
                          "detail": @prereservation.notes,
                          "id2": value.id,
                          "planning_color": @prereservation.planning_color,
-                         "notes": @prereservation.notes}
+                         "notes": @prereservation.notes,
+                         "confirmed": 1,
+                         "auto_assigned_item_reference": false
+                        }
                   end
                   content_type :json
                   result.to_json
@@ -623,7 +733,13 @@ module Sinatra
         end
 
         #
-        # Destroy a prereservation-line
+        # Delete a stock blocking line
+        # -----------------------------------------------------------------------------------------------------------
+        #
+        # Request parameters::
+        #
+        # id::
+        #   The stock blocking line id
         #
         app.delete '/api/booking/planning/prereservation-line/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 

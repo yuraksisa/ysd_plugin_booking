@@ -109,6 +109,78 @@ module Sinatra
         
         end
 
+        # ---------------------------------------------------------------------------------------
+
+        #
+        # Append a pickup-return place
+        #
+        app.post '/api/booking-place-def/:id/pickup-return-place', allowed_usergroups: ['rates_manager','staff'] do
+
+          if pickup_return_place_definition = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(params[:id])
+
+            request_data = body_as_json(::Yito::Model::Booking::PickupReturnPlace)
+
+            pickup_return_place = ::Yito::Model::Booking::PickupReturnPlace.new(request_data)
+            pickup_return_place.pickup_return_place_definition = pickup_return_place_definition
+            pickup_return_place.save
+
+            pickup_return_place_definition.reload
+
+
+            content_type :json
+            {pickup_return_places: pickup_return_place_definition.pickup_return_places.to_a}.to_json
+
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Updates a pickup-return place
+        #
+        app.put '/api/booking-pickup-up-return-place/:id', allowed_usergroups: ['rates_manager','staff'] do
+
+          if pickup_return_place = ::Yito::Model::Booking::PickupReturnPlace.get(params[:id])
+
+            request_data = body_as_json(::Yito::Model::Booking::PickupReturnPlace)
+            pickup_return_place.attributes = request_data
+            pickup_return_place.save
+
+            pickup_return_place_definition = pickup_return_place.pickup_return_place_definition
+            pickup_return_place_definition.reload
+
+            content_type :json
+            {pickup_return_places: pickup_return_place_definition.pickup_return_places.to_a}.to_json
+
+          else
+            status 404
+          end
+
+        end
+
+        #
+        # Deletes pickup-return place
+        #
+        app.delete '/api/booking-pickup-up-return-place/:id', allowed_usergroups: ['rates_manager','staff'] do
+
+          if pickup_return_place = ::Yito::Model::Booking::PickupReturnPlace.get(params[:id])
+
+            pickup_return_place_definition = pickup_return_place.pickup_return_place_definition
+
+            pickup_return_place.destroy
+
+            pickup_return_place_definition.reload
+
+            content_type :json
+            {pickup_return_places: pickup_return_place_definition.pickup_return_places.to_a}.to_json
+
+          else
+            status 404
+          end
+
+        end
+
       end
     end
   end

@@ -1,0 +1,35 @@
+require(['jquery', 'YSDForms'], function($, YSDForms) {
+
+  $(document).ready(function() {
+
+      configFrontendModel = {
+
+      }
+
+      configFrontendController = {
+          innerEngineChanged: function() {
+
+              if ($('#booking\\.inner_reservation_engine').is(':checked')) {
+                  $('#outside_engine_holder').hide();
+              }
+              else {
+                  $('#outside_engine_holder').show();
+              }
+
+          }
+      }
+
+      configFrontendView = {
+          init: function() {
+              YSDForms.improve();
+              configFrontendController.innerEngineChanged();
+              $('#booking\\.inner_reservation_engine').bind('change', function() {
+                  configFrontendController.innerEngineChanged();
+              });
+          }
+      }
+
+      configFrontendView.init();
+
+  });
+});

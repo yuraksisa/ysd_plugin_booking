@@ -15,10 +15,11 @@ module Sinatra
 
       def self.registered(app)
 
-        # ----------------------------- DASHBOARD -------------------------------------------------
+        # ------------------------------------------- DASHBOARD -----------------------------------------------------
 
         #
         # Booking dashboard
+        # -----------------------------------------------------------------------------------------------------------
         #
         app.get '/admin/booking/dashboard', :allowed_usergroups => ['booking_manager', 'staff'] do
 
@@ -53,7 +54,6 @@ module Sinatra
                                       Date.civil(@year, 1, 1),
                                       @today)
             @forecast_charged_reservations = BookingDataSystem::Booking.forecast_charged(@first_day_today_month, @first_day_next_year)
-            #
             @total_charged = @total_charged_reservations.clone
             @forecast_charged = @forecast_charged_reservations.clone
           end
@@ -112,10 +112,19 @@ module Sinatra
           load_page(:booking_dashboard)
         end
 
-        # ---------------------------- SCHEDULER ----------------------------------------------------
+        # -------------------------------------------- SCHEDULER ----------------------------------------------------
 
         #
-        # Bookings scheduler
+        # Resource scheduler
+        # -----------------------------------------------------------------------------------------------------------
+        #
+        # Scheduler calendar of a resource
+        #
+        # == Parameters::
+        #
+        # booking_item_reference::
+        #   The resource reference
+        #
         #
         app.get '/admin/booking/scheduler/:booking_item_reference', :allowed_usergroups => ['booking_manager', 'staff'] do
           today = DateTime.now
@@ -131,7 +140,10 @@ module Sinatra
         end
 
         #
-        # Bookings scheduler
+        # Full renting reservations scheduler
+        # ----------------------------------------------------------------------------------------------------------
+        #
+        # Scheduler calendar of all the resources
         #
         app.get '/admin/booking/scheduler/?*', :allowed_usergroups => ['booking_manager', 'staff'] do
           today = DateTime.now
@@ -140,10 +152,11 @@ module Sinatra
           load_page(:bookings_scheduler, :locals => {:booking_item => nil, :year => year, :month => month})
         end
 
-        # -------------------------- ADMIN BOOKINGS ------------------------------------
+        # ------------------------------------ ADMIN BOOKINGS ------------------------------------------------------
 
         #
         # Bookings admin page
+        # ----------------------------------------------------------------------------------------------------------
         #
         app.get '/admin/booking/bookings/?*', :allowed_usergroups => ['booking_manager', 'booking_operator'] do
 
@@ -197,7 +210,10 @@ module Sinatra
         end
 
         #
-        # Change reservation period or pickup/return places
+        # Change reservation dates or pickup/return places
+        # -------------------------------------------------------------------------------------------------
+        #
+        # Shows a page to edit the reservation pickup/return dates or places
         #
         app.get '/admin/booking/edit/pickup-return/:booking_id', :allowed_usergroups => ['booking_manager', 'booking_operator'] do
 
@@ -205,13 +221,11 @@ module Sinatra
             if booking_category = ::Yito::Model::Booking::BookingCategory.get(booking.booking_lines.first.item_id)
 
               catalog = booking_category.booking_catalog
+
               locals = {}
-
               locals.store(:booking, booking)
-
               locals.store(:booking_item_family,
                            catalog ? catalog.product_family : ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
-
               locals.store(:pickup_return_places_configuration,
                            SystemConfiguration::Variable.get_value('booking.pickup_return_places_configuration', 'list'))
               locals.store(:booking_custom_pickup_return_place_cost, BigDecimal.new(SystemConfiguration::Variable.get_value('booking.custom_pickup_return_place_price', '0')))
@@ -222,7 +236,11 @@ module Sinatra
                 pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(pickup_return_place_def_id)
               end
               pickup_return_place_def = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first if pickup_return_place_def.nil?
-              locals.store(:booking_pickup_return_places, pickup_return_place_def.pickup_return_places)
+              if pickup_return_place_def
+                locals.store(:booking_pickup_return_places, pickup_return_place_def.pickup_return_places)
+              else
+                locals.store(:booking_pickup_return_places, nil)
+              end
 
               locals.store(:booking_deposit,
                            SystemConfiguration::Variable.get_value('booking.deposit', '0').to_i)
@@ -239,10 +257,11 @@ module Sinatra
         end
 
 
-        # ------------------- Contract --------------------
+        # --------------------------------------- CONTRACT ----------------------------------------------------------
 
         #
         # Print the contract (PDF document)
+        # -----------------------------------------------------------------------------------------------------------
         #
         app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager', 'booking_operator','staff'] do
 
@@ -261,13 +280,18 @@ module Sinatra
 
         end         
 
-        # ------------------- Assign stock ----------------
+        # -------------------------------------- Assign stock -------------------------------------------------------
 
         #
         # Assign stock assistant
-        # -------------------------------------------------------------
+        # -----------------------------------------------------------------------------------------------------------
         #
         # It's a wizard to allow the stock assignation to a reservation
+        #
+        # == Parameters::
+        #
+        # id:: The booking line resource id
+        #
         #
         app.get '/admin/booking/assign-stock/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -280,9 +304,11 @@ module Sinatra
                                else
                                  @booking_line_resource.booking_item_category
                                end
-            @data,@detail = BookingDataSystem::Booking.resources_occupation(
-              @booking.date_from, @booking.date_to,
-              product_category)
+            @data,@detail = BookingDataSystem::Booking.categories_availability(@booking.date_from,
+                                                                               @booking.time_from,
+                                                                               @booking.date_to,
+                                                                               @booking.time_to,
+                                                                               product_category)
 
             @assigned = !@booking_line_resource.booking_item_reference.nil?
             load_page :booking_line_resource_assign_stock

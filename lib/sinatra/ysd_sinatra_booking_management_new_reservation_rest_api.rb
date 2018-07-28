@@ -27,7 +27,9 @@ module Sinatra
         
         # Prepare the products
         p_json = ::Yito::Model::Booking::BookingCategory.search(shopping_cart.date_from,
+                                                                shopping_cart.time_from,
                                                                 shopping_cart.date_to,
+                                                                shopping_cart.time_to,
                                                                 shopping_cart.days,
                                                           { locale: locale,
                                                                    full_information: true,

@@ -1,7 +1,6 @@
 <!-- Add new booking line -->
 <script type="text/tmpl" id="new_booking_line_script">
   <form name="new_booking_line" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Añadir producto</h3>
     <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Producto</label>
@@ -22,7 +21,6 @@
 <!-- Add new extra -->
 <script type="text/tmpl" id="new_booking_extra_script">
   <form name="new_booking_extra" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Añadir extra</h3>
     <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Extra</label>
@@ -42,20 +40,37 @@
 
 <!-- Edit booking line item id -->
 <script type="text/tmpl" id="edit_booking_line_item_id_script">
-  <form name="update_booking_line_item_id" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Modificar producto</h3>
+  <div id="edit_booking_line_item_id_warning" class="alert alert-danger" style="display: none">
+    <p>Recuerde que estos momentos no hay disponibilidad suficiente</p>
+  </div>
+  <form name="update_booking_line_item_id" class="form-horizontal">
     <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
-    <div class="formrow">
-      <label class="fieldtitle">Producto</label>
-      <select name="item_id" id="edit_booking_line_item_id" class="fieldcontrol"></select>
+    <div class="form-group">
+      <label class="col-lg-12"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['category']%></label>
+      <div class="col-lg-10">
+        <select name="item_id" id="edit_booking_line_item_id" class="form-control"></select>
+      </div>
     </div>
-    <div class="formrow">
-      <label class="fieldtitle">Precio</label>
-      <select name="price_modification" class="fieldcontrol">
-        <option value="hold">Mantener el precio</option>
-        <option value="update">Actualizar el precio</option>
-      </select>
-    </div>    
+    <div class="form-group">
+      <label class="col-lg-12">Precio</label>
+      <div class="col-lg-10">
+        <select name="price_modification" class="form-control">
+          <option value="hold">Mantener el precio</option>
+          <option value="update">Actualizar el precio</option>
+        </select>
+      </div>
+    </div>
+    <% if booking_item_family.category_of_resources? %>
+    <div class="form-group">
+      <label class="col-lg-12"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['product']%></label>
+      <div class="col-lg-10">
+        <select name="stock_assignation" class="form-control">
+          <option value="hold">Mantener la asignación actual</option>
+          <option value="update">Reasignar o dejar en blanco si no hay disponibilidad</option>
+        </select>
+      </div>
+    </div>
+    <% end %>
     <div class="navigation-bar bottom-margin">
       <div class="navigation-bar-crud-buttons right-float">
         <input id="edit_booking_line_item_id_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
@@ -67,7 +82,6 @@
 <!-- Edit booking line item quantity -->
 <script type="text/tmpl" id="edit_booking_line_quantity_script">
   <form name="update_booking_line_quantity" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Modificar cantidad</h3>
     <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Cantidad</label>
@@ -84,7 +98,6 @@
 <!-- Edit booline line item cost -->
 <script type="text/tmpl" id="edit_booking_line_item_cost_script">
   <form name="update_booking_line_item_cost" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Modificar coste unitario</h3>
     <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Coste unitario (todos los días)</label>
@@ -102,7 +115,6 @@
 
 <script type="text/tmpl" id="edit_booking_line_deposit_cost_script">
   <form name="update_booking_line_deposit_cost" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Modificar fianza</h3>
     <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Fianza</label>
@@ -119,7 +131,6 @@
 <!-- Edit extra quantity -->
 <script type="text/tmpl" id="edit_booking_extra_quantity_script">
   <form name="update_booking_extra_quantity" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Modificar cantidad</h3>
     <input type="hidden" name="booking_extra_id" value="<%%=booking_extra_id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Cantidad</label>
@@ -136,7 +147,6 @@
 <!-- Edit extra item -->
 <script type="text/tmpl" id="edit_booking_extra_item_cost_script">
   <form name="update_booking_extra_item_cost" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Modificar coste unitario</h3>
     <input type="hidden" name="booking_extra_id" value="<%%=booking_extra_id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Coste unitario (todos los días)</label>
@@ -153,7 +163,6 @@
 <!-- Edit booking deposits -->
 <script type="text/tmpl" id="edit_booking_deposits_script">
   <form name="edit_booking_deposits" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Fianza</h3>
     <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Fianza de los productos</label>
@@ -180,7 +189,6 @@
 <!-- Edit booking suplements -->
 <script type="text/tmpl" id="edit_booking_supplements_script">
   <form name="edit_booking_supplements" class="all-space" style="background: white; min-width: 300px">
-    <h3 class="guiblock">Suplementos</h3>
     <input type="hidden" name="booking_id" value="<%%=entity.id%>"/>
     <div class="formrow">
       <label class="fieldtitle">Entrega fuera horas</label>
@@ -215,20 +223,22 @@
 <!-- Resource detail -->
 <script type="text/tmpl" id="booking_line_resource_detail_script">
   <form name="update_booking_line_resource" class="all-space" style="background: white; min-width: 500px">
-    <h3 class="guiblock">Detalle del recurso</h3>
     <div class="smaller_text highlight_block" style="max-width: 500px">
       <p>Actualice esta información sólo en el caso que desee imprimir el contrato y los datos no correspondan.</p>
-      <p>Recuerde que para cambiar el recurso asignado dispone del <b>asistente de asignación de stock</b></div>
+      <p>Recuerde que para cambiar el recurso asignado dispone del <b>asistente de asignación de stock</b></p>
+    </div>
     <input type="hidden" name="id" value="<%%=entity.id%>"/>  
     <div class="container_12">
       <div class="grid_6">
         <div class="formrow">
           <label class="fieldtitle">Categoría (producto)</label>
-          <input type="text" name="booking_item_category" class="fieldcontrol" readonly="readonly" maxlength="20" value="<%%=entity.booking_item_category%>"/> 
+          <input type="text" name="booking_item_category" class="fieldcontrol" readonly="readonly" maxlength="20" value="<%%=entity.booking_item_category%>"
+          style="background-color:#DDD"/>
         </div>
         <div class="formrow">
           <label class="fieldtitle">Referencia (stock)</label>
-          <input type="text" name="booking_item_reference" class="fieldcontrol" readonly="readonly" maxlength="50" value="<%%=entity.booking_item_reference%>"/> 
+          <input type="text" name="booking_item_reference" class="fieldcontrol" readonly="readonly" maxlength="50" value="<%%=entity.booking_item_reference%>"
+          style="background-color:#DDD"/>
         </div>   
         <div class="formrow">
           <label class="fieldtitle">Modelo</label>

@@ -1,0 +1,170 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Disponibilidad</h2>
+</div>
+
+<div class="content admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="block">
+        <div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Seleccionar fechas</h3>
+        </div>
+        <div class="block-content">
+          <form name="availability_form" action="/admin/booking/availability" method="get" class="form-horizontal">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <div class="form-group">
+              <label class="col-xs-12" for="example-text-input">
+                  <%=BookingDataSystem.r18n.t.booking_business_literals.starting_date[@product_family.starting_date.to_s]['pickup_singular']%>
+              </label>
+              <div class="col-sm-9">
+                <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10" autocomplete="off" style="display: inline-block; width: auto"/>
+                <% if @product_family.time_to_from %>
+                  <input type="text" name="time_from" id="time_from" maxlength="5" size="5" value="<%=@time_from%>" class="fieldcontrol" style="display: inline-block; width: auto"/>
+                <% end %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-12" for="example-text-input">
+                  <%=BookingDataSystem.r18n.t.booking_business_literals.starting_date[@product_family.starting_date.to_s]['return_singular']%>
+              </label>
+              <div class="col-sm-9">
+                <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10" autocomplete="off" style="display: inline-block; width: auto"/>
+                <% if @product_family.time_to_from %>
+                  <input type="text" name="time_to" id="time_from" maxlength="5" size="5" value="<%=@time_to%>" class="fieldcontrol" style="display: inline-block; width: auto"/>
+                <% end %>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-9">
+                <button id="search" class="btn btn-sm btn-primary" type="submit">Comprobar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-header">
+      <h3 class="block-title text-left">Disponibilidad</h3>
+    </div>
+    <div class="block-content">
+      <% if @product_family.category_of_resources? %>
+        <table class="js-table-sections table table-hover">
+          <thead>
+          <tr>
+            <th></th>
+            <th><%=BookingDataSystem.r18n.t.booking_business_literals.business_type[@product_family.business_type.to_s]['category_singular']%></th>
+            <th class="text-center">Disponibilidad</th>
+            <th class="text-center">Stock disponible</th>
+          </tr>
+          </thead>
+          <% @detail.each do |product, value| %>
+            <tbody class="js-table-sections-header">
+              <tr>
+                <td class="text-center">
+                  <i class="fa fa-angle-right"></i>
+                </td>
+                <td><%=product%></td>
+                <td class="text-center">
+                  <% if value[:occupation] < value[:stock]%>
+                    <i class="fa fa-circle text-success"></i>
+                  <% else %>
+                    <i class="fa fa-circle text-danger"></i>
+                  <% end %>
+                </td>
+                <td class="text-center">
+                  <strong><%=[0, value[:stock] - value[:occupation]].max%></strong> / <%=value[:stock]%> <%if value[:assignation_pending].size > 0%>*<%end%>
+                  <%if value[:assignation_pending].size > 0%>
+                    <br>
+                    <em><span class="text-muted">(<strong><%=value[:assignation_pending].size%></strong> unidades no asignadas o pendientes de confirmar)</span></em>
+                  <%end%>
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+            <tbody>
+               <!-- Available -->
+               <% value[:available_stock].each do |v| %>
+                 <tr>
+                   <td></td>
+                   <td>
+                     <% if @data[v][:assignable]%>
+                       <span><b><%=v%></b></span>
+                     <% else %>
+                       <span class="text-muted"><%=v%></span>
+                     <% end %>
+                   </td>
+                   <td class="text-center">
+                     <i class="fa fa-circle text-success"></i>
+                   </td>
+                   <td class="text-center">
+                     <% unless @data[v][:assignable]%>
+                       <span class="text-muted">No asignable</span>
+                     <% end %>
+                   </td>
+                 </tr>
+               <% end %>
+               <!-- Preassigned -->
+               <% unless @detail[product][:assignation_pending].empty? %>
+                 <% @detail[product][:assignation_pending].each do |item| %>
+                    <% if item.preassigned_item_reference && !item.preassigned_item_reference.empty?%>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <span><em><%= item.preassigned_item_reference %>*</em></span>
+                      </td>
+                      <td class="text-center">
+                        <i class="fa fa-circle text-danger"></i>
+                      </td>
+                      <td class="text-center">
+                        <span>Preasignada o Reservada
+                            <% if item.origin == 'booking' %>
+                              <a href="/admin/booking/bookings/<%=item.id%>"><strong><%= item.id%></strong></a>
+                            <%else%>
+                              <b><%=item.id%></b>
+                            <%end%>
+                        </span>
+                      </td>
+                    </tr>
+                    <% end %>
+                 <% end %>
+               <% end %>
+            </tbody>
+          <% end %>
+        </table>
+      <% elsif @product_family.resource? %>
+        <table class="table">
+          <thead>
+          <tr>
+            <th><%=BookingDataSystem.r18n.t.booking_business_literals.business_type[@product_family.business_type.to_s]['category_singular']%></th>
+            <th class="text-center">Disponibilidad</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @detail.each do |product, value| %>
+            <tr>
+              <td><%=product%></td>
+              <td class="text-center">
+                <% if value[:occupation] < value[:stock]%>
+                  <i class="fa fa-circle text-success"></i>
+                <% else %>
+                  <i class="fa fa-circle text-danger"></i>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+
+
+
+
+
+</div>

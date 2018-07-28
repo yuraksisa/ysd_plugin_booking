@@ -228,7 +228,11 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');
         var priceValue = $(this).attr('data-value-price');
-        self.prepareFormEditBookingLineItemId(id, value, priceValue);
+        var quantity = parseInt($(this).attr('data-value-quantity'));
+        if (!isNaN(quantity)){
+            quantity = 1;
+        }
+        self.prepareFormEditBookingLineItemId(id, value, priceValue, quantity);
       });
 
       // Setup edit booking line quantity button click
@@ -797,45 +801,14 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
     }
 
 
-    this.prepareFormNewBookingLine = function(entity) { /* Show the form to create a new booking line */
-
-      var html = tmpl('new_booking_line_script', {entity: entity});
-      $("#dialogs_container").html(html);
-
-      var dataSourceModel = new RemoteDataSource('/api/booking-categories?all=yes',{'id':'code','description':'name'});
-      var valueModel = null; 
-      var selectorModel = new SelectSelector('new_booking_line_item_id',
-                                             dataSourceModel, valueModel, true );
-
-      $('#create_booking_line_button').unbind('click');
-      $('#create_booking_line_button').bind('click', function(){
-
-        var formdata = $('form[name="new_booking_line"]').formParams(true);
-        var json_request = JSON.stringify(formdata);
-        $.ajax({
-               type: 'POST',
-               data : json_request,
-               url : '/api/booking/booking-line',
-               success: function(data, textStatus, jqXHR) {
-                 bookingManager.model.synchronizeCurrentEntity(data);
-                 bookingManager.model.change_state('entity_updated_successfully');
-                 alert('Nueva línea de producto añadida');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
-               },
-               error: function(data, textStatus, jqXHR) {
-                 alert('Error creando línea de reserva: ' + data.responseText);
-               }
-           });
-
-      });
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
-
-    }
-
     this.prepareFormBookingSupplements = function(entity) { /* Show the form to edit deposit */
 
       var html = tmpl('edit_booking_supplements_script', {entity: entity});
-      $("#dialogs_container").html(html);
+
+      $('#booking_management_modal_container .modal-title').html('Modificar suplementos');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
+
       $('#update_booking_supplements_button').unbind('click');
       $('#update_booking_supplements_button').bind('click', function(){
 
@@ -849,7 +822,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                  bookingManager.model.synchronizeCurrentEntity(data);
                  bookingManager.model.change_state('entity_updated_successfully');
                  alert('Suplementos actualizados');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
+                 $('#booking_management_modal_container').modal('hide');
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error actualizando suplementos: ' + data.responseText);
@@ -857,14 +830,17 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
            });
 
       });
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
 
     }    
 
     this.prepareFormBookingDeposit = function(entity) { /* Show the form to edit deposit */
 
         var html = tmpl('edit_booking_deposits_script', {entity: entity});
-        $("#dialogs_container").html(html);
+
+        $('#booking_management_modal_container .modal-title').html('Modificar fianza');
+        $('#booking_management_modal_container .modal-body').html(html);
+        $('#booking_management_modal_container').modal('show');
+
         $('#update_booking_deposit_button').unbind('click');
         $('#update_booking_deposit_button').bind('click', function(){
 
@@ -878,7 +854,8 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                     bookingManager.model.synchronizeCurrentEntity(data);
                     bookingManager.model.change_state('entity_updated_successfully');
                     alert('Fianza actualizada');
-                    YSDGui.hideElement(document.getElementById('dialogs_container'));
+                    $('#booking_management_modal_container').modal('hide');
+                    //YSDGui.hideElement(document.getElementById('dialogs_container'));
                 },
                 error: function(data, textStatus, jqXHR) {
                     alert('Error actualizando fianza: ' + data.responseText);
@@ -886,87 +863,147 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
             });
 
         });
-        YSDGui.showElement(document.getElementById('dialogs_container'), true);
 
     }
 
-    this.prepareFormNewBookingExtra = function(entity) { /* Show the form to create a new booking line */
 
-      var html = tmpl('new_booking_extra_script', {entity: entity});
-      $("#dialogs_container").html(html);
+    this.prepareFormNewBookingLine = function(entity) { /* Show the form to create a new booking line */
 
-      var dataSourceModel = new RemoteDataSource('/api/booking-extras?all=yes',{'id':'code','description':'name'});
-      var valueModel = null; 
-      var selectorModel = new SelectSelector('new_booking_extra_extra_id',
-                                             dataSourceModel, valueModel, true);
+        var html = tmpl('new_booking_line_script', {entity: entity});
 
-      $('#create_booking_extra_button').unbind('click');
-      $('#create_booking_extra_button').bind('click', function(){
+        $('#booking_management_modal_container .modal-title').html('Añadir producto');
+        $('#booking_management_modal_container .modal-body').html(html);
+        $('#booking_management_modal_container').modal('show');
 
-        var formdata = $('form[name="new_booking_extra"]').formParams(true);
-        var json_request = JSON.stringify(formdata);
-        $.ajax({
-               type: 'POST',
-               data : json_request,
-               url : '/api/booking/booking-extra',
-               success: function(data, textStatus, jqXHR) {
-                 bookingManager.model.synchronizeCurrentEntity(data);
-                 bookingManager.model.change_state('entity_updated_successfully');
-                 alert('Nuevo extra añadido');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
-               },
-               error: function(data, textStatus, jqXHR) {
-                 alert('Error creando extra: ' + data.responseText);
-               }
-           });
+        var booking = this.manager.model.currentEntity();
+        var url = '/api/booking/category-search';
+        url += '?date_from='+booking.date_from.toString('yyyy-MM-dd');
+        url += '&date_to='+booking.date_to.toString('yyyy-MM-dd');
+        url += '&days='+booking.days;
+        if (booking.sales_channel_code && booking.sales_channel_code != null && booking.sales_channel_code != '') {
+            url += '&sales_channel=' + booking.sales_channel_code;
+        }
+        if (booking.promotion_code && booking.promotion_code != null && booking.promotion_code != '') {
+            url += '&promotion_code=' + booking.promotion_code;
+        }
 
-      });
+        var dataSourceModel = new RemoteDataSource(url,
+                                                    {'id':'code','description':'full_description'});
+        var valueModel = null;
+        var selectorModel = new SelectSelector('new_booking_line_item_id',
+            dataSourceModel, valueModel, true );
 
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
+        $('#create_booking_line_button').unbind('click');
+        $('#create_booking_line_button').bind('click', function(){
+
+            var formdata = $('form[name="new_booking_line"]').formParams(true);
+            var json_request = JSON.stringify(formdata);
+            $.ajax({
+                type: 'POST',
+                data : json_request,
+                url : '/api/booking/booking-line',
+                success: function(data, textStatus, jqXHR) {
+                    bookingManager.model.synchronizeCurrentEntity(data);
+                    bookingManager.model.change_state('entity_updated_successfully');
+                    alert('Nueva línea de producto añadida');
+                    //YSDGui.hideElement(document.getElementById('dialogs_container'));
+                    $('#booking_management_modal_container').modal('hide');
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('Error creando línea de reserva: ' + data.responseText);
+                }
+            });
+
+        });
 
     }
 
-    this.prepareFormEditBookingLineItemId = function(booking_line_id, item_id, price) {
+
+    this.prepareFormEditBookingLineItemId = function(booking_line_id, item_id, price, quantity) {
 
       var html = tmpl('edit_booking_line_item_id_script', {booking_line_id: booking_line_id, 
          item_id: item_id, price: price});
-      $("#dialogs_container").html(html);
-      
-      var dataSourceModel = new RemoteDataSource('/api/booking-categories?all=yes',{'id':'code','description':'name'});
+
+      $('#booking_management_modal_container .modal-title').html('Modificar producto');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
+
+      var booking = this.manager.model.currentEntity();
+      var url = '/api/booking/category-search';
+      url += '?date_from='+booking.date_from.toString('yyyy-MM-dd');
+      url += '&date_to='+booking.date_to.toString('yyyy-MM-dd');
+      url += '&days='+booking.days;
+      url += '&current_item_id='+item_id;
+      if (booking.sales_channel_code && booking.sales_channel_code != null && booking.sales_channel_code != '') {
+          url += '&sales_channel=' + booking.sales_channel_code;
+      }
+      if (booking.promotion_code && booking.promotion_code != null && booking.promotion_code != '') {
+          url += '&promotion_code=' + booking.promotion_code;
+      }
+
+      var dataSourceModel = new RemoteDataSource(url,
+                                                 {'id':'code','description':'full_description'});
       var valueModel = item_id; 
       var selectorModel = new SelectSelector('edit_booking_line_item_id',
                                              dataSourceModel, valueModel, true );
 
+      $('#edit_booking_line_item_id').unbind('change');
+      $('#edit_booking_line_item_id').bind('change', function(){
+          var value = $(this).val();
+          var selectedItem = null;
+          for (var idx=0;idx<dataSourceModel.data.length;idx++) {
+              if (value == dataSourceModel.data[idx].code) {
+                  selectedItem = dataSourceModel.data[idx];
+                  break;
+              }
+          }
+          if (selectedItem != null && selectedItem.code != item_id) {
+              if (selectedItem.available < quantity) {
+                  $('#edit_booking_line_item_id_warning').show();
+              }
+              else {
+                  $('#edit_booking_line_item_id_warning').hide();
+              }
+          }
+          else {
+              $('#edit_booking_line_item_id_warning').hide();
+          }
+      });
+
       $('#edit_booking_line_item_id_button').unbind('click');
       $('#edit_booking_line_item_id_button').bind('click', function(){
 
-        var formdata = $('form[name="update_booking_line_item_id"]').formParams(true);
-        var json_request = JSON.stringify(formdata);
-        $.ajax({
-               type: 'PUT',
-               data : json_request,
-               url : '/api/booking/booking-line/item-id',
-               success: function(data, textStatus, jqXHR) {
-                 bookingManager.model.synchronizeCurrentEntity(data);
-                 bookingManager.model.change_state('entity_updated_successfully');
-                 alert('Producto actualizado');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
-               },
-               error: function(data, textStatus, jqXHR) {
-                 alert('Error actualizando producto: ' + data.responseText);
-               }
-           });
+        if (confirm('¿Está seguro que desea realizar el cambio?')) {
+            var formdata = $('form[name="update_booking_line_item_id"]').formParams(true);
+            var json_request = JSON.stringify(formdata);
+            $.ajax({
+                type: 'PUT',
+                data: json_request,
+                url: '/api/booking/booking-line/item-id',
+                success: function (data, textStatus, jqXHR) {
+                    bookingManager.model.synchronizeCurrentEntity(data);
+                    bookingManager.model.change_state('entity_updated_successfully');
+                    alert('Producto actualizado');
+                    $('#booking_management_modal_container').modal('hide');
+                },
+                error: function (data, textStatus, jqXHR) {
+                    alert('Error actualizando producto: ' + data.responseText);
+                }
+            });
+        }
 
       });
-      
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
+
 
     } 
 
     this.prepareFormEditBookingLineQuantity = function(booking_line_id, quantity) { /* Show the form to create a new booking line */
 
       var html = tmpl('edit_booking_line_quantity_script', {booking_line_id: booking_line_id, quantity: quantity});
-      $("#dialogs_container").html(html);
+
+      $('#booking_management_modal_container .modal-title').html('Modificar cantidad');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
       
       $('#edit_booking_line_quantity_button').unbind('click');
       $('#edit_booking_line_quantity_button').bind('click', function(){
@@ -981,7 +1018,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                  bookingManager.model.synchronizeCurrentEntity(data);
                  bookingManager.model.change_state('entity_updated_successfully');
                  alert('Cantidad actualizada');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
+                 $('#booking_management_modal_container').modal('hide');
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error actualizando cantidad: ' + data.responseText);
@@ -990,14 +1027,16 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       });
 
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
     }
 
 
     this.prepareFormEditBookingLineItemUnitCost = function(booking_line_id, item_unit_cost) { /* Show the form to create a new booking line */
 
       var html = tmpl('edit_booking_line_item_cost_script', {booking_line_id: booking_line_id, item_unit_cost: item_unit_cost});
-      $("#dialogs_container").html(html);
+
+      $('#booking_management_modal_container .modal-title').html('Modificar precio');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
 
       $('#edit_booking_item_cost_button').unbind('click');
       $('#edit_booking_item_cost_button').bind('click', function(){
@@ -1012,7 +1051,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                  bookingManager.model.synchronizeCurrentEntity(data);
                  bookingManager.model.change_state('entity_updated_successfully');
                  alert('Coste actualizado');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
+                 $('#booking_management_modal_container').modal('hide');
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error actualizando coste: ' + data.responseText);
@@ -1021,15 +1060,16 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       });
 
-
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
     }
 
     this.prepareFormEditBookingLineItemDeposit = function(booking_line_id, item_deposit) { /* Show the form to create a new booking line */
 
       var html = tmpl('edit_booking_line_deposit_cost_script', {booking_line_id: booking_line_id, item_deposit: item_deposit});
-      $("#dialogs_container").html(html);
-    
+
+      $('#booking_management_modal_container .modal-title').html('Modificar fianza');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
+
       $('#edit_booking_item_deposit_button').unbind('click');
       $('#edit_booking_item_deposit_button').bind('click', function(){
 
@@ -1043,7 +1083,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                  bookingManager.model.synchronizeCurrentEntity(data);
                  bookingManager.model.change_state('entity_updated_successfully');
                  alert('Fianza actualizada');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
+                 $('#booking_management_modal_container').modal('hide');
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error actualizando fianza: ' + data.responseText);
@@ -1052,14 +1092,16 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       });
 
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
     }
 
     this.prepareFormEditBookingExtraQuantity = function(booking_extra_id, quantity) { /* Show the form to create a new booking line */
 
       var html = tmpl('edit_booking_extra_quantity_script', {booking_extra_id: booking_extra_id, quantity: quantity});
-      $("#dialogs_container").html(html);
-      
+
+      $('#booking_management_modal_container .modal-title').html('Modificar cantidad extra');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
+
       $('#edit_booking_extra_quantity_button').unbind('click');
       $('#edit_booking_extra_quantity_button').bind('click', function(){
 
@@ -1073,7 +1115,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                  bookingManager.model.synchronizeCurrentEntity(data);
                  bookingManager.model.change_state('entity_updated_successfully');
                  alert('Cantidad de extra actualizada');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
+                 $('#booking_management_modal_container').modal('hide');
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error actualizando cantidad del extra: ' + data.responseText);
@@ -1082,14 +1124,52 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       });
 
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
     }
 
+    this.prepareFormNewBookingExtra = function(entity) { /* Show the form to create a new booking line */
+
+        var html = tmpl('new_booking_extra_script', {entity: entity});
+
+        $('#booking_management_modal_container .modal-title').html('Añadir extra');
+        $('#booking_management_modal_container .modal-body').html(html);
+        $('#booking_management_modal_container').modal('show');
+
+        var dataSourceModel = new RemoteDataSource('/api/booking-extras?all=yes',{'id':'code','description':'name'});
+        var valueModel = null;
+        var selectorModel = new SelectSelector('new_booking_extra_extra_id',
+            dataSourceModel, valueModel, true);
+
+        $('#create_booking_extra_button').unbind('click');
+        $('#create_booking_extra_button').bind('click', function(){
+
+            var formdata = $('form[name="new_booking_extra"]').formParams(true);
+            var json_request = JSON.stringify(formdata);
+            $.ajax({
+                type: 'POST',
+                data : json_request,
+                url : '/api/booking/booking-extra',
+                success: function(data, textStatus, jqXHR) {
+                    bookingManager.model.synchronizeCurrentEntity(data);
+                    bookingManager.model.change_state('entity_updated_successfully');
+                    alert('Nuevo extra añadido');
+                    $('#booking_management_modal_container').modal('hide');
+                    //YSDGui.hideElement(document.getElementById('dialogs_container'));
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('Error creando extra: ' + data.responseText);
+                }
+            });
+
+        });
+
+    }
 
     this.prepareFormEditBookingExtraItemCost = function(booking_extra_id, extra_unit_cost) { /* Show the form to create a new booking line */
 
       var html = tmpl('edit_booking_extra_item_cost_script', {booking_extra_id: booking_extra_id, extra_unit_cost: extra_unit_cost});
-      $("#dialogs_container").html(html);
+      $('#booking_management_modal_container .modal-title').html('Modificar precio extra');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
       
       $('#edit_booking_extra_cost_button').unbind('click');
       $('#edit_booking_extra_cost_button').bind('click', function(){
@@ -1104,7 +1184,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                  bookingManager.model.synchronizeCurrentEntity(data);
                  bookingManager.model.change_state('entity_updated_successfully');
                  alert('Coste de extra actualizado');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));
+                 $('#booking_management_modal_container').modal('hide');
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error actualizando coste del extra: ' + data.responseText);
@@ -1113,7 +1193,6 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       });
 
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
     }
 
     this.prepareFormEditBookingLineResource = function(lineIdx, resourceIdx) {
@@ -1122,7 +1201,10 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       var bookingLineResource = booking.booking_lines[lineIdx].booking_line_resources[resourceIdx];
 
       var html = tmpl('booking_line_resource_detail_script', {entity: bookingLineResource});
-      $("#dialogs_container").html(html);
+
+      $('#booking_management_modal_container .modal-title').html('Modificar recurso');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
       
       $('#update_booking_line_resource_button').unbind('click');
       $('#update_booking_line_resource_button').bind('click', function(){
@@ -1137,7 +1219,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                    booking.booking_lines[lineIdx].booking_line_resources[resourceIdx][attribute] = formdata[attribute];
                  }
                  alert('Datos actualizados');
-                 YSDGui.hideElement(document.getElementById('dialogs_container'));                 
+                 $('#booking_management_modal_container').modal('hide');
                },
                error: function(data, textStatus, jqXHR) {
                  alert('Error updating resource');
@@ -1145,10 +1227,6 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
            });
 
       });
-
-
-
-      YSDGui.showElement(document.getElementById('dialogs_container'), true);
 
     }
 

@@ -8,35 +8,7 @@ module Sinatra
       
       def self.registered(app)
 
-        #
-        # Check resources available for a period
-        #
-        app.get '/api/booking/available-resources', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff']  do
-
-          if params[:from]
-            begin
-              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
-            rescue
-              logger.error("date not valid #{params[:from]}")
-            end
-
-            if params[:to]
-              begin
-                @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
-              rescue
-                logger.error("date not valid #{params[:to]}")
-              end
-              data, detail = BookingDataSystem::Booking.resources_occupation(@date_from, @date_to)
-              status 200
-              detail.to_json
-            else
-              status 500
-            end 
-          else
-            status 500
-          end
-
-        end
+        # --------------------------------- SCHEDULER ---------------------------------------------------------------
 
         #
         # Bookings scheduler
@@ -508,15 +480,55 @@ module Sinatra
         # ---------------------- Change pickup/return date/place -----------------------------------------------------
 
         #
-        # Edit booking pickup-return place and/or date time
+        # Verify reservation pickup-return changes
+        # --------------------------------------------------------------------------------------------------------
         #
-        # Get detailed prices for a date_from (time_from), date_to (time_to), pickup and return places
+        # When the user is changing the pickup/return information (date/time or places) we can use this end-point
+        # to calculate prices and to verify stock availability
         #
-        app.post '/api/booking/prices', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+        # Receives a JSON with the following attributes
+        #
+        # {
+        #   id: 12,
+        #   date_from: '2018-05-01',
+        #   time_from: '10:00',
+        #   date_to: '2018-05-10',
+        #   time_to: '12:00',
+        #   pickup_place: null,
+        #   custom_pickup_place: false,
+        #   pickup_place_other: null,
+        #   return_place: null,
+        #   custom_return_place: false,
+        #   return_place_other: null,
+        #   date_of_birth: null,
+        #   driver_driving_license_date: null,
+        #   sales_channel_code: null,
+        #   promotion_code: null,
+        #   resources: [{reference: '1234', category: 'A'}]
+        # }
+        #
+        # Responds :
+        #
+        # {
+        #   calculator: {
+        #   },
+        #
+        #   products: {
+        #   },
+        #
+        #   extras: {
+        #   }
+        # }
+        #
+        #
+        app.post '/api/booking/verify-reservation-pickup-return-changes', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
           request.body.rewind
           data = JSON.parse(URI.unescape(request.body.read))
           data.symbolize_keys!
+
+          # Retrieve booking id
+          booking_id = data[:id].to_i
 
           # Retrieve date/time from - to
           date_from = DateTime.strptime(data[:date_from],'%Y-%m-%d')
@@ -557,33 +569,105 @@ module Sinatra
                                                                      custom_pickup_place, custom_return_place)
 
           locale = session[:locale]#locale_to_translate_into
-          
-          # Prepare the products
-          products = ::Yito::Model::Booking::BookingCategory.search(date_from,
-                                                                    date_to,
-                                                                    calculator.days,
-                                                                    {
-                                                                      locale: locale,
-                                                                      full_information: true,
-                                                                      product_code: nil,
-                                                                      web_public: false,
-                                                                      sales_channel_code: sales_channel_code,
-                                                                      apply_promotion_code: !promotion_code.nil?,
-                                                                      promotion_code: promotion_code})
 
-          # Prepare the extras
+
+          # Prepare the products
+          opts = {
+              locale: locale,
+              full_information: true,
+              product_code: nil,
+              web_public: false,
+              sales_channel_code: sales_channel_code,
+              apply_promotion_code: !promotion_code.nil?,
+              promotion_code: promotion_code,
+              include_stock: true}
+
+          booking = nil
+          if booking_id > 0
+            booking = BookingDataSystem::Booking.get(booking_id)
+            opts.store(:ignore_urge, {origin: 'booking', id: booking_id})
+          end
+
+          # Search products (price and availability)
+          products = ::Yito::Model::Booking::BookingCategory.search(date_from,
+                                                                    time_from,
+                                                                    date_to,
+                                                                    time_to,
+                                                                    calculator.days,
+                                                                    opts)
+
+          # Search extras (price and availability)
           extras = ::Yito::Model::Booking::RentingExtraSearch.search(date_from,
-                                                                     date_to, calculator.days, locale)
+                                                                     date_to,
+                                                                     calculator.days,
+                                                                     locale)
+
+
+          # Get the available resources
+          available_resources = products.inject([]) do |result, item|
+                                  result.concat(item.resources)
+                                  result
+                                end
+
+          # Get the current assigned resources information
+          resources = {} # Resources detail
+          booking_resources = [] # List of all booking assigned resources
+          reassigned = [] # Reassigned resources (during the process)
+          pending_reassignation = [] # Pending reassignation
+          changes_in_availability = false # Control if there are changes in availability
+
+          if booking
+            booking_resources = booking.booking_line_resources.inject([]) do |result, item|
+                                  result << item.booking_item_reference
+                                  result
+                                end
+            resources = booking.booking_line_resources.inject({}) do |result, item|
+                          product = products.select { |p| p.code == item.booking_line.item_id }.first
+                          # check availability
+                          available = available_resources.include?(item.booking_item_reference)
+                          if available
+                            available_candidate = nil
+                          else
+                            changes_in_availability = true
+                            if candidate = (product.resources - reassigned).first
+                              available_candidate = candidate
+                              reassigned << candidate
+                            else
+                              pending_reassignation << item.booking_item_reference
+                            end
+                          end
+                          # store item
+                          result.store(item.booking_item_reference, {available: available_resources.include?(item.booking_item_reference),
+                                                                     available_candidate: available_candidate })
+                          result
+                        end
+          end
 
           content_type :json
-          {calculator: calculator, products: products, extras: extras}.to_json
+          {calculator: calculator, products: products, extras: extras,
+           available_resources: available_resources,
+           resources: resources,
+           booking_resources: booking_resources,
+           full_availability: pending_reassignation.empty?,
+           changes_in_availability: changes_in_availability,
+           pending_reassign: pending_reassignation}.to_json
 
         end
 
         #
-        # Update the booking price
+        # Update a reservation dates and pickup-return places
+        # ----------------------------------------------------------------------------------------------------------
         #
-        app.put '/api/booking/:id/price', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+        # The user changes the pickup/return date time and/or place
+        #
+        # Parameters:
+        #
+        #   stock-assignation = 'hold' or 'update'
+        #
+        app.put '/api/booking/:id/pickup-return', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+
+          stock_assignation = params['stock-assignation'.to_sym]
+          stock_assignation = 'hold' unless ['hold','update'].include?(stock_assignation)
 
           request = body_as_json
           booking_request = body_as_json(BookingDataSystem::Booking)
@@ -591,7 +675,12 @@ module Sinatra
           extras_request = booking_request.delete(:booking_extras)
  
           booking = BookingDataSystem::Booking.get(params[:id])
+
           booking.transaction do
+            old_booking_date_from = booking.date_from
+            old_booking_time_from = booking.time_from
+            old_booking_date_to = booking.date_to
+            old_booking_time_to = booking.time_to
             old_booking_pickup_place_cost = booking.pickup_place_cost
             old_booking_return_place_cost = booking.return_place_cost
             old_booking_time_from_cost = booking.time_from_cost
@@ -618,14 +707,30 @@ module Sinatra
                                                                                                 booking.driver_driving_license_date) unless booking.driver_driving_license_date.nil?
             end
 
+            # Update the cost without taking into account supplements or deposits
             booking.calculate_cost(false, false)
             booking.save
+
+            # Update booking lines
             lines_request.each do |line_booking| 
               booking_line = BookingDataSystem::BookingLine.get(line_booking[:id])
               booking_line.item_cost = line_booking[:item_cost]
               booking_line.item_unit_cost = line_booking[:item_unit_cost]
               booking_line.save
             end
+
+            # Processes booking lines resources [reassignation] -- When changed date/time from/to
+            if stock_assignation == 'update'
+              if old_booking_date_from.strftime('%Y-%m-%d') != booking.date_from.strftime('%Y-%m-%d') or
+                 old_booking_time_from != booking.time_from or
+                 old_booking_date_to.strftime('%Y-%m-%d') != booking.date_to.strftime('%Y-%m-%d') or
+                 old_booking_time_to != booking.time_to
+                booking.reload
+                booking.review_assigned_stock
+              end
+            end
+
+            # Update booking extras
             extras_request.each do |extra_booking|
               booking_extra = BookingDataSystem::BookingExtra.get(extra_booking[:id])
               booking_extra.extra_cost = extra_booking[:extra_cost]
@@ -640,10 +745,10 @@ module Sinatra
             pickup_booking << ' '
             pickup_booking << booking.time_from if product_family.time_to_from
             pickup_booking << ' '
-            #pickup_booking << booking.pickup_place if product_family.pickup_return_place
+            pickup_booking << booking.pickup_place if product_family.pickup_return_place
             return_booking = booking.date_to.strftime('%Y-%m-%d')
             return_booking << ' '
-            #return_booking << booking.time_to if product_family.time_to_from
+            return_booking << booking.time_to if product_family.time_to_from
             return_booking << ' '
             return_booking << booking.return_place if product_family.pickup_return_place
             ::Yito::Model::Newsfeed::Newsfeed.create(category: 'booking',
@@ -655,6 +760,94 @@ module Sinatra
           end
 
         end
+
+        # --------------------------- INTERNAL SEARCH -------------------------
+
+        #
+        # Search for categories and get the price and the availability
+        # -------------------------------------------------------------------------------------------------------------
+        #
+        # Used to add or update the product category in a reservation
+        #
+        app.get '/api/booking/category-search', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+
+          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+
+          date_from = Date.parse(params[:date_from])
+
+          if params[:time_from]
+            time_from = params[:time_from]
+          else
+            time_from = booking_item_family.time_start
+          end
+
+          date_to = Date.parse(params[:date_to])
+
+          if params[:time_to]
+            time_to = params[:time_to]
+          else
+            time_to = booking_item_family.time_end
+          end
+
+          days = params[:days].to_i
+
+          if params[:locale]
+            locale = params[:locale]
+          else
+            locale = nil
+          end
+
+          if params[:sales_channel]
+            sales_channel = params[:sales_channel]
+          else
+            sales_channel = nil
+          end
+
+          if params[:promotion_code]
+            promotion_code = params[:promotion_code]
+          else
+            promotion_code = nil
+          end
+
+          if params[:current_item_id]
+            current_item_id = params[:current_item_id]
+          else
+            current_item_id = nil
+          end
+
+          result = ::Yito::Model::Booking::BookingCategory.search(date_from,
+                                                                  time_from,
+                                                                  date_to,
+                                                                  time_to,
+                                                                  days,
+                                                                  {
+                                                                    locale: locale,
+                                                                    full_information: true,
+                                                                    product_code: nil,
+                                                                    web_public: false,
+                                                                    sales_channel_code: sales_channel,
+                                                                    apply_promotion_code: (promotion_code and !promotion_code.nil? and !promotion_code.empty?) ? true : false,
+                                                                    promotion_code: promotion_code
+                                                                  })
+
+          result.map! do |item|
+            {code: item.code,
+             name: item.name,
+             base_price: item.base_price,
+             price: item.price,
+             deposit: item.deposit,
+             availability: item.availability,
+             stock: item.stock,
+             busy: item.busy,
+             available: item.stock - item.busy,
+             full_description: (!current_item_id.nil? and current_item_id == item.code) ? t.booking_category_search.description_same_product(item.name, "%.2f" % item.price, '€') : t.booking_category_search.description(item.name, "%.2f" % item.price, '€', item.stock - item.busy)}
+          end
+
+          content_type :json
+          result.to_json
+
+        end
+
 
         # ---------------------------- CRUD ----------------------------------
 
@@ -935,6 +1128,16 @@ module Sinatra
 
         #
         # Update booking line item
+        # ---------------------------------------------------------------------------------------------------------
+        #
+        # The process updates the product of the booking line a manages the assigned resources. It tries to assign
+        # new resources or clear the assigned ones if there are not available
+        #
+        # options :
+        #
+        #   price_modification = 'update'  => Recalculate the product price
+        #                      = 'hold'    => Holds the price
+        #
         #
         app.put '/api/booking/booking-line/item-id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -944,9 +1147,12 @@ module Sinatra
           id = data_request[:booking_line_id]
           if booking_line = BookingDataSystem::BookingLine.get(id)
             price_modification = data_request[:price_modification] # hold or update
+            price_modification = 'hold' unless (['hold','update'].include?(price_modification))
+            assignation_review = data_request[:stock_assignation] # hold or update
+            assignation_review = 'hold' unless (['hold','update'].include?(assignation_review))
             if data_request[:item_id] && data_request[:item_id] != booking_line.item_id
               item_id = data_request[:item_id]
-              booking_line.change_item(item_id, price_modification)
+              booking_line.change_item(item_id, price_modification, assignation_review)
               booking = booking_line.booking
               booking.reload
               content_type :json

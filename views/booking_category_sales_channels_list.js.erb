@@ -41,7 +41,7 @@ require(['jquery', 'jquery.ui'], function($) {
                        categorySalesChannelsModel.bookingCategoryCode+'/setup-channels #page_wrapper', dataType: 'text'}).done(
                          function (html) {
                            var dom = $('<html />').prop('innerHTML', html);
-                           $('.modal-title').html('Configurar canales');
+                           $('#modal_container .modal-title').html('Configurar canales');
                            $('#modal_container .modal-body').html(dom.find('body #page_wrapper'))
                            $('head').append(dom.find('script:not([src])'));
                            $('#modal_container').modal('show');
@@ -49,16 +49,21 @@ require(['jquery', 'jquery.ui'], function($) {
                    );
                    break;
                 case 'edit_booking_category_sales_channel' :
+                    // To avoid problem with seasons edition
+                    window.open('/admin/booking/booking-categories/'+ categorySalesChannelsModel.bookingCategoryCode +
+                        '/channels/'+ categorySalesChannelsModel.salesChannelId);
+                    /*
                     $.ajax({url: '/admin/booking/booking-categories/'+ categorySalesChannelsModel.bookingCategoryCode +
                             '/channels/'+ categorySalesChannelsModel.salesChannelId +' #page_wrapper', dataType: 'text'}).done(
                         function (html) {
                             var dom = $('<html />').prop('innerHTML', html);
-                            $('.modal-title').html('Editar canal de venta : ' + categorySalesChannelsModel.salesChannelName);
+                            $('#modal_container .modal-title').html('Editar canal de venta : ' + categorySalesChannelsModel.salesChannelName);
                             $('#modal_container .modal-body').html(dom.find('body #page_wrapper'))
                             $('head').append(dom.find('script:not([src])'));
                             $('#modal_container').modal('show');
                         }
                     );
+                    */
                     break;
             }
         }

@@ -1,0 +1,159 @@
+<table id="driver_age_rules_table" class="table table-striped" data-driver-age-rule-definition-id="<%=@driver_age_rules_definition.id%>">
+  <thead>
+  <tr>
+    <th><%= t.booking_driver_age_rules_management.table.condition %></th>
+    <th class="age">Edad</th>
+    <th class="conector"></th>
+    <th class="driving_years">Años carnet</th>
+    <th class="text-center">Permite</th>
+    <th class="text-center"><%= t.booking_driver_age_rules_management.table.deposit %></th>
+    <th>Suplm.</th>
+    <th style="width: 86px"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @driver_age_rules_definition.driver_age_rules.each do |driver_age_rule| %>
+    <tr class="driver_age_rule">
+      <td>
+        <form id="driver_age_rule_<%=driver_age_rule.id%>" name="driver_age_rule_<%=driver_age_rule.id%>" class="form-inline driver_age_rule_form">
+          <input type="hidden" name="id" value="<%=driver_age_rule.id%>"/>
+          <select name="age_rule_type" id="age_rule_type"
+                  form="driver_age_rule_<%=driver_age_rule.id%>"
+                  class="form-control driver_age_rule_type_selector">
+            <option value="age" <% if driver_age_rule.age_rule_type == :age %>selected<% end %>><%= t.booking_driver_age_rules_management.form.age_rule_type.age %></option>
+            <option value="driving_license_years" <% if driver_age_rule.age_rule_type == :driving_license_years %>selected<% end %>><%= t.booking_driver_age_rules_management.form.age_rule_type.driving_license_years %></option>
+            <option value="both_age_driving_license_years" <% if driver_age_rule.age_rule_type == :both_age_driving_license_years %>selected<% end %>><%= t.booking_driver_age_rules_management.form.age_rule_type.both_age_driving_license_years %></option>
+          </select>
+        </form>
+      </td>
+      <td>
+        <select name="age_condition" id="age_condition"
+                class="form-control age_condition_selector" form="driver_age_rule_<%=driver_age_rule.id%>" style="display: inline-block">
+          <option value="<" <% if driver_age_rule.age_condition == '<'%>selected<% end %>>&lt;</option>
+          <option value=">" <% if driver_age_rule.age_condition == '>'%>selected<% end %>>&gt;</option>
+          <option value="=" <% if driver_age_rule.age_condition == '='%>selected<% end %>>=</option>
+          <option value="<->" <% if driver_age_rule.age_condition == '<->'%>selected<% end %>>&lt;-&gt;</option>
+        </select>
+        <input type="text" maxlength="2" id="age_from" name="age_from" class="form-control age_from_input"
+               form="driver_age_rule_<%=driver_age_rule.id%>"
+               value="<%=driver_age_rule.age_from%>" style="display: inline-block"/>
+        <input type="text" maxlength="2" id="age_to" name="age_to" class="form-control age_to_input"
+               form="driver_age_rule_<%=driver_age_rule.id%>"
+               value="<%=driver_age_rule.age_to%>" <% if driver_age_rule.age_condition !='<->' %>style="display:none"<%else%>style="display: inline-block"<%end%>/>
+      </td>
+      <td>
+        <select name="join_conditions" id="join_conditions"
+                class="form-control join_conditions_selector" form="driver_age_rule_<%=driver_age_rule.id%>"  style="display: inline-block">
+          <option value="and" <% if driver_age_rule.join_conditions == :and%>selected<% end %>><%= t.booking_driver_age_rules_management.form.join_conditions.and %></option>
+          <option value="or" <% if driver_age_rule.join_conditions == :or%>selected<% end %>><%= t.booking_driver_age_rules_management.form.join_conditions.or %></option>
+        </select>
+      </td>
+      <td>
+        <select name="driving_license_years_condition" id="driving_license_years_condition"
+                class="form-control driving_license_years_condition_selector" form="driver_age_rule_<%=driver_age_rule.id%>" style="display: inline-block">
+          <option value="<" <% if driver_age_rule.driving_license_years_condition == '<'%>selected<% end %>>&lt;</option>
+          <option value=">" <% if driver_age_rule.driving_license_years_condition == '>'%>selected<% end %>>&gt;</option>
+          <option value="=" <% if driver_age_rule.driving_license_years_condition == '='%>selected<% end %>>=</option>
+          <option value="<->" <% if driver_age_rule.driving_license_years_condition == '<->'%>selected<% end %>>&lt;-&gt;</option>
+        </select>
+        <input type="text" maxlength="2" id="driving_license_years_from" name="driving_license_years_from"
+               class="form-control driving_license_years_from_input" value="<%=driver_age_rule.driving_license_years_from%>"
+               form="driver_age_rule_<%=driver_age_rule.id%>" style="display: inline-block"/>
+        <input type="text" maxlength="2" id="driving_license_years_to" name="driving_license_years_to"
+               class="form-control driving_license_years_to_input" value="<%=driver_age_rule.driving_license_years_to%>"
+               form="driver_age_rule_<%=driver_age_rule.id%>"
+               <% if driver_age_rule.driving_license_years_condition !='<->' %>style="display:none"<%else%>style="display: inline-block"<%end%>/>
+      </td>
+      <td class="text-center">
+        <input type="checkbox" form="driver_age_rule_<%=driver_age_rule.id%>"
+               name="allowed" class="form-control" style="width: 20px; margin: 0 auto" <%if driver_age_rule.allowed%>checked<%end%>/>
+      </td>
+      <td class="text-center">
+        <input type="text" form="driver_age_rule_<%=driver_age_rule.id%>"
+               name="deposit" class="form-control driver_age_price_control"size="3" maxlength="10" style="width: 60px; display: inline-block" value="<%="%.2f" % driver_age_rule.deposit%>"/>
+      </td>
+      <td>
+        <input type="text" form="driver_age_rule_<%=driver_age_rule.id%>"
+               name="suplement" class="form-control driver_age_price_control" size="3" maxlength="10"  style="width: 60px; display: inline-block" value="<%="%.2f" % driver_age_rule.suplement%>"/>
+      </td>
+      <td>
+        <button type="button" form="driver_age_rule_<%=driver_age_rule.id%>"
+                class="btn btn-sm btn-primary col-md-1 update_driver_age_rule_btn" style="width: 32px; display: inline-block"><i class="fa fa-save push-5-r"></i></button>
+        <button type="button" form="driver_age_rule_<%=driver_age_rule.id%>"
+                class="btn btn-sm btn-danger col-md-1 delete_driver_age_rule_btn"  style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-trash push-5-r"></i></button>
+      </td>
+    </tr>
+  <% end %>
+    <tr>
+      <td>
+        <form id="new_driver_age_rule" name="new_driver_age_rule" class="form-inline driver_age_rule_form">
+          <select name="age_rule_type"
+                  id="age_rule_type" class="form-control driver_age_rule_type_selector" form="new_driver_age_rule">
+            <option value="age"><%= t.booking_driver_age_rules_management.form.age_rule_type.age %></option>
+            <option value="driving_license_years"><%= t.booking_driver_age_rules_management.form.age_rule_type.driving_license_years %></option>
+            <option value="both_age_driving_license_years" selected><%= t.booking_driver_age_rules_management.form.age_rule_type.both_age_driving_license_years %></option>
+          </select>
+        </form>
+      </td>
+      <td>
+        <div class="age_condition_group">
+          <select name="age_condition" id="age_condition"
+                  class="form-control age_condition_selector" form="new_driver_age_rule" style="display: inline-block">
+            <option value="<">&lt;</option>
+            <option value=">">&gt;</option>
+            <option value="=">=</option>
+            <option value="<->">&lt;-&gt;</option>
+          </select>
+          <input type="text" maxlength="2" id="age_from" name="age_from"
+                 form="new_driver_age_rule"
+                 class="form-control age_from_input" style="display: inline-block"/>
+          <input type="text" maxlength="2" id="age_to" name="age_to"
+                 form="new_driver_age_rule"
+                 class="form-control age_to_input" style="display:none"/>
+        </div>
+      </td>
+      <td>
+        <div class="join_conditions_group">
+          <select name="join_conditions" id="join_conditions"
+                  class="form-control join_conditions_selector" form="new_driver_age_rule" style="display: inline-block">
+            <option value="and"><%= t.booking_driver_age_rules_management.form.join_conditions.and %></option>
+            <option value="or"><%= t.booking_driver_age_rules_management.form.join_conditions.or %></option>
+          </select>
+        </div>
+      </td>
+      <td>
+        <div class="driving_license_years_group">
+          <select name="driving_license_years_condition" id="driving_license_years_condition"
+                  class="form-control driving_license_years_condition_selector" form="new_driver_age_rule" style="display: inline-block">
+            <option value="<">&lt;</option>
+            <option value=">">&gt;</option>
+            <option value="=">=</option>
+            <option value="<->">&lt;-&gt;</option>
+          </select>
+          <input type="text" maxlength="2" id="driving_license_years_from" name="driving_license_years_from"
+                 class="form-control driving_license_years_from_input" form="new_driver_age_rule" style="display: inline-block"/>
+          <input type="text" maxlength="2" id="driving_license_years_to" name="driving_license_years_to"
+                 class="form-control driving_license_years_to_input" form="new_driver_age_rule" style="display:none"/>
+        </div>
+      </td>
+      <td class="text-center">
+        <input type="checkbox" form="new_driver_age_rule"
+               name="allowed" class="form-control" style="width: 20px; margin: 0 auto"/>
+      </td>
+      <td class="text-center">
+        <input type="text" form="new_driver_age_rule"
+               name="deposit" class="form-control driver_age_price_control"size="3" maxlength="10" style="width: 60px;
+               display: inline-block" value="0.00"/>
+      </td>
+      <td>
+        <input type="text" form="new_driver_age_rule"
+               name="suplement" class="form-control driver_age_price_control" size="3" maxlength="10"
+               style="width: 60px; display: inline-block" value="0.00"/>
+      </td>
+      <td>
+        <button id="create_driver_age_rule_btn" type="button" form="new_driver_age_rule"
+                class="btn btn-sm btn-success col-md-1" style="width: 66px; display: inline-block"><%= t.driver_age_rule_edition.table.create_button %></button>
+      </td>
+    </tr>
+  </tbody>
+</table>

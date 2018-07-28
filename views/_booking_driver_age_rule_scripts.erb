@@ -1,0 +1,82 @@
+<script id="driver_age_rule_script" type="text/tmpl">
+  <%% for (var idx=0; idx< driver_age_rules.length; idx++) { %>
+  <tr class="driver_age_rule">
+      <td>
+        <form id="driver_age_rule_<%%=driver_age_rules[idx].id%>" name="driver_age_rule_<%%=driver_age_rules[idx].id%>" class="form-inline driver_age_rule_form">
+          <input type="hidden" name="id" value="<%%=driver_age_rules[idx].id%>"/>
+          <select name="age_rule_type" id="age_rule_type"
+                  form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+                  class="form-control driver_age_rule_type_selector">
+            <option value="age" <%% if (driver_age_rules[idx].age_rule_type == 'age'){ %>selected<%% } %>><%= t.booking_driver_age_rules_management.form.age_rule_type.age %></option>
+            <option value="driving_license_years" <%% if (driver_age_rules[idx].age_rule_type == 'driving_license_years'){ %>selected<%% } %>><%= t.booking_driver_age_rules_management.form.age_rule_type.driving_license_years %></option>
+            <option value="both_age_driving_license_years" <%% if (driver_age_rules[idx].age_rule_type == 'both_age_driving_license_years'){ %>selected<%% } %>><%= t.booking_driver_age_rules_management.form.age_rule_type.both_age_driving_license_years %></option>
+          </select>
+        </form>
+      </td>
+      <td>
+        <div class="age_condition_group" <%% if (driver_age_rules[idx].age_rule_type == 'driving_license_years') { %>style="display:none"<%% } %>>
+          <select name="age_condition" id="age_condition"
+                  class="form-control age_condition_selector" form="driver_age_rule_<%%=driver_age_rules[idx].id%>" style="display: inline-block">
+            <option value="<" <%% if (driver_age_rules[idx].age_condition == '<'){%>selected<%% } %>>&lt;</option>
+            <option value=">" <%% if (driver_age_rules[idx].age_condition == '>'){%>selected<%% } %>>&gt;</option>
+            <option value="=" <%% if (driver_age_rules[idx].age_condition == '='){%>selected<%% } %>>=</option>
+            <option value="<->" <%% if (driver_age_rules[idx].age_condition == '<->'){%>selected<%% } %>>&lt;-&gt;</option>
+          </select>
+          <input type="text" maxlength="2" id="age_from" name="age_from" class="form-control age_from_input"
+                 form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+                 value="<%%=driver_age_rules[idx].age_from%>" style="display: inline-block"/>
+          <input type="text" maxlength="2" id="age_to" name="age_to" class="form-control age_to_input"
+                 form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+                 value="<%%=driver_age_rules[idx].age_to%>" <%% if (driver_age_rules[idx].age_condition !='<->'){ %>style="display:none"<%% } else {%>style="display: inline-block"<%%}%>/>
+        </div>
+      </td>
+      <td>
+        <div class="join_conditions_group" <%% if (driver_age_rules[idx].age_rule_type != 'both_age_driving_license_years') { %>style="display:none"<%% } %>>
+          <select name="join_conditions" id="join_conditions"
+                  class="form-control join_conditions_selector" form="driver_age_rule_<%%=driver_age_rules[idx].id%>"  style="display: inline-block">
+            <option value="and" <%% if (driver_age_rules[idx].join_conditions == 'and'){%>selected<%% } %>><%= t.booking_driver_age_rules_management.form.join_conditions.and %></option>
+            <option value="or" <%% if (driver_age_rules[idx].join_conditions == 'or'){%>selected<%% } %>><%= t.booking_driver_age_rules_management.form.join_conditions.or %></option>
+          </select>
+        </div>
+      </td>
+      <td>
+        <div class="driving_license_years_group" <%% if (driver_age_rules[idx].age_rule_type == 'age') { %>style="display:none"<%% } %>>
+          <select name="driving_license_years_condition" id="driving_license_years_condition"
+                  class="form-control driving_license_years_condition_selector" form="driver_age_rule_<%%=driver_age_rules[idx].id%>" style="display: inline-block">
+            <option value="<" <%% if (driver_age_rules[idx].driving_license_years_condition == '<'){%>selected<%% } %>>&lt;</option>
+            <option value=">" <%% if (driver_age_rules[idx].driving_license_years_condition == '>'){%>selected<%% } %>>&gt;</option>
+            <option value="=" <%% if (driver_age_rules[idx].driving_license_years_condition == '='){%>selected<%% } %>>=</option>
+            <option value="<->" <%% if (driver_age_rules[idx].driving_license_years_condition == '<->'){%>selected<%% } %>>&lt;-&gt;</option>
+          </select>
+          <input type="text" maxlength="2" id="driving_license_years_from" name="driving_license_years_from"
+                 class="form-control driving_license_years_from_input" value="<%%=driver_age_rules[idx].driving_license_years_from%>"
+                 form="driver_age_rule_<%%=driver_age_rules[idx].id%>" style="display: inline-block"/>
+          <input type="text" maxlength="2" id="driving_license_years_to" name="driving_license_years_to"
+                 class="form-control driving_license_years_to_input" value="<%%=driver_age_rules[idx].driving_license_years_to%>"
+                 form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+                 <%% if (driver_age_rules[idx].driving_license_years_condition !='<->'){ %>style="display:none"<%% } else {%>style="display: inline-block"<%% } %>/>
+        </div>
+      </td>
+      <td class="text-center">
+        <input type="checkbox" form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+               name="allowed" class="form-control" style="width: 20px; margin: 0 auto" <%% if (driver_age_rules[idx].allowed){%>checked<%%}%>/>
+      </td>
+      <td class="text-center">
+        <input type="text" form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+               name="deposit" class="form-control driver_age_price_control"size="3" maxlength="10"
+               style="width: 60px; display: inline-block"
+               value="<%%= new Number(driver_age_rules[idx].deposit).toFixed(2)%>"/>
+      </td>
+      <td>
+        <input type="text" form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+               name="suplement" class="form-control driver_age_price_control" size="3" maxlength="10"  style="width: 60px; display: inline-block" value="<%%= new Number(driver_age_rules[idx].suplement).toFixed(2)%>"/>
+      </td>
+      <td>
+        <button type="button" form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+                class="btn btn-sm btn-primary col-md-1 update_driver_age_rule_btn" style="width: 32px; display: inline-block"><i class="fa fa-save push-5-r"></i></button>
+        <button type="button" form="driver_age_rule_<%%=driver_age_rules[idx].id%>"
+                class="btn btn-sm btn-danger col-md-1 delete_driver_age_rule_btn"  style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-trash push-5-r"></i></button>
+      </td>
+    </tr>
+    <%% } %>
+</script>

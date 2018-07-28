@@ -98,7 +98,7 @@ module Huasi
            :description => 'Planning : Assignation hours between return - pickup',
            :module => :booking})
 
-      # Online payment
+      # Online payment ------------------------------------------------------------------------------------------------
 
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.payment'},
@@ -129,7 +129,7 @@ module Huasi
          :description => 'Cadence in hours from the reservation date to today',
          :module => :booking})
 
-      # Reservation settings
+      # Reservation settings ------------------------------------------------------------------------------------------
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.item_hold_time'},
@@ -155,20 +155,31 @@ module Huasi
          :description => 'Default booking catalog',
          :module => 'booking'})
 
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.pickup_return_place_definition'},
-          {:value => '',
-           :description => 'Pickup and return place definition'})
+      # Pickup/return places ------------------------------------------------------------------------------------------
 
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.pickup_return_places_configuration'},
           {:value => 'list',
            :description => 'pickup and return place: list - value - list+custom'})
 
+      pickup_return_place_variable = SystemConfiguration::Variable.get('booking.pickup_return_place_definition')
+      if pickup_return_place_variable.nil?
+        pickup_return_place_definition = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first_or_create({name: 'booking.pickup_return_place_definition'})
+        SystemConfiguration::Variable.first_or_create(
+            {:name => 'booking.pickup_return_place_definition'},
+            {:value => pickup_return_place_definition.id.to_s,
+             :description => 'Pickup and return place definition'})
+      elsif pickup_return_place_variable.value == ''
+        pickup_return_place_definition = ::Yito::Model::Booking::PickupReturnPlaceDefinition.first_or_create({name: 'booking.pickup_return_place_definition'})
+        SystemConfiguration::Variable.set_value('booking.pickup_return_place_definition', pickup_return_place_definition.id.to_s)
+      end
+
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.custom_pickup_return_place_price'},
         {:value => '0',
          :description => 'Custom pickup and return places cost'})
+
+      # Pickup/return timetable ---------------------------------------------------------------------------------------
 
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.pickup_return_main_season.month_from'},
@@ -190,41 +201,57 @@ module Huasi
           {:value => '31',
            :description => 'Pickup and return places main season day to'})
 
-      SystemConfiguration::Variable.first_or_create(
-        {:name => 'booking.pickup_return_timetable'},
-        {:value => '',
-         :description => 'Pickup and return places timetable'})
+      # -- on season --
+      pickup_return_timetable_variable = SystemConfiguration::Variable.get('booking.pickup_return_timetable')
+      if pickup_return_timetable_variable.nil?
+        timetable = ::Yito::Model::Calendar::Timetable.first_or_create({name: 'booking.pickup_return_timetable'})
+        SystemConfiguration::Variable.first_or_create(
+            {:name => 'booking.pickup_return_timetable'},
+            {:value => timetable.id.to_s,
+             :description => 'Pickup and return places timetable'})
+      elsif pickup_return_timetable_variable.value == ''
+        timetable = ::Yito::Model::Calendar::Timetable.first_or_create({name: 'booking.pickup_return_timetable'})
+        SystemConfiguration::Variable.set_value('booking.pickup_return_timetable', timetable.id.to_s)
+      end
+
+      # -- out season --
+      pickup_return_out_of_season_timetable_variable = SystemConfiguration::Variable.get('booking.pickup_return_timetable_out_of_season')
+      if pickup_return_out_of_season_timetable_variable.nil?
+        timetable = ::Yito::Model::Calendar::Timetable.first_or_create({name: 'booking.pickup_return_timetable_out_of_season'})
+        SystemConfiguration::Variable.first_or_create(
+            {:name => 'booking.pickup_return_timetable_out_of_season'},
+            {:value => timetable.id.to_s,
+             :description => 'Pickup and return places timetable out of season'})
+      elsif pickup_return_out_of_season_timetable_variable.value == ''
+        timetable = ::Yito::Model::Calendar::Timetable.first_or_create({name: 'booking.pickup_return_timetable_out_of_season'})
+        SystemConfiguration::Variable.set_value('booking.pickup_return_timetable_out_of_season', timetable.id.to_s)
+      end
 
       SystemConfiguration::Variable.first_or_create(
         {:name => 'booking.pickup_return_timetable_out_price'},
         {:value => '0',
          :description => 'Price if the pickup/return is not on pickup/return timetable'})
 
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.pickup_return_timetable_out_of_season'},
-          {:value => '',
-           :description => 'Pickup and return places timetable out of season'})
-
-      # Reservation settings : driver
+      # Reservation settings : driver ---------------------------------------------------------------------------------
 
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.driver_min_age.rules'},
           {:value => 'false',
            :description => 'Young driver rules'})
 
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.driver_min_age.rule_definition'},
-          {:value => '',
-           :description => 'Driver rule definition id for reservation form'}
-      )
+      driver_age_rule_definition_variable = SystemConfiguration::Variable.get('booking.driver_min_age.rule_definition')
+      if driver_age_rule_definition_variable.nil?
+        driver_age_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.first_or_create({name: 'booking.driver_min_age.rule_definition'})
+        SystemConfiguration::Variable.first_or_create(
+            {:name => 'booking.driver_min_age.rule_definition'},
+            {:value => driver_age_rule_definition.id.to_s,
+                      :description => 'Driver rule definition id for reservation form'})
+      elsif driver_age_rule_definition_variable.value == ''
+        driver_age_rule_definition = ::Yito::Model::Booking::BookingDriverAgeRuleDefinition.first_or_create({name: 'booking.driver_min_age.rule_definition'})
+        SystemConfiguration::Variable.set_value('booking.driver_min_age.rule_definition', driver_age_rule_definition.id.to_s)
+      end
 
-      SystemConfiguration::Variable.first_or_create(
-          {:name => 'booking.driver_min_age.booking_driver_edition'},
-          {:value => 'false',
-           :description => 'Allow editing the driver age and driver license date in the driver block'}
-      )
-
-      # Reservation settings : adults / children
+      # Reservation settings : adults / children ----------------------------------------------------------------------
 
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.min_adults'},
@@ -263,7 +290,7 @@ module Huasi
            :module => :booking}
       )
 
-      # Notifications
+      # Notifications -------------------------------------------------------------------------------------------------
 
       SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.notification_email'},
@@ -482,6 +509,8 @@ module Huasi
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car'},
     {
         :name => 'Alquiler de vehículos (coches, motos, ...)',
+        :business_type => :vehicle_rental,
+        :business_activity => :rental,
         :presentation_order => 1,
         :frontend => :dates,
         :driver => true,
@@ -494,6 +523,8 @@ module Huasi
         :start_date_literal => :pickup,
         :cycle_of_24_hours => true,
         :fuel => true,
+        :stock_model => true,
+        :stock_plate => true,
         :product_type => :category_of_resources,
         :product_price_definition_type => :season,
         :product_price_definition_season_definition => season_definition,
@@ -504,12 +535,16 @@ module Huasi
         :extras_price_definition_season_definition => season_definition,
         :extras_price_definition_factor_definition => factor_definition,
         :extras_price_definition_units_management => :unitary,
-        :extras_price_definition_units_management_value => 1
+        :extras_price_definition_units_management_value => 1,
+        :starting_date => :pickup_return_date,
+        :allow_extras => true
       })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'kayak'},
     {
         :name => 'Alquiler y/o excursiones en kayak',
+        :business_type => :category_resources,
+        :business_activity => :both_rental_activities_tours,
         :presentation_order => 2,
         :frontend => :shopcart,
         :driver => true,
@@ -527,6 +562,8 @@ module Huasi
         :weight_values => '<= 75Kg,75Kg',
         :cycle_of_24_hours => false,
         :fuel => false,
+        :stock_model => true,
+        :stock_plate => false,
         :product_type => :category_of_resources,
         :product_price_definition_type => :season,
         :product_price_definition_season_definition => season_definition,
@@ -537,12 +574,16 @@ module Huasi
         :extras_price_definition_season_definition => season_definition,
         :extras_price_definition_factor_definition => factor_definition,
         :extras_price_definition_units_management => :unitary,
-        :extras_price_definition_units_management_value => 1
+        :extras_price_definition_units_management_value => 1,
+        :starting_date => :pickup_return_date,
+        :allow_extras => true
       })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
         {
          :name => 'Alojamientos (hotel, hostal, ...)',
+         :business_type => :accommodation,
+         :business_activity => :rental,
          :frontend => :categories,
          :presentation_order => 3,
          :driver => false,
@@ -553,6 +594,8 @@ module Huasi
          :start_date_literal => :arrival,
          :cycle_of_24_hours => true,
          :fuel => false,
+         :stock_model => false,
+         :stock_plate => false,
          :product_type => :category_of_resources,
          :product_price_definition_type => :season,
          :product_price_definition_season_definition => season_definition,
@@ -563,12 +606,16 @@ module Huasi
          :extras_price_definition_season_definition => season_definition,
          :extras_price_definition_factor_definition => factor_definition,
          :extras_price_definition_units_management => :unitary,
-         :extras_price_definition_units_management_value => 1
+         :extras_price_definition_units_management_value => 1,
+         :starting_date => :checkin_checkout,
+         :allow_extras => true
         })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'bike'},
         {
          :name => 'Alquiler y/o rutas en bicicleta',
+         :business_type => :category_resources,
+         :business_activity => :both_rental_activities_tours,
          :frontend => :shopcart,
          :presentation_order => 4,
          :driver => false,
@@ -579,6 +626,8 @@ module Huasi
          :start_date_literal => :pickup,
          :cycle_of_24_hours => false,
          :fuel => false,
+         :stock_model => true,
+         :stock_plate => false,
          :product_type => :category_of_resources,
          :product_price_definition_type => :season,
          :product_price_definition_season_definition => season_definition,
@@ -589,44 +638,97 @@ module Huasi
          :extras_price_definition_season_definition => season_definition,
          :extras_price_definition_factor_definition => factor_definition,
          :extras_price_definition_units_management => :unitary,
-         :extras_price_definition_units_management_value => 1
+         :extras_price_definition_units_management_value => 1,
+         :starting_date => :pickup_return_date,
+         :allow_extras => true
         })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'boat_charter'},
-                                                          {
-                                                              :name => 'Charter (naútico)',
-                                                              :presentation_order => 5,
-                                                              :frontend => :dates,
-                                                              :driver => true,
-                                                              :driver_date_of_birth => false,
-                                                              :driver_license => false,
-                                                              :guests => false,
-                                                              :flight => false,
-                                                              :height => false,
-                                                              :height_mandatory => false,
-                                                              :weight => false,
-                                                              :weight_mandatory => false,
-                                                              :pickup_return_place => false,
-                                                              :time_to_from => false,
-                                                              :time_start => '10:00',
-                                                              :time_end => '20:00',
-                                                              :start_date_literal => :pickup,
-                                                              :driver_literal => :contact,
-                                                              :cycle_of_24_hours => false,
-                                                              :named_resources => false,
-                                                              :fuel => false,
-                                                              :product_type => :resource,
-                                                              :product_price_definition_type => :season,
-                                                              :product_price_definition_season_definition => season_definition,
-                                                              :product_price_definition_factor_definition => factor_definition,
-                                                              :product_price_definition_units_management => :detailed,
-                                                              :product_price_definition_units_management_value => 7,
-                                                              :extras_price_definition_type => :no_season,
-                                                              :extras_price_definition_season_definition => season_definition,
-                                                              :extras_price_definition_factor_definition => factor_definition,
-                                                              :extras_price_definition_units_management => :unitary,
-                                                              :extras_price_definition_units_management_value => 1
-                                                          })
+    {
+        :name => 'Charter naútico',
+        :business_type => :boat_charter,
+        :business_activity => :rental,
+        :presentation_order => 5,
+        :frontend => :dates,
+        :driver => true,
+        :driver_date_of_birth => false,
+        :driver_license => false,
+        :guests => false,
+        :flight => false,
+        :height => false,
+        :height_mandatory => false,
+        :weight => false,
+        :weight_mandatory => false,
+        :pickup_return_place => false,
+        :time_to_from => false,
+        :time_start => '10:00',
+        :time_end => '20:00',
+        :start_date_literal => :pickup,
+        :driver_literal => :contact,
+        :cycle_of_24_hours => false,
+        :named_resources => false,
+        :fuel => false,
+        :stock_model => true,
+        :stock_plate => false,
+        :product_type => :resource,
+        :product_price_definition_type => :season,
+        :product_price_definition_season_definition => season_definition,
+        :product_price_definition_factor_definition => factor_definition,
+        :product_price_definition_units_management => :detailed,
+        :product_price_definition_units_management_value => 7,
+        :extras_price_definition_type => :no_season,
+        :extras_price_definition_season_definition => season_definition,
+        :extras_price_definition_factor_definition => factor_definition,
+        :extras_price_definition_units_management => :unitary,
+        :extras_price_definition_units_management_value => 1,
+        :starting_date => :start_end,
+        :allow_extras => true
+    })
+
+
+    Yito::Model::Booking::ProductFamily.first_or_create(
+      {:code => 'tours'},
+      {
+          :name => 'Tours',
+          :business_type => :tours,
+          :business_activity => :activities_tours,
+          :presentation_order => 6,
+          :frontend => :dates,
+          :product_price_definition_type => :no_season,
+          :product_price_definition_season_definition => nil,
+          :product_price_definition_factor_definition => nil,
+          :product_price_definition_units_management => :unitary,
+          :product_price_definition_units_management_value => 1,
+          :extras_price_definition_type => :no_season,
+          :extras_price_definition_season_definition => nil,
+          :extras_price_definition_factor_definition => nil,
+          :extras_price_definition_units_management => :unitary,
+          :extras_price_definition_units_management_value => 1,
+          :starting_date => :pickup_return_date,
+          :allow_extras => true
+      })
+
+      Yito::Model::Booking::ProductFamily.first_or_create(
+          {:code => 'activities'},
+          {
+              :name => 'Actividades',
+              :business_type => :activities,
+              :business_activity => :activities_tours,
+              :presentation_order => 7,
+              :frontend => :dates,
+              :product_price_definition_type => :no_season,
+              :product_price_definition_season_definition => nil,
+              :product_price_definition_factor_definition => nil,
+              :product_price_definition_units_management => :unitary,
+              :product_price_definition_units_management_value => 1,
+              :extras_price_definition_type => :no_season,
+              :extras_price_definition_season_definition => nil,
+              :extras_price_definition_factor_definition => nil,
+              :extras_price_definition_units_management => :unitary,
+              :extras_price_definition_units_management_value => 1,
+              :starting_date => :pickup_return_date,
+              :allow_extras => true
+          })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'other'},
     {
@@ -651,7 +753,11 @@ module Huasi
         :extras_price_definition_season_definition => season_definition,
         :extras_price_definition_factor_definition => factor_definition,
         :extras_price_definition_units_management => :unitary,
-        :extras_price_definition_units_management_value => 1
+        :extras_price_definition_units_management_value => 1,
+        :business_type => :category_resources,
+        :business_activity => :rental,
+        :starting_date => :start_end,
+        :allow_extras => true
       })
 
       #
@@ -792,6 +898,7 @@ module Huasi
             menu_locals.store(:today_pickup, BookingDataSystem::Booking.pickup_list(today, today, nil, true).size) #BookingDataSystem::Booking.count_pickup(today))
             menu_locals.store(:today_return, BookingDataSystem::Booking.return_list(today, today, nil, true).size)#BookingDataSystem::Booking.count_delivery(today))
             menu_locals.store(:pending_assignation, BookingDataSystem::Booking.pending_of_assignation.size)
+            menu_locals.store(:planning_conflicts_count, BookingDataSystem::Booking.overbooking_conflicts.size)
           end
           if booking_activities
             menu_locals.store(:pending_confirmation_activities, ::Yito::Model::Order::Order.count_pending_confirmation_orders(year))
@@ -801,7 +908,9 @@ module Huasi
           if block_name == 'booking_admin_menu'
             begin
               product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-              if product_family.code == 'hostel'
+              menu_locals.store(:product_family, product_family)
+              p "product_family: #{product_family.inspect} #{product_family.accommodation?}"
+              if product_family.accommodation?
                 app.partial(:booking_menu_hostel, :locals => menu_locals)
               else
                 app.partial(:booking_menu, :locals => menu_locals)

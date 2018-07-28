@@ -1,0 +1,87 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title">Disponibilidad de los extras</h2>
+</div>
+<div class="content admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
+
+  <!-- Selector -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="block">
+        <div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Seleccionar fechas</h3>
+        </div>
+        <div class="block-content">
+          <form name="availability_form" action="/admin/booking/extras-availability" method="get" class="form-horizontal">
+            <input type="hidden" name="from" id="from"/>
+            <input type="hidden" name="to" id="to"/>
+            <div class="form-group">
+              <label class="col-xs-12" for="example-text-input">
+                <%=BookingDataSystem.r18n.t.booking_business_literals.starting_date[@product_family.starting_date.to_s]['pickup_singular']%>
+              </label>
+              <div class="col-sm-9">
+                <input type="text" name="date_from" id="date_from" class="fieldcontrol date_control" maxlength="10" autocomplete="off" style="display: inline-block; width: auto"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-12" for="example-text-input">
+                <%=BookingDataSystem.r18n.t.booking_business_literals.starting_date[@product_family.starting_date.to_s]['return_singular']%>
+              </label>
+              <div class="col-sm-9">
+                <input type="text" name="date_to" id="date_to" class="fieldcontrol date_control" maxlength="10" autocomplete="off" style="display: inline-block; width: auto"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-9">
+                <button id="search" class="btn btn-sm btn-primary" type="submit">Comprobar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="block">
+    <div class="block-header">
+      <h3 class="block-title text-left">Disponibilidad</h3>
+    </div>
+    <div class="block-content">
+
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th><%=BookingDataSystem.r18n.t.booking_business_literals.business_type[@product_family.business_type.to_s]['category_singular']%></th>
+          <th class="text-center">Disponibilidad</th>
+          <th class="text-center">Stock disponible</th>
+        </tr>
+        </thead>
+        <tbody>
+          <% @detail.each do |product, value| %>
+          <tr>
+            <td><%=product%></td>
+            <td class="text-center">
+              <% if value[:occupation] < value[:stock]%>
+                <i class="fa fa-circle text-success"></i>
+              <% else %>
+                <i class="fa fa-circle text-danger"></i>
+              <% end %>
+            </td>
+            <td class="text-center">
+              <strong><%=[0, value[:stock] - value[:occupation]].max%></strong> / <%=value[:stock]%> <%if value[:assignation_pending].size > 0%>*<%end%>
+              <%if value[:assignation_pending].size > 0%>
+                <br>
+                <em><span class="text-muted">(<strong><%=value[:assignation_pending].size%></strong> unidades no asignadas o pendientes de confirmar)</span></em>
+              <%end%>
+            </td>
+            <td></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+
+</div>

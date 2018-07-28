@@ -1,5 +1,5 @@
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.booking_console.title%></h2>
+  <h2 class="entity-title"><%= BookingDataSystem.r18n.t.booking_business_literals.starting_date[product_family.starting_date.to_s]['title'] %></h2>
   <div class="btn btn-default" style="float: right">
   	 <a id="print_link" href="/admin/booking/reports/pickup-return-pdf" target="_blank">Imprimir</a>
   </div>
@@ -28,7 +28,7 @@
             <input type="hidden" name="calendar_id" value="<%=booking_journal_calendar.id%>"/>
             <div class="formrow">
               <label for="date" class="fieldtitle"><%=t.new_journal.form.date.label%></label>
-              <input type="text" name="from" class="fieldcontrol" size="14"/>
+              <input type="text" name="from" class="fieldcontrol" size="14" autocomplete="off"/>
               <input type="hidden" name="to"/>
             </div>
             <div class="formrow">

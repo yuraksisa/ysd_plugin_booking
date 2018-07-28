@@ -1,0 +1,45 @@
+<script id="pickup_return_place_script" type="text/tmpl">
+  <%% for (var idx=0; idx< pickup_return_places.length; idx++) { %>
+  <tr class="pickup_return_place">
+      <td>
+        <form id="update_pickup_place_<%%=pickup_return_places[idx].id%>" name="update_pickup_place_<%%=pickup_return_places[idx].id%>">
+          <input type="hidden" name="id" value="<%%=pickup_return_places[idx].id%>"/>
+          <input type="text" name="name" class="form-control" value="<%%=pickup_return_places[idx].name%>" size="20" maxlength="80"/>
+        </form>
+      </td>
+      <td class="text-center">
+        <input type="checkbox" form="update_pickup_place_<%%=pickup_return_places[idx].id%>"
+               name="is_pickup" class="form-control" style="width: 20px; margin: 0 auto" <%% if (pickup_return_places[idx].is_pickup){%>checked<%%}%>/>
+      </td>
+      <td class="text-center">
+        <input type="checkbox" form="update_pickup_place_<%%=pickup_return_places[idx].id%>"
+               name="is_return" class="form-control" style="width: 20px; margin: 0 auto" <%% if (pickup_return_places[idx].is_return){%>checked<%%}%>/>
+      </td>
+      <td>
+        <input type="text" form="update_pickup_place_<%%=pickup_return_places[idx].id%>"
+               name="price" class="form-control update_price_control" size="3" maxlength="10"  style="width: 60px; display: inline-block" value="<%%= new Number(pickup_return_places[idx].price).toFixed(2)%>"/>
+      </td>
+      <% if @multiple_rental_locations %>
+      <td>
+        <select form="update_pickup_place_<%%=pickup_return_places[idx].id%>"
+                class="form-control" name="rental_location_code" id="rental_location" style="width: 150px">
+          <option value="" <%% if (pickup_return_places[idx].rental_location_code == null) {%>selected<%%}%>>No aplica</option>
+          <% @rental_locations.each do |rental_location| %>
+            <option value="<%=rental_location.code%>"<%% if (pickup_return_places[idx].rental_location_code == '<%=rental_location.code%>') {%>selected<%%}%>><%=rental_location.name%></option>
+          <% end %>
+        </select>
+      </td>
+      <% end %>
+      <td>
+        <button type="button" form="update_pickup_place_<%%=pickup_return_places[idx].id%>"
+               class="btn btn-sm btn-primary col-md-1 update_pickup_place_btn" style="width: 32px; display: inline-block"><i class="fa fa-save push-5-r"></i></button>
+        <button type="button" form="update_pickup_place_<%%=pickup_return_places[idx].id%>"
+               class="btn btn-sm btn-danger col-md-1 delete_pickup_place_btn" style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-trash push-5-r"></i></button>
+        <% if @show_translations %>
+        <button type="button" form="update_pickup_place_<%%=pickup_return_places[idx].id%>" data-pickup-place-id="<%%=pickup_return_places[idx].id%>"
+               class="btn btn-sm btn-default col-md-1 translate_pickup_place_btn" style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-random push-5-r"></i></button>
+        <% end %>
+      </td>
+    </tr>
+    <%% } %>
+</script>

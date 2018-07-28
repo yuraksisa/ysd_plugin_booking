@@ -464,6 +464,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                booking.category = $(this).attr('data-category');
                booking.requestedCategory = $(this).attr('data-requested-category');
                booking.notes = $(this).attr('data-notes');
+               booking.confirmed = $(this).attr('data-confirmed');
+               booking.auto_assigned_item_reference = $(this).attr('data-auto-assigned-item-reference');
                var html = tmpl('planning_reservation_detail')({booking: booking});
                return html;
             },
@@ -697,8 +699,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
            bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableHeaderLineHeight'].toString()+"px; text-align:center; border: 1px solid #cccccc; background:white'>"+''+"</th>");
         for (item in bookingPlanningModel.references) {
             $("#planning_table tbody").append("<tr id='" + item + "' rel='" + bookingPlanningModel.references[item] + "'></tr>");
-            var title = bookingPlanningModel.planningStyle == 'compact' ? item+'<span class="planning_item_category">'+bookingPlanningModel.references[item]+'</span>' : 
-                        '<span class="planning_item_category_extended">'+bookingPlanningModel.references[item]+'</span>'+ ' - ' +item;
+            var title = bookingPlanningModel.planningStyle == 'compact' ? item+'<span class="planning_item_category">'+bookingPlanningModel.references[item]+'</span>' :
+                <%if @product_family.category_of_resources?%>'<span class="planning_item_category_extended">'+ bookingPlanningModel.references[item]+'</span>'+ ' - ' +<%end%>item;
             $("#planning_table tbody tr#"+item+"").append(
                 "<td class='planning_reference' style='width:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['colReferenceWidth'].toString()+
            "px;line-height:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableLineHeight'].toString()+"px;' data-reference='"+item+"'>"+
@@ -772,7 +774,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 this.showItemInPlanning(item.origin, item.id, item.id2, item.item_id,
                                         item.requested_item_id, item.booking_item_reference,
                                         item.date_from, item.time_from, item.date_to, item.time_to,
-                                        item.title, item.planning_color, item.detail, item.notes);
+                                        item.title, item.planning_color, item.detail, item.notes,
+                                        item.confirmed, item.auto_assigned_item_reference);
             }
 
         }
@@ -783,7 +786,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
     },
 
     showItemInPlanning(origin, id, idResource, category, requestedCategory, resource, dateFrom, timeFrom,
-                       dateTo, timeTo, title, backgroundColor, detail, notes) { /* Show an item in the planning */
+                       dateTo, timeTo, title, backgroundColor, detail, notes, confirmed, auto_assigned_item_reference) { /* Show an item in the planning */
 
         var exceedsDateFrom = false;
         var exceedsDateTo = false;
@@ -836,7 +839,6 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 }
             }
 
-
             top += $('#planning_table').position().top;
             left += $('#planning_table').position().left;
 
@@ -845,10 +847,11 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                 dateFrom: dateFrom, timeFrom: timeFrom,
                 dateTo: dateTo, timeTo: timeTo,
                 category: category, resource: resource, requestedCategory: requestedCategory,
-                booking_title: title, detail: detail, notes: notes,
-                backgroundColor: backgroundColor,
-                borderColor: this.lightenDarkenColor(backgroundColor, -40),
-                color: this.textColor(backgroundColor)
+                booking_title: title, detail: detail, notes: notes, confirmed: confirmed,
+                auto_assigned_item_reference: auto_assigned_item_reference,
+                backgroundColor: (confirmed == 0 || auto_assigned_item_reference == 1) ? '#FFF' : backgroundColor,
+                borderColor: (confirmed == 0 || auto_assigned_item_reference == 1) ? '#BBB' : this.lightenDarkenColor(backgroundColor, -40),
+                color: (confirmed == 0 || auto_assigned_item_reference == 1) ? '#000' : this.textColor(backgroundColor)
             });
             $(html).height(height).css({top: top, left: left, width: width}).appendTo('#parent');
         }
@@ -1242,7 +1245,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                           bookingPlanningModel.planningData.push(item);
                           bookingPlanningView.showItemInPlanning(item.origin, item.id, item.id2, item.item_id,
                               item.requested_item_id, item.booking_item_reference, item.date_from, item.time_from,
-                              item.date_to, item.time_to, item.title, item.planning_color, item.detail, item.notes)
+                              item.date_to, item.time_to, item.title, item.planning_color, item.detail, item.notes,
+                              item.confirmed, item.auto_assigned_item_reference);
                       });
                   }
 
@@ -1395,7 +1399,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                           bookingPlanningModel.planningData.push(item);
                           bookingPlanningView.showItemInPlanning(item.origin, item.id, item.id2, item.item_id,
                               item.requested_item_id, item.booking_item_reference, item.date_from, item.time_from,
-                              item.date_to, item.time_to, item.title, item.planning_color, item.detail, item.notes);
+                              item.date_to, item.time_to, item.title, item.planning_color, item.detail, item.notes,
+                              item.confirmed, item.auto_assigned_item_reference);
                       });
 
                       bookingPlanningView.setupDraggable('.planning_reservation[data-id=' + data[0].id + ']');
@@ -1792,6 +1797,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
             $('form[name=new_reservation_products_selection] select[name='+planningNewReservationModel.category+']').val('1');
           <% else %>
             $('form[name=new_reservation_products_selection] input[name='+planningNewReservationModel.category+']').attr('checked','checked');
+            //$('form[name=new_reservation_products_selection] input[name=code][value='+planningNewReservationModel.category+']').attr('checked','checked');
           <% end %>
 
 
@@ -1886,7 +1892,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                           bookingPlanningModel.planningData.push(item);
                           bookingPlanningView.showItemInPlanning(item.origin, item.id, item.id2, item.item_id,
                               item.requested_item_id, item.booking_item_reference, item.date_from, item.time_from,
-                              item.date_to, item.time_to, item.title, item.planning_color, item.detail)
+                              item.date_to, item.time_to, item.title, item.planning_color, item.detail,
+                              item.confirmed, item.auto_assigned_item_reference);
                       });
                   }
 

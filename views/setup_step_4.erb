@@ -1,0 +1,24 @@
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.setup_wizard.title%></h2>
+</div>
+<div class="admin_content_wrapper">
+  <div class="container_12">
+    <div class="grid_6">
+      <form name="setup_renting_step_4" action="/admin/booking/setup-step-4" method="POST">
+        <h3><%=t.setup_step_4.title%></h3>
+        <p><%=t.setup_step_4.description%></p>
+        <br>
+        <% @types_of_business.each do |type_of_business| %>
+            <input type="radio" name="type_of_business" id="type_of_business" value="<%=type_of_business.code%>"><%=type_of_business.name%></input>
+            <br><br>
+        <% end %>
+        <hr>
+        <div class="formrow-botonera">
+          <a href="/admin/booking/setup-step-3" role="button" class="btn btn-warning"><%=t.setup_wizard.previous_step%></a>
+          <input type="submit" value="<%=t.setup_wizard.next_step%>" class="button blue-button">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

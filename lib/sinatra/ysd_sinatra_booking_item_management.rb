@@ -7,7 +7,13 @@ module Sinatra
         #
         # Booking items page
         #
-        app.get '/admin/booking/booking-items/?*', :allowed_usergroups => ['booking_manager','staff'] do 
+        app.get '/admin/booking/booking-items/?*', :allowed_usergroups => ['booking_manager','staff'] do
+
+          # Add-on finances
+          @addons = mybooking_addons
+          @addon_finances = (@addons and @addons.has_key?(:addon_finances) and @addons[:addon_finances])
+          # Item family
+          @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
 
           load_em_page :booking_items_management, :bookingitem, false
 

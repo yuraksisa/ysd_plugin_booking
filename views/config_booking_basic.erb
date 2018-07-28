@@ -1,0 +1,335 @@
+<style>
+  #renting_tab li a, #activities_tab li a {
+    background-color: white;
+  }
+  #renting_tab li#current a,
+  #renting_tab li#current a::after,
+  #activities_tab li#current a,
+  #activities_tab li#current a::after {
+    background-color: white;
+  }
+
+  #driver_age_rules_table th.age {
+    width: 150px;
+  }
+  #driver_age_rules_table th.connector {
+    width: 40px;
+  }
+  #driver_age_rules_table th.driving_years {
+    width: 150px;
+  }
+  .age_condition_selector, .driver_age_rule_type_selector, .driving_license_years_condition_selector,.join_conditions_selector,
+  .age_from_input, .age_to_input, .driving_license_years_from_input, .driving_license_years_to_input {
+    /*font-size: 0.9em;*/
+  }
+  .age_condition_selector, .join_conditions_selector, .driver_age_rule_type_selector, .driving_license_years_condition_selector {
+    width: 45px;
+  }
+  .age_from_input, .age_to_input, .driving_license_years_from_input, .driving_license_years_to_input {
+    width: 30px;
+  }
+
+</style>
+
+<div class="top-navigation-bar">
+  <h2 class="entity-title"><%=t.booking_settings.form.title%></h2>
+</div>
+<div class="admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
+  <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
+
+  <div id="content">
+
+    <br>
+
+    <!-- Business type -->
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_business_settings.renting_title%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <div class="col-lg-12">
+                <div class="form-row bottom-space">
+                  <%= render_variable_select('booking.item_family', t.booking_settings.form.family, families, 'form-control', true) %>
+                  <p class="less_contrast_text "><%=t.booking_settings.form.family_description%></p>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div class="form-row bottom-space">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+            <br>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Days, expiration and cadency -->
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.booking_settings.form.days_hours_group%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <% if booking_renting %>
+              <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2, 'form-control') %>
+              <p class="text-muted "><%=t.booking_settings.form.min_days_description%></p>
+              <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2, 'form-control') %>
+              <p class="text-muted "><%=t.booking_settings.form.item_hold_time_description%></p>
+              <% if booking_item_family.cycle_of_24_hours %>
+                <%= render_variable_input_text('booking.hours_cadence', t.booking_settings.form.hours_cadence, 2, 2, 'form-control') %>
+                <p class="text-muted "><%=t.booking_settings.form.hours_cadence_description%></p>
+              <% end %>
+              <% end %>
+              <% if booking_activities %>
+              <%= render_variable_input_text('order.item_hold_time', t.booking_settings.form.activities_item_hold_time, 2, 2, 'form-control') %>
+              <p class="text-muted"><%=t.booking_settings.form.activities_item_hold_time_description%></p>
+              <% end %>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if booking_renting %>
+
+      <% if booking_item_family and booking_item_family.pickup_return_place %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Lugares de entrega y devolución</h3>
+              </div>
+              <div class="block-content">
+                <form name="variables" action="/api/variables" method="PUT"
+                      data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+                  <div class="col-lg-5">
+                    <div class="form-row bottom-space">
+                      <label for="booking.min_days" class="fieldtitle">Lugares de entrega y devolución</label>
+                      <select name="booking.pickup_return_places_configuration" id="booking.pickup_return_places_configuration" class="form-control">
+                        <option value="list" <%if booking_pickup_return_places_configuration == 'list'%>selected<%end%>>Lista de lugares</option>
+                        <option value="value" <%if booking_pickup_return_places_configuration == 'value'%>selected<%end%>>Dirección</option>
+                        <option value="list+custom" <%if booking_pickup_return_places_configuration == 'list+custom'%>selected<%end%>>Lista de lugares + otros lugares</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="form-row bottom-space">
+                      <%= render_variable_input_text('booking.custom_pickup_return_place_price', t.booking_settings.form.custom_pickup_return_place_price, 3, 30, 'form-control', true) %>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-row bottom-space">
+                      <button class="button btn btn-sm btn-primary pull-right" type="submit" style="margin-top: 30px"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                    </div>
+                  </div>
+                </form>
+                <div id="manage_pickup_return_places_container" <% unless ['list','list+custom'].include?booking_pickup_return_places_configuration %>style="display:none"<%end%>>
+                  <hr>
+                  <div>
+                    <%= partial :booking_pickup_return_places_editor %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if booking_item_family and booking_item_family.time_to_from %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Horarios entrega y devolución</h3>
+              </div>
+              <div class="block-content ">
+
+                <form id="pickup_return_timetable_from"
+                      data-pickup-return-timetable-id="<%=@timetable_id_season%>"
+                      data-pickup-return-out-of-season-timetable-id="<%=@timetable_id_out_season%>"
+                      name="variables" action="/api/variables" method="PUT"
+                      data-remote="ajax" data-remote-method="PUT" class="form-inline">
+
+                  <div class="col-lg-3">
+                    <div class="form-row bottom-space">
+                      <%= render_variable_select('booking.pickup_return_main_season.month_from', t.booking_settings.form.pickup_return_main_season_from, months, 'form-control', true) %>
+                      <%= render_variable_select('booking.pickup_return_main_season.day_from', '', days, 'form-control', true) %>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-3">
+                    <div class="form-row bottom-space">
+                      <%= render_variable_select('booking.pickup_return_main_season.month_to', t.booking_settings.form.pickup_return_main_season_to, months, 'form-control', true) %>
+                      <%= render_variable_select('booking.pickup_return_main_season.day_to', '', days, 'form-control', true) %>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <div class="form-row bottom-space">
+                      <%= render_variable_input_text('booking.pickup_return_timetable_out_price', t.booking_settings.form.pickup_return_timetable_out_price, 3, 30, 'form-control', true) %>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-2">
+                    <div class="form-row bottom-space">
+                      <button class="button btn btn-sm btn-primary pull-right" type="submit" style="margin-top: 30px"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                    </div>
+                  </div>
+                </form>
+                <hr>
+                <div class="row">
+                  <div class="col-lg-6 col-md-6">
+                    <div id="timetable_season_holder">
+                      <h2 class="content-heading"><%=t.booking_settings.form.pickup_return_main_season%></h2>
+                      <div id="timetable_season_container">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6">
+                    <div id="timetable_out_of_season_holder" style="display: none">
+                      <h2 class="content-heading"><%=t.booking_settings.form.pickup_return_out_of_season%></h2>
+                      <div id="timetable_out_of_season_container">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if booking_item_family and booking_item_family.driver_date_of_birth %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title">Edad del conductor</h3>
+              </div>
+              <div class="block-content">
+                <form name="variables" action="/api/variables" method="PUT"
+                      data-remote="ajax" data-remote-method="PUT" class="form-inline">
+                    <div class="col-lg-9">
+                      <div class="form-row bottom-space">
+                        <%= render_variable_checkbox_boolean('booking.driver_min_age.rules', t.booking_settings.form.driver_min_age_rules) %>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-row bottom-space">
+                        <button class="button btn btn-sm btn-primary pull-right" type="submit" style="margin-top: 15px"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                      </div>
+                    </div>
+                </form>
+                <div id="driver_age_rules_container">
+                  <hr>
+                  <%= partial :booking_driver_age_rule_editor %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title">Temporadas</h3>
+            </div>
+            <div class="block-content">
+              <form name="variables" action="/api/variables" method="PUT"
+                    data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+
+                <div class="col-lg-12">
+                  <div class="form-row bottom-space">
+                    <%= render_variable_checkbox_boolean('booking.new_season_definition_instance_for_category', 'Cada producto define su propia temporada', '', true) %>
+                    <p class="less_contrast_text ">Marcar esta opción si tenemos diferentes temporadas dependiendo del producto o servicio.</p>
+                  </div>
+                </div>
+
+                <% if use_factors %>
+                  <div class="col-lg-12">
+                    <div class="form-row bottom-space">
+                      <%= render_variable_checkbox_boolean('booking.new_factor_definition_instance_for_category', 'Cada producto define sus propios factores', '', true) %>
+                      <p class="less_contrast_text ">Marcar esta opción si tenemos diferentes factores dependiendo del producto o servicio</p>
+                    </div>
+                  </div>
+                <% end %>
+
+                <div class="col-lg-12">
+                  <div class="form-row bottom-space">
+                    <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.form.calendar_mode.title, calendar_modes, 'form-control', true) %>
+                    <p class="less_contrast_text"><%=t.booking_settings.form.rates.description%></p>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="form-row bottom-space">
+                    <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                  </div>
+                </div>
+
+              </form>
+              <hr>
+              <p class="text-muted">A continuación se listan las <b>temporadas estándar</b> que utiliza la empresa para definir las tarifas</p>
+              <%= partial :seasons_editor %>
+
+              <br>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+          <div class="block ">
+            <div class="block-header bg-gray-lighter">
+              <h3 class="block-title"><%=t.booking_settings.form.deposit_group.title%></h3>
+            </div>
+            <div class="block-content block-content-narrow">
+              <form name="variables" action="/api/variables" method="PUT"
+                    data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+                <%= render_variable_checkbox_boolean('booking.products.allow_deposit', t.booking_settings.form.product_allow_deposit) %>
+                <p class="less_contrast_text "><%=t.booking_settings.form.product_allow_deposit_description%></p>
+                <div id="product_deposit_holder">
+                  <%= render_variable_checkbox_boolean('booking.booking_amount_includes_deposit', t.booking_settings.form.deposit_includes_product_deposit) %>
+                  <p class="less_contrast_text "><%=t.booking_settings.form.deposit_includes_product_deposit_description%></p>
+                  <%= render_variable_checkbox_boolean('booking.total_cost_includes_deposit', t.booking_settings.form.total_cost_includes_deposit) %>
+                  <p class="less_contrast_text "><%=t.booking_settings.form.total_cost_includes_deposit_description%></p>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-12">
+                    <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
+
+  </div>
+</div>
+
+<%= partial :seasons_scripts %>
+<%= partial :booking_pickup_return_places_scripts %>
+<%= partial :booking_driver_age_rule_scripts %>
