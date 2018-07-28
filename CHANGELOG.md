@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.160] - 2018-07-28
+### Updated
+Bug in operator menu
+
 ## [0.4.159] - 2018-07-28
 ### Updated
 - Booking configuration refactoring: General (age rules + timetable + seasons included) and Advanced

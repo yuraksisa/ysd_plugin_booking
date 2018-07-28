@@ -905,10 +905,11 @@ module Huasi
             menu_locals.store(:today_start_activities, ::Yito::Model::Order::Order.count_start(today))
           end
           menu_locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
+          product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          menu_locals.store(:product_family, product_family)
+
           if block_name == 'booking_admin_menu'
             begin
-              product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-              menu_locals.store(:product_family, product_family)
               p "product_family: #{product_family.inspect} #{product_family.accommodation?}"
               if product_family.accommodation?
                 app.partial(:booking_menu_hostel, :locals => menu_locals)
