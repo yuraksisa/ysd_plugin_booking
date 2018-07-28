@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.159] - 2018-07-28
+### Updated
+- Booking configuration refactoring: General (age rules + timetable + seasons included) and Advanced
+- Planning: Show "preassigned" pending of confirmation or confirmed not assigned reservations
+- Literals depending of the business configuration
+- Availability and Extras availability new design
+- Removed unused code
+
 ## [0.4.158] - 2018-07-04
 ### Updated
 - Planning : Assign 7 days before (and not assigned)
