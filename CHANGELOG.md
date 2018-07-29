@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.161] - 2018-07-29
+### Updated
+- Planning auto assign
+- Manual/Auto pending of confirmation management in settings
+
 ## [0.4.160] - 2018-07-28
 ### Updated
 Bug in operator menu

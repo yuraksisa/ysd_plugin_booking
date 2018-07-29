@@ -75,7 +75,13 @@ module Sinatra
             end
           end
 
-          @options = {include_future_pending_confirmation: true}
+          @options = {}
+
+          # automatic management pending reservations
+          automatic_management_pending_reservations = SystemConfiguration::Variable.get_value('booking.assignation.automatically_manage_pending_of_confirmation', 'true').to_bool
+          @options.store(:include_future_pending_confirmation, true) if automatic_management_pending_reservations
+
+          # Category or reference
           if params[:reference]
             @options.merge!({mode: :stock, reference: params[:reference]})
           elsif params[:product]

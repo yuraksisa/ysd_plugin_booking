@@ -77,10 +77,32 @@
                   <% end %>
                 </td>
                 <td class="text-center">
-                  <strong><%=[0, value[:stock] - value[:occupation]].max%></strong> / <%=value[:stock]%> <%if value[:assignation_pending].size > 0%>*<%end%>
+                  <% if @automatic_management_pending_reservations %>
+                    <strong><%=value[:stock] - (value[:occupation] + value[:pending_confirmation_assignation_pending_after_preassign].size + value[:confirmed_assignation_pending_after_preassign].size )%></strong> / <%=value[:stock]%> <%if value[:assignation_pending].size > 0%>*<%end%>
+                  <% else %>
+                    <strong><%=value[:stock] - (value[:occupation] + value[:confirmed_assignation_pending_after_preassign].size)%></strong> / <%=value[:stock]%> <%if value[:assignation_pending].size > 0%>*<%end%>
+                  <% end %>
                   <%if value[:assignation_pending].size > 0%>
                     <br>
-                    <em><span class="text-muted">(<strong><%=value[:assignation_pending].size%></strong> unidades no asignadas o pendientes de confirmar)</span></em>
+                    <% if @automatic_management_pending_reservations %>
+                      <% if (value[:pending_confirmation_assignation_pending_after_preassign].size + value[:confirmed_assignation_pending_after_preassign].size) == 0 %>
+                        <span class="text-muted"><strong><%=value[:assignation_pending].size%></strong> unidades pendientes, con stock
+                        suficiente para poderlas cubrir.</span>
+                      <% else %>
+                      <span class="text-danger"><strong><%=value[:assignation_pending].size%></strong> unidades pendientes, de las cuales
+                        <strong><%=value[:pending_confirmation_assignation_pending_after_preassign].size + value[:confirmed_assignation_pending_after_preassign].size%></strong> no puede(n) cubrirse por no disponer de stock</span>
+                      <% end %>
+                    <% else%>
+                      <% if value[:confirmed_assignation_pending].size > 0 %>
+                        <% if (value[:confirmed_assignation_pending_after_preassign].size) == 0  %>
+                          <span class="text-muted"><strong><%=value[:confirmed_assignation_pending].size%></strong> unidades pendientes, con stock
+                          suficiente para poderlas cubrir.</span>
+                        <% else %>
+                          <span class="text-danger"><strong><%=value[:confirmed_assignation_pending].size%></strong> unidades pendientes, de las cuales
+                          <strong><%=value[:confirmed_assignation_pending_after_preassign].size%></strong> no puede(n) cubrirse por no disponer de stock. XX</span>
+                        <% end %>
+                      <% end %>
+                    <% end %>
                   <%end%>
                 </td>
                 <td></td>
@@ -121,7 +143,7 @@
                         <i class="fa fa-circle text-danger"></i>
                       </td>
                       <td class="text-center">
-                        <span>Preasignada o Reservada
+                        <span>Preasignada a
                             <% if item.origin == 'booking' %>
                               <a href="/admin/booking/bookings/<%=item.id%>"><strong><%= item.id%></strong></a>
                             <%else%>

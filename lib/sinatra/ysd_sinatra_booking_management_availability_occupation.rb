@@ -97,6 +97,7 @@ module Sinatra
             end
           end
 
+          @automatic_management_pending_reservations = SystemConfiguration::Variable.get_value('booking.assignation.automatically_manage_pending_of_confirmation', 'true').to_bool
 
           @data,@detail = BookingDataSystem::Booking.categories_availability(@date_from, @time_from, @date_to, @time_to)
 

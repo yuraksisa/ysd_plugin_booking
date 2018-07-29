@@ -128,6 +128,12 @@ booking_settings:
                                      devolución, el primer 50% coloreado.</p>
                                      <p>En los negocios con ciclo de 24 horas, si marca esta opción, el planning se mostrará como en el primer
                                      caso, es decir, mostrará el día de la entrega y el la de devolución completamente pintado.</p>
+      automatically_manage_pending_of_confirmation: Tener en cuenta las reservas pendientes de confirmación en la disponibilidad
+      automatically_manage_pending_of_confirmation_description: >
+                                                                <p>Si marca esta opción las reservas <b>pendientes de confirmación</b> mantendrán bloqueado el stock de manera automática, no siendo necesario
+                                                                realizar un bloqueo de stock. El stock se desbloqueará al cancelar la reserva o cuando se supere la fecha de inicio de la misma y no se haya
+                                                                confirmado.</p>
+                                                                <p>Si desea gestionar de manera manual el bloqueo de stock de las reservas pendientes, desmarque esta opción.</p>
     pickup_return_backoffice:
       allow_operator_all_locations: Permite que el usuario operador pueda consultar entregas y recogidas de múltiples oficinas
     front_end:

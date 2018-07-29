@@ -50,6 +50,8 @@
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_checkbox_boolean('booking.assignation.automatically_manage_pending_of_confirmation', t.booking_settings.form.assignation.automatically_manage_pending_of_confirmation) %>
+              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.automatically_manage_pending_of_confirmation_description%></p>
               <%= render_variable_checkbox_boolean('booking.assignation.allow_different_category', t.booking_settings.form.assignation.allow_different_category) %>
               <p class="less_contrast_text "><%=t.booking_settings.form.assignation.allow_different_category_description%></p>
               <%= render_variable_checkbox_boolean('booking.assignation.allow_busy_resource', t.booking_settings.form.assignation.allow_busy_resource) %>

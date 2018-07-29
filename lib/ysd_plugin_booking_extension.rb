@@ -98,6 +98,13 @@ module Huasi
            :description => 'Planning : Assignation hours between return - pickup',
            :module => :booking})
 
+      SystemConfiguration::Variable.first_or_create(
+          {name: 'booking.assignation.automatically_manage_pending_of_confirmation'},
+          {value: 'true',
+           description: 'Manage automatically pending of confirmation reservations. If true, the system take them into account in order to control availability and planning pre-assignation',
+           module: :booking}
+      )
+
       # Online payment ------------------------------------------------------------------------------------------------
 
       SystemConfiguration::Variable.first_or_create(
