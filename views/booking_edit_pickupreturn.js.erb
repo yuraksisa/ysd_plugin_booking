@@ -481,6 +481,9 @@
           },
 
           rules : {
+              'date_to': {
+                  greaterOrEqualThan : '#date_from'
+              },
               'time_from': {
                   time24: true
               },
@@ -490,6 +493,9 @@
           },
 
           messages : {
+              'date_to': {
+                  greaterOrEqualThan: '<%= BookingDataSystem.r18n.t.booking_business_literals.starting_date[booking_item_family.starting_date.to_s]["date_to_greater_than_validation"] %>'
+              },
               'time_from': {
                   time24: '<%=t.validations.time_format_invalid%>'
               },

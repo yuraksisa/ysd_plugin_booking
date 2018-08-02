@@ -362,6 +362,7 @@ booking_console:
   report_resource_reservations: Reservas por recurso
   report_prereservations: Prereservas
   report_picked_up_products: Informe policía
+  report_finances_started_reservations: Entregas
   report_finances_finished_reservations: Devoluciones
   activities_report: Actividades
   report_customers: Clientes
@@ -372,6 +373,8 @@ report_picked_up_products:
   title: Informe policía
 report_finances_finished_reservations:
   title: Devoluciones
+report_finances_started_reservations:
+  title: Entregas
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas

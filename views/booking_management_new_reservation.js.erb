@@ -312,16 +312,7 @@ bookingNewView = {
 
     setupSearchValidation: function () {
 
-        $.validator.addMethod("time24", function(value, element) {
-            if (!/^\d{2}:\d{2}$/.test(value)) {
-                return false;
-            }
-            var parts = value.split(':');
-            if (parseInt(parts[0]) > 23 || parseInt(parts[1]) > 59) {
-                return false;
-            }
-            return true;
-        }, "Invalid time format. The format is hh:mm");
+        YSDForms.appendValidators();
 
         $('form[name=reservation]').validate({
 
@@ -332,6 +323,9 @@ bookingNewView = {
             },
 
             rules : {
+                'date_to': {
+                    greaterOrEqualThan : '#date_from'
+                },
                 'time_from': {
                     time24: true
                 },
@@ -341,6 +335,9 @@ bookingNewView = {
             },
 
             messages : {
+                'date_to': {
+                    greaterOrEqualThan: '<%= BookingDataSystem.r18n.t.booking_business_literals.starting_date[booking_item_family.starting_date.to_s]["date_to_greater_than_validation"] %>'
+                },
                 'time_from': {
                     time24: '<%=t.validations.time_format_invalid%>'
                 },

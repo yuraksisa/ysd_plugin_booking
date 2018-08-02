@@ -19,7 +19,7 @@
             <!-- Pickup date -->
             <div class="form-group">
               <label class="col-sm-3 control-label">
-                <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%>
+                <%= BookingDataSystem.r18n.t.booking_business_literals.starting_date[booking_item_family.starting_date.to_s]["date_from"] %>
               </label>
               <div class="col-sm-2">
                 <input type="text" name="date_from" id="date_from" class="date_control" size="15" maxlength="10" autocomplete="off"/>
@@ -65,7 +65,7 @@
 
             <div class="form-group">
               <label class="col-sm-3 control-label">
-                <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%>
+                <%= BookingDataSystem.r18n.t.booking_business_literals.starting_date[booking_item_family.starting_date.to_s]["date_to"] %>
               </label>
               <div class="col-sm-2">
                 <input type="text" name="date_to" id="date_to" class="date_control" size="15" maxlength="10" autocomplete="off"/>

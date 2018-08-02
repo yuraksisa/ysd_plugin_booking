@@ -47,16 +47,19 @@
                        </div>
 
                        <div class="form-group">
-                         <label class="col-md-3 control-label" for="example-hf-email"><%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.arrival_date):(t.new_booking.pickup_date)%></label>
-                         <div class="col-md-7">
-                           <input type="text" name="date_from" id="date_from" class="date_control form-control" size="15" maxlength="10" autocomplete="off"
-                                  <%if booking_item_family.time_to_from %>style="display: inline-block; width:50%"<%else%>style="display: inline-block"<%end%>/>
-                           <% if booking_item_family.time_to_from %>
-                           <input type="text" name="time_from" id="time_from" maxlength="5" size="5" value="<%=booking.time_from%>" class="form-control" style="display: inline-block; width: 40%"/>
-                           <% else %>
-                             <input type="hidden" name="time_from" id="time_from" value="<%=booking.time_from%>"/>
-                           <% end %>
+                         <label class="col-md-3 control-label" for="example-hf-email">
+                           <%= BookingDataSystem.r18n.t.booking_business_literals.starting_date[booking_item_family.starting_date.to_s]["date_from"] %>
+                         </label>
+                         <div <% if booking_item_family.time_to_from %>class="col-md-4"<%else%>class="col-md-7"<%end%>>
+                           <input type="text" name="date_from" id="date_from" class="date_control form-control" size="15" maxlength="10" autocomplete="off"/>
                          </div>
+                         <% if booking_item_family.time_to_from %>
+                           <div class="col-md-3">
+                             <input type="text" name="time_from" id="time_from" maxlength="5" size="5" value="<%=booking.time_from%>" class="form-control" style="display: inline-block; width: 40%"/>
+                           </div>
+                         <% else %>
+                           <input type="hidden" name="time_from" id="time_from" value="<%=booking.time_from%>"/>
+                         <% end %>
                        </div>
 
                        <% if booking_item_family.pickup_return_place %>
@@ -84,16 +87,18 @@
 
                        <div class="form-group">
                          <label class="col-md-3 control-label" for="date_to">
-                           <%=(booking_item_family.start_date_literal==:arrival)?(t.new_booking.departure_date):(t.new_booking.return_date)%></label>
-                         <div class="col-md-7">
-                           <input type="text" name="date_to" id="date_to" class="date_control form-control" size="15" maxlength="10" autocomplete="off"
-                              <%if booking_item_family.time_to_from %>style="display: inline-block; width:50%"<%else%>style="display: inline-block"<%end%>/>
+                           <%= BookingDataSystem.r18n.t.booking_business_literals.starting_date[booking_item_family.starting_date.to_s]["date_to"] %>
+                         </label>
+                         <div <% if booking_item_family.time_to_from %>class="col-md-4"<%else%>class="col-md-7"<%end%>>
+                           <input type="text" name="date_to" id="date_to" class="date_control form-control" size="15" maxlength="10" autocomplete="off"/>
+                         </div>
                            <% if booking_item_family.time_to_from %>
-                             <input type="text" name="time_to" id="time_to" maxlength="5" size="5" value="<%=booking.time_to%>" class="form-control" style="display: inline-block; width:40%"/>
+                             <div class="col-md-3">
+                               <input type="text" name="time_to" id="time_to" maxlength="5" size="5" value="<%=booking.time_to%>" class="form-control" style="display: inline-block; width:40%"/>
+                             </div>
                            <% else %>
                              <input type="hidden" name="time_to" id="time_to" value="<%=booking.time_to%>"/>
                            <% end %>
-                         </div>
                        </div>
 
                        <% if booking_item_family.pickup_return_place %>
@@ -123,8 +128,6 @@
                            <input id="recalculate_button" type="button" class="btn btn-sm btn-primary pull-right" value="Recalcular"/>
                          </div>
                        </div>
-
-
                      </div>
                    </div>
                  </form>

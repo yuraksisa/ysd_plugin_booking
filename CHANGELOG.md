@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.162] - 2018-08-02
+### Added
+- New pickup report
+### Updated
+- New reservation : Date to > Date from
+- Change dates : Date to > Date from
+
 ## [0.4.161] - 2018-07-29
 ### Updated
 - Planning auto assign
