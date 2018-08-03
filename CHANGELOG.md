@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.163] - 2018-08-03
+### Added
+- Export reservations
+
 ## [0.4.162] - 2018-08-02
 ### Added
 - New pickup report

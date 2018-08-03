@@ -36,8 +36,8 @@ require(['jquery',
 
     init : function() {
          var url_vars = this.getUrlVars();
-         var from = url_vars['from'] === undefined ? '<%=Date.civil(Date.today.year,1,1).strftime("%Y-%m-%d")%>' : decodeURIComponent(url_vars['from']);        
-         var to = url_vars['to'] === undefined ? '<%=Date.civil(Date.today.year,12,31).strftime("%Y-%m-%d")%>' : decodeURIComponent(url_vars['to']);
+         var from = url_vars['from'] === undefined ? '<%=Date.today.strftime("%Y-%m-%d")%>' : decodeURIComponent(url_vars['from']);
+         var to = url_vars['to'] === undefined ? '<%=Date.today.strftime("%Y-%m-%d")%>' : decodeURIComponent(url_vars['to']);
          $('#print_link').attr('href', '/admin/booking/reports/customer-reservations-pdf?from='+from+'&to='+to);
          var date_from = $.datepicker.parseDate("yy-mm-dd", from);
          var date_to = $.datepicker.parseDate("yy-mm-dd", to);

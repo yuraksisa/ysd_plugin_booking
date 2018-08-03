@@ -144,10 +144,9 @@ module Sinatra
         # Reservations report (pdf)
         #
         app.get '/admin/booking/reports/reservations-pdf/?*', :allowed_usergroups => ['booking_manager'] do
-
-          year = Date.today.year
-          date_from = Date.civil(year,1,1)
-          date_to = Date.civil(year,12,31)
+          
+          date_from = Date.today
+          date_to = Date.today
 
           if params[:from]
             begin
@@ -173,10 +172,9 @@ module Sinatra
         # Customer Reservations report (pdf)
         #
         app.get '/admin/booking/reports/customer-reservations-pdf/?*', :allowed_usergroups => ['booking_manager'] do
-
-          year = Date.today.year
-          date_from = Date.civil(year,1,1)
-          date_to = Date.civil(year,12,31)
+          
+          date_from = Date.today
+          date_to = Date.today
 
           if params[:from]
             begin
@@ -202,11 +200,9 @@ module Sinatra
         # Reservations report (html)
         #
         app.get '/admin/booking/reports/reservations/?*', :allowed_usergroups => ['booking_manager'] do
-
-          year = Date.today.year
-
-          date_from = Date.civil(year,1,1)
-          date_to = Date.civil(year,12,31)
+          
+          date_from = Date.today
+          date_to = Date.today
 
           if params[:from]
             begin
@@ -259,10 +255,8 @@ module Sinatra
         #
         app.get '/admin/booking/reports/customer-reservations/?*', :allowed_usergroups => ['booking_manager'] do
 
-          year = Date.today.year
-
-          date_from = Date.civil(year,1,1)
-          date_to = Date.civil(year,12,31)
+          date_from = Date.today
+          date_to = Date.today
 
           if params[:from]
             begin

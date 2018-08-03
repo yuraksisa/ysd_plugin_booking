@@ -362,8 +362,8 @@ booking_console:
   report_resource_reservations: Reservas por recurso
   report_prereservations: Prereservas
   report_picked_up_products: Informe policía
-  report_finances_started_reservations: Entregas
-  report_finances_finished_reservations: Devoluciones
+  report_finances_started_reservations: Reservas entregadas
+  report_finances_finished_reservations: Reservas devueltas
   activities_report: Actividades
   report_customers: Clientes
   journal: Diario
@@ -372,9 +372,9 @@ booking_console:
 report_picked_up_products:
   title: Informe policía
 report_finances_finished_reservations:
-  title: Devoluciones
+  title: Reservas devueltas
 report_finances_started_reservations:
-  title: Entregas
+  title: Reservas entregadas
 booking_console_restaurant:
   table_types: Tipos de mesa 
   tables: Mesas

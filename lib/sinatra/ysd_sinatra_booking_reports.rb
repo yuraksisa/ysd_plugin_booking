@@ -133,9 +133,9 @@ module Sinatra
           result = "localizador;matrícula;modelo;conductor;fecha inicio;fecha fin;notas;importe total contrato"
           result << "\n"
           @data.each do |reservation|
-            result << "#{reservation.id};#{reservation.booking_item_stock_plate};#{reservation.booking_item_stock_model};#{reservation.driver_name} #{reservation.driver_surname};"
+            result << "#{reservation.id.to_s};#{reservation.booking_item_stock_plate};#{reservation.booking_item_stock_model};#{reservation.driver_name} #{reservation.driver_surname};"
             result << "#{reservation.date_from.strftime('%Y-%m-%d')} #{reservation.time_from};#{reservation.date_to.strftime('%Y-%m-%d')} #{reservation.time_to};"
-            result << reservation.notes
+            result << (reservation.notes ? "#{reservation.notes.gsub(/\R+/, '')};" : ";")
             result << "#{'%.2f' % reservation.total_cost}"
             result << "\n"
           end
@@ -205,7 +205,7 @@ module Sinatra
           @data.each do |reservation|
             result << "#{reservation.id};#{reservation.booking_item_stock_plate};#{reservation.booking_item_stock_model};#{reservation.driver_name} #{reservation.driver_surname};"
             result << "#{reservation.date_from.strftime('%Y-%m-%d')} #{reservation.time_from};#{reservation.date_to.strftime('%Y-%m-%d')} #{reservation.time_to};"
-            result << reservation.notes
+            result << (reservation.notes ? "#{reservation.notes.gsub(/\R+/, ' ')}" : "")
             result << "#{'%.2f' % reservation.total_cost}"
             result << "\n"
           end
