@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.165] - 2018-08-05
+### Updated
+- Edit pickup/return place error when line break in custom pickup or return place : Resolution BUG
+
 ## [0.4.164] - 2018-08-05
 ### Added
 - Export finished reservations to EXCEL : Notes column separator

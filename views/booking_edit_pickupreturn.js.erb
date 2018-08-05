@@ -141,10 +141,18 @@
              var bookingRequest = $.extend({}, this.booking);
 
              <% if booking_item_family.pickup_return_place %>
-               bookingRequest.pickup_place = bookingRequest.pickup_place.replace('<br>','\n');
-               bookingRequest.pickup_place_other = bookingRequest.pickup_place_other.replace('<br>','\n');
-               bookingRequest.return_place = bookingRequest.pickup_place.replace('<br>','\n');
-               bookingRequest.return_place_other = bookingRequest.return_place_other.replace('<br>','\n');
+               if (bookingRequest.pickup_place) {
+                   bookingRequest.pickup_place = bookingRequest.pickup_place.replace('<br>', '\n');
+               }
+               if (bookingRequest.pickup_place_other) {
+                   bookingRequest.pickup_place_other = bookingRequest.pickup_place_other.replace('<br>', '\n');
+               }
+               if (bookingRequest.return_place) {
+                   bookingRequest.return_place = bookingRequest.pickup_place.replace('<br>', '\n');
+               }
+               if (bookingRequest.return_place_other) {
+                   bookingRequest.return_place_other = bookingRequest.return_place_other.replace('<br>', '\n');
+               }
              <% end %>
 
              var request = JSON.stringify(bookingRequest);
