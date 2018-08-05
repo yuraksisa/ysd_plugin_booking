@@ -212,6 +212,7 @@
                                data-booking-customer-height="<%=reservation.booking_line_resources.first.customer_height%>"
                                data-booking-customer-weight="<%=reservation.booking_line_resources.first.customer_weight%>"
                                <% end %>
+                               data-booking-confirmed="<%=reservation.confirmed? ? '1':'0'%>"
                                data-booking-line-resource-id="<%=reservation.booking_line_resources.first.id%>">Manual</button>
                        <!--button class="btn btn-minw btn-primary btn-assign-resource" data-booking-line-resource-id="<%=reservation.booking_line_resources.first.id%>">Automática</button-->
                      </div>

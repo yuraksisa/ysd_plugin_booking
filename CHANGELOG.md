@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.164] - 2018-08-05
+### Added
+- Export finished reservations to EXCEL : Notes column separator
+- Planning manual assign: Show color
+- Edit pickup/return place error when line break in custom pickup or return place
+
+
 ## [0.4.163] - 2018-08-03
 ### Added
 - Export reservations

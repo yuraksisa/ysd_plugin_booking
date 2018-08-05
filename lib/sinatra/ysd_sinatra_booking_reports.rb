@@ -178,6 +178,9 @@ module Sinatra
 
         end
 
+        #
+        #
+        # https://stackoverflow.com/questions/9639153/character-encoding-issue-exporting-rails-data-to-csv
         app.get "/admin/booking/reports/finances-finished-reservations-csv", :allowed_usergroups => ['booking_manager', 'staff'] do
 
           from = DateTime.now
@@ -205,7 +208,7 @@ module Sinatra
           @data.each do |reservation|
             result << "#{reservation.id};#{reservation.booking_item_stock_plate};#{reservation.booking_item_stock_model};#{reservation.driver_name} #{reservation.driver_surname};"
             result << "#{reservation.date_from.strftime('%Y-%m-%d')} #{reservation.time_from};#{reservation.date_to.strftime('%Y-%m-%d')} #{reservation.time_to};"
-            result << (reservation.notes ? "#{reservation.notes.gsub(/\R+/, ' ')}" : "")
+            result << (reservation.notes ? "#{reservation.notes.gsub(/\R+/, ' ')};" : ";")
             result << "#{'%.2f' % reservation.total_cost}"
             result << "\n"
           end

@@ -51,7 +51,8 @@ require(['jquery', 'jquery.ui', 'jquery.ui.touch-punch', 'jquery.ui.datepicker-e
               bookingDays: button.attr('data-booking-days'),
               bookingCustomerHeight: button.attr('data-booking-customer-height'),
               bookingCustomerWeight: button.attr('data-booking-customer-weight'),
-              bookingResourceId: button.attr('data-booking-line-resource-id')
+              bookingResourceId: button.attr('data-booking-line-resource-id'),
+              bookingConfirmed: button.attr('data-booking-confirmed')
           }
           $('#pending_asignation_container').modal('hide');
           bookingPlanningView.showAssignationResource(data);

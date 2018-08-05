@@ -65,13 +65,21 @@
           date_to: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to.strftime('%d/%m/%y')%>"),
           time_to: '<%=booking.time_to%>',
 
-          pickup_place: "<%=booking.custom_pickup_place ? 'other' : (booking.pickup_place ? booking.pickup_place.gsub("\n","<br/>") : '')%>",
-          custom_pickup_place: <%=booking.custom_pickup_place%>,
-          pickup_place_other: "<%=booking.custom_pickup_place ? booking.pickup_place : ''%>",
-
-          return_place: "<%=booking.custom_return_place ? 'other' : (booking.return_place ? booking.return_place.gsub("\n","<br/>") : '')%>",
-          custom_return_place: <%=booking.custom_return_place%>,
-          return_place_other: "<%=booking.custom_return_place ? booking.return_place : ''%>",
+          <% if booking_item_family.pickup_return_place %>
+            pickup_place: "<%=booking.custom_pickup_place ? 'other' : (booking.pickup_place ? booking.pickup_place.gsub(/\R+/,"<br/>") : '')%>",
+            custom_pickup_place: <%=booking.custom_pickup_place%>,
+            pickup_place_other: "<%=booking.custom_pickup_place ? booking.pickup_place.gsub(/\R+/,"<br/>") : ''%>",
+            return_place: "<%=booking.custom_return_place ? 'other' : (booking.return_place ? booking.return_place.gsub(/\R+/,"<br/>") : '')%>",
+            custom_return_place: <%=booking.custom_return_place%>,
+            return_place_other: "<%=booking.custom_return_place ? booking.return_place.gsub(/\R+/,"<br/>") : ''%>",
+          <% else %>
+            pickup_place: null,
+            custom_pickup_place: null,
+            pickup_place_other:null,
+            return_place: null,
+            custom_return_place: null,
+            return_place_other: null,
+          <% end %>
 
           days: <%=booking.days%>,
           date_to_price_calculation: $.datepicker.parseDate("dd/mm/yy", "<%= booking.date_to_price_calculation.strftime('%d/%m/%y')%>"),
@@ -130,7 +138,16 @@
 
              var stock = $('select[name=stock_assignation]').val();
 
-             var request = JSON.stringify(this.booking);
+             var bookingRequest = $.extend({}, this.booking);
+
+             <% if booking_item_family.pickup_return_place %>
+               bookingRequest.pickup_place = bookingRequest.pickup_place.replace('<br>','\n');
+               bookingRequest.pickup_place_other = bookingRequest.pickup_place_other.replace('<br>','\n');
+               bookingRequest.return_place = bookingRequest.pickup_place.replace('<br>','\n');
+               bookingRequest.return_place_other = bookingRequest.return_place_other.replace('<br>','\n');
+             <% end %>
+
+             var request = JSON.stringify(bookingRequest);
         	   var url = '/api/booking/<%=booking.id%>/pickup-return';
         	   if (stock && stock != '') {
         	     url += '?stock-assignation='+stock;

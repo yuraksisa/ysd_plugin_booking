@@ -993,7 +993,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
               requested_item_id: bookingPlanningModel.assignationResourceData.bookingCategory,
               notes: null,
               title: bookingPlanningModel.assignationResourceData.bookingCustomer,
-              planning_color: 'rgb(102, 255, 102)'
+              planning_color: 'rgb(102, 255, 102)',
+              confirmed: bookingPlanningModel.assignationResourceData.bookingConfirmed
           };
         bookingPlanningModel.planningData.push(item);
 
