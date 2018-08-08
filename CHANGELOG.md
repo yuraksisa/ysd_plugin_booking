@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.166] - 2018-08-08
+### Updated
+- Picked up reservations Excel Export: Include a row with total
+
+
 ## [0.4.165] - 2018-08-05
 ### Updated
 - Edit pickup/return place error when line break in custom pickup or return place : Resolution BUG

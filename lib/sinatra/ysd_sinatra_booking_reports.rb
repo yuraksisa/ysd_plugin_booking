@@ -129,6 +129,7 @@ module Sinatra
           end
 
           @data = BookingDataSystem::Booking.finances_started_reservations(from.to_date, to.to_date)
+          total = 0
 
           result = "localizador;matrícula;modelo;conductor;fecha inicio;fecha fin;notas;importe total contrato"
           result << "\n"
@@ -138,7 +139,9 @@ module Sinatra
             result << (reservation.notes ? "#{reservation.notes.gsub(/\R+/, '')};" : ";")
             result << "#{'%.2f' % reservation.total_cost}"
             result << "\n"
+            total += reservation.total_cost
           end
+          result << "TOTAL;;;;;;;#{'%.2f' % total}"
 
           suffix = (to.to_date == from.to_date) ? to.strftime('%Y-%m-%d') : "#{from.strftime('%Y-%m-%d')}-#{to.strftime('%Y-%m-%d')}"
 
