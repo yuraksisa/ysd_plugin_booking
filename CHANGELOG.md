@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.167] - 2018-08-09
+### Updated
+- Return place not adjusted on change : Change pickup/return place-date
+
 ## [0.4.166] - 2018-08-08
 ### Updated
 - Picked up reservations Excel Export: Include a row with total
