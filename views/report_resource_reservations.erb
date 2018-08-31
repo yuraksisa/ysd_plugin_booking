@@ -1,16 +1,5 @@
-<style>
-#table {
-  table-layout: fixed;
-  border: 1px solid #EEE;
-}
- #table .table-cell {
-   border-right: 1px solid #EEE;
-   width: 1.6em;
-   font-size: 0.85em;
- }
-</style>
 <div class="top-navigation-bar">
-  <h2 class="entity-title">Listado de reservas del recurso</h2>
+  <h2 class="entity-title"><%=BookingDataSystem.r18n.t.booking_business_literals.business_type[@product_family.business_type.to_s]['resource_reservations_title']%></h2>
 </div>
 <div class="admin_content_wrapper">
   <div class="container_12">
@@ -30,7 +19,7 @@
               <div class="left-margin">              
                 <input type="text" name="stock_plate" id="stock_plate"
                  class="fieldcontrol" maxlength="15" value="<%=@stock_plate%>"
-                 placeholder="Matrícula" autocomplete="off"/>
+                 placeholder="<%=BookingDataSystem.r18n.t.booking_business_literals.business_type[@product_family.business_type.to_s]['resource_reservations_search']%>" autocomplete="off"/>
               </div>
             </div>
             <div class="grid_3">
@@ -52,21 +41,23 @@
          <p class="no-data-message"><%= t.entitymanagement.no_data %></p>
       </div>
     <% else %>
-    <table id="table" class="table">
+    <table id="table" class="table table-striped" style="table-layout: fixed; max-width: 100%">
         <thead class="table-header">
           <tr>
-            <th class="table-cell" scope="col" style="width:2em">Fecha inicio</th>
-            <th class="table-cell" scope="col" style="width:2em">Fecha fin</th>
-            <th class="table-cell" scope="col" style="width:2.5em">Localizador</th>
-            <th class="table-cell" scope="col" style="width:5em">Cliente</th>
-            <th class="table-cell" scope="col" style="width:2em">Teléfono</th>
-            <th class="table-cell" scope="col" style="width:4.5em">Email</th>
-            <th class="table-cell" scope="col" style="width:4em">Estado</th>
-            <th class="table-cell" scope="col">Productos</th>
-            <th class="table-cell" scope="col">Total</th>
+            <th class="table-cell" scope="col" style="width:8em"><%=BookingDataSystem.r18n.t.booking_business_literals.starting_date[@product_family.starting_date.to_s]['pickup_singular']%></th>
+            <th class="table-cell" scope="col" style="width:8em"><%=BookingDataSystem.r18n.t.booking_business_literals.starting_date[@product_family.starting_date.to_s]['return_singular']%></th>
+            <th class="table-cell" scope="col" style="width:10em">Localizador</th>
+            <th class="table-cell" scope="col" style="width:10em">Cliente</th>
+            <th class="table-cell" scope="col" style="width:10em">Teléfono</th>
+            <th class="table-cell" scope="col" style="width:10em">Email</th>
+            <th class="table-cell" scope="col" style="width:8em">Estado</th>
+            <th class="table-cell" scope="col" style="width:9em"><%=BookingDataSystem.r18n.t.booking_business_literals.business_type[@product_family.business_type.to_s]['category']%></th>
+            <th class="table-cell text-right" scope="col" style="width:8em">Total</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody>      
+        <tbody>
+        <% total = 0 %>
         <% @reservations.each do |reservation| %>     
           <tr class="table-row">
             <td class="table-cell"><%=reservation.date_from.strftime('%Y-%m-%d')%> <%=reservation.time_from%></td>
@@ -75,15 +66,22 @@
             <td class="table-cell"><%=reservation.customer_name%> <%=reservation.customer_surname%></td>
             <td class="table-cell"><%=reservation.customer_phone%> <%=reservation.customer_mobile_phone%></td>
             <td class="table-cell"><%=reservation.customer_email%></td>
-            <td class="table-cell centered_text"><%=t.booking_status[reservation.status]%></td>
+            <td class="table-cell"><%=t.booking_status[reservation.status]%></td>
             <td class="table-cell">
               <% reservation.booking_lines.each do |booking_line| %>
                 <div><%= booking_line.item_id %><%if booking_reservation_starts_with == :shopcart%>: <%=booking_line.quantity%><%end%></div>
               <% end %>
             </td>
-            <td class="table-cell right_text"><%="%.2f" % reservation.total_cost%></td>
+            <td class="table-cell text-right"><%="%.2f" % reservation.total_cost%></td>
+            <td></td>
           </tr>
+          <% total += reservation.total_cost %>
         <% end %>
+        <tr class="table-row success">
+            <td colspan="8"><b>TOTAL</b></td>
+            <td class="text-right"><b><%="%.2f" % total%></b></td>
+            <td></td>
+        </tr>
         </tbody>
       </table>
       <% end %>    

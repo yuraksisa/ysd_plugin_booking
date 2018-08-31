@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.168] - 2018-08-31
+### Updated
+- Reservations by resources: style + include total
+
 ## [0.4.167] - 2018-08-09
 ### Updated
 - Return place not adjusted on change : Change pickup/return place-date
