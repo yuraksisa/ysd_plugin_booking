@@ -13,7 +13,7 @@ module Sinatra
 
             page = [params[:page].to_i, 1].max  
             page_size = 20
-            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:code.asc]} 
+            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:sort_order.asc, :code.asc]} 
             
             if request.media_type == "application/json"
               request.body.rewind

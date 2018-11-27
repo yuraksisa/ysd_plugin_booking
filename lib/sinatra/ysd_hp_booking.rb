@@ -66,6 +66,8 @@ module Sinatra
         addon_analysis_basic = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_analysis_basic)
         addon_analysis_extension = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_analysis_extension)
         addon_web = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_web)
+        addon_invoicing = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_invoicing)
+        addon_suppliers = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_suppliers)
       else
         addon_crm = (settings.respond_to?(:mybooking_addon_crm) ? settings.mybooking_addon_crm : false)
         addon_finances = (settings.respond_to?(:mybooking_addon_finances) ? settings.mybooking_addon_finances : false)
@@ -79,7 +81,9 @@ module Sinatra
         addon_import = (settings.respond_to?(:mybooking_addon_import) ? settings.mybooking_addon_import : false)
         addon_analysis_basic = (settings.respond_to?(:mybooking_addon_analysis_basic) ? settings.mybooking_addon_analysis_basic : false)
         addon_analysis_extension = (settings.respond_to?(:mybooking_addon_analysis_extension) ? settings.mybooking_addon_analysis_extension : false)
-        addon_analysis_extension = (settings.respond_to?(:mybooking_addon_web) ? settings.mybooking_addon_web : false)
+        addon_web = (settings.respond_to?(:mybooking_addon_web) ? settings.mybooking_addon_web : false)
+        addon_invoicing = (settings.respond_to?(:mybooking_addon_invoicing) ? settings.mybooking_addon_invoicing : false)
+        addon_suppliers = (settings.respond_to?(:mybooking_addon_suppliers) ? settings.mybooking_addon_suppliers : false)
       end
 
       {addon_crm: addon_crm,
@@ -94,7 +98,9 @@ module Sinatra
        addon_import: addon_import,
        addon_analysis_basic: addon_analysis_basic,
        addon_analysis_extension: addon_analysis_extension,
-       addon_web: addon_web}
+       addon_web: addon_web,
+       addon_invoicing: addon_invoicing,
+       addon_suppliers: addon_suppliers}
 
     end
 

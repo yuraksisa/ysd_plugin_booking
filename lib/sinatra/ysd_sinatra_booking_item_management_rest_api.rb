@@ -19,6 +19,7 @@ module Sinatra
 
         end
 
+        # --------------------------------- CRUD ------------------------------
 
         #                    
         # Query booking items
@@ -118,6 +119,27 @@ module Sinatra
         end
 
         #
+        # Deletes a booking item
+        #
+        app.delete "/api/booking-item", :allowed_usergroups => ['bookings_manager','staff'] do
+        
+          booking_item_request = body_as_json(::Yito::Model::Booking::BookingItem)
+          
+          # Remove the content
+          key = booking_item_request.delete(:reference)
+          
+          if booking_item = ::Yito::Model::Booking::BookingItem.get(key)
+            booking_item.destroy
+          end
+          
+          content_type :json
+          true.to_json
+        
+        end        
+
+        # ---------------------------- Change reference -----------------------
+
+        #
         # Change a booking item reference and updates the resource
         #
         app.put "/api/booking-item/:reference/change", :allowed_usergroups => ['bookings_manager','staff'] do
@@ -142,24 +164,6 @@ module Sinatra
 
         end
         
-        #
-        # Deletes a content
-        #
-        app.delete "/api/booking-item", :allowed_usergroups => ['bookings_manager','staff'] do
-        
-          booking_item_request = body_as_json(::Yito::Model::Booking::BookingItem)
-          
-          # Remove the content
-          key = booking_item_request.delete(:reference)
-          
-          if booking_item = ::Yito::Model::Booking::BookingItem.get(key)
-            booking_item.destroy
-          end
-          
-          content_type :json
-          true.to_json
-        
-        end
 
 
       end

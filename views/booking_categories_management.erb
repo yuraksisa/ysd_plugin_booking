@@ -230,6 +230,17 @@
           </div>
 
         </div>
+        
+        <!-- Resource data -->
+
+        <%% if (entity.type == 'resource') { %>
+          <form name="element" class="form-horizontal" method="POST">
+            <input type="hidden" name="stock_control" id="stock_control" value="true"/>
+            <input type="hidden" name="stock" id="stock" value="1"/>
+          </form>
+          <div id="booking_item_editor">
+          </div>
+        <%% } %>  
 
         <!-- Translations -->
         <% if @show_translations %>
@@ -461,11 +472,6 @@
             </div>
           </div>
         </div>
-        <%% } else { %>
-        <form name="element" class="form-horizontal" method="POST">
-          <input type="hidden" name="stock_control" id="stock_control" value="true"/>
-          <input type="hidden" name="stock" id="stock" value="1"/>
-        </form>
         <%% } %>
 
         <!-- Sales channels -->

@@ -1,0 +1,84 @@
+<div id="page_wrapper">
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_singular'] %></h3>
+              </div>
+              <div class="block-content block-content-narrow">
+				<form name="booking_item_form" class="form-horizontal">
+				  <% if @booking_item %>
+				    <input type="hidden" id="reference" name="reference" value="<%=@booking_item.reference%>"/>
+				  <% end %>
+
+                  <% if @booking_item_family.stock_model %>
+
+	                  <div class="form-group">
+	                     <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['stock_model'] %></label>
+	                     <div class="col-md-9">
+	                       <input type="text" maxlength="80" id="stock_model" name="stock_model" class="form-control" <% if @booking_item %> value="<%= @booking_item.stock_model%>" <%end%>/>
+	                     </div>
+	                  </div>
+
+                  <% end %>
+                  
+                  <% if @booking_item_family.stock_plate %>
+
+	                  <div class="form-group">
+	                     <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['stock_reference'] %></label>
+	                     <div class="col-md-9">
+	                       <input type="text" maxlength="80" id="stock_plate" name="stock_plate" class="form-control" <% if @booking_item %> value="<%= @booking_item.stock_plate%>" <%end%>/>
+	                     </div>
+	                  </div>
+
+                  <% end %>
+
+                  <div class="form-group">
+                     <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['resource_characteristic_1'] %></label>
+                     <div class="col-md-9">
+                       <input type="text" maxlength="80" id="characteristic_1" name="characteristic_1" class="form-control" <% if @booking_item %> value="<%= @booking_item.characteristic_1%>" <%end%>/>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['resource_characteristic_2'] %></label>
+                     <div class="col-md-9">
+                       <input type="text" maxlength="80" id="characteristic_2" name="characteristic_2" class="form-control" <% if @booking_item %> value="<%= @booking_item.characteristic_2%>" <%end%>/>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['resource_characteristic_3'] %></label>
+                     <div class="col-md-9">
+                       <input type="text" maxlength="80" id="characteristic_3" name="characteristic_3" class="form-control" <% if @booking_item %> value="<%= @booking_item.characteristic_3%>" <%end%>/>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['resource_characteristic_4'] %></label>
+                     <div class="col-md-9">
+                       <input type="text" maxlength="80" id="characteristic_4" name="characteristic_4" class="form-control" <% if @booking_item %> value="<%= @booking_item.characteristic_4%>" <%end%>/>
+                     </div>
+                  </div>                                                      
+
+              	  <div class="form-group">
+                     <label class="col-md-3 control-label"><%= t.booking_item_management.form.description.label %></label>
+                     <div class="col-md-9">
+                       <textarea id="description" name="description" class="form-control"><% if @booking_item %><%= @booking_item.description%><%end%></textarea>
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <% if @booking_item %>
+                          <input id="update_booking_item_button" type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        <% end %>
+                    </div>
+                  </div>                  
+
+				</form>  
+              </div>
+            </div>
+          </div>
+        </div>
+</div>        

@@ -1,0 +1,76 @@
+require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.formparams', 'jquery.toast'], function($, YSDForms) {
+    
+    bookingItemModel = {
+
+        updateBookingItem: function() {
+
+            var data = $('form[name=booking_item_form]').formParams(false);
+            var dataJSON = JSON.stringify(data);
+
+            $.ajax({
+                type: 'PUT',
+                url : '/api/booking-item',
+                data: dataJSON,
+                dataType : 'json',
+                contentType : 'application/json; charset=utf-8',
+                crossDomain: true,
+                success: function(data, textStatus, jqXHR) {
+                    bookingItemView.update('booking_item_updated');
+                },
+                error: function(data, textStatus, jqXHR) {
+                    alert('Error actualizando datos');
+                },
+                complete: function(jqXHR, textStatus) {
+
+                }
+
+            });
+
+        }
+
+    };
+
+    bookingItemController = {
+
+        updateBookingItemButtonClick: function() {
+            bookingItemModel.updateBookingItem();
+        }
+
+    };
+
+    bookingItemView = {
+
+        init: function () {
+            YSDForms.improve();
+            this.setupControls();
+        },
+
+        setupControls: function() {
+            $('#update_booking_item_button').unbind('click');
+            $('#update_booking_item_button').bind('click', function(){
+                bookingItemController.updateBookingItemButtonClick();
+            })
+        },
+
+        update: function(action) {
+            switch (action) {
+                case 'booking_item_updated':
+                    $.toast({
+                        heading: 'Datos actualizados',
+                        text: 'Los datos se han actulizado correctamente',
+                        position: 'top-right',
+                        bgColor: 'rgb(56, 154, 56)',
+                        textColor: 'white',
+                        loader: false,
+                        stack: false
+                    });
+                    $('#modal_container').modal('hide'); // Modal integration
+                    break;
+            }
+        }
+
+    };
+
+    bookingItemView.init();
+
+});
