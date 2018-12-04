@@ -121,7 +121,7 @@
                       data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
                   <%= render_variable_checkbox_boolean('booking.multiple_rental_locations', t.booking_settings.form.multiple_rental_locations) %>
                   <p class="text-muted"><%=t.booking_settings.form.multiple_rental_locations_description%></p>
-                  <div id="rental_location_operators_container">
+                  <div id="rental_location_operators_container" style="display:none">
                     <%= render_variable_checkbox_boolean('booking.resource_availability_by_rental_location_storage', t.booking_settings.form.resource_availability_by_rental_location_storage) %>
                     <p class="text-muted"><%=t.booking_settings.form.resource_availability_by_rental_location_storage_description%></p>
                     <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_pickup_return_same_location', t.booking_settings.form.multiple_rental_locations_pickup_return_same_location) %>
