@@ -448,9 +448,21 @@ module Huasi
            :module => :booking})
 
       SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.resource_availability_by_rental_location_storage'},
+          {:value => 'false',
+           :description => 'A resource located in an storage. Its only available for rental locations linked to the storage',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
           {:name => 'booking.multiple_rental_locations_allow_operator_all_locations'},
           {:value => 'false',
            :description => 'Check if the booking operators can show all locations in pickup/return report',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.multiple_rental_locations_pickup_return_same_location'},
+          {:value => 'true',
+           :description => 'Check if the pickup and return place must belong to the same location',
            :module => :booking})
 
       # Frontend
@@ -517,6 +529,7 @@ module Huasi
     {
         :name => 'Alquiler de vehículos (coches, motos, ...)',
         :business_type => :vehicle_rental,
+        :product_type => :category_of_resources,
         :business_activity => :rental,
         :presentation_order => 1,
         :frontend => :dates,
@@ -532,7 +545,6 @@ module Huasi
         :fuel => true,
         :stock_model => true,
         :stock_plate => true,
-        :product_type => :category_of_resources,
         :product_price_definition_type => :season,
         :product_price_definition_season_definition => season_definition,
         :product_price_definition_factor_definition => factor_definition,
@@ -544,15 +556,57 @@ module Huasi
         :extras_price_definition_units_management => :unitary,
         :extras_price_definition_units_management_value => 1,
         :starting_date => :pickup_return_date,
-        :allow_extras => true
+        :allow_extras => true,
+        :multiple_locations => true,
+        :multiple_storages => true,
+        :pax => false
       })
+
+      Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car_vehicles'},
+    {
+        :name => 'Alquiler vehículos individuales (sin categorías)',
+        :business_type => :vehicle_rental,
+        :product_type => :resource,
+        :business_activity => :rental,
+        :presentation_order => 2,
+        :frontend => :dates,
+        :driver => true,
+        :driver_date_of_birth => false,
+        :driver_license => true,
+        :guests => false,
+        :flight => true,
+        :pickup_return_place => true,
+        :time_to_from => true,
+        :start_date_literal => :pickup,
+        :cycle_of_24_hours => true,
+        :fuel => true,
+        :stock_model => true,
+        :stock_plate => true,
+        :product_price_definition_type => :season,
+        :product_price_definition_season_definition => season_definition,
+        :product_price_definition_factor_definition => factor_definition,
+        :product_price_definition_units_management => :detailed,
+        :product_price_definition_units_management_value => 7,
+        :extras_price_definition_type => :no_season,
+        :extras_price_definition_season_definition => season_definition,
+        :extras_price_definition_factor_definition => factor_definition,
+        :extras_price_definition_units_management => :unitary,
+        :extras_price_definition_units_management_value => 1,
+        :starting_date => :pickup_return_date,
+        :allow_extras => true,
+        :multiple_locations => true,
+        :multiple_storages => true,
+        :pax => false        
+      })
+
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'kayak'},
     {
         :name => 'Alquiler y/o excursiones en kayak',
         :business_type => :category_resources,
+        :product_type => :category_of_resources,
         :business_activity => :both_rental_activities_tours,
-        :presentation_order => 2,
+        :presentation_order => 3,
         :frontend => :shopcart,
         :driver => true,
         :driver_date_of_birth => false,
@@ -571,7 +625,6 @@ module Huasi
         :fuel => false,
         :stock_model => true,
         :stock_plate => false,
-        :product_type => :category_of_resources,
         :product_price_definition_type => :season,
         :product_price_definition_season_definition => season_definition,
         :product_price_definition_factor_definition => factor_definition,
@@ -583,16 +636,20 @@ module Huasi
         :extras_price_definition_units_management => :unitary,
         :extras_price_definition_units_management_value => 1,
         :starting_date => :pickup_return_date,
-        :allow_extras => true
+        :allow_extras => true,
+        :multiple_locations => true,
+        :multiple_storages => true,
+        :pax => true   
       })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
         {
          :name => 'Alojamientos (hotel, hostal, ...)',
          :business_type => :accommodation,
+         :product_type => :category_of_resources,
          :business_activity => :rental,
          :frontend => :categories,
-         :presentation_order => 3,
+         :presentation_order => 4,
          :driver => false,
          :guests => true,
          :flight => true,
@@ -603,7 +660,6 @@ module Huasi
          :fuel => false,
          :stock_model => false,
          :stock_plate => false,
-         :product_type => :category_of_resources,
          :product_price_definition_type => :season,
          :product_price_definition_season_definition => season_definition,
          :product_price_definition_factor_definition => factor_definition,
@@ -615,16 +671,20 @@ module Huasi
          :extras_price_definition_units_management => :unitary,
          :extras_price_definition_units_management_value => 1,
          :starting_date => :checkin_checkout,
-         :allow_extras => true
+         :allow_extras => true,
+         :multiple_locations => false,        
+         :multiple_storages => false,
+         :pax => false   
         })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'bike'},
         {
          :name => 'Alquiler y/o rutas en bicicleta',
          :business_type => :category_resources,
+         :product_type => :category_of_resources,
          :business_activity => :both_rental_activities_tours,
          :frontend => :shopcart,
-         :presentation_order => 4,
+         :presentation_order => 5,
          :driver => false,
          :guests => false,
          :flight => false,
@@ -635,7 +695,6 @@ module Huasi
          :fuel => false,
          :stock_model => true,
          :stock_plate => false,
-         :product_type => :category_of_resources,
          :product_price_definition_type => :season,
          :product_price_definition_season_definition => season_definition,
          :product_price_definition_factor_definition => factor_definition,
@@ -647,15 +706,19 @@ module Huasi
          :extras_price_definition_units_management => :unitary,
          :extras_price_definition_units_management_value => 1,
          :starting_date => :pickup_return_date,
-         :allow_extras => true
+         :allow_extras => true,
+         :multiple_locations => true,        
+         :multiple_storages => true,
+         :pax => false
         })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'boat_charter'},
     {
         :name => 'Charter naútico',
         :business_type => :boat_charter,
+        :product_type => :resource,        
         :business_activity => :rental,
-        :presentation_order => 5,
+        :presentation_order => 6,
         :frontend => :dates,
         :driver => true,
         :driver_date_of_birth => false,
@@ -677,7 +740,6 @@ module Huasi
         :fuel => false,
         :stock_model => true,
         :stock_plate => false,
-        :product_type => :resource,
         :product_price_definition_type => :season,
         :product_price_definition_season_definition => season_definition,
         :product_price_definition_factor_definition => factor_definition,
@@ -689,7 +751,10 @@ module Huasi
         :extras_price_definition_units_management => :unitary,
         :extras_price_definition_units_management_value => 1,
         :starting_date => :start_end,
-        :allow_extras => true
+        :allow_extras => true,
+        :multiple_locations => false,        
+        :multiple_storages => false,
+        :pax => false
     })
 
 
@@ -698,8 +763,9 @@ module Huasi
       {
           :name => 'Tours',
           :business_type => :tours,
+          :product_type => :resource, #Not necessary because it's for renting
           :business_activity => :activities_tours,
-          :presentation_order => 6,
+          :presentation_order => 7,
           :frontend => :dates,
           :product_price_definition_type => :no_season,
           :product_price_definition_season_definition => nil,
@@ -712,7 +778,10 @@ module Huasi
           :extras_price_definition_units_management => :unitary,
           :extras_price_definition_units_management_value => 1,
           :starting_date => :pickup_return_date,
-          :allow_extras => true
+          :allow_extras => true,
+          :multiple_locations => true,        
+          :multiple_storages => false,
+          :pax => false
       })
 
       Yito::Model::Booking::ProductFamily.first_or_create(
@@ -720,8 +789,9 @@ module Huasi
           {
               :name => 'Actividades',
               :business_type => :activities,
+              :product_type => :resource, #Not necessary because it's for renting              
               :business_activity => :activities_tours,
-              :presentation_order => 7,
+              :presentation_order => 8,
               :frontend => :dates,
               :product_price_definition_type => :no_season,
               :product_price_definition_season_definition => nil,
@@ -734,12 +804,18 @@ module Huasi
               :extras_price_definition_units_management => :unitary,
               :extras_price_definition_units_management_value => 1,
               :starting_date => :pickup_return_date,
-              :allow_extras => true
+              :allow_extras => true,
+              :multiple_locations => true,        
+              :multiple_storages => false,
+              :pax => false
           })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'other'},
     {
-        :name => 'Otros',
+        :name => 'Otros (alquiler)',
+        :business_type => :category_resources,
+        :business_activity => :rental,
+        :product_type => :category_of_resources,
         :frontend => :dates,
         :presentation_order => 99,
         :driver => false,
@@ -750,7 +826,6 @@ module Huasi
         :start_date_literal => :pickup,
         :cycle_of_24_hours => false,
         :fuel => false,
-        :product_type => :category_of_resources,
         :product_price_definition_type => :season,
         :product_price_definition_season_definition => season_definition,
         :product_price_definition_factor_definition => factor_definition,
@@ -761,10 +836,11 @@ module Huasi
         :extras_price_definition_factor_definition => factor_definition,
         :extras_price_definition_units_management => :unitary,
         :extras_price_definition_units_management_value => 1,
-        :business_type => :category_resources,
-        :business_activity => :rental,
         :starting_date => :start_end,
-        :allow_extras => true
+        :allow_extras => true,
+        :multiple_locations => true,        
+        :multiple_storages => true,
+        :pax => false
       })
 
       #
@@ -835,6 +911,16 @@ module Huasi
         booking_return_event = Yito::Model::Calendar::EventType.create(name: 'booking_return', description: 'Recogida')
         Yito::Model::Calendar::EventTypeCalendar.create(calendar: booking_journal_calendar, event_type: booking_return_event)
       end
+
+      if Yito::Model::Booking::RentalStorage.count == 0
+        booking_storage = Yito::Model::Booking::RentalStorage.first_or_create({name: 'Central'},
+                                                                              {name: 'Central',
+                                                                               address: {street: '', city: '', country: 'España'}})
+        Yito::Model::Booking::RentalLocation.first_or_create({code: 'central'},
+                                                             {name: 'Central',
+                                                              rental_storage: booking_storage,
+                                                              address: {street: '', city: '', country: 'España'}})
+      end 
 
     end
     

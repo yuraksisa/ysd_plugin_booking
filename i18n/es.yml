@@ -67,9 +67,15 @@ booking_settings:
     send_notifications_backoffice_reservations: Habilita notificaciones de las reservas registradas desde el backoffice
     business: Características del negocio
     front_end_title: Front-end
-    multiple_rental_locations: Múltiples oficinas
-    manage_locations: Gestionar oficinas
-    multiple_rental_locations_description: El negocio tiene múltiples oficinas o centros de gestión. Las reservas de material o las actividades son gestionadas por un centro.
+    manage_locations: Gestionar oficinas o sucursales
+    multiple_rental_locations: Múltiples oficinas o sucursales
+    multiple_rental_locations_description: El negocio tiene múltiples oficinas o sucursales. Las reservas de material o las actividades son gestionadas por un centro.
+    resource_availability_by_rental_location_storage: Disponibilidad de stock para las oficinas o sucursales de un almacén o campa
+    resource_availability_by_rental_location_storage_description: El stock se gestiona por cada almacén o campa, de forma que cada sucursal/oficina sólo usar los recursos del almacén o campa relacionadol. Si desmarca esta opción se gestiona el stock de forma global 
+    multiple_rental_locations_operator: Los operarios pueden ver todas las sucursales/oficinas
+    multiple_rental_locations_operator_description: Permite a los usuarios operadores, no el equipo gestor, ver todas las sucursales/oficinas.
+    multiple_rental_locations_pickup_return_same_location: Lugar de entrega y recogida pertenece a la misma sucursal
+    multiple_rental_locations_pickup_return_same_location_description: Seleccionar la opción si el lugar de entrega y recogida han de pertenecer a la misma oficina/sucursal
     scheduler_start_time: Hora de inicio planificación
     scheduler_finish_time: Hora de fin planificación    
     booking_mode:
@@ -1146,6 +1152,8 @@ booking_item_management:
     own_property_yes: S
     own_property_no: N
     plate: Matrícula
+    rental_storage: Almacén/Campa
+    not_assigned_rental_storage: No asignado
   form:
     title: Stock
     reference: 
@@ -1189,6 +1197,8 @@ booking_item_management:
       label: Stock propio
     assignable:
       label: Asignable
+    rental_storage: 
+      label: Almacén/Campa      
   change_reference_form:
     title: Cambiar referencia
     new_reference:
@@ -1214,7 +1224,7 @@ booking_places_management:
     is_pickup: Entrega
     is_return: Devolución
     price: Precio
-    rental_location: Oficina
+    rental_location: Oficina/Sucursal
   form:
     name:
       label: Nombre
@@ -1747,6 +1757,9 @@ booking_rental_locations_management:
   table:
     code: Código
     name: Nombre
+    storage: Almacén/campa
+    create_button: Añadir
+    confirm_delete: ¿Está seguro que desea eliminar la oficina/sucursal? 
   form:
     code:
       label: Código
@@ -1767,3 +1780,9 @@ booking_category_sales_channels_edit:
 booking_category_search:
   description: "%1 ....... %2%3  -- (%4 disponibles las fechas seleccionadas)"
   description_same_product: "%1 ....... %2%3  -- (SELECCION ACTUAL)"
+booking_rental_storages_management:
+  table:
+    code: Código
+    name: Nombre
+    create_button: Añadir
+    confirm_delete: ¿Está seguro que desea eliminar el almacén?  

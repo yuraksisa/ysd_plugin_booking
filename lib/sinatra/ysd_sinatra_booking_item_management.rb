@@ -20,6 +20,10 @@ module Sinatra
 
           if @booking_item = ::Yito::Model::Booking::BookingItem.get(params[:id])
             @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+            @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations').to_bool
+            if @multiple_rental_locations
+              @rental_storages = ::Yito::Model::Booking::RentalStorage.all
+            end  
             load_page :booking_item_edit
           else
             status 404
@@ -37,6 +41,8 @@ module Sinatra
           @addon_finances = (@addons and @addons.has_key?(:addon_finances) and @addons[:addon_finances])
           # Item family
           @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          # Multiple rental locations
+          @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations').to_bool
 
           load_em_page :booking_items_management, :bookingitem, false
 

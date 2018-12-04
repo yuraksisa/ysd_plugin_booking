@@ -45,7 +45,7 @@
          <th class="table-header-title" scope="col" style="width:10%">
             Código
          </th>
-         <th class="table-header-title" scope="col" style="width:20%">
+         <th class="table-header-title" scope="col" style="width:15%">
             Nombre
          </th>
          <% if @booking_item_family.product_type == :category_of_resources %>
@@ -62,6 +62,11 @@
          <th class="table-header-title centered_text" scope="col" style="width:15%">
             Disponible web
          </th>
+         <% if @booking_item_family.multiple_locations and @multiple_rental_locations %>
+         <th class="table-header-title centered_text" scope="col" style="width:10%">
+            <%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['physical_organization'] %>
+         </th>
+         <% end %>
          <th class="table-header-title" scope="col">
          </th>
        </tr>
@@ -100,6 +105,11 @@
       <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
          <%%= entity.web_public ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  %>
       </td>
+      <% if @multiple_rental_locations %>
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="vertical-align: middle">
+         <%% if (entity.resource && entity.resource.rental_storage ) {%><%%= entity.resource.rental_storage.name %><%% } %>
+      </td>
+      <% end %>
       <td class="table-cell">
       </td>
     </tr>
@@ -271,6 +281,7 @@
               <div class="block-content block-content-narrow">
                   <form name="element" class="form-horizontal" method="POST">
                       <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                      <% if @booking_item_family.pax %>
                       <div class="form-group">
                             <label class="col-md-3 control-label"><%= t.booking_category_management.form.capacity.label%></label>
                             <div class="col-md-9">
@@ -285,6 +296,7 @@
                             <p class="text-muted"><%= t.booking_category_management.form.capacity_children.description%></p>
                             </div>
                       </div>
+                      <% end %>
                       <div class="form-group">
                             <label class="col-md-3 control-label"><%= t.booking_category_management.form.from_price.label%></label>
                             <div class="col-md-9">

@@ -1,4 +1,9 @@
 <%= include 'season_definition_edition.js'.to_sym %>
+
+<% if booking_item_family and booking_item_family.multiple_locations %>
+  <%= partial 'booking_rental_storages_editor.js'.to_sym %>
+  <%= partial 'booking_rental_locations_editor.js'.to_sym %>
+<% end %>
 <%= include 'booking_pickup_return_place_definition_edition.js'.to_sym %>
 <%= include 'booking_driver_age_rule_edition.js'.to_sym %>
 
@@ -69,6 +74,30 @@ require(['jquery','YSDForms'], function($, YSDForms) {
 
             YSDForms.improve();
             YSDForms.limit_text_area_content_size('.variable', 255);
+
+            // Multiple rental locations
+            <% if booking_item_family and booking_item_family.multiple_locations %>
+              $('#multiple_locations_form').find('button[type="button"]').bind('click',
+                  function() {
+                      var form = $(this.form)[0];
+                      YSDForms.submitAjax(form, {
+                          successCallback: function(data, textStatus, jqXHR) {
+                            if ($('input[name=booking\\.multiple_rental_locations]').is(':checked')) {
+                              $('#rental_storages_container').show();
+                              $('#rental_locations_container').show();
+                              $('#rental_location_operators_container').show();
+                            }
+                            else {
+                              $('#rental_storages_container').hide();
+                              $('#rental_locations_container').hide();
+                              $('#rental_location_operators_container').hide();
+                            }
+                          }
+                      });
+                      return false;
+                  });
+            <% end %>          
+
 
             // Hide the custom pickup return place price container unless the pickup and return place configuration allows
             // custom place

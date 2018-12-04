@@ -119,6 +119,26 @@ require(['jquery','ysdtemplate', 'autonumeric','jquery.formparams','jquery.toast
 
             init: function() {
                 this.setupEvents();
+
+                rentalLocationsModel.addListener('created_location', function(event) {
+                  if (event.type == 'created_location') {
+                    $('.update_pickpup_place_rental_location_code, select[name=rental_location_code]').append($('<option>', {
+                            value: event.data.code,
+                            text: event.data.name
+                        }));
+                  }
+                });
+                rentalLocationsModel.addListener('updated_location', function(event) {
+                    if (event.type = 'updated_location') {
+                      $('.update_pickpup_place_rental_location_code option[value='+event.data.code+'], select[name=rental_location_code] option[value='+event.data.code+']').html(event.data.name);  
+                    }
+                });
+                rentalLocationsModel.addListener('deleted_location', function(event) {
+                    if (event.type = 'deleted_location') {
+                      $('.update_pickpup_place_rental_location_code option[value='+event.data+'], select[name=rental_location_code] option[value='+event.data+']').remove();  
+                    }
+                });
+
             },
 
             setupEvents: function() {
@@ -154,7 +174,15 @@ require(['jquery','ysdtemplate', 'autonumeric','jquery.formparams','jquery.toast
 
             refresh: function() {
 
-                var html = tmpl('pickup_return_place_script')({pickup_return_places: pickupReturnPlaceDefinitionEditionModel.data});
+                var rentalLocations = [];
+                var data = $('select[form=new_pickup_place][name=rental_location_code] option');
+                for (var idx=0;idx<data.length;idx++) {
+                    if ($(data[idx]).attr('value') != '') {
+                      rentalLocations.push({id: $(data[idx]).attr('value'), name: $(data[idx]).html()});
+                    }
+                }
+                var html = tmpl('pickup_return_place_script')({pickup_return_places: pickupReturnPlaceDefinitionEditionModel.data,
+                                                               rentalLocations: rentalLocations});
                 $('#pickup_return_places_table tr.pickup_return_place').remove();
                 $('#pickup_return_places_table tbody tr:first').before(html);
                 this.setupEditionButtons();

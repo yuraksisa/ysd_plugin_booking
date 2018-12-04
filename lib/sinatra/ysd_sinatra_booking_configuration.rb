@@ -48,6 +48,7 @@ module Sinatra
         #
         app.get '/admin/booking/config/basic', :allowed_usergroups => ['booking_manager', 'staff'] do
 
+          @addons = mybooking_addons
 
           booking_renting, booking_activities = mybooking_plan_type
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
@@ -92,11 +93,15 @@ module Sinatra
           @pickup_return_place_definition = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(SystemConfiguration::Variable.get_value('booking.pickup_return_place_definition').to_i)
           @show_translations = settings.multilanguage_site
 
-          if @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          
+          if booking_item_family and booking_item_family.multiple_locations and @multiple_rental_locations
+            @rental_storages = ::Yito::Model::Booking::RentalStorage.all
             @rental_locations = ::Yito::Model::Booking::RentalLocation.all
           else
-            @rental_locations = []
-          end
+            @rental_storages = []
+            @rental_locations = []  
+          end  
 
           load_page(:config_booking_basic, {:locals => locals})
 

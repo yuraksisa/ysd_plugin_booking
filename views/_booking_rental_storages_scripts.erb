@@ -1,0 +1,20 @@
+<script id="rental_storage_script" type="text/tmpl">
+      <tr>
+         <td>
+            <form id="update_rental_storage_<%%=rental_storage.id%>" name="update_rental_storage_<%%=rental_storage.id%>">
+              <input type="hidden" name="id" value="<%%=rental_storage.id%>"/>
+              <input type="text" form="update_rental_storage_<%%=rental_storage.id%>"
+               name="name" class="form-control" size="30" maxlength="80"  
+               value="<%%=rental_storage.name%>"/>          
+            </form>
+         </td> 
+         <td>
+          <button type="button" form="update_rental_storage_<%%=rental_storage.id%>"
+                 class="btn btn-sm btn-primary col-md-1 update_rental_storage_btn" style="width: 32px; display: inline-block"><i class="fa fa-save push-5-r"></i></button>
+          <button type="button" form="update_rental_storage_<%%=rental_storage.id%>"
+                  class="btn btn-sm btn-danger col-md-1 delete_rental_storage_btn" style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-trash push-5-r"></i></button>
+          <button type="button" form="update_rental_storage_<%%=rental_storage.id%>"
+                  class="btn btn-sm btn-default col-md-1 rental_location_address_btn" data-location-id="<%%=rental_storage.address_id%>" style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-home push-5-r"></i></button>                              
+         </td> 
+      </tr>
+</script>

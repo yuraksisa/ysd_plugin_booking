@@ -50,6 +50,7 @@ Plugins::SinatraAppPlugin.register :booking do
    sinatra_extension Sinatra::YitoExtension::BookingDriverAgeRuleDefinitionsManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingDriverAgeRulesManagement
    sinatra_extension Sinatra::YitoExtension::BookingDriverAgeRulesManagementRESTApi
+   sinatra_extension Sinatra::YitoExtension::BookingRentalStoragesManagementRESTApi   
    sinatra_extension Sinatra::YitoExtension::BookingRentalLocationsManagement
    sinatra_extension Sinatra::YitoExtension::BookingRentalLocationsManagementRESTApi
    sinatra_extension Sinatra::YitoExtension::BookingTranslation

@@ -22,11 +22,12 @@
       <% if @multiple_rental_locations %>
       <td>
         <select form="update_pickup_place_<%%=pickup_return_places[idx].id%>"
-                class="form-control" name="rental_location_code" id="rental_location" style="width: 150px">
+                class="form-control update_pickpup_place_rental_location_code" name="rental_location_code" id="rental_location" style="width: 150px">
           <option value="" <%% if (pickup_return_places[idx].rental_location_code == null) {%>selected<%%}%>>No aplica</option>
-          <% @rental_locations.each do |rental_location| %>
-            <option value="<%=rental_location.code%>"<%% if (pickup_return_places[idx].rental_location_code == '<%=rental_location.code%>') {%>selected<%%}%>><%=rental_location.name%></option>
-          <% end %>
+          <%% for (var idx2=0;idx2<rentalLocations.length;idx2++) { %>
+            <option value="<%%=rentalLocations[idx2].id%>" <%% if(pickup_return_places[idx].rental_location_code == rentalLocations[idx2].id){%>selected<%%}%>><%%=rentalLocations[idx2].name%></option>
+          <%% } %>
+
         </select>
       </td>
       <% end %>

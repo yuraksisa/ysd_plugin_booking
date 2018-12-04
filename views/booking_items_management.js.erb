@@ -160,6 +160,10 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       var categoryValue = (this.entity && this.entity.category_code)?this.entity.category_code:null;
       var categorySelector = new SelectSelector('category[code]', categoryDataSource, categoryValue);
 
+      var rentalStorageDataSource = new RemoteDataSource('/api/booking-rental-storages?all=true',{'id':'id','description':'name'});
+      var rentalStorageValue = (this.entity && this.entity.rental_storage_id)?this.entity.rental_storage_id:null;
+      var rentalStorageSelector = new SelectSelector('rental_storage[id]', rentalStorageDataSource, rentalStorageValue);
+
     },
       
     adaptFormData : function(data) {

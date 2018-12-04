@@ -1,0 +1,29 @@
+<script id="rental_location_script" type="text/tmpl">
+      <tr>
+         <td>
+            <form id="update_rental_location_<%%=rental_location.code%>" name="update_rental_location_<%%=rental_location.code%>">
+              <input type="text" name="code" class="form-control" value="<%%=rental_location.code%>" size="10" maxlength="50"/>
+            </form>
+         </td>
+         <td>
+            <input type="text" form="update_rental_location_<%%=rental_location.code%>"
+               name="name" class="form-control" size="30" maxlength="80"  
+               value="<%%=rental_location.name%>"/>          
+         </td> 
+         <td>
+            <select form="update_rental_location_<%%=rental_location.code%>" class="form-control update_rental_location_storage_id" name="rental_storage_id">
+               <%% for (var idx=0;idx<rentalStorages.length;idx++) { %>
+                  <option value="<%%=rentalStorages[idx].id%>" <%% if(rental_location.rental_storage_id == rentalStorages[idx].id){%>selected<%%}%>><%%=rentalStorages[idx].name%></option>
+               <%% } %>
+            </select>
+         </td>
+         <td>
+          <button type="button" form="update_rental_location_<%%=rental_location.code%>"
+                 class="btn btn-sm btn-primary col-md-1 update_rental_location_btn" style="width: 32px; display: inline-block"><i class="fa fa-save push-5-r"></i></button>
+          <button type="button" form="update_rental_location_<%%=rental_location.code%>"
+                  class="btn btn-sm btn-danger col-md-1 delete_rental_location_btn" style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-trash push-5-r"></i></button>          
+          <button type="button" form="update_rental_location_<%%=rental_location.code%>"
+                  class="btn btn-sm btn-default col-md-1 rental_location_address_btn" data-location-id="<%%=rental_location.address_id%>" style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-home push-5-r"></i></button>                            
+         </td> 
+      </tr>
+</script>      

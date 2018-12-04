@@ -1,0 +1,63 @@
+<table id="rental_locations_table" class="table table-striped">
+  <thead>
+  <tr>
+    <th><%= t.booking_rental_locations_management.table.code %></th>
+    <th><%= t.booking_rental_locations_management.table.name %></th>
+    <th><%= t.booking_rental_locations_management.table.storage %></th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+    <% @rental_locations.each do |rental_location| %>
+      <tr>
+         <td>
+            <form id="update_rental_location_<%=rental_location.code%>" name="update_rental_location_<%=rental_location.code%>">
+              <input type="text" name="code" class="form-control" value="<%=rental_location.code%>" size="10" maxlength="50"/>
+            </form>
+         </td>
+         <td>
+            <input type="text" form="update_rental_location_<%=rental_location.code%>"
+               name="name" class="form-control" size="30" maxlength="80"  
+               value="<%=rental_location.name%>"/>          
+         </td> 
+         <td>
+            <select form="update_rental_location_<%=rental_location.code%>" class="form-control update_rental_location_storage_id" name="rental_storage_id">
+               <% @rental_storages.each do |rental_storage| %>
+                 <option value="<%=rental_storage.id%>" <%if rental_storage.id == rental_location.rental_storage_id%>selected<%end%>><%=rental_storage.name%></option>
+               <% end %>
+            </select>
+         </td>
+         <td>
+          <button type="button" form="update_rental_location_<%=rental_location.code%>"
+                 class="btn btn-sm btn-primary col-md-1 update_rental_location_btn" style="width: 32px; display: inline-block"><i class="fa fa-save push-5-r"></i></button>
+          <button type="button" form="update_rental_location_<%=rental_location.code%>"
+                  class="btn btn-sm btn-danger col-md-1 delete_rental_location_btn" style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-trash push-5-r"></i></button>          
+          <button type="button" form="update_rental_location_<%=rental_location.code%>"
+                  class="btn btn-sm btn-default col-md-1 rental_location_address_btn" data-location-id="<%=rental_location.address_id%>" style="margin-left: 2px; width: 32px; display: inline-block"><i class="fa fa-home push-5-r"></i></button>                            
+         </td> 
+      </tr>
+    <% end %>
+      <tr>
+         <td>
+            <form id="new_rental_location" name="new_rental_location">
+              <input type="text" name="code" class="form-control" size="10" maxlength="50"/>
+            </form>
+         </td>
+         <td>
+            <input type="text" form="new_rental_location"
+               name="name" class="form-control" size="30" maxlength="80"/>          
+         </td> 
+         <td>
+            <select form="new_rental_location" class="form-control" name="rental_storage_id">
+               <% @rental_storages.each do |rental_storage| %>
+                 <option value="<%=rental_storage.id%>"><%=rental_storage.name%></option>
+               <% end %>
+            </select>
+         </td>         
+         <td>
+            <button id="create_rental_location_btn" type="button" form="new_rental_location"
+              class="btn btn-sm btn-success col-md-1" style="width: 100px; display: inline-block"><%= t.booking_rental_locations_management.table.create_button %></button>       
+         </td> 
+      </tr>      
+  </tbody>
+</table>    

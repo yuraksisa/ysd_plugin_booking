@@ -82,7 +82,7 @@
             <%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['stock_reference'] %>
          </th>
          <% end %>
-         <th class="table-header-title" scope="col" style="width:30%">
+         <th class="table-header-title" scope="col" style="width:20%">
             <%= t.booking_item_management.form.description.label %>
          </th>
          <% if @booking_item_family.vehicle_rental? %>
@@ -92,6 +92,11 @@
          <th class="table-header-title" scope="col" style="width:100px">
             <%= t.booking_item_management.table.assignable %>
          </th>
+         <% end %>
+         <% if @multiple_rental_locations %>
+         <th class="table-header-title" scope="col" style="width:100px">
+            <%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['logical_organization'] %>
+         </th>         
          <% end %>
          <th class="table-header-title" scope="col">
          </th>         
@@ -133,6 +138,11 @@
          <%%= entity.assignable ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  %>
       </td>
       <% end %>
+       <% if @multiple_rental_locations %>
+       <td class="table-cell" scope="col" style="width:100px">
+          <%%= entity.rental_storage ? entity.rental_storage.name : '<%=t.booking_item_management.table.not_assigned_rental_storage%>' %>
+       </td>      
+       <% end %>
       <td class="table-cell">
       </td>
     </tr>
@@ -257,6 +267,15 @@
                          <textarea rows="5" cols="50" id="description" name="description" class="form-control"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
                          </div>
                       </div>
+                      <% if @multiple_rental_locations %>
+                      <div class="form-group">
+                        <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['logical_organization'] %></label>
+                        <div class="col-md-8">
+                          <select name="rental_storage[id]" id="rental_storage[id]" class="form-control"/>
+                        </div>
+                      </div>
+                      <% end %>
+
                       <div class="form-group">
                         <div class="col-md-9 col-md-offset-3">
                             <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>

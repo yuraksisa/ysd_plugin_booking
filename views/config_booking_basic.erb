@@ -109,6 +109,69 @@
 
     <% if booking_renting %>
 
+      <% if booking_item_family and booking_item_family.multiple_locations %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%=t.booking_settings.form.manage_locations%></h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                <form id="multiple_locations_form" name="variables" action="/api/variables" method="PUT"
+                      data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+                  <%= render_variable_checkbox_boolean('booking.multiple_rental_locations', t.booking_settings.form.multiple_rental_locations) %>
+                  <p class="text-muted"><%=t.booking_settings.form.multiple_rental_locations_description%></p>
+                  <div id="rental_location_operators_container">
+                    <%= render_variable_checkbox_boolean('booking.resource_availability_by_rental_location_storage', t.booking_settings.form.resource_availability_by_rental_location_storage) %>
+                    <p class="text-muted"><%=t.booking_settings.form.resource_availability_by_rental_location_storage_description%></p>
+                    <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_pickup_return_same_location', t.booking_settings.form.multiple_rental_locations_pickup_return_same_location) %>
+                    <p class="text-muted"><%=t.booking_settings.form.multiple_rental_locations_pickup_return_same_location_description%></p>
+                    <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_allow_operator_all_locations', t.booking_settings.form.multiple_rental_locations_operator) %>
+                    <p class="text-muted"><%=t.booking_settings.form.multiple_rental_locations_operator_description%></p>
+                  </div>  
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-row bottom-space">
+                        <button class="button btn btn-sm btn-primary pull-right" type="button"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                      </div>
+                    </div>           
+                  </div>    
+                </form>  
+                <br>    
+              </div>
+            </div>    
+          </div>
+        </div>   
+      <% end %>
+
+      <% if booking_item_family and booking_item_family.multiple_locations%>
+        <div id="rental_storages_container" class="row" <% unless @multiple_rental_locations%>style="display:none"<%end%>>
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['physical_organization'] %></h3>
+              </div>
+              <div class="block-content">
+                <%= partial :booking_rental_storages_editor %>
+              </div>
+            </div>    
+          </div>
+        </div>   
+
+        <div id="rental_locations_container" class="row" <% unless @multiple_rental_locations%>style="display:none"<%end%>>
+          <div id="rental_locations_container" class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['logical_organization'] %></h3>
+              </div>
+              <div class="block-content">
+                <%= partial :booking_rental_locations_editor %>
+              </div>
+            </div>    
+          </div>
+        </div>          
+      <% end %>
+
       <% if booking_item_family and booking_item_family.pickup_return_place %>
         <div class="row">
           <div class="col-sm-12 col-md-10 col-md-offset-1">
@@ -331,5 +394,7 @@
 </div>
 
 <%= partial :seasons_scripts %>
+<%= partial :booking_rental_storages_scripts %>
+<%= partial :booking_rental_locations_scripts %>
 <%= partial :booking_pickup_return_places_scripts %>
 <%= partial :booking_driver_age_rule_scripts %>

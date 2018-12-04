@@ -1,0 +1,207 @@
+require(['jquery', 'ysdtemplate', 'YSDEventTarget', 'jquery.formparams','jquery.toast'],
+    function($, tmpl, EventTarget) {
+        rentalLocationsModel = {
+            data: null,
+            deletedId: null,
+            events: new EventTarget(),           
+            addListener: function(type, listener) {
+                this.events.addEventListener(type, listener);
+            },
+            removeListener: function(type, listener) {
+                this.events.removeEventListener(type, listener);
+            },
+            add: function() {
+                var request = $('form[name=new_rental_location]').formParams();
+                var requestJSON = JSON.stringify(request);
+                var url = '/api/booking-rental-location';
+                $.ajax({
+                    type: 'POST',
+                    data : requestJSON,
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        rentalLocationsModel.data = data;
+                        rentalLocationsModel.events.fireEvent({type: 'created_location', data: data});
+                        rentalLocationsView.update('added');
+                        $.toast({
+                            heading: 'Oficina/sucursal creada',
+                            text: 'Oficina/sucursal creada con éxito',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error creando oficina/sucursal');
+                    }
+                });
+            },
+            update: function(form) {
+                var request = $(form).formParams();
+                var url = '/api/booking-rental-location';
+                var requestJSON = JSON.stringify(request);
+                $.ajax({
+                    type: 'PUT',
+                    data : requestJSON,
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        rentalLocationsModel.data = data;
+                        rentalLocationsModel.events.fireEvent({type: 'updated_location', data: data});
+                        rentalLocationsView.update('updated');
+                        $.toast({
+                            heading: 'Oficina/sucursal actualizada',
+                            text: 'Oficina/sucursal actualizada con éxito',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error actualizando oficina/sucursal');
+                    }
+                });
+            },
+            delete: function(form) {
+                var request = $(form).formParams();
+                var url = '/api/booking-rental-location';
+                var requestJSON = JSON.stringify(request);
+                rentalLocationsModel.deletedId = request['code'];
+                $.ajax({
+                    type: 'DELETE',
+                    data : requestJSON,
+                    url : url,
+                    success: function(data, textStatus, jqXHR) {
+                        rentalLocationsModel.data = data;
+                        rentalLocationsModel.events.fireEvent({type: 'deleted_location', data: rentalLocationsModel.deletedId});
+                        rentalLocationsView.update('deleted');
+                        $.toast({
+                            heading: 'Oficina/sucursal eliminada',
+                            text: 'Oficina/sucursal eliminada con éxito',
+                            position: 'top-right',
+                            bgColor: 'rgb(56, 154, 56)',
+                            textColor: 'white',
+                            loader: false,
+                            stack: false
+                        });
+                    },
+                    error: function(data, textStatus, jqXHR) {
+                        alert('Error eliminando sucursal/oficina');
+                    }
+                });
+            }
+        };
+        rentalLocationsController = {
+            updateBtnClick: function(form) {
+                rentalLocationsModel.update(form);
+            },
+            deleteBtnClick: function(form) {
+                if (confirm('<%=t.booking_rental_locations_management.table.confirm_delete%>')) {
+                    rentalLocationsModel.delete(form);
+                }
+            },
+            createBtnClick: function() {
+                rentalLocationsModel.add();
+            },
+            addressBtnClick: function(id) {
+                /*
+                $.ajax({url: '/admin/booking/translate/pickup-return-place/' + id, dataType: 'text'}).done(function(html) {
+                    var dom = $('<html />').prop('innerHTML', html);
+                    $('#pickup_return_place_translation_modal .modal-body').html(dom.find('body #page_wrapper'));
+                    // The translation appends two scripts, the first step is to remove them before add another element
+                    $('head #booking_pickup_return_place_translation_template_form').next().remove();
+                    $('head #booking_pickup_return_place_translation_template_form').remove();
+                    $('head').append(dom.find('script:not([src])'));
+                    $('#pickup_return_place_translation_modal').modal('show');
+                });
+                 */
+            }
+        };
+        rentalLocationsView = {
+
+            init: function() {
+                this.setupEvents();
+                rentalStoragesModel.addListener('created_storage', function(event) {
+                  if (event.type == 'created_storage') {
+                    $('.update_rental_location_storage_id, select[name=rental_storage_id]').append($('<option>', {
+                            value: event.data.id,
+                            text: event.data.name
+                        }));
+                  }
+                });
+                rentalStoragesModel.addListener('updated_storage', function(event) {
+                    if (event.type = 'updated_storage') {
+                      $('.update_rental_location_storage_id option[value='+event.data.id+'], select[name=rental_storage_id] option[value='+event.data.id+']').html(event.data.name);  
+                    }
+                });
+                rentalStoragesModel.addListener('deleted_storage', function(event) {
+                    if (event.type = 'deleted_storage') {
+                      $('.update_rental_location_storage_id option[value='+event.data+'], select[name=rental_storage_id] option[value='+event.data+']').remove();  
+                    }
+                });
+            },
+
+            setupEvents: function() {
+                this.setupEditionButtons();
+                $('#create_rental_location_btn').bind('click', function(){
+                    rentalLocationsController.createBtnClick();
+                });
+            },
+
+            setupEditionButtons: function() {
+                $('.update_rental_location_btn').unbind('click');
+                $('.update_rental_location_btn').bind('click', function(){
+                    rentalLocationsController.updateBtnClick($(this)[0].form);
+                });
+
+                $('.delete_rental_location_btn').unbind('click');
+                $('.delete_rental_location_btn').bind('click', function(){
+                    rentalLocationsController.deleteBtnClick($(this)[0].form);
+                });
+
+                /*
+                $('.translate_pickup_place_btn').unbind('click');
+                $('.translate_pickup_place_btn').bind('click', function(){
+                    pickupReturnPlaceDefinitionEditionController.translateBtnClick($(this).attr('data-pickup-place-id'));
+                });
+                */
+
+
+            },
+
+            refresh: function() {
+
+                var rentalStorages = [];
+                var data = $('select[form=new_rental_location][name=rental_storage_id] option');
+                for (var idx=0;idx<data.length;idx++) {
+                    rentalStorages.push({id: $(data[idx]).attr('value'), name: $(data[idx]).html()});
+                }
+
+                var html = tmpl('rental_location_script')({rental_location: rentalLocationsModel.data, rentalStorages: rentalStorages});
+                $('#rental_locations_table tr.pickup_return_place').remove();
+                $('#rental_locations_table tbody tr:last').before(html);
+                this.setupEditionButtons();
+
+            },
+
+            update: function(action) {
+                switch (action) {
+                    case 'added':
+                        this.refresh();
+                        $('form[name=new_rental_location]')[0].reset();
+                        break;
+                    case 'updated':
+                        break;
+                    case 'deleted':
+                        $('#update_rental_location_'+rentalLocationsModel.deletedId).parent().parent().remove();
+                        break;
+                }
+            }
+
+        };
+
+        rentalLocationsView.init();
+
+    });

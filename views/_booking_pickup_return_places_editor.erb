@@ -34,7 +34,7 @@
       </td>
       <% if @multiple_rental_locations %>
       <td>
-        <select form="update_pickup_place_<%=pickup_return_place.id%>" class="form-control" name="rental_location_code" id="rental_location" style="width: 150px">
+        <select form="update_pickup_place_<%=pickup_return_place.id%>" class="form-control update_pickpup_place_rental_location_code" name="rental_location_code" id="rental_location" style="width: 150px">
           <option value="" <% if pickup_return_place.rental_location_code.nil?%>selected<% end %>>No aplica</option>
           <% @rental_locations.each do |rental_location| %>
           <option value="<%=rental_location.code%>" <%if pickup_return_place.rental_location_code == rental_location.code%>selected<%end%>><%=rental_location.name%></option>

@@ -66,6 +66,7 @@ module Sinatra
         app.post "/api/booking-rental-location" do
 
           data_request = body_as_json(::Yito::Model::Booking::RentalLocation)
+          data_request.store(:address, {}) unless data_request.has_key?(:address)
           data = ::Yito::Model::Booking::RentalLocation.create(data_request)
 
           status 200
@@ -94,11 +95,11 @@ module Sinatra
         #
         # Deletes a booking-rental-location
         #
-        app.delete "/api/booking-place-def" do
+        app.delete "/api/booking-rental-location" do
 
           data_request = body_as_json(::Yito::Model::Booking::RentalLocation)
 
-          key = data_request.delete(:code).to_i
+          key = data_request.delete(:code)
 
           if data = ::Yito::Model::Booking::RentalLocation.get(key)
             data.destroy
