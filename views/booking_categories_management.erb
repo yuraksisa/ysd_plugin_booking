@@ -62,7 +62,7 @@
          <th class="table-header-title centered_text" scope="col" style="width:15%">
             Disponible web
          </th>
-         <% if @booking_item_family.multiple_locations and @multiple_rental_locations %>
+         <% if @booking_item_family.product_type == :resource and @booking_item_family.multiple_locations and @multiple_rental_locations %>
          <th class="table-header-title centered_text" scope="col" style="width:10%">
             <%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['physical_organization'] %>
          </th>
