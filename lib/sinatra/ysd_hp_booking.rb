@@ -139,6 +139,7 @@ module Sinatra
       return_place = nil
       custom_return_place = false
       return_place_customer_translation = nil
+      rental_location_code = nil
       if booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')) and
           booking_item_family.pickup_return_place
         pickup_return_places_configuration = SystemConfiguration::Variable.get_value('booking.pickup_return_places_configuration', 'list')
@@ -182,8 +183,18 @@ module Sinatra
         end
       end
 
+      # Assign the rental location depending on the pickup place
+      multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+      if multiple_rental_locations
+        if _pickup_place = ::Yito::Model::Booking::PickupReturnPlace.first(name: pickup_place) and
+           !_pickup_place.rental_location.nil?
+          rental_location_code = _pickup_place.rental_location.code
+        end
+      end   
+
       [pickup_place, custom_pickup_place, pickup_place_customer_translation,
-       return_place, custom_return_place, return_place_customer_translation]
+       return_place, custom_return_place, return_place_customer_translation, 
+       rental_location_code]
 
     end
 

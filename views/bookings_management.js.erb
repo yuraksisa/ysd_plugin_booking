@@ -886,6 +886,9 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         if (booking.promotion_code && booking.promotion_code != null && booking.promotion_code != '') {
             url += '&promotion_code=' + booking.promotion_code;
         }
+        if (booking.rental_location_code && booking.rental_location_code != null && booking.rental_location_code != '') {
+            url += '&rental_location_code=' + booking.rental_location_code;
+        }
 
         var dataSourceModel = new RemoteDataSource(url,
                                                     {'id':'code','description':'full_description'});
@@ -939,6 +942,9 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       }
       if (booking.promotion_code && booking.promotion_code != null && booking.promotion_code != '') {
           url += '&promotion_code=' + booking.promotion_code;
+      }
+      if (booking.rental_location_code && booking.rental_location_code != null && booking.rental_location_code != '') {
+          url += '&rental_location_code=' + booking.rental_location_code;
       }
 
       var dataSourceModel = new RemoteDataSource(url,

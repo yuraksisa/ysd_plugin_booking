@@ -120,7 +120,7 @@ module Sinatra
 
           # TODO Check parameters
           date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children =
-              driver_age_rule_id = sales_channel_code = nil
+            driver_age_rule_id = sales_channel_code = rental_location_code = nil
 
           if model_request[:date_from] && model_request[:date_to]
             # Retrieve date/time from - to
@@ -130,7 +130,7 @@ module Sinatra
             time_to = model_request[:time_to]
             # Retrieve pickup/return place
             pickup_place, custom_pickup_place, pickup_place_customer_translation,
-                return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(model_request)
+                return_place, custom_return_place, return_place_customer_translation, rental_location_code = request_pickup_return_place(model_request)             
             # Retrieve number of adutls and children
             number_of_adults = model_request[:number_of_adults] if model_request.has_key?(:number_of_adults)
             number_of_children = model_request[:number_of_children] if model_request.has_key?(:number_of_childen)
@@ -153,7 +153,8 @@ module Sinatra
           data = BookingDataSystem::Booking.calculate_days(date_from, time_from, date_to, time_to)
 
           # Prepare the products
-          products = ::Yito::Model::Booking::BookingCategory.search(date_from,
+          products = ::Yito::Model::Booking::BookingCategory.search(rental_location_code,
+                                                                    date_from,
                                                                     time_from,
                                                                     date_to,
                                                                     time_to,
@@ -321,7 +322,8 @@ module Sinatra
           if @booking = BookingDataSystem::Booking.get(params[:id])
 
             # Prepare the products
-            products = ::Yito::Model::Booking::BookingCategory.search(@booking.date_from,
+            products = ::Yito::Model::Booking::BookingCategory.search(@booking.rental_location_code,
+                                                                      @booking.date_from,
                                                                       @booking.time_from,
                                                                       @booking.date_to,
                                                                       @booking.time_to,
@@ -382,7 +384,7 @@ module Sinatra
               time_to = model_request[:time_to]
               # Retrieve pickup/return place
               pickup_place, custom_pickup_place, pickup_place_customer_translation,
-                  return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(model_request)
+                  return_place, custom_return_place, return_place_customer_translation, rental_location_code = request_pickup_return_place(model_request)
               # Retrieve number of adutls and children
               number_of_adults = model_request[:number_of_adults] if model_request.has_key?(:number_of_adults)
               number_of_children = model_request[:number_of_children] if model_request.has_key?(:number_of_childen)
@@ -563,7 +565,8 @@ module Sinatra
           if @prereservation = BookingDataSystem::BookingPrereservation.get(params[:id])
 
             # Prepare the products
-            products = ::Yito::Model::Booking::BookingCategory.search(@prereservation.date_from,
+            products = ::Yito::Model::Booking::BookingCategory.search(@prereservation.rental_location_code, # TO CHECK
+                                                                      @prereservation.date_from,
                                                                       @prereservation.time_from,
                                                                       @prereservation.date_to,
                                                                       @prereservation.time_to,

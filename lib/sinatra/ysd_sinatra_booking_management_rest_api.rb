@@ -542,7 +542,7 @@ module Sinatra
 
           # Retrieve pickup/return place
           pickup_place, custom_pickup_place, pickup_place_customer_translation,
-          return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(data)
+          return_place, custom_return_place, return_place_customer_translation, rental_location_code = request_pickup_return_place(data)
           # Retrieve number of adutls and children
           number_of_adults = data[:number_of_adults]
           number_of_children = data[:number_of_children]
@@ -589,7 +589,8 @@ module Sinatra
           end
 
           # Search products (price and availability)
-          products = ::Yito::Model::Booking::BookingCategory.search(date_from,
+          products = ::Yito::Model::Booking::BookingCategory.search(rental_location_code,
+                                                                    date_from,
                                                                     time_from,
                                                                     date_to,
                                                                     time_to,
@@ -688,7 +689,7 @@ module Sinatra
             old_booking_total_cost = booking.total_cost
 
             pickup_place, custom_pickup_place, pickup_place_customer_translation,
-            return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(request)
+            return_place, custom_return_place, return_place_customer_translation, rental_location_code = request_pickup_return_place(request)
 
             booking.attributes = booking_request
             booking.pickup_place = pickup_place
@@ -697,6 +698,15 @@ module Sinatra
             booking.return_place = return_place
             booking.custom_return_place = custom_return_place
             booking.return_place_customer_translation = return_place_customer_translation
+
+            # reassign the rental location depending on the pickup place
+            multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+            if multiple_rental_locations
+              if _pickup_place = ::Yito::Model::Booking::PickupReturnPlace.first(name: booking.pickup_place) and
+                 !_pickup_place.rental_location.nil?
+                booking.rental_location_code = _pickup_place.rental_location.code if booking.rental_location_code != _pickup_place.rental_location.code
+              end
+            end
 
             # Calculate driver age and driving license years
             booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
@@ -815,7 +825,14 @@ module Sinatra
             current_item_id = nil
           end
 
-          result = ::Yito::Model::Booking::BookingCategory.search(date_from,
+          if params[:rental_location_code]
+            rental_location_code = params[:rental_location_code]
+          else
+            rental_location_code = nil
+          end  
+
+          result = ::Yito::Model::Booking::BookingCategory.search(rental_location_code,
+                                                                  date_from,
                                                                   time_from,
                                                                   date_to,
                                                                   time_to,

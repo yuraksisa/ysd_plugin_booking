@@ -36,6 +36,20 @@
                 <% end %>
               </div>
             </div>
+            <% if @multiple_rental_locations and @product_family and @product_family.multiple_locations and @rental_locations.size > 0 %>
+            <div class="form-group">
+              <label class="col-xs-12" for="example-text-input">
+                  <%=BookingDataSystem.r18n.t.booking_business_literals.business_type[@product_family.business_type.to_s]['logical_organization']%>
+              </label>
+              <div class="col-sm-9">
+                <select name="rental_location_code" class="fieldcontrol">
+                  <% @rental_locations.each do |rental_location| %>
+                    <option value="<%=rental_location.code%>" <% if @rental_location_code == rental_location.code %>selected<%end%>><%=rental_location.name%></option>
+                  <% end %>
+                </select>  
+              </div>            
+            </div>
+            <% end %>  
             <div class="form-group">
               <div class="col-sm-9">
                 <button id="search" class="btn btn-sm btn-primary" type="submit">Comprobar</button>

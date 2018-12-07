@@ -304,7 +304,8 @@ module Sinatra
                                else
                                  @booking_line_resource.booking_item_category
                                end
-            @data,@detail = BookingDataSystem::Booking.categories_availability(@booking.date_from,
+            @data,@detail = BookingDataSystem::Booking.categories_availability(@booking.rental_location_code,
+                                                                               @booking.date_from,
                                                                                @booking.time_from,
                                                                                @booking.date_to,
                                                                                @booking.time_to,

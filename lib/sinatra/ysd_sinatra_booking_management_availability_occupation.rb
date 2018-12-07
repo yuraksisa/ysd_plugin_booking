@@ -62,6 +62,14 @@ module Sinatra
           @date_to = Date.today + 7
           @time_from = @product_family.time_start
           @time_to = @product_family.time_end
+          @rental_location_code = nil
+          @rental_locations = [] 
+
+          @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          @availability_by_storage = SystemConfiguration::Variable.get_value('booking.resource_availability_by_rental_location_storage', 'false').to_bool
+          if @multiple_rental_locations and @product_family and @product_family.multiple_locations
+            @rental_locations = ::Yito::Model::Booking::RentalLocation.all
+          end  
 
           if params[:from]
             begin
@@ -97,9 +105,17 @@ module Sinatra
             end
           end
 
+          if params[:rental_location_code]
+            @rental_location_code = params[:rental_location_code]
+          end  
+
+          if @rental_locations.size > 0 and @rental_location_code.nil?
+            @rental_location_code = @rental_locations.first.code
+          end  
+
           @automatic_management_pending_reservations = SystemConfiguration::Variable.get_value('booking.assignation.automatically_manage_pending_of_confirmation', 'true').to_bool
 
-          @data,@detail = BookingDataSystem::Booking.categories_availability(@date_from, @time_from, @date_to, @time_to)
+          @data,@detail = BookingDataSystem::Booking.categories_availability(@rental_location_code, @date_from, @time_from, @date_to, @time_to)
 
           load_page :booking_availability
 

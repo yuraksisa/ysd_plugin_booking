@@ -255,7 +255,7 @@
                         <input type="radio" name="item_id" value="<%%=products[idx].code%>" class="product_chooser"></input>
                       <% end %>
                    </td>
-                   <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>"</td>
+                   <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>" style="max-width:150px"/></td>
                    <td class="table-cell centered_text"><%%=products[idx].name%></td>
                    <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
                    <td class="table-cell centered_text"><%% if (products[idx].price != products[idx].base_price){%>

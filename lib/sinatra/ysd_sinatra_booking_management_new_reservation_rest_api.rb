@@ -16,7 +16,7 @@ module Sinatra
                 :booking_amount, :pickup_place_cost, :return_place_cost,
                 :customer_name, :customer_surname, :customer_email, :customer_phone, :customer_mobile_phone, :customer_document_id,
                 :driver_age, :driver_driving_license_years, :driver_under_age, :driver_age_allowed, :driver_age_cost, :driver_age_deposit,
-                :promotion_code, :comments ]
+                :promotion_code, :comments, :rental_location_code ]
         relationships = {}
         relationships.store(:extras, {})
         relationships.store(:items, {:include => [:item_resources]})
@@ -26,7 +26,8 @@ module Sinatra
         locale = session[:locale]#locale_to_translate_into
         
         # Prepare the products
-        p_json = ::Yito::Model::Booking::BookingCategory.search(shopping_cart.date_from,
+        p_json = ::Yito::Model::Booking::BookingCategory.search(shopping_cart.rental_location_code,
+                                                                shopping_cart.date_from,
                                                                 shopping_cart.time_from,
                                                                 shopping_cart.date_to,
                                                                 shopping_cart.time_to,
@@ -77,7 +78,7 @@ module Sinatra
 
           # TODO Check parameters
           date_from = time_from = date_to = time_to = pickup_place = return_place = number_of_adults = number_of_children =
-          driver_age_rule_id = sales_channel_code = promotion_code = nil
+          driver_age_rule_id = sales_channel_code = promotion_code = rental_location_code = nil
 
           if model_request[:date_from] && model_request[:date_to]
             # Retrieve date/time from - to
@@ -87,7 +88,7 @@ module Sinatra
             time_to = model_request[:time_to]
             # Retrieve pickup/return place
             pickup_place, custom_pickup_place, pickup_place_customer_translation,
-            return_place, custom_return_place, return_place_customer_translation = request_pickup_return_place(model_request)
+            return_place, custom_return_place, return_place_customer_translation, rental_location_code = request_pickup_return_place(model_request)
             # Retrieve number of adutls and children
             number_of_adults = model_request[:number_of_adults] if model_request.has_key?(:number_of_adults)
             number_of_children = model_request[:number_of_children] if model_request.has_key?(:number_of_childen)
