@@ -150,7 +150,7 @@ module Sinatra
 
            # Rental Location
            rental_location_code = nil
-           multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+           multiple_locations = BookingDataSystem::Booking.multiple_rental_locations
            allow_booking_operator_multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations_allow_operator_all_locations', 'false').to_bool
 
            if multiple_locations
@@ -193,7 +193,7 @@ module Sinatra
 
            # Rental location
            rental_location_code = nil
-           multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+           multiple_locations = BookingDataSystem::Booking.multiple_rental_locations
            if multiple_locations
              if params[:rental_location]
                rental_location_code = params[:rental_location]
@@ -700,8 +700,7 @@ module Sinatra
             booking.return_place_customer_translation = return_place_customer_translation
 
             # reassign the rental location depending on the pickup place
-            multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
-            if multiple_rental_locations
+            if BookingDataSystem::Booking.multiple_rental_locations
               if _pickup_place = ::Yito::Model::Booking::PickupReturnPlace.first(name: booking.pickup_place) and
                  !_pickup_place.rental_location.nil?
                 booking.rental_location_code = _pickup_place.rental_location.code if booking.rental_location_code != _pickup_place.rental_location.code

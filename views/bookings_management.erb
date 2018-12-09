@@ -65,7 +65,7 @@
          <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.creation_date %></th>
          <th class="table-header-title centered_text" scope="col" style="width:100px"><%= t.booking_management.table.created_by_manager %></th>
          <% if multiple_rental_locations %>
-         <th class="table-header-title" scope="col" style="width:120px"><%= t.booking_management.table.rental_location %></th>
+         <th class="table-header-title" scope="col" style="width:120px"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['logical_organization'] %></th>
          <% end %>
          <% if @addon_sales_channels %>
          <th class="table-header-title" scope="col" style="width:120px"><%= t.booking_management.table.sales_channel %></th>

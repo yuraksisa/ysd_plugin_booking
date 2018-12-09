@@ -13,7 +13,7 @@ module Sinatra
           @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           @show_translations = settings.multilanguage_site
           # Multiple rental locations
-          @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations').to_bool
+          @multiple_rental_locations = BookingDataSystem::Booking.multiple_rental_locations
           locals = {:booking_category_page_size => 20, :types => ::Yito::Model::Booking::BookingCategory.types}
           locals.store(:products_allow_deposit, SystemConfiguration::Variable.get_value('booking.products.allow_deposit', 'false').to_bool)
           load_em_page :booking_categories_management,

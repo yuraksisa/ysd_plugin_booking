@@ -50,6 +50,8 @@ module Sinatra
         #
         # == Query parameters::
         #
+        # rental_location_code::
+        #   The rental location code 
         # from::
         #   The starting date (or today if not used)
         # to::
@@ -65,9 +67,8 @@ module Sinatra
           @rental_location_code = nil
           @rental_locations = [] 
 
-          @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
-          @availability_by_storage = SystemConfiguration::Variable.get_value('booking.resource_availability_by_rental_location_storage', 'false').to_bool
-          if @multiple_rental_locations and @product_family and @product_family.multiple_locations
+          @multiple_rental_locations = BookingDataSystem::Booking.multiple_rental_locations 
+          if @multiple_rental_locations
             @rental_locations = ::Yito::Model::Booking::RentalLocation.all
           end  
 

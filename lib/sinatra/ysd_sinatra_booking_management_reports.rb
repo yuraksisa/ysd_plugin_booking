@@ -56,7 +56,7 @@ module Sinatra
           locals = {}
 
           # Multiple locations
-          multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          multiple_locations = BookingDataSystem::Booking.multiple_rental_locations
           allow_booking_operator_multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations_allow_operator_all_locations', 'false').to_bool
           locals.store(:multiple_rental_locations, multiple_locations)
           locals.store(:allow_booking_operator_multiple_locations, allow_booking_operator_multiple_locations)
@@ -112,7 +112,7 @@ module Sinatra
 
           # Rental location
           rental_location_code = nil
-          multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+          multiple_locations = BookingDataSystem::Booking.multiple_rental_locations
           allow_booking_operator_multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations_allow_operator_all_locations', 'false').to_bool
           if multiple_locations
             if params[:rental_location]

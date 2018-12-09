@@ -92,10 +92,8 @@ module Sinatra
           @season_definition = booking_item_family.product_price_definition_season_definition
           @pickup_return_place_definition = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(SystemConfiguration::Variable.get_value('booking.pickup_return_place_definition').to_i)
           @show_translations = settings.multilanguage_site
-
-          @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
           
-          if booking_item_family and booking_item_family.multiple_locations and @multiple_rental_locations
+          if @multiple_rental_locations = BookingDataSystem::Booking.multiple_rental_locations
             @rental_storages = ::Yito::Model::Booking::RentalStorage.all
             @rental_locations = ::Yito::Model::Booking::RentalLocation.all
           else
@@ -114,9 +112,8 @@ module Sinatra
 
           booking_renting, booking_activities = mybooking_plan_type
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          multiple_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
-                    :multiple_locations => multiple_locations}
+                    :multiple_locations => BookingDataSystem::Booking.multiple_rental_locations}
           locals.store(:booking_item_family, booking_item_family)
           locals.store(:booking_renting, booking_renting)
           locals.store(:booking_activities, booking_activities)

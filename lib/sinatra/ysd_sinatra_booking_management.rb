@@ -172,7 +172,7 @@ module Sinatra
             ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')))
           locals.store(:booking_payment_enabled, SystemConfiguration::Variable.get_value('booking.payment', false))
           locals.store(:booking_front_end_prefix, SystemConfiguration::Variable.get_value('booking.front_end_prefix', ''))
-          locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
+          locals.store(:multiple_rental_locations, BookingDataSystem::Booking.multiple_rental_locations)
           locals.store(:driver_min_age_rules, SystemConfiguration::Variable.get_value('booking.driver_min_age.rules', 'false').to_bool)
 
           #locals.store(:elements_actions, partial(:bookings_management_header))

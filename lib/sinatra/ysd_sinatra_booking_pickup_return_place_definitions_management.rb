@@ -22,7 +22,7 @@ module Sinatra
 
           if @pickup_return_place_definition = ::Yito::Model::Booking::PickupReturnPlaceDefinition.get(params[:id])
             @show_translations = settings.multilanguage_site
-            if @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool
+            if @multiple_rental_locations = BookingDataSystem::Booking.multiple_rental_locations
               @rental_locations = ::Yito::Model::Booking::RentalLocation.all
             else
               @rental_locations = []

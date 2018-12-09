@@ -20,7 +20,7 @@ module Sinatra
 
           if @booking_item = ::Yito::Model::Booking::BookingItem.get(params[:id])
             @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-            @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations').to_bool
+            @multiple_rental_locations = BookingDataSystem::Booking.multiple_rental_locations
             if @multiple_rental_locations
               @rental_storages = ::Yito::Model::Booking::RentalStorage.all
             end  
@@ -42,7 +42,7 @@ module Sinatra
           # Item family
           @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           # Multiple rental locations
-          @multiple_rental_locations = SystemConfiguration::Variable.get_value('booking.multiple_rental_locations').to_bool
+          @multiple_rental_locations = BookingDataSystem::Booking.multiple_rental_locations
 
           load_em_page :booking_items_management, :bookingitem, false
 

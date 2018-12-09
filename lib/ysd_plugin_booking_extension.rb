@@ -997,7 +997,7 @@ module Huasi
             menu_locals.store(:pending_confirmation_activities, ::Yito::Model::Order::Order.count_pending_confirmation_orders(year))
             menu_locals.store(:today_start_activities, ::Yito::Model::Order::Order.count_start(today))
           end
-          menu_locals.store(:multiple_rental_locations, SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool)
+          menu_locals.store(:multiple_rental_locations, BookingDataSystem::Booking.multiple_rental_locations)
           product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           menu_locals.store(:product_family, product_family)
 

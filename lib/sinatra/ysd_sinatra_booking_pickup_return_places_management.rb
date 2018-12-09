@@ -13,7 +13,7 @@ module Sinatra
             @show_translations = settings.multilanguage_site
             locals = {:booking_pickup_return_places => 20,
                       :pickup_return_place_definition => pickup_return_place_def,
-                      :multiple_rental_locations => SystemConfiguration::Variable.get_value('booking.multiple_rental_locations', 'false').to_bool}
+                      :multiple_rental_locations => BookingDataSystem::Booking.multiple_rental_locations}
 
             load_em_page :booking_pickup_return_places_management, 
                        :booking_pickup_return_places, false, :locals => locals
