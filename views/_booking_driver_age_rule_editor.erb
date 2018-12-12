@@ -1,13 +1,13 @@
 <table id="driver_age_rules_table" class="table table-striped" data-driver-age-rule-definition-id="<%=@driver_age_rules_definition.id%>">
   <thead>
   <tr>
-    <th><%= t.booking_driver_age_rules_management.table.condition %></th>
-    <th class="age">Edad</th>
+    <th><%= t.booking_driver_age_rule_editor.condition %></th>
+    <th class="age"><%= t.booking_driver_age_rule_editor.age %></th>
     <th class="conector"></th>
-    <th class="driving_years">Años carnet</th>
-    <th class="text-center">Permite</th>
+    <th class="driving_years"><%= t.booking_driver_age_rule_editor.driving_license_years %></th>
+    <th class="text-center"><%= t.booking_driver_age_rule_editor.allows %></th>
     <th class="text-center"><%= t.booking_driver_age_rules_management.table.deposit %></th>
-    <th>Suplm.</th>
+    <th><%= t.booking_driver_age_rules_management.table.supplement %></th>
     <th style="width: 86px"></th>
   </tr>
   </thead>

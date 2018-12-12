@@ -16,31 +16,14 @@ module Sinatra
           booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :calendar_modes => {
-                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
-                        :default => t.booking_settings.form.calendar_mode.default
+                        :first_day =>  t.booking_settings.basic.calendar_mode.first_day,
+                        :default => t.booking_settings.basic.calendar_mode.default
                     }}
           locals.store(:booking_item_family, booking_item_family)
           locals.store(:booking_renting, booking_renting)
           locals.store(:booking_activities, booking_activities)
           load_page(:config_booking_company, {:locals => locals})
 
-        end
-
-        #
-        # Booking configuration (reservation web)
-        #
-        app.get '/admin/booking/config/frontend', :allowed_usergroups => ['booking_manager', 'staff'] do
-          booking_renting, booking_activities = mybooking_plan_type
-          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
-                    :calendar_modes => {
-                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
-                        :default => t.booking_settings.form.calendar_mode.default
-                    }}
-          locals.store(:booking_item_family, booking_item_family)
-          locals.store(:booking_renting, booking_renting)
-          locals.store(:booking_activities, booking_activities)
-          load_page(:config_booking_frontend, {:locals => locals})
         end
 
         #
@@ -55,8 +38,8 @@ module Sinatra
 
           locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
                     :calendar_modes => {
-                        :first_day =>  t.booking_settings.form.calendar_mode.first_day,
-                        :default => t.booking_settings.form.calendar_mode.default
+                        :first_day =>  t.booking_settings.basic.calendar_mode.first_day,
+                        :default => t.booking_settings.basic.calendar_mode.default
                      },
                     :use_factors => SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool,
                     :booking_item_family => booking_item_family,
@@ -204,7 +187,24 @@ module Sinatra
         end
 
         #
-        # Booking configuration frontend
+        # Booking configuration (reservation web)
+        #
+        app.get '/admin/booking/config/frontend', :allowed_usergroups => ['booking_manager', 'staff'] do
+          booking_renting, booking_activities = mybooking_plan_type
+          booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+          locals = {:families => Hash[ *::Yito::Model::Booking::ProductFamily.all.collect { |v| [v.code, v.name]}.flatten ],
+                    :calendar_modes => {
+                        :first_day =>  t.booking_settings.basic.calendar_mode.first_day,
+                        :default => t.booking_settings.basic.calendar_mode.default
+                    }}
+          locals.store(:booking_item_family, booking_item_family)
+          locals.store(:booking_renting, booking_renting)
+          locals.store(:booking_activities, booking_activities)
+          load_page(:config_booking_frontend, {:locals => locals})
+        end
+
+        #
+        # Booking website engine configuration 
         #
         app.get '/admin/booking/config/front-end-setup', :allowed_usergroups => ['booking_manager', 'staff'] do
 
@@ -214,17 +214,7 @@ module Sinatra
         end
 
         #
-        # Booking configuration frontend theme
-        #
-        app.get '/admin/booking/config/front-end-theme', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          @logo = SystemConfiguration::Variable.get_value('site.logo',nil)
-
-          load_page(:config_booking_frontend_theme)
-        end
-
-        #
-        # Booking configuration frontend
+        # Booking website structure and contents
         #
         app.get '/admin/booking/config/front-end-contents', :allowed_usergroups => ['booking_manager', 'staff'] do
 

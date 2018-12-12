@@ -10,7 +10,7 @@
 }
 </style>
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.booking_settings.form.backoffice_configuration_title%></h2>
+  <h2 class="entity-title"><%=t.booking_settings.advanced.title%></h2>
 </div>
 
 <div class="admin_content_wrapper" style="background-color: #f5f5f5; margin: 0">
@@ -21,14 +21,14 @@
     <div class="col-sm-12 col-md-10 col-md-offset-1">
       <div class="block ">
         <div class="block-header bg-gray-lighter">
-          <h3 class="block-title"><%=t.booking_front_end.languages_title%></h3>
+          <h3 class="block-title"><%=t.booking_settings.advanced.languages_title%></h3>
         </div>
         <div class="block-content block-content-narrow">
           <form name="variables" action="/api/variables" method="PUT"
                 data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
             <%= render_variable_checkbox_boolean('language.multilanguage_site',
-                                                 t.booking_settings.form.front_end.multilanguage_site) %>
-            <p class="text-muted"><%=t.booking_settings.form.front_end.multilanguage_site_description%></p>
+                                                 t.booking_settings.advanced.multilanguage_site) %>
+            <p class="text-muted"><%=t.booking_settings.advanced.multilanguage_site_description%></p>
             <div class="form-group">
               <div class="col-xs-12">
                 <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
@@ -45,24 +45,24 @@
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
           <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_settings.form.planning_resources%></h3>
+            <h3 class="block-title"><%=t.booking_settings.advanced.planning_resources%></h3>
           </div>
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-              <%= render_variable_checkbox_boolean('booking.assignation.automatically_manage_pending_of_confirmation', t.booking_settings.form.assignation.automatically_manage_pending_of_confirmation) %>
-              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.automatically_manage_pending_of_confirmation_description%></p>
-              <%= render_variable_checkbox_boolean('booking.assignation.allow_different_category', t.booking_settings.form.assignation.allow_different_category) %>
-              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.allow_different_category_description%></p>
-              <%= render_variable_checkbox_boolean('booking.assignation.allow_busy_resource', t.booking_settings.form.assignation.allow_busy_resource) %>
-              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.allow_busy_resource_description%></p>
-              <%= render_variable_checkbox_boolean('booking.assignation.automatic_resource_assignation', t.booking_settings.form.assignation.automatic_resource_assignation) %>
-              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.automatic_resource_assignation_description%></p>
-              <%= render_variable_select('booking.assignation.planning_style', t.booking_settings.form.assignation.planning_style.title, {compact:  t.booking_settings.form.assignation.planning_style.compact, extended:  t.booking_settings.form.assignation.planning_style.extended}) %>
-              <%= render_variable_input_text('booking.assignation_hours_return_pickup', t.booking_settings.form.assignation.assignation_hours_return_pickup, 2, 2) %>
-              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.assignation_hours_return_pickup_description%></p>
-              <%= render_variable_checkbox_boolean('booking.assignation.planning_full_day', t.booking_settings.form.assignation.planning_full_day) %>
-              <p class="less_contrast_text "><%=t.booking_settings.form.assignation.planning_full_day_description%></p>
+              <%= render_variable_checkbox_boolean('booking.assignation.automatically_manage_pending_of_confirmation', t.booking_settings.advanced.assignation.automatically_manage_pending_of_confirmation) %>
+              <p class="less_contrast_text "><%=t.booking_settings.advanced.assignation.automatically_manage_pending_of_confirmation_description%></p>
+              <%= render_variable_checkbox_boolean('booking.assignation.allow_different_category', t.booking_settings.advanced.assignation.allow_different_category) %>
+              <p class="less_contrast_text "><%=t.booking_settings.advanced.assignation.allow_different_category_description%></p>
+              <%= render_variable_checkbox_boolean('booking.assignation.allow_busy_resource', t.booking_settings.advanced.assignation.allow_busy_resource) %>
+              <p class="less_contrast_text "><%=t.booking_settings.advanced.assignation.allow_busy_resource_description%></p>
+              <%= render_variable_checkbox_boolean('booking.assignation.automatic_resource_assignation', t.booking_settings.advanced.assignation.automatic_resource_assignation) %>
+              <p class="less_contrast_text "><%=t.booking_settings.advanced.assignation.automatic_resource_assignation_description%></p>
+              <%= render_variable_select('booking.assignation.planning_style', t.booking_settings.advanced.assignation.planning_style.title, {compact:  t.booking_settings.form.assignation.planning_style.compact, extended:  t.booking_settings.advanced.assignation.planning_style.extended}) %>
+              <%= render_variable_input_text('booking.assignation_hours_return_pickup', t.booking_settings.advanced.assignation.assignation_hours_return_pickup, 2, 2) %>
+              <p class="less_contrast_text "><%=t.booking_settings.advanced.assignation.assignation_hours_return_pickup_description%></p>
+              <%= render_variable_checkbox_boolean('booking.assignation.planning_full_day', t.booking_settings.advanced.assignation.planning_full_day) %>
+              <p class="less_contrast_text "><%=t.booking_settings.advanced.assignation.planning_full_day_description%></p>
               <div class="form-group">
                 <div class="col-xs-12">
                   <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
@@ -78,17 +78,17 @@
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
           <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_settings.form.pick_up_return_report%></h3>
+            <h3 class="block-title"><%=t.booking_settings.advanced.pick_up_return_report%></h3>
           </div>
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-              <%= render_variable_select('booking.reports.pickup_return', t.booking_settings.form.general.report_pickup_return_pdf.title,
-                                         {v1:  t.booking_settings.form.general.report_pickup_return_pdf.v1,
-                                          v2:  t.booking_settings.form.general.report_pickup_return_pdf.v2}) %>
-              <p class="less_contrast_text "><%=t.booking_settings.form.general.report_pickup_return_pdf.description%></p>
+              <%= render_variable_select('booking.reports.pickup_return', t.booking_settings.advanced.report_pickup_return_pdf.title,
+                                         {v1:  t.booking_settings.advanced.report_pickup_return_pdf.v1,
+                                          v2:  t.booking_settings.advanced.report_pickup_return_pdf.v2}) %>
+              <p class="less_contrast_text "><%=t.booking_settings.advanced.report_pickup_return_pdf.description%></p>
               <% if multiple_locations %>
-              <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_allow_operator_all_locations', t.booking_settings.form.pickup_return_backoffice.allow_operator_all_locations) %>
+              <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_allow_operator_all_locations', t.booking_settings.advanced.pickup_return_backoffice.allow_operator_all_locations) %>
               <% end %>
               <div class="form-group">
                 <div class="col-xs-12">

@@ -856,6 +856,18 @@ module Huasi
       Users::Group.first_or_create({:group => 'booking_charge_supplier'},
                                    {:name => 'Booking charge supplier', :description => 'Booking charge supplier'})
 
+      Users::Group.first_or_create({group: 'booking_customer'},
+                                   {name: 'Booking customer', description: 'Booking customer'} )
+
+      Users::Group.first_or_create({group: 'booking_supplier'},
+                                   {name: 'Booking supplier', description: 'Booking supplier'})
+
+      Users::Group.first_or_create({group: 'booking_agent'},
+                                   {name: 'Booking agent', description: 'Booking agent'} )
+
+      Users::Group.first_or_create({group: 'booking_agency'},
+                                   {name: 'Booking agency', description: 'Booking agency'})
+
       #
       # Notification templates
       #
@@ -1019,22 +1031,6 @@ module Huasi
       end
       
     end
-
-    # ========= Pages ====================
-
-    #
-    # Return the pages managed by the module
-    # @return [Hash] Name - Url
-    #
-    #def public_pages
-    #
-    #  pages = {}
-    #  pages.store(t.booking_pages.new_booking, '/p/booking/start')
-    #  pages.store(t.booking_pages.booking_summary, '/p/booking/summary')
-    #
-    #  return pages
-    #
-    #end
 
     # ========= Page Building ============
 

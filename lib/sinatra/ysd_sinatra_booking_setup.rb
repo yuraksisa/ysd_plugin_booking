@@ -57,8 +57,8 @@ module Sinatra
 
           if mybooking_plan_type.first
             @calendar_modes =  {
-                :first_day =>  t.booking_settings.form.calendar_mode.first_day,
-                :default => t.booking_settings.form.calendar_mode.default
+                :first_day =>  t.booking_settings.basic.calendar_mode.first_day,
+                :default => t.booking_settings.basic.calendar_mode.default
             }
             load_page(:setup_step_2)
           else
@@ -129,14 +129,6 @@ module Sinatra
           redirect '/admin/booking/setup'
 
         end
-
-
-        #
-        # Booking configuration
-        #
-        #app.get "/admin/booking/config", :allowed_usergroups => ['booking_manager', 'staff'] do
-        #  load_page(:console_booking_configuration)
-        #end
 
       end
     end

@@ -1,5 +1,5 @@
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.booking_settings.form.frontend_configuration_title%></h2>
+  <h2 class="entity-title"><%=t.booking_settings.website.title%></h2>
 </div>
 <div class="admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
 
@@ -11,18 +11,18 @@
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
           <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_front_end.engine.title%></h3>
+            <h3 class="block-title"><%=t.booking_settings.website.engine.title%></h3>
           </div>
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <%= render_variable_checkbox_boolean('booking.inner_reservation_engine',
-                                                   t.booking_front_end.engine.inner_label) %>
-              <p class="text-muted"><%=t.booking_front_end.engine.inner_description%></p>
+                                                   t.booking_settings.website.engine.inner_label) %>
+              <p class="text-muted"><%=t.booking_settings.website.engine.inner_description%></p>
               <div id="outside_engine_holder">
                 <%= render_variable_input_text('booking.front_end_prefix',
-                                               t.booking_front_end.engine.external_web_prefix_url, 80, 40) %>
-                <p class="text-muted"><%=t.booking_front_end.engine.external_url%></p>
+                                               t.booking_settings.website.engine.external_web_prefix_url, 80, 40) %>
+                <p class="text-muted"><%=t.booking_settings.website.engine.external_url%></p>
               </div>
               <div class="form-group">
                 <div class="col-xs-12">

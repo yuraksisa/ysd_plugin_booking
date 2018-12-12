@@ -1,404 +1,468 @@
-mybooking_bottom:
-  text: Reservas gestionadas con
-  link: myBooking motor de reservas
-booking_pages:
-  new_booking: Nueva reserva
-  summary: Resumen de la reserva
-system_admin_menu:
-  apps:
-    bookings_menu:
-      title: Gestión de reservas
-      bookings: Reservas
-      bookings_scheduler: Agenda
-      booking_categories: Productos
-      booking_items: Recursos
-booking_console_configuration:
-  title: Configuración sistema de reservas
-  general_configuration: General
-  email_settings: Correo electrónico
-  payment: Forma de Pago
-  templates: Plantillas      
-  create_rates: Generar tarifas web
-  admin: Administración web
-booking_create_rates:
-  title: Generar tarifas
-  description: > 
-          <p>Es necesario ejecutar este proceso cada vez que modifica una tarifa o una categoría o 
-          cambia la configuración para generar las tarifas que se utilizarán en la web.</p>
-  proceed: Pulse el botón <strong>generar tarifas</strong> para proceder.
-  button_generate: Generar tarifas 
-booking_configuration_templates:
-  title: Plantillas sistema de reservas
-  general: General
-  contract: Contrato de alquiler
-  conditions: Condiciones de alquiler
-  summary_message: Mensaje al finalizar la reserva (en la página web)
-  emails: Correos electrónicos
-  template: Plantilla
-  customer_emails: Se envían al cliente
-  manager_emails: Se envían al gestor de las reservas
-  email_customer_request_received: "Nueva solicitud de reserva"
-  email_customer_payment_request_received: "Nueva solicitud de reserva con pago online"
-  email_customer_reservation_confirmed: "Reserva confirmada"
-  email_customer_payment_enabled: "Pago de reserva habilitado"
-  email_manager_request_received: "Nueva solicitud de reserva"
-  email_manager_payment_request_received: "Nueva solicitud de reserva con pago online"
-  email_manager_confirmation: "Reserva confirmada"
-booking_settings:
-  form:
-    title: Configuración General
-    frontend_configuration_title: Página web de reservas
-    reservation_configuration_title: Configuración de las reservas
-    rates_configuration_title: Configuración de las tarifas
-    backoffice_configuration_title: Configuración avanzada
-    online_payment: Configuración del pago online
-    planning_resources: Planning y recursos
-    pick_up_return_report: Entregas y recogidas
-    notifications: Configuración de las notificaciones
-    activities_customer_notification_templates: Plantillas notificaciones reservas actividades a los clientes
-    activities_manager_notification_templates: Plantillas notificaciones reservas actividades al gestor
-    renting_customer_notification_templates: Plantillas notificaciones reservas alquiler a los clientes
-    renting_manager_notification_templates: Plantillas notificaciones reservas alquiler al gestor
-    notificacion_smtp_setup: Configuración SMTP
-    notification_email: Email de notificación
-    notification_email_description: Lista separada por comas de los correos electrónicos a las que se envían las notificaciones dirigidas al gestor de reservas
-    notificacions_setup: Configuración
-    send_notifications: Habilita notificaciones de las reservas recibidas por la web
-    send_notifications_backoffice_reservations: Habilita notificaciones de las reservas registradas desde el backoffice
-    business: Características del negocio
-    front_end_title: Front-end
-    manage_locations: Gestionar oficinas o sucursales
-    multiple_rental_locations: Múltiples oficinas o sucursales
-    multiple_rental_locations_description: El negocio tiene múltiples oficinas o sucursales. Las reservas de material o las actividades son gestionadas por un centro.
-    resource_availability_by_rental_location_storage: Disponibilidad de stock para las oficinas o sucursales de un almacén o campa
-    resource_availability_by_rental_location_storage_description: El stock se gestiona por cada almacén o campa, de forma que cada sucursal/oficina sólo usar los recursos del almacén o campa relacionadol. Si desmarca esta opción se gestiona el stock de forma global 
-    multiple_rental_locations_operator: Los operarios pueden ver todas las sucursales/oficinas
-    multiple_rental_locations_operator_description: Permite a los usuarios operadores, no el equipo gestor, ver todas las sucursales/oficinas.
-    multiple_rental_locations_pickup_return_same_location: Lugar de entrega y recogida pertenece a la misma sucursal
-    multiple_rental_locations_pickup_return_same_location_description: Seleccionar la opción si el lugar de entrega y recogida han de pertenecer a la misma oficina/sucursal
-    scheduler_start_time: Hora de inicio planificación
-    scheduler_finish_time: Hora de fin planificación    
-    booking_mode:
-      title: Modo
-      rent: Alquiler
-      restaurant: Restaurante
-    products:
-      title: Productos
-    reservation:
-      title: Reserva
-    calendar_mode:
-      title: Cálculo de la tarifa
-      default: Promedio de las temporadas afectadas
-      first_day: La fecha de inicio de la reserva determina la temporada
-    planning:
-      title: Planning y recursos
-    rates:
-      title: Cálculo de las tarifas
-      description: Determina la forma en la que se calculará el precio cuando las fechas de la reserva incluyen varias temporadas
-    deposit_group:
-      title: Fianza
-    reservation_starts_with:
-      title: Tipo formulario de reserva
-      dates: Selección fechas (para 1 producto)
-      categories: Selección producto (para 1 producto)
-      shoppingcart: Reserva múltiples productos
-    general:
-      title: General
-      report_pickup_return_pdf:
-        title: Informe entregas y recogidas (PDF)
-        description: Indica la versión del report PDF que desea utilizar. v1 es el report original. v2 es el nuevo report. Incluye información del vuelo de retorno y reorganización de columnas
-        v1: Versión 1
-        v2: Versión 2
-    assignation:
-      allow_different_category: Permitir asignar diferentes categorías
-      allow_different_category_description: Permite que a una reserva pueda asignarse un recurso de diferente categoría, por ejemplo un coche de categoría superior
-      allow_busy_resource: Permitir asignar recurso ocupado.
-      allow_busy_resource_description: Permite que en un mismo día pueda haber el mismo recurso asignado a dos reservas. Marcar si permitimos que el mismo día que se realice la devolución de un recurso pueda realizarse la asignación a otra reserva
-      automatic_resource_assignation: Asignación automática
-      automatic_resource_assignation_description: Realiza la asignación automática de uno de los recursos disponibles al confirmar la reserva
-      planning_style:
-        title: Tipo de planning
-        compact: Compacto
-        extended: Extendido
-      assignation_hours_return_pickup: Horas entre la devolución y la entrega del recurso a la siguiente reserva
-      assignation_hours_return_pickup_description: >
-                                                   <p>Permite indicar el número de horas que han de transcurrir entre la devolución de un recurso y la entrega a la siguiente reserva,
-                                                   de manera que el recurso se pueda recibir y preparar para la siguiente entrega en el mismo día.</p>
-      planning_full_day: Mostrar el planning con el día completo
-      planning_full_day_description: >
-                                     <p>Determinados negocios, la reserva se contabiliza durante el día (se entrega y se devuelve el mismo día). Alquiler de kayaks, bicicletas, ... siguen esta configuración.
-                                     En este caso, en el planning se muestra el día entero cuando una reserva.</p>
-                                     <p>Otros negocios, la reserva suele entregarse un día y devolverse al día siguiente. Es lo que llamamos
-                                     ciclo de 24 horas. Rent a cars, hostales, ... siguen esta configuración.
-                                     En este caso, en el planning se muestra el día de la entrega el segundo 50% de la celda coloreado y el día de la
-                                     devolución, el primer 50% coloreado.</p>
-                                     <p>En los negocios con ciclo de 24 horas, si marca esta opción, el planning se mostrará como en el primer
-                                     caso, es decir, mostrará el día de la entrega y el la de devolución completamente pintado.</p>
-      automatically_manage_pending_of_confirmation: Tener en cuenta las reservas pendientes de confirmación en la disponibilidad
-      automatically_manage_pending_of_confirmation_description: >
-                                                                <p>Si marca esta opción las reservas <b>pendientes de confirmación</b> mantendrán bloqueado el stock de manera automática, no siendo necesario
-                                                                realizar un bloqueo de stock. El stock se desbloqueará al cancelar la reserva o cuando se supere la fecha de inicio de la misma y no se haya
-                                                                confirmado.</p>
-                                                                <p>Si desea gestionar de manera manual el bloqueo de stock de las reservas pendientes, desmarque esta opción.</p>
-    pickup_return_backoffice:
-      allow_operator_all_locations: Permite que el usuario operador pueda consultar entregas y recogidas de múltiples oficinas
-    front_end:
-      multilanguage_site: Multi idioma
-      multilanguage_site_description: Permite que definir los datos en múltiples idiomas
-    renting: Gestión de alquileres
-    activities: Gestión de actividades o eventos
-    deposit_payment_group: Paga y señal
-    total_payment_group: Total
-    pay_group:
-      title: Cantidad a pagar online
-      deposit: Paga y señal
-      total: Total
-      deposit_and_total: Paga y señal + Total
-      allow_pending_payment: Permite pagar la cantidad pendiente
-      allow_pending_payment_description: Permite pagar el importe pendiente (tras pagar el depósito)
-    product_allow_deposit: Permitir definir una fianza en los productos.
-    product_allow_deposit_description: Es un importe que se retiene al cliente en concepto de posibles daños sobre el producto. Se retorna al realizar la devolución del producto en buen estado
-    deposit: "% de paga y señal sobre el total de la reserva"
-    deposit_description: "Indique el % sobre el total de reserva que quiere establecer como la cantidad de paga y señal"
-    deposit_includes_product_deposit: "La paga y señal incluye la fianza"
-    deposit_includes_product_deposit_description: Marque esta opción si desea que el importe de paga y señal se calcule incluyendo la fianza de los productos contratados.
-    total_cost_includes_deposit: "El total incluye la fianza"
-    total_cost_includes_deposit_description: Marque esta opción si desea que el importe total de la reserva incluya la fianza de los productos contratatados.
-    allow_total_payment: Permitir pagar el total de la reserva
-    min_days: Numero mínimo de días
-    min_days_description: Permite indicar el número mínimo de días que se puede alquilar un producto
-    hours_cadence: Horas de cadencia (tarifa)
-    hours_cadence_description: Número de horas que exceden de las 24 horas para considerar que se ha de aplicar un día más a la hora de calcular la tarifa
-    family: Tipo de negocio
-    family_description: El sistema está preparado para la gestión de determinados negocios en función del producto que alquilan.
-    custom_pickup_return_place: Permitir otros lugares de entrega/devolución
-    custom_pickup_return_place_price: Precio otro lugar de entrega/devolución
-    no_pickup_return_timetable: No aplica
-    pickup_return_timetable_title: Horario
-    pickup_return_main_season: Horario temporada
-    pickup_return_out_of_season: Horario fuera de temporada
-    pickup_return_main_season_from: Horario temporada desde
-    pickup_return_main_season_to: Horario temporada hasta
-    pickup_return_timetable: Horario entrega/devolución
-    pickup_return_timetable_description: Permite indicar el horario de entrega/devolución
-    pickup_return_timetable_out_price: Precio entrega/devolución fuera de horas
-    payment: Pago online habilitado al realizar reserva
-    payment_description: Habilite esta opción si desea permitir que el usuario pueda realizar el pago al realizar la reserva. Si no marca esta opción, deberá habilitar el pago de forma explícita para cada reserva.
-    morning_turns: Mañana
-    afternoon_turns: Tarde 
-    night_turns: Noche
-    duration_of_service: Duración del servicio
-    duration_of_service_extra: Duración del servicio (extra)
-    duration_of_service_extra_turns: Turnos de servicio con duración extra
-    min_children: Número mínimo de niños
-    max_children: Número máximo de niños
-    max_children_extra: Número máximo de niños (extra)
-    min_adults: Número mínimo de adultos
-    max_adults: Número máximo de adultos
-    max_adults_extra: Número máximo de adultos (extra)
-    people_resources: Recursos para los clientes        
-    general_group: General
-    product_reservation_rates: Proceso de reserva
-    pickup_return_group: Entrega y devolución
-    payment_group: Pago online
-    adwords_group: Adwords
-    turns_group: Turnos
-    people_group: Gente   
-    rent_group: Alquiler
-    days_hours_group: Días de reserva, caducidad y cadencia
-    activities_group: Actividades 
-    item_hold_time: Caducidad de la reserva (en horas)
-    item_hold_time_description: Número de horas desde la recepción de la reserva durante las cuales se puede realizar el pago (parcial o total) para confirmar la reserva. Pasado este tiempo no se podrá realizar el pago de la reserva a no ser que se habilite explícitamente para la reserva.
-    payment_cadence: Cadencia de pago (en horas)
-    payment_cadence_description: Número de horas que han de haber desde la fecha en la que se realiza la reserva hasta la fecha de inicio de la reserva para permitir el pago online. El cliente sólo podrá realizar una solicitud de reserva, pero no confirmarla.
-    activities_item_hold_time: Caducidad del pedido (en horas)
-    activities_item_hold_time_description: Número de horas desde la recepción del pedido durante las cuales se puede realizar el pago (parcial o total) para confirmarlo. Pasado este tiempo no se podrá realizar el pago del pedido a no ser que se habilite explícitamente para el pedido.
-    activities_request_reservation: Permitir realizar sólo solicitud (sin pago online)
-    activities_request_reservation_description: Permite realizar sólo la solicitud de una actividad sin tener que realizar el pago online. Permite captar la solicitud del cliente y disponer de sus datos de contacto.
-    activities_payment: Pago online habilitado al realizar reserva
-    activities_deposit: "% de paga y señal sobre el total de la reserva"
-    activities_allow_deposit_payment: Permitir el pago de la paga y señal
-    activities_allow_total_payment: Permitir el pago total del pedido
-    activities_item_hold_time: Caducidad (en horas) del pedido
-    activities_payment_cadence: Cadencia de pago (en horas)
-    activities_payment_cadence_description: Número de horas que han de haber desde la fecha en la que se realiza el pedido hasta la fecha de inicio de la actividad para permitir el pago online. Pasado este tiempo no se podrá realizar el pago del pedido a no ser que se habilite explícitamente para el pedido.
-    adwords_active: Conversión adwords
-    booking_request_conversion_id: Solicitud reserva conversion_id 
-    booking_request_conversion_label: Solicitud reserva conversion_label
-    booking_pay_now_conversion_id: Pago online reserva conversion_id
-    booking_pay_now_conversion_label: Pago online reserva conversion_label
-    driver_min_age_title: Conductor joven
-    driver_min_age_rules: Política específica para los conductores según su edad
-    driver_min_age_edition: Permite editar la fecha de nacimiento del conductor y la fecha de expedición de la licencia en el formulario de datos del conductor
-    driver_min_age_reservation_rule: Regla para el formulario de reserva
-    driver_min_age_rules_description: Permite indicar si la empresa tiene una política con limitaciones para los conductores jóvenes. En caso de no tenerla desactivar la opción.
-    driver_min_age_rules_description: Existe una política en la empresa para los conductores jóvenes, ya sea imposibilidad de alquilar, suplemento o fianza
-    driver_min_age_description: Un conductor se considera joven si su edad es inferior
-    driver_min_age: Edad mínima del conductor
-    driver_min_age_allowed: Permite realizar reserva si es un conductor joven
-    driver_min_age_description: Edad mínima del conductor para considerarlo conductor joven
-    driver_min_age_driving_license_years_min: Años de carnet mínimo (0 si no se tiene en cuenta)
-    driver_min_age_driving_license_years_min_description: Si el conductor es menor de la edad establecida, permite añadir un segundo control sobre los años de carnet mínimos para considerarse conductor joven. Si el tiempo es inferior a esta cantidad no podrá alquilar.
-    driver_min_age_cost: Suplemento conductor joven (por día)
-    driver_min_age_cost_description: Importe del suplemento que se ha de pagar por conductor joven
-    driver_min_age_cost_title: Suplemento por conductor joven
-    driver_min_age_deposit_title: Fianza por conductor joven
-    driver_min_age_driving_license_years_max: Número de años carnet conducir pago fianza
-    driver_min_age_driving_license_years_max_description: Número de años carnet conducir pago fianza
-    driver_min_age_driving_license_years_deposit: Importe fianza
-    frontend:
-      activities_menu: Venta de actividades tiene menús (principal y secundarios) propios
-      activities_menu_description: En el caso de tener un plan con alquiler y actividades, desea que la pantallas del proceso de actividades tenga un menú propio e independiente de las pantallas de alquiler
-booking_notification_settings:
-  renting_customer_notification_template_title: Plantillas notificaciones alquiler clientes
-  renting_manager_notification_template_title: Plantillas notificaciones alquiler gestor
-  activities_customer_notification_template_title: Plantillas notificaciones actividades clientes
-  activities_manager_notification_template_title: Plantillas notificaciones actividades gestor
-booking_business_settings:
-  title: Empresa
-  renting_title: Tipo de negocio
-  company:
-    title: Empresa
-    name: Nombre empresa
-    document_id: CIF
-    phone_number: Teléfono
-    email: Correo electrónico
-    address: Dirección
-    city: Localidad
-    state: Provincia
-    country: País
-    zip: Código postal
-    social_networks: Redes sociales
-    facebook: Facebook
-    twitter: Twitter
-    linkedin: Linkedin
-    instagram: Instagram
-booking_contract:
-  title: Contrato
-  template_title: Plantilla
-  renting_title: Contrato de alquiler
-  activities_title: Contrato de actividades
-  translations: Traducciones
-booking_front_end_theme:
-  title: Tema
-booking_front_end:
-  title: Estructura y contenidos
-  engine:
-    title: Motor de reservas
-    inner_label: Usar el motor de reservas interno
-    inner_description: Marque esta opción si desea utilizar el motor de reservas interno. En el caso de que sea una web externa la utilizada para realizar las reservas online desmarque esta opción
-    external_web_prefix_url: URL de la web externa
-    external_url: Indique la URL donde está alojada la página web de su empresa que conecta con mybooking (p.e. http://midominio.com)
-  languages_title: Idiomas
-booking_rates:
-  title: Tarifas    
-  seasons: Temporadas
-  how_many_seasons: ¿Cuántas temporadas?
-  rates: Precios  
-booking_rates_summary:
-  current_rates:
-    title: Precios actuales
-    base_price: Precio base    
-    category: Categoría
-    prices: Precios
-    factors: Factores
-    season: Temporada
-    price: Precio
-    from: Desde
-    to: Hasta
-    factor: Factor
-    days: !!pl
-      1: 1 día
-      n: \%1 días
-    edit_prices: Editar precios    
-booking_console:
-  title: Entregas y devoluciones
-  configuration: Configuración
-  products: Productos
-  activities: Actividades
-  rates: Tarifas
-  bookings: Alquiler
-  activity_bookings: Actividades/Tours
-  new_order: Nuevo pedido
-  orders: Pedidos
-  activities_occupation: Ocupación
-  activities_schedule: Agenda
-  activities_summary: Programadas
-  pending_confirmation_activities: Pendientes confirmar
-  today_activities: En curso (previstas hoy)
-  crm: CRM
-  finances: Finanzas
-  statistics: Estadísticas
-  listing: Listados
-  utils: Utilidades
-  catalogs: Catálogos
-  categories: Productos
-  extras: Extras
-  items: Stock
-  prices: Precios
+#
+# ------------------------------- MAIN APP MENU --------------------------------------
+#
+booking_menu:
+  dashboard: Panel de control
   reservations: Reservas
-  planning: Planning 
-  monthly_occupation: Ocupación
-  check_availability: Disponibilidad
-  extras_availability: Disponibilidad extras   
-  period: Período
-  requested: Solicitudes
-  confirmed: Confirmadas
+  customers: Clientes
   new_booking: Nueva reserva
-  new_customer_booking: Nueva reserva de cliente
   new_booking_renting: Nuevo alquiler
   new_customer_booking_renting: Nuevo alquiler de cliente
-  availability: Calendarios
+  new_customer_booking: Nuevo reserva de cliente
+  new_order: Nuevo pedido actividades
+  products: Productos
+  extras: Extras
+  activities: Actividades
+  bookings: Alquiler
+  reservations: Reservas
+  planning: Planning
+  check_availability: Disponibilidad
+  extras_availability: Disponibilidad extras
+  activity_bookings: Actividades/Tours
+  orders: Pedidos
+  activities_schedule: Agenda
+  activities_occupation: Ocupación
+  today_activities: En curso (previstas hoy)
+  activities_summary: Programadas
+  analysis: Análisis
   summary: Resumen
-  pickup_return: Entrega y devolución
-  places: Lugares
-  create_rates: Preparar tarifas
-  adjust_prices: Ajustes masivos precios    
-  calendars: Calendarios
-  timetables: Horarios
+  monthly_occupation: Ocupación
+  crm: CRM
+  information_requests: Solicitudes de información
+  finances: Finanzas
   receipts: Cobros
   products_billing: Facturación stock
-  extras_billing: Facturación extras  
-  information_requests: Solicitudes información
+  extras_billing: Facturación extras
+  listing: Listados
+  report_reservations: Reservas
+  report_finances_started_reservations: Reservas entregadas 
+  report_finances_finished_reservations: Reservas devueltas
+  report_customers: Clientes
+  report_picked_up_products: Informe policía
+  report_prereservations: Prereservas
+  report_stock: Stock
+  activities_summary: Actividades programadas
+#  
+# ------------------------------- DASHBOARD ------------------------------------------
+#
+# == Booking dashboard
+#
+booking_dashboard:
+  title: Panel de control
+  not_enough_data: No hay datos suficientes  
+  summary: Resumen
+  renting: Alquiler
+  activities: Actividades
+  received_reservations: Recibidas
+  pending_confirmation_reservations: Pendientes de confirmación
+  confirmed_reservations: Confirmadas
+  received_orders: Recibidos
+  pending_confirmation_orders: Pendientes de confirmación
+  confirmed_orders: Confirmados  
+  new_request: Nuevas solicitudes
+  reservations_by_day: Recibidas por día de la semana
+  reservations_by_category: Por categoría
+  reservations_by_state: Por estado
+  last_30_days_reservations: Recibidas últimos 30 días
+  activities_by_day: Recibidas por día de la semana
+  activities_by_category: Por producto
+  activities_by_state: Por estado
+  last_30_days_activities: Recibidas últimos 30 días
+  day_work: Entregas/Devoluciones del día
+  delivery: Entregas
+  transit: En curso
+  return: Devoluciones
+  activities_today: Actividades
+  billing: Facturación
+  products_billing: Productos alquiler
+  extras_billing: Extras alquiler
+  activities_billing: Actividades
+  total_billing: Total
+  stock_cost: Valor stock
+  renting_products_billing_vs_total: del alquiler
+  renting_extras_billing_vs_total: del alquiler
+  products_billing_vs_total: del total 
+  extras_billing_vs_total: del total
+  activities_billing_vs_total: del total   
+  amortization: Amortización
+  stock_amortization: Stock y amortización
+  charges: Cobros
+  total: Total
+  total_charged_reservations: Total cobrado
+  forecast_charged_reservations: Previsión cobros
+  total_charged_activities: Total cobrado
+  forecast_charged_activities: Previsión cobros  
+#
+# ------------------------------- PRODUCTS GROUP -------------------------------------
+#
+# Products group: catalog, categories, extras, inventory
+#
+#
+# == Catalogs (deprecated)
+#
+catalog_management:
+  table:
+    code: Código
+    description: Descripción
+    default: Por defecto    
+  form:
+    title: Catálogos
+    code:
+      label: Código
+    description:
+      label: Descripción
+    selector:
+      label: Selector
+    product_family:
+      label: Configuración
+    extras:
+      label: Extras      
+    code_required: Código obligatorio
+#
+# == Categories
+#          
+booking_category_management:
+  item: Producto
+  title: Productos
+  table:
+    calendar: Calendario
+    prices: Precios  
+    scheduler: Agenda
+  form:
+    basic_data_group: Datos básicos
+    other_data_group: Otros datos
+    translations_group: Traducciones
+    media_group: Imágenes
+    rates_group: Tarifas
+    deposit_group: Fianza
+    stock_group: Stock
+    stock_detail_group: Detalle del stock
+    sales_channels_group: Canales de venta
+    calendar_group: Calendario
+    product_group_description: >
+                               <p>Página web de detalle con la información detallada y desde la que se puede ver la <b>disponibilidad</b> y <b>realizar la reserva</b>.</p>
+                               <p>El sistema crea automáticamente una página web accessible desde la URL definida en el campo alias</p>
+    stock_not_match: El stock del producto no coincide con el stock definido.
+    active_widget:
+      label: Activo
+    ready_widget:
+      label: Preparado
+    not_ready_widget:
+      label: No preparado
+    stock_widget:
+      label: Stock
+    web_public_widget:
+      label: Público
+    product_not_ready: El producto no está listo para la venta. Se necesita código, nombre y tarifa
+    code:
+      label: Código
+      validation:
+        required: El código del producto es obligatorio
+    name:
+      label: Nombre
+      validation:
+        required: El nombre del producto es obligatorio
+    short_description:
+      label: Descripción corta
+    title:
+      label: Título
+    subtitle:
+      label: Subtítulo
+    description:
+      label: Descripción
+    type:
+      label: Tipo
+    catalog:
+      label: Catálogo
+    calendar:
+      label: Calendario
+    price_definition:
+      label: Precio
+    stock_control:
+      label: Control de stock 
+    stock:
+      label: Stock 
+    capacity:
+      label: Plazas disponibles
+      description: Establece la capacidad en personas
+    capacity_children:
+      label: Plazas de niños disponibles
+      description: Establece la capacidad de niños (complementarios a las plazas)
+    sort_order:
+      label: Orden
+      description: Esta opción permite establecer el orden en el listado de venta de la web
+    deposit:
+      label: Fianza
+    active:
+      label: Activo
+    web_public:
+      label: Público
+    notify_customer_if_empty:
+      label: Avisar al cliente si no hay reservas
+    alias:
+      label: Alias
+      description: Esta opción permite establecer una url alternativa para visualizar el producto en el navegador
+    from_price:
+      label: Precio desde (portada)
+      description: Permite definir el precio desde para la portada
+    from_price_offer:
+      label: Precio desde en oferta (portada)
+      description: Permite definir el precio desde para la portada (cuando hay oferta)
+    color:
+      label: color
+      description: Esta opción permite definir el color que se utilizará para representarlo en las gráficas
+    request_customer_address:
+      label: Solicitar dirección del cliente
+    request_customer_information:
+      label: Solicitar datos de los participantes
+    request_customer_document_id:
+      label: Solicitar el ID de los participantes (DNI/Pasaporte)
+    request_customer_phone:
+      label: Solicituar teléfono de los participantes
+    request_customer_email:
+      label: Solicituar correo electrónico de los participantes
+    request_customer_height:
+      label: Solicituar altura de los participantes
+    request_customer_weight:
+      label: Solicitar peso de los participantes
+    request_customer_allergies_intolerances:
+      label: Solicituar alergias/intolerancias
+    uses_planning_resources:
+      label: Usar recursos del planning
+    create_rates:
+      label: Generar tarifas
+    create_calendar:
+      label: Generar calendario
+      description: >
+                   <p class="less_contrast_text">Asociando un calendario a una categoría puede configurar
+                   si desea impedir realizar reservas, habilitar los pagos, ...
+                   en fechas determinadas</p>
+    active_filter:
+      only: Sólo activos
+      all: Todos
+    sales_channel_group: Canales de venta
+#
+# -- Categories / Sales channel
+#
+booking_category_sales_channels_management:
+  title: Canales de venta
+  no_data: No se han definido canales de venta para el producto
+  table:
+    channel_name: Canal de venta
+booking_category_sales_channels_setup:
+  title: Configurar canales de venta
+booking_category_sales_channels_edit:
+  title: Canal de venta %1    
+#
+# == Extras
+#    
+booking_extra_management:
+  title: Extras
+  description: Gestión de extras
+  table:
+    code: Código
+    name: Nombre
+    prices: Precios      
+  form:
+    code:
+      label: Código
+    name:
+      label: Nombre
+    description:
+      label: Descripción    
+    max_quantity:
+      label: Cantidad máxima
+    stock:
+      label: Stock
+    price_definition:
+      label: Precio  
+    active:
+      label: Activo
+    web_public:
+      label: Público 
+#
+# == Items (inventory)
+#      
+booking_item_management:
+  total_products: "Hay <strong>%1</strong> productos en stock (%2 asignables)"
+  table:
+    calendar: Gestió del calendario
+    prices: Gestión de precios
+    assignable: Asignable
+    assignable_yes: S
+    assignable_no: N
+    own_property: Propio
+    own_property_yes: S
+    own_property_no: N
+    plate: Matrícula
+    rental_storage: Almacén/Campa
+    not_assigned_rental_storage: No asignado
+  form:
+    title: Stock
+    reference: 
+      label: Referencia
+      required: La referencia es obligatoria
+      exist: La referencia ya existe en el sistema
+    change_reference:
+      label: Cambiar
+    category:
+      label: Producto      
+    name:
+      label: Nombre
+    description:
+      label: Notas
+    calendar:
+      label: Calendario
+    price_definition:
+      label: Precio
+    active:
+      label: Activo
+    model:
+      label: Modelo
+    plate:
+      label: Matrícula o referencia 
+    characteristic_1:
+      label: Característica 1
+    characteristic_2:
+      label: Característica 2
+    characteristic_3:
+      label: Característica 3
+    characteristic_4:
+      label: Característica 4
+    planning_order:
+      label: Orden en el planning      
+    cost: 
+      label: Coste
+    active_filter:
+      only: Sólo activos
+      all: Todos
+    own_property:
+      label: Stock propio
+    assignable:
+      label: Asignable
+    rental_storage: 
+      label: Almacén/Campa      
+  change_reference_form:
+    title: Cambiar referencia
+    new_reference:
+      label: Nueva referencia
+    change_reference_warning: Por favor, <b>no</b> utilice esta opción para reemplazar un item del stock. Sólo en el caso de que se haya equivocado o quiera utilizar una nueva referencia para el mismo elemento.
+    reference_change_success: La referencia se ha cambiado.
+    reference_change_error: Lo sentimos, se ha producido un error al cambiar la referencia.
+#
+# == Activities
+#      
+booking_activity_management:
+  title: Actividades 
+  form:
+    code:
+      label: Código
+      validation:
+        required: El código de la actividad es obligatorio
+    name:
+      label: Código
+      validation:
+        required: El nombre de la actividad es obligatorio
+    description:
+      label: Descripción
+    detailed_info_what_includes:
+      label: ¿Qué incluye?
+    detailed_info_timetable_duration:
+      label: Duración
+    detailed_info_ages:
+      label: Edades
+    detailed_info_recommendations:
+      label: Recomendaciones
+    detailed_info_meeting_point:
+      label: Punto de encuentro
+    multiple_prices_title: Múltiples tarifas basadas en
+    none: Sólo 1 tarifa
+    duration: Duración
+    ages: Edades
+    accomodation: Lugar
+    capacities_on_multiple_prices: Diferentes capacidades según el tipo de tarifa
+    price_name: Nombre tarifa
+    affects_capacity: Afecta capacidad
+    total_capacity: Capacidad total
+    step_tickets: Venta de tickets en múltiplos
+    duration_days: Duración en días
+    duration_hours: Duración en horas
+    custom_pickup_places: Servicio de recogida de clientes (lugares)
+    own_contract: Contrato personalizado
+    pickup_places: Lugares de devolución de clientes
+    occurrence: Frecuencia
+    occurrence_one_time: Una vez (determinada por la empresa)
+    occurrence_multiple_dates: Múltiples fechas (determinadas por la empresa)
+    occurrence_cyclic: Cíclica (determinadas por la empresa)
+    occurrence_customizable: El cliente elige la fecha
+    mode: Forma de compra
+    mode_full: El cliente contrata la actividad completa
+    mode_partial: El cliente compra tickets por plazas
+    new_activity_detail: >
+                       <p>Está creando una nueva actividad para su negocio. Una 
+                       actividad representa un evento o experiencia que ofrece a
+                       sus clientes y que se llevan a cabo en unas fechas y horarios
+                       determinados.
+                       </p>
+                       <p>Debe tener en cuenta la frecuencia con la que la 
+                       actividad se lleva a cabo y la forma en la que el 
+                       cliente la contrata.</p>
+    occurrence_detail: >
+                       <h4>Frecuencia</h4>
+                       <ul>
+                         <li>Se lleva a cabo una única vez</li>
+                         <li>Se lleva a cabo varias veces en fechas determinadas</li>
+                         <li>Se lleva a cabo de forma recurrente (días de la semana y horarios)</li>
+                         <li>El cliente determina la fecha (personalizable)</li>
+                       </ul>
+    mode_detail: >
+                 <h4>Forma de compra</h4>
+                 <p>El cliente final compra la actividad
+                 completa o bien compra unos tickets o entradas para un número de 
+                 personas</p>
+    date_from: Fecha inicio
+    date_to: Fecha fin
+    actity_date_description: Titulo
+    activity_date_date_from: Fecha inicio
+    activity_date_date_to: Fecha fin
+    activity_date_new_date: Nueva fecha     
+    no_dates: No hay fechas
+    web_public: Pública
+    alias: Alias
+    activity_date:
+      done: Creada fecha de la actividad
+    active_filter:
+      only: Sólo activos
+      all: Todos
+    payment_title: Cobro online
+    payment_setup:
+      title: Configuración cobro online
+      default: Utiliza la configuración por defecto
+      custom: Configuración personalizada
+    custom_payment_title: Configuración cobro online
+    custom_payment_allow_deposit_payment: Permite el cobro del depósito
+    custom_payment_deposit: "% paga y señal"
+    custom_payment_allow_total_payment: Permite el cobro del total
+    allow_request_reservation:
+      title: Solicitud de reserva
+      label: Permitir solicitud (sin realizar pago)
+#
+# ------------------------------- RESERVATIONS MANAGEMENT -------------------------------------
+#
+#
+# booking management and order management + analysis (TO REFACTOR)
+#        
+booking_console:
+  new_booking: Nueva reserva
+  new_customer_booking: Nueva reserva de cliente
   report_pending_confirmation: Pendientes
   report_in_progress: En curso
-  report_pickup_return: Entregas y devoluciones
-  report_stock: Stock
-  report_reservations: Reservas
-  report_resource_reservations: Reservas por recurso
-  report_prereservations: Prereservas
-  report_picked_up_products: Informe policía
-  report_finances_started_reservations: Reservas entregadas
-  report_finances_finished_reservations: Reservas devueltas
-  activities_report: Actividades
-  report_customers: Clientes
-  journal: Diario
-  rental_locations: Oficinas
-  media_settings: Medios
-report_picked_up_products:
-  title: Informe policía
-report_finances_finished_reservations:
-  title: Reservas devueltas
-report_finances_started_reservations:
-  title: Reservas entregadas
-booking_console_restaurant:
-  table_types: Tipos de mesa 
-  tables: Mesas
-  planning: Planning  
-booking_summary:
-  title: Resumen reservas
-booking_forecast:
-  title: Previsión reservas  
-booking_incoming:
-  title: Previsión económica
   period: Período
-  total: Total    
-booking_pickup:
-  title: Entregas
-  title_checkin: Entradas
-booking_return:
-  title: Recogidas
-  title_checkout: Salidas
+  requested: Solicitudes
+  confirmed: Confirmadas  
+#
+# Pickup/return bookings (TO REFACTOR)
+#
 booking_list:
   id: "#"
   item: Producto
@@ -417,31 +481,43 @@ booking_list:
   rental_location: Oficina
   pickup_count: Número de entregas
   return_count: Número de devoluciones
+#
+# == Booking status
+#
 booking_status:
-  pending_confirmation: Pendiente
-  confirmed: Confirmado
-  in_progress: En progreso
-  done: Finalizado
-  cancelled: Cancelado
+    pending_confirmation: Pendiente
+    confirming: Confirmando
+    confirmed: Confirmada
+    in_progress: En curso
+    done: Finalizada
+    cancelled: Cancelada
+#
+# == Booking payment status
+#   
 booking_payment_status:
   none: No cobrado
   deposit: Depósito
   total: Total  
   refunded: Devuelto
-booking_items:
-  car: coche
-  bike: bicicleta
-  motorbike: motocicleta
-  kayak: kayak
-  apartment: apartamento
-  room: habitación 
-  product: producto
-new_booking_restaurant:
-  choose_item: Fecha, hora y número de personas 
-  complete_booking: Completar la reserva
-  date_mandatory: Fecha obligatoria
-  time_mandatory: Hora obligatoria
-  people_mandatory: Personas obligatorio
+#
+# == New reservation from customer
+#  
+booking_customers:
+  title: Nueva reserva
+  new_reservation: Nueva reserva  
+  form:
+    search: Buscar cliente
+    search_button: Buscar
+    not_found: No se han encontrado reservas para el cliente
+  table:
+    name: Nombre
+    phone: Teléfono
+    email: Email
+    address: Dirección
+    number_of_reservations: Reservas  
+#
+# == New reservation (TO REFACTOR)
+#
 new_booking:
   driver_age: Edad del conductor
   title: Reserva
@@ -520,15 +596,6 @@ new_booking:
   booking_creation_error:
     title: Error en solicitud de reserva
     description: Error en el proceso
-  confirm_message: Para confirmar la reserva debe hacer un abono de <span class="highlighted_text"><%= booking.booking_amount %>€</span>
-  summary_message: >
-                   <h2>Reserva pendiente de confirmación </h2>
-                   <p class="bf-title">Estimado Sr/Sra. <%= booking.customer_name %> <%= booking.customer_surname %>: </p>
-                   <p class="bf-message">Queremos agradecerle su confianza en <strong><%= bookingConfiguration.company %></strong> para el alquiler de su <%= bookingConfiguration.item_type %>.</p>
-                   <p class="bf-message">En breve recibirá en su correo electrónico, <em> <%= booking.customer_email %> </em>, todos los datos para realizar el pago de su reserva.</p>
-                   <p class="bf-message">Recuerde que dispone de una plazo máximo de 72 horas para realizar el pago y de esta forma confirmar su reserva.</p>
-                   <p class="bf-footer">Atentamente, </p>
-                   <p class="bf-footer">El equipo de <%= bookingConfiguration.company %></p>
   promotion_code: Código de promoción
   check_promotion_code: Enviar
   promotion_code_required: Código de promoción obligatorio
@@ -613,56 +680,15 @@ new_booking:
   offer: Oferta
   offer_budget: Descuento
   driver_age_deposit: Fianza edad conductor
+#
+# TO REFACTOR
+#  
 new_driving_booking:
-  driver:
-    label: Conductor
-    description: Si desea <strong>agilizar</strong> la entrega del vehículo <em>complete</em> los datos del conductor. <em>Pulse el botón + para desplegarlos</em>
-  driver_personal_data: Datos personales
-  driver_name:
-    label: Nombre
-    placeholder: Nombre del conductor
-  driver_surname:
-    label: Apellidos
-    placeholder: Apellidos del conductor
-  driver_nif:
-    label: Nif o pasaporte
-    placeholder: Nif o pasaporte del conductor
   driver_date_of_birth:
-    label: Fecha de nacimiento del conductor
     required: La fecha de nacimiento del conductor es obligatoria
-  driver_license: Permiso de conducir
-  driver_license_number:
-    label: Número licencia
-    placeholder: Número del carnet o licencia de conducir
-  driver_license_date:
-    label: Fecha expedición
-  driver_license_country:
-    label: País expedición
-    placeholder: País de expedición de la licencia
-  driver_address: Dirección
-  driver_address_street:
-    label: Calle
-    placeholder: Nombre de la calle
-  driver_address_number:
-    label: Número
-    placeholder: Numero de la calle
-  driver_address_complement:
-    label: Piso, puerta
-    placeholder: bloque, escalera, piso, puerta 
-  driver_address_city:
-    label: Población
-    placeholder: ciudad o población
-  driver_address_state:
-    label: Província
-    placeholder: provincia o estado
-  driver_address_country:
-    label: País
-    placeholder: país
-  driver_address_zip:
-    label: Código postal
-    placeholder: código postal  
-  pickup_place_required: El lugar de entrega es obligatorio
-  return_place_required: El lugar de devolución es obligatorio
+#
+# Modify pickup/return place or date-time
+#
 booking_management_edit:
   title: Modificación entrega/devolución
   description: >
@@ -675,6 +701,9 @@ booking_management_edit:
     current_situation: Situación actual
     new_situation: Nueva situación
     day_cost: al día
+#
+# Booking management
+#    
 booking_management:
   title: Reservas
   description: <p>Consultar las reservas.</p>
@@ -967,353 +996,338 @@ booking_management:
     santander: TPV Virtual Santander
     paypal_standard: Paypal
     done: Cobro registrado
-simple_booking_management:
-   table:
-     date_from: Fecha y hora reserva
-     number_of_adults: Personas
-     comments: Comentarios
-     customer_phone: Teléfono
-   form:
-     title: Gestión de reservas
-     id: Número reserva
-     date_from: Fecha y hora reserva
-     number_of_adults: Personas
-catalog_management:
-  table:
-    code: Código
-    description: Descripción
-    default: Por defecto    
-  form:
-    title: Catálogos
-    code:
-      label: Código
-    description:
-      label: Descripción
-    selector:
-      label: Selector
-    product_family:
-      label: Configuración
-    extras:
-      label: Extras      
-    code_required: Código obligatorio      
-booking_category_management:
-  item: Producto
-  title: Productos
-  table:
-    calendar: Calendario
-    prices: Precios  
-    scheduler: Agenda
-  form:
-    basic_data_group: Datos básicos
-    other_data_group: Otros datos
-    translations_group: Traducciones
-    media_group: Imágenes
-    rates_group: Tarifas
-    deposit_group: Fianza
-    stock_group: Stock
-    stock_detail_group: Detalle del stock
-    sales_channels_group: Canales de venta
-    calendar_group: Calendario
-    product_group_description: >
-                               <p>Página web de detalle con la información detallada y desde la que se puede ver la <b>disponibilidad</b> y <b>realizar la reserva</b>.</p>
-                               <p>El sistema crea automáticamente una página web accessible desde la URL definida en el campo alias</p>
-    stock_not_match: El stock del producto no coincide con el stock definido.
-    active_widget:
-      label: Activo
-    ready_widget:
-      label: Preparado
-    not_ready_widget:
-      label: No preparado
-    stock_widget:
-      label: Stock
-    web_public_widget:
-      label: Público
-    product_not_ready: El producto no está listo para la venta. Se necesita código, nombre y tarifa
-    code:
-      label: Código
-      validation:
-        required: El código del producto es obligatorio
-    name:
-      label: Nombre
-      validation:
-        required: El nombre del producto es obligatorio
-    short_description:
-      label: Descripción corta
-    title:
-      label: Título
-    subtitle:
-      label: Subtítulo
-    description:
-      label: Descripción
-    type:
-      label: Tipo
-    catalog:
-      label: Catálogo
-    calendar:
-      label: Calendario
-    price_definition:
-      label: Precio
-    stock_control:
-      label: Control de stock 
-    stock:
-      label: Stock 
-    capacity:
-      label: Plazas disponibles
-      description: Establece la capacidad en personas
-    capacity_children:
-      label: Plazas de niños disponibles
-      description: Establece la capacidad de niños (complementarios a las plazas)
-    sort_order:
-      label: Orden
-      description: Esta opción permite establecer el orden en el listado de venta de la web
-    deposit:
-      label: Fianza
-    active:
-      label: Activo
-    web_public:
-      label: Público
-    notify_customer_if_empty:
-      label: Avisar al cliente si no hay reservas
-    alias:
-      label: Alias
-      description: Esta opción permite establecer una url alternativa para visualizar el producto en el navegador
-    from_price:
-      label: Precio desde (portada)
-      description: Permite definir el precio desde para la portada
-    from_price_offer:
-      label: Precio desde en oferta (portada)
-      description: Permite definir el precio desde para la portada (cuando hay oferta)
-    color:
-      label: color
-      description: Esta opción permite definir el color que se utilizará para representarlo en las gráficas
-    request_customer_address:
-      label: Solicitar dirección del cliente
-    request_customer_information:
-      label: Solicitar datos de los participantes
-    request_customer_document_id:
-      label: Solicitar el ID de los participantes (DNI/Pasaporte)
-    request_customer_phone:
-      label: Solicituar teléfono de los participantes
-    request_customer_email:
-      label: Solicituar correo electrónico de los participantes
-    request_customer_height:
-      label: Solicituar altura de los participantes
-    request_customer_weight:
-      label: Solicitar peso de los participantes
-    request_customer_allergies_intolerances:
-      label: Solicituar alergias/intolerancias
-    uses_planning_resources:
-      label: Usar recursos del planning
-    create_rates:
-      label: Generar tarifas
-    create_calendar:
-      label: Generar calendario
-      description: >
-                   <p class="less_contrast_text">Asociando un calendario a una categoría puede configurar
-                   si desea impedir realizar reservas, habilitar los pagos, ...
-                   en fechas determinadas</p>
-    active_filter:
-      only: Sólo activos
-      all: Todos
-    sales_channel_group: Canales de venta
-booking_extra_management:
-  title: Extras
-  description: Gestión de extras
-  table:
-    code: Código
-    name: Nombre
-    prices: Precios      
-  form:
-    code:
-      label: Código
-    name:
-      label: Nombre
-    description:
-      label: Descripción    
-    max_quantity:
-      label: Cantidad máxima
-    stock:
-      label: Stock
-    price_definition:
-      label: Precio  
-    active:
-      label: Activo
-    web_public:
-      label: Público 
-booking_item_management:
-  total_products: "Hay <strong>%1</strong> productos en stock (%2 asignables)"
-  table:
-    calendar: Gestió del calendario
-    prices: Gestión de precios
-    assignable: Asignable
-    assignable_yes: S
-    assignable_no: N
-    own_property: Propio
-    own_property_yes: S
-    own_property_no: N
-    plate: Matrícula
-    rental_storage: Almacén/Campa
-    not_assigned_rental_storage: No asignado
-  form:
-    title: Stock
-    reference: 
-      label: Referencia
-      required: La referencia es obligatoria
-      exist: La referencia ya existe en el sistema
-    change_reference:
-      label: Cambiar
-    category:
-      label: Producto      
-    name:
-      label: Nombre
-    description:
-      label: Notas
-    calendar:
-      label: Calendario
-    price_definition:
-      label: Precio
-    active:
-      label: Activo
-    model:
-      label: Modelo
-    plate:
-      label: Matrícula o referencia 
-    characteristic_1:
-      label: Característica 1
-    characteristic_2:
-      label: Característica 2
-    characteristic_3:
-      label: Característica 3
-    characteristic_4:
-      label: Característica 4
-    planning_order:
-      label: Orden en el planning      
-    cost: 
-      label: Coste
-    active_filter:
-      only: Sólo activos
-      all: Todos
-    own_property:
-      label: Stock propio
-    assignable:
-      label: Asignable
-    rental_storage: 
-      label: Almacén/Campa      
-  change_reference_form:
-    title: Cambiar referencia
-    new_reference:
-      label: Nueva referencia
-    change_reference_warning: Por favor, <b>no</b> utilice esta opción para reemplazar un item del stock. Sólo en el caso de que se haya equivocado o quiera utilizar una nueva referencia para el mismo elemento.
-    reference_change_success: La referencia se ha cambiado.
-    reference_change_error: Lo sentimos, se ha producido un error al cambiar la referencia.
-booking_places_definition_management:
-  title: Entrega y devolución
-  table:
-    id: Id
-    name: Nombre
-    places: Lugares    
-  form:
-    name:
-      label: Nombre
-    name_required: Nombre obligatorio
-booking_places_management:
-  title: Lugares
-  table:
-    id: Id
-    name: Nombre
-    is_pickup: Entrega
-    is_return: Devolución
-    price: Precio
-    rental_location: Oficina/Sucursal
-  form:
-    name:
-      label: Nombre
-    is_pickup:
-      label: Es lugar de entrega
-    is_return: 
-      label: Es lugar de recollida
-    price:
-      label: Precio                  
-    name_required: Nombre obligatorio
-    rental_location:
-      label: Oficina de gestión
-    sort_order:
-      label: Orden
-pickup_return_place_edition:
-  confirm_delete: ¿Está seguro que desea eliminar el lugar de entrega/recogida?
-  table:
-    create_button: Añadir
-    update_button: Actualizar
-    delete_button: Eliminar
-    translate_button: Traducir
-driver_age_rule_edition:
-  confirm_delete: ¿Está seguro que desea eliminar el lugar de entrega/recogida?
-  table:
-    create_button: Añadir
-    update_button: Actualizar
-    delete_button: Eliminar
-booking:
-  days: !!pl
-    1: 1 día
-    n: "%1 días"
-  title: su reserva está %1
-  expired: Excedido el tiempo para realizar depósito/pago
-  id: Su identificador de reserva es <strong>%1</strong>. <span class="less_contrast_text smaller_text">Use su identificador de reserva en todas las comunicaciones.</span>
-  arrival: Entrada
-  departure: Salida
-  customer: Cliente
-  customer_notified: Notificado por correo electrónico 
-  concept: Concepto
-  amount: Cantidad
-  days_literal: Días
-  price: Precio
-  total: Total
-  paid: Pagado
-  pending: Pendiente
-  payment_alert: Recuerde que dispone de una plazo máximo de 72 horas para realizar el pago y de esta forma confirmar su reserva.
-  payment_method: Formas de pago
-  payment_type:
-    total:
-      label: Total
-    deposit:
-      label: Depósito 
+#
+# -- Bookings management : Change category (show availability and price)
+#  
+booking_category_search:
+  description: "%1 ....... %2%3  -- (%4 disponibles las fechas seleccionadas)"
+  description_same_product: "%1 ....... %2%3  -- (SELECCION ACTUAL)"    
+#
+# Plugin extension : Menu generator (deprecated)
+#
+system_admin_menu:
+  apps:
+    bookings_menu:
+      title: Gestión de reservas
+      bookings: Reservas
+      bookings_scheduler: Agenda
+      booking_categories: Productos
+      booking_items: Recursos      
+#
+# Customizable templates : contracts, emails
+#
+booking_configuration_templates:
+  title: Plantillas sistema de reservas
+  general: General
+  contract: Contrato de alquiler
+  conditions: Condiciones de alquiler
+  summary_message: Mensaje al finalizar la reserva (en la página web)
+  emails: Correos electrónicos
+  template: Plantilla
+  customer_emails: Se envían al cliente
+  manager_emails: Se envían al gestor de las reservas
+#
+# ------------------------------- RESERVATION WEBSITE -------------------------------------
+#  
+#
+# Reservation website
+#
+reservation_website_settings:
+  title: Configuración página web reservas
+  activities_menu_group: Menú actividades
+  activities_menu: Venta de actividades tiene menús (principal y secundarios) propios
+  activities_menu_description: "En el caso de tener un plan con alquiler y actividades, desea que la pantallas del proceso de actividades tenga un menú propio e independiente de las pantallas de alquiler"
+reservation_website_contents:
+  title: Estructura y contenidos
+  pages: Páginas
+  main_menu: Menú principal
+  secondary_menu: Menú secundario
+  main_menu_activities: Menú principal actividades
+  secondary_menu_activities: Menú secundario actividades
+#
+# ------------------------------- RESERVATION SETTINGS -------------------------------------
+#  
+#
+# Booking configuration
+#
+booking_settings:
+  #
+  # Settings menu
+  #
+  menu:
+    title: Configuración
+    company: Datos de la empresa
+    basic_configuration: Configuración General
+    advanced_configuration: Configuración avanzada
+    sales_channel: Canales de venta
+    reservation_website: Página web de reservas
+    online_payment: Pago online
+    notifications: Notificaciones
+    promotion_codes: Códigos de promoción
+    offers: Ofertas
+    adjust_prices: Ajuste de precios
+    contract: Contrato
+    invoicing: Facturación
+    media_settings: Medios
+    superadmin_menu_title: Administrador
+  #
+  # Company settings
+  #  
+  company:
+    title: Empresa  
+    name: Nombre empresa
+    document_id: CIF
+    phone_number: Teléfono
+    email: Correo electrónico
+    address: Dirección
+    city: Localidad
+    state: Provincia
+    country: País
+    zip: Código postal
+    social_networks: Redes sociales
+    facebook: Facebook
+    twitter: Twitter
+    linkedin: Linkedin
+    instagram: Instagram    
+  #
+  # Basic settings
+  #  
+  basic:
+    title: Configuración General
+    # Business type
+    business_type_title: Tipo de negocio
+    family: Tipo de negocio
+    family_description: El sistema está preparado para la gestión de determinados negocios en función del producto que alquilan.
+    # Reservation, expiration and cadence
+    days_expiration_title: "Días de reserva, caducidad y cadencia"
+    min_days: Numero mínimo de días
+    min_days_description: Permite indicar el número mínimo de días que se puede alquilar un producto
+    hours_cadence: Horas de cadencia (tarifa)
+    hours_cadence_description: Número de horas que exceden de las 24 horas para considerar que se ha de aplicar un día más a la hora de calcular la tarifa
+    item_hold_time: Caducidad de la reserva (en horas)
+    item_hold_time_description: Número de horas desde la recepción de la reserva durante las cuales se puede realizar el pago (parcial o total) para confirmar la reserva. Pasado este tiempo no se podrá realizar el pago de la reserva a no ser que se habilite explícitamente para la reserva.
+    activities_item_hold_time: Caducidad del pedido (en horas)
+    activities_item_hold_time_description: Número de horas desde la recepción del pedido durante las cuales se puede realizar el pago (parcial o total) para confirmarlo. Pasado este tiempo no se podrá realizar el pago del pedido a no ser que se habilite explícitamente para el pedido.
+    # Locations
+    manage_locations: Gestionar oficinas o sucursales
+    multiple_rental_locations: Múltiples oficinas o sucursales
+    multiple_rental_locations_description: El negocio tiene múltiples oficinas o sucursales. Las reservas de material o las actividades son gestionadas por un centro.
+    resource_availability_by_rental_location_storage: Disponibilidad de stock para las oficinas o sucursales de un almacén o campa
+    resource_availability_by_rental_location_storage_description: "El stock se gestiona por cada almacén o campa, de forma que cada sucursal/oficina sólo usar los recursos del almacén o campa relacionadol. Si desmarca esta opción se gestiona el stock de forma global." 
+    multiple_rental_locations_operator: Los operarios pueden ver todas las sucursales/oficinas
+    multiple_rental_locations_operator_description: "Permite a los usuarios operadores, no el equipo gestor, ver todas las sucursales/oficinas."
+    multiple_rental_locations_pickup_return_same_location: Lugar de entrega y recogida pertenece a la misma sucursal
+    multiple_rental_locations_pickup_return_same_location_description: Seleccionar la opción si el lugar de entrega y recogida han de pertenecer a la misma oficina/sucursal
+    # Pickup/return place
+    pickup_return_places_title: Lugares de entrega y devolución
+    pickup_return_places: Lugares de entrega y devolución
+    pickup_return_places_list: Lista de lugares
+    pickup_return_places_address: Dirección
+    pickup_return_places_list_and_others: Lista de lugares + otros lugares
+    custom_pickup_return_place_price: Precio otro lugar de entrega/devolución
+    # Timetable
+    timetable_pickup_return_title: Horarios entrega y devolución
+    pickup_return_timetable_title: Horario
+    pickup_return_main_season: Horario temporada
+    pickup_return_out_of_season: Horario fuera de temporada
+    pickup_return_main_season_from: Horario temporada desde
+    pickup_return_main_season_to: Horario temporada hasta
+    pickup_return_timetable: Horario entrega/devolución
+    pickup_return_timetable_description: Permite indicar el horario de entrega/devolución
+    pickup_return_timetable_out_price: Precio entrega/devolución fuera de horas
+    driver_age: Edad del conductor
+    driver_min_age_rules: Política específica para los conductores según su edad
+    # Seasons
+    seasons: Temporadas
+    season_per_product: Cada producto define su propia temporada
+    season_per_product_description: Marcar esta opción si tenemos diferentes temporadas dependiendo del producto o servicio.
+    factor_per_product: Cada producto define sus propios factores
+    factor_per_product_description: Marcar esta opción si tenemos diferentes factores dependiendo del producto o servicio.
+    calendar_mode:
+      title: Cálculo de la tarifa
+      default: Promedio de las temporadas afectadas
+      first_day: La fecha de inicio de la reserva determina la temporada
+    calendar_mode_description: Determina la forma en la que se calculará el precio cuando las fechas de la reserva incluyen varias temporadas  
+    season_list_info: A continuación se listan las <b>temporadas estándar</b> que utiliza la empresa para definir las tarifas
+    # Deposit
+    deposit_group:
+      title: Fianza
+    product_allow_deposit: Permitir definir una fianza en los productos.
+    product_allow_deposit_description: Es un importe que se retiene al cliente en concepto de posibles daños sobre el producto. Se retorna al realizar la devolución del producto en buen estado
+    deposit_includes_product_deposit: "La paga y señal incluye la fianza"
+    deposit_includes_product_deposit_description: Marque esta opción si desea que el importe de paga y señal se calcule incluyendo la fianza de los productos contratados.
+    total_cost_includes_deposit: "El total incluye la fianza"
+    total_cost_includes_deposit_description: Marque esta opción si desea que el importe total de la reserva incluya la fianza de los productos contratatados.                         
+  #
+  # Advanced settings
+  #
+  advanced:
+    title: Configuración Avanzada
+    # Multi-languages
+    languages_title: Idiomas
+    multilanguage_site: Multi idioma
+    multilanguage_site_description: Permite que definir los datos en múltiples idiomas
+    # Planning and resources
+    planning_resources: Planning y recursos
+    assignation:
+      allow_different_category: Permitir asignar diferentes categorías
+      allow_different_category_description: Permite que a una reserva pueda asignarse un recurso de diferente categoría, por ejemplo un coche de categoría superior
+      allow_busy_resource: Permitir asignar recurso ocupado.
+      allow_busy_resource_description: Permite que en un mismo día pueda haber el mismo recurso asignado a dos reservas. Marcar si permitimos que el mismo día que se realice la devolución de un recurso pueda realizarse la asignación a otra reserva
+      automatic_resource_assignation: Asignación automática
+      automatic_resource_assignation_description: Realiza la asignación automática de uno de los recursos disponibles al confirmar la reserva
+      planning_style:
+        title: Tipo de planning
+        compact: Compacto
+        extended: Extendido
+      assignation_hours_return_pickup: Horas entre la devolución y la entrega del recurso a la siguiente reserva
+      assignation_hours_return_pickup_description: >
+                                                   <p>Permite indicar el número de horas que han de transcurrir entre la devolución de un recurso y la entrega a la siguiente reserva,
+                                                   de manera que el recurso se pueda recibir y preparar para la siguiente entrega en el mismo día.</p>
+      planning_full_day: Mostrar el planning con el día completo
+      planning_full_day_description: >
+                                     <p>Determinados negocios, la reserva se contabiliza durante el día (se entrega y se devuelve el mismo día). Alquiler de kayaks, bicicletas, ... siguen esta configuración.
+                                     En este caso, en el planning se muestra el día entero cuando una reserva.</p>
+                                     <p>Otros negocios, la reserva suele entregarse un día y devolverse al día siguiente. Es lo que llamamos
+                                     ciclo de 24 horas. Rent a cars, hostales, ... siguen esta configuración.
+                                     En este caso, en el planning se muestra el día de la entrega el segundo 50% de la celda coloreado y el día de la
+                                     devolución, el primer 50% coloreado.</p>
+                                     <p>En los negocios con ciclo de 24 horas, si marca esta opción, el planning se mostrará como en el primer
+                                     caso, es decir, mostrará el día de la entrega y el la de devolución completamente pintado.</p>
+      automatically_manage_pending_of_confirmation: Tener en cuenta las reservas pendientes de confirmación en la disponibilidad
+      automatically_manage_pending_of_confirmation_description: >
+                                                                <p>Si marca esta opción las reservas <b>pendientes de confirmación</b> mantendrán bloqueado el stock de manera automática, no siendo necesario
+                                                                realizar un bloqueo de stock. El stock se desbloqueará al cancelar la reserva o cuando se supere la fecha de inicio de la misma y no se haya
+                                                                confirmado.</p>
+                                                                <p>Si desea gestionar de manera manual el bloqueo de stock de las reservas pendientes, desmarque esta opción.</p>    
+    # Pickup and return
+    pick_up_return_report: Entregas y recogidas
+    report_pickup_return_pdf:
+      title: Informe entregas y recogidas (PDF)
+      description: Indica la versión del report PDF que desea utilizar. v1 es el report original. v2 es el nuevo report. Incluye información del vuelo de retorno y reorganización de columnas
+      v1: Versión 1
+      v2: Versión 2
+    pickup_return_backoffice:
+      allow_operator_all_locations: Permite que el usuario operador pueda consultar entregas y recogidas de múltiples oficinas                      
+  #
+  # Website (reservation engine)
+  #
+  website:
+    title: Página web de reservas
+    engine:
+      title: Motor de reservas
+      inner_label: Usar el motor de reservas interno
+      inner_description: Marque esta opción si desea utilizar el motor de reservas interno. En el caso de que sea una web externa la utilizada para realizar las reservas online desmarque esta opción
+      external_web_prefix_url: URL de la web externa
+      external_url: Indique la URL donde está alojada la página web de su empresa que conecta con mybooking (p.e. http://midominio.com)
+  #
+  # Payment settings
+  #
   payment:
-    label: Pago
-    description: Puede realizar el pago del importe de la reserva, <strong>%1</strong>
-  deposit_payment:
-    label: Pago depósito 
-    description: Puede realizar el pago del depósito de la reserva, <strong>%1</strong>  
-  pending_payment: 
-    label: Segundo pago
-    description: Puede realizar el pago de la cantidad pendiente, <strong>%1</strong>
-  summary: Detalle de su reserva
-  deposit_text: Debe realizar un depósito de <span class="highlighted_text">%1 €</span> para confirmar la reserva.
-  no_deposit: No se ha podido registrar el depósito de la reserva.
-  state:
-    pending_confirmation: Pendiente de confirmación
-    confirming: Confirmando
-    confirmed: Confirmada
-    in_progress: En progreso
-    done: Finalizada
-    cancelled: Cancelada
-booking_status:
-    pending_confirmation: Pendiente
-    confirming: Confirmando
-    confirmed: Confirmada
-    in_progress: En curso
-    done: Finalizada
-    cancelled: Cancelada
-booking_status_literal:
-    pending_confirmation: Su petición está pendiente de confirmación
-    confirming: Su petición está siendo confirmada
-    confirmed: Su petición se ha confirmado
-    in_progress: Su reserva está en curso
-    done: Su reserva está finalizada
-    cancelled: Su reserva ha sido cancelada
-restaurant_booking:
-  number_of_people: !!pl
-    1: 1 persona
-    n: "%1 personas"
+    title: Configuración del pago online
+    renting_group: Alquiler
+    activities_group: Actividades
+    payment: Pago online habilitado al realizar reserva
+    payment_description: Habilite esta opción si desea permitir que el usuario pueda realizar el pago al realizar la reserva. Si no marca esta opción, deberá habilitar el pago de forma explícita para cada reserva.
+    pay_group:
+      title: Cantidad a pagar online
+      deposit: Paga y señal
+      total: Total
+      deposit_and_total: Paga y señal + Total
+      allow_pending_payment: Permite pagar la cantidad pendiente
+      allow_pending_payment_description: Permite pagar el importe pendiente (tras pagar el depósito)
+    deposit: "% de paga y señal sobre el total de la reserva"
+    deposit_description: "Indique el % sobre el total de reserva que quiere establecer como la cantidad de paga y señal"
+    payment_cadence: Cadencia de pago (en horas)
+    payment_cadence_description: "Número de horas que han de haber desde la fecha en la que se realiza la reserva hasta la fecha de inicio de la reserva para permitir el pago online. El cliente sólo podrá realizar una solicitud de reserva, pero no confirmarla."          
+    activities_request_reservation: Permitir realizar sólo solicitud (sin pago online)
+    activities_request_reservation_description: Permite realizar sólo la solicitud de una actividad sin tener que realizar el pago online. Permite captar la solicitud del cliente y disponer de sus datos de contacto.
+    activities_payment: Pago online habilitado al realizar reserva
+  #
+  # Notification settings
+  #
+  notifications:  
+    title: Configuración de las notificaciones     
+    notificacions_setup: Configuración
+    notification_email: Email de notificación
+    notification_email_description: Lista separada por comas de los correos electrónicos a las que se envían las notificaciones dirigidas al gestor de reservas
+    send_notifications: Habilita notificaciones de las reservas recibidas por la web
+    send_notifications_backoffice_reservations: Habilita notificaciones de las reservas registradas desde el backoffice
+    renting_customer_notification_template_title: Plantillas notificaciones alquiler clientes
+    renting_manager_notification_template_title: Plantillas notificaciones alquiler gestor
+    renting_customer_notification_templates: Plantillas notificaciones reservas alquiler a los clientes
+    renting_manager_notification_templates: Plantillas notificaciones reservas alquiler al gestor
+    activities_customer_notification_template_title: Plantillas notificaciones actividades clientes
+    activities_manager_notification_template_title: Plantillas notificaciones actividades gestor
+    activities_customer_notification_templates: Plantillas notificaciones reservas actividades a los clientes
+    activities_manager_notification_templates: Plantillas notificaciones reservas actividades al gestor
+    notificacion_smtp_setup: Configuración SMTP
+    email_customer_request_received: "Nueva solicitud de reserva"
+    email_customer_payment_request_received: "Nueva solicitud de reserva con pago online"
+    email_customer_reservation_confirmed: "Reserva confirmada"
+    email_customer_payment_enabled: "Pago de reserva habilitado"
+    email_manager_request_received: "Nueva solicitud de reserva"
+    email_manager_payment_request_received: "Nueva solicitud de reserva con pago online"
+    email_manager_confirmation: "Reserva confirmada"
+    template: Plantilla
+    translations: Traducciones
+  #
+  # Contract
+  #     
+  contract:
+    title: Contrato
+    template_title: Plantilla
+    renting_title: Contrato de alquiler
+    activities_title: Contrato de actividades
+    translations: Traducciones
+#
+# ----------------------- SETUP WIZARD ----------------------------
+#  
+setup_booking:
+  title: Configuración mybooking
+  welcome: >
+           <h3>Bienvenido/a a mybooking!</h3>
+           <br>
+           <p>Desde aquí puede proceder a configurar su negocio para empezar a alquilar u organizar actividades.</p>
+  start: Empezar la configuración
+#
+# == Wizard
+#  
+setup_wizard:
+  title: Configuración mybooking
+  next_step: Siguiente
+  previous_step: Anterior
+  finish: Finalizar
+#
+# == Wizard Step 1
+#
+setup_step_1:
+  title: Tipo de negocio
+  description: Seleccione la opción que corresponde con su tipo de negocio
+#
+# == Wizard Step 2
+#
+setup_step_2:
+  title: Tarifas
+  description: ¿Cómo calcula las tarifas de sus productos o servicios?
+#
+# == Wizard step 3
+#
+setup_step_3:
+  title: Tipo de negocio
+  description: Seleccione la opción que corresponde con su tipo de negocio
+#
+# == Wizard step 4
+#
+setup_step_4:
+  title: Tipo de negocio
+  description: Seleccione la opción que corresponde con su tipo de negocio    
+#
+# ---------------------------- PLANNING --------------------------------------
+#    
+#
+# == Planning
+#
 bookings_planning:
   title: Planning
   new_preservation: Nueva prereserva
@@ -1345,6 +1359,9 @@ bookings_planning:
     actions: Acciones
     confirm_delete_title: Eliminar prereserva
     confirm_delete_message: ¿Está seguro que desea eliminar la prereserva?
+#
+# -- Planning not assigned reservations
+#    
 not_assigned_bookings:
   title: Reservas no asignadas
   table:
@@ -1362,292 +1379,10 @@ not_assigned_bookings:
   form:  
     assign: Asignar
     reassign: Reasignar
-    all_resources: Mostrar todos los recursos       
-bookings_scheduler:
-  title: Agenda    
-hourly_occupation:
-  title: Ocupación por horas
-booking_customers:
-  title: Nueva reserva
-  new_reservation: Nueva reserva  
-  form:
-    search: Buscar cliente
-    search_button: Buscar
-    not_found: No se han encontrado reservas para el cliente
-  table:
-    name: Nombre
-    phone: Teléfono
-    email: Email
-    address: Dirección
-    number_of_reservations: Reservas
-booking_dashboard:
-  title: Panel de control
-  not_enough_data: No hay datos suficientes  
-  summary: Resumen
-  renting: Alquiler
-  activities: Actividades
-  received_reservations: Recibidas
-  pending_confirmation_reservations: Pendientes de confirmación
-  confirmed_reservations: Confirmadas
-  received_orders: Recibidos
-  pending_confirmation_orders: Pendientes de confirmación
-  confirmed_orders: Confirmados  
-  new_request: Nuevas solicitudes
-  reservations_by_day: Recibidas por día de la semana
-  reservations_by_category: Por categoría
-  reservations_by_state: Por estado
-  last_30_days_reservations: Recibidas últimos 30 días
-  activities_by_day: Recibidas por día de la semana
-  activities_by_category: Por producto
-  activities_by_state: Por estado
-  last_30_days_activities: Recibidas últimos 30 días
-  day_work: Entregas/Devoluciones del día
-  delivery: Entregas
-  transit: En curso
-  return: Devoluciones
-  activities_today: Actividades
-  billing: Facturación
-  products_billing: Productos alquiler
-  extras_billing: Extras alquiler
-  activities_billing: Actividades
-  total_billing: Total
-  stock_cost: Valor stock
-  renting_products_billing_vs_total: del alquiler
-  renting_extras_billing_vs_total: del alquiler
-  products_billing_vs_total: del total 
-  extras_billing_vs_total: del total
-  activities_billing_vs_total: del total   
-  amortization: Amortización
-  stock_amortization: Stock y amortización
-  charges: Cobros
-  total: Total
-  total_charged_reservations: Total cobrado
-  forecast_charged_reservations: Previsión cobros
-  total_charged_activities: Total cobrado
-  forecast_charged_activities: Previsión cobros  
-booking_driver_age_rule_definitions_management:
-  title: Def. reglas edad conductor
-  description: Definición reglas edad conductor
-  table:
-    id: Id
-    name: Nombre
-    driver_age_rules: Reglas del conductor
-  form:
-    name:
-      label: Nombre
-booking_driver_age_rules_management:
-  title: Reglas edad conductor
-  description: Reglas edad conductor
-  table:
-    condition: Condición
-    and: Y
-    or: O
-    age: Edad conductor
-    driving_license_years: Años carnet conducir
-    allowed: Permitido
-    supplement: Suplemento
-    deposit: Fianza
-  form:
-    conditions_group: Condiciones
-    age_rule_type:
-      label: Tipo
-      age: Edad
-      driving_license_years: Carnet
-      both_age_driving_license_years: Edad y carnet
-    join_conditions:
-      label: Conector condiciones
-      and: Y
-      or: O
-    age_from:
-      label: Edad desde
-    age_to:
-      label: Edad hasta
-    age_condition:
-      label: Condición edad
-    driving_license_years_from:
-      label: Años carnet conducir desde
-    driving_license_years_to:
-      label: Años carnet conducir hasta
-    driving_license_years_condition:
-      label: Condición años carnet conducir
-    allowed:
-      label: Permitido
-    suplement:
-      label: Suplemento
-    deposit:
-      label: Fianza
-    apply_if_product_deposit:
-      label: Añadir el importe de la fianza del producto
-    rule_order:
-      label: Orden
-booking_activity_management:
-  title: Actividades 
-  form:
-    code:
-      label: Código
-      validation:
-        required: El código de la actividad es obligatorio
-    name:
-      label: Código
-      validation:
-        required: El nombre de la actividad es obligatorio
-    description:
-      label: Descripción
-    detailed_info_what_includes:
-      label: ¿Qué incluye?
-    detailed_info_timetable_duration:
-      label: Duración
-    detailed_info_ages:
-      label: Edades
-    detailed_info_recommendations:
-      label: Recomendaciones
-    detailed_info_meeting_point:
-      label: Punto de encuentro
-    multiple_prices_title: Múltiples tarifas basadas en
-    none: Sólo 1 tarifa
-    duration: Duración
-    ages: Edades
-    accomodation: Lugar
-    capacities_on_multiple_prices: Diferentes capacidades según el tipo de tarifa
-    price_name: Nombre tarifa
-    affects_capacity: Afecta capacidad
-    total_capacity: Capacidad total
-    step_tickets: Venta de tickets en múltiplos
-    duration_days: Duración en días
-    duration_hours: Duración en horas
-    custom_pickup_places: Servicio de recogida de clientes (lugares)
-    own_contract: Contrato personalizado
-    pickup_places: Lugares de devolución de clientes
-    occurrence: Frecuencia
-    occurrence_one_time: Una vez (determinada por la empresa)
-    occurrence_multiple_dates: Múltiples fechas (determinadas por la empresa)
-    occurrence_cyclic: Cíclica (determinadas por la empresa)
-    occurrence_customizable: El cliente elige la fecha
-    mode: Forma de compra
-    mode_full: El cliente contrata la actividad completa
-    mode_partial: El cliente compra tickets por plazas
-    new_activity_detail: >
-                       <p>Está creando una nueva actividad para su negocio. Una 
-                       actividad representa un evento o experiencia que ofrece a
-                       sus clientes y que se llevan a cabo en unas fechas y horarios
-                       determinados.
-                       </p>
-                       <p>Debe tener en cuenta la frecuencia con la que la 
-                       actividad se lleva a cabo y la forma en la que el 
-                       cliente la contrata.</p>
-    occurrence_detail: >
-                       <h4>Frecuencia</h4>
-                       <ul>
-                         <li>Se lleva a cabo una única vez</li>
-                         <li>Se lleva a cabo varias veces en fechas determinadas</li>
-                         <li>Se lleva a cabo de forma recurrente (días de la semana y horarios)</li>
-                         <li>El cliente determina la fecha (personalizable)</li>
-                       </ul>
-    mode_detail: >
-                 <h4>Forma de compra</h4>
-                 <p>El cliente final compra la actividad
-                 completa o bien compra unos tickets o entradas para un número de 
-                 personas</p>
-    date_from: Fecha inicio
-    date_to: Fecha fin
-    actity_date_description: Titulo
-    activity_date_date_from: Fecha inicio
-    activity_date_date_to: Fecha fin
-    activity_date_new_date: Nueva fecha     
-    no_dates: No hay fechas
-    web_public: Pública
-    alias: Alias
-    activity_date:
-      done: Creada fecha de la actividad
-    active_filter:
-      only: Sólo activos
-      all: Todos
-    payment_title: Cobro online
-    payment_setup:
-      title: Configuración cobro online
-      default: Utiliza la configuración por defecto
-      custom: Configuración personalizada
-    custom_payment_title: Configuración cobro online
-    custom_payment_allow_deposit_payment: Permite el cobro del depósito
-    custom_payment_deposit: "% paga y señal"
-    custom_payment_allow_total_payment: Permite el cobro del total
-    allow_request_reservation:
-      title: Solicitud de reserva
-      label: Permitir solicitud (sin realizar pago)
-activity:
-  reservation: Reservar
-  mornings: Mañanas
-  afternoons: Tardes
-  evenings: Noches
-  dates: Seleccionar la fecha
-  turns: Seleccionar el horario
-  pickup_place: Seleccionar lugar de entrega
-  choose_pickup_place: Seleccionar lugar de entrega
-  tickets: Seleccionar los tickets
-  choose_tickets: Número de tickets (%1)
-  event_date: Fecha
-  no_pickup_place_selected: No ha seleccionado el lugar de entrega
-  no_ticket_selected: No ha seleccionado tickets
-  activity_not_available: Lo sentimos, no hay plazas disponibles. Por favor, consulte telefónicamente.
-  activity_not_available_dates: Lo sentimos, no hay plazas disponibles en esta fecha. Por favor, consulte telefónicamente.
-  activity_finished: Lo sentimos, la actividad ya se llevó a cabo. Por favor, consulte telefónicamente.
-  item_customer: Cliente
-  item_customer_name: Nombre
-  item_customer_surname: Apellidos
-  item_customer_document_id: Documento
-  item_customer_phone: Teléfono
-  item_customer_email: Email
-  item_customer_height: Altura
-  item_customer_weight: Peso
-  item_customer_allergies_intolerances: Alergias
-activity_checkout:
-  make_order: Realizar pedido
-  order_summary: Resumen del pedido
-  reservation_data: Datos de la reserva  
-  activity_customers: Clientes de la actividad %1
-activity_shopping_cart:
-  pickup_customer: Recogida en %1
-activity_shopping_cart_summary:
-  total: Total  
-report_stock:
-  title: Listado de stock
-  print: Imprimir
-  table:
-    category_code: Producto
-    reference: Referencia
-    stock_model: Modelo
-    stock_plate: Matrícula/Id.
-    characteristic_1: Caract. 1
-    characteristic_2: Caract. 2
-    characteristic_3: Caract. 3
-report_pending_confirmation:
-  title: Reservas pendientes de confirmación
-  summary: Hay <strong>%1</strong> reservas pendientes de confirmación
-report_pending_confirmation_activities:
-  title: Pedidos pendientes de confirmación
-  summary: Hay <strong>%1</strong> pedidos pendientes de confirmación
-report_in_progress:
-  title: Reservas en curso
-  summary: Hay <strong>%1</strong> reservas y <strong>%2</strong> recursos en curso
-monthly_occupation:
-  title: Ocupación
-  summary: Ocupación total
-new_reservation_activity:
-  go_to_pay_line1: Pagar
-  go_to_pay_line2: (Confirmar el pedido)
-  notify_customer_empty: Por favor, confirmar con el centro la fecha seleccionada 
-  payment_information: >
-                       <p>Para confirmar la reserva es necesario realizar el pago.</p>
-                       <p>Si sólo desea solicitar información, por favor póngase en contacto telefónico.</p>
-programmed_activities:
-  title: Actividades programadas
-  empty: Lo sentimos, pero en este momento no hay actividades programadas
-shopping_cart:
-  empty: El carrito de la compra está vacío
-booking_activities_scheduler:
-  title: Agenda de actividades programadas
-  pax: >
-       %1 plazas
+    all_resources: Mostrar todos los recursos
+#
+# -- New reservation from planning
+#    
 admin_new_reservation:
   title: Nueva reserva
   description: Desde aquí puede registrar una nueva reserva de cliente
@@ -1693,30 +1428,79 @@ admin_new_reservation:
     error_setting_product: Error seleccionando producto
     error_setting_extra: Error seleccionando extra
     error_making_reservation: Error registrando la reserva
+#
+# == Update reservation from planning
+#    
 admin_planning_update_reservation:
    title: Modificar reserva
    products_table:
      photo: Photo
      product: Producto
      stock: Stock
-     price: Precio unitario
-location:
-  location_title: Dirección
-  street: Calle
-  number: Número
-  complement: Complemento
-  city: Ciudad
-  state: Provincia
-  country: País
-  zip: Código postal
-  latitude: Latitud
-  longitude: Longitud
-booking_journal_management:
+     price: Precio unitario      
+#
+# ------------------------------ REPORTING --------------------------------
+#
+#
+# Scheduler
+#
+bookings_scheduler:
+  title: Agenda
+#
+# Daily occupation
+#      
+hourly_occupation:
+  title: Ocupación por horas
+#
+# Police report
+#  
+report_picked_up_products:
+  title: Informe policía
+#
+# Finances finished reservations
+#
+report_finances_finished_reservations:
+  title: Reservas devueltas
+#
+# Finances started reservations
+#
+report_finances_started_reservations:
+  title: Reservas entregadas 
+#
+# == Stock
+#  
+report_stock:
+  title: Listado de stock
+  print: Imprimir
+  table:
+    category_code: Producto
+    reference: Referencia
+    stock_model: Modelo
+    stock_plate: Matrícula/Id.
+    characteristic_1: Caract. 1
+    characteristic_2: Caract. 2
+    characteristic_3: Caract. 3
+#
+# == Monthly occupation
+#
+monthly_occupation:
+  title: Ocupación
+  summary: Ocupación total
+#
+# -------------------------- JOURNAL INTEGRATION -------------------------
+#  
+#
+# == Journal view
+#
+booking_journal:
   title: Diario
+#
+# == New journal
+#
 new_journal:
   form:
     title: Añadir diario
-    errors_summary: El formulario contiene errores. Por favor, revíselos.
+    errors_summary: "El formulario contiene errores. Por favor, revíselos."
     date:
       label: Fecha
     pickup_return:
@@ -1725,32 +1509,23 @@ new_journal:
       label: Notas
     new_journal_created: Registro creado
     new_journal_creation_error: Error creando registro
-booking_journal:
-  title: Diario
-setup_booking:
-  title: Configuración mybooking
-  welcome: >
-           <h3>Bienvenido/a a mybooking!</h3>
-           <br>
-           <p>Desde aquí puede proceder a configurar su negocio para empezar a alquilar u organizar actividades.</p>
-  start: Empezar la configuración
-setup_wizard:
-  title: Configuración mybooking
-  next_step: Siguiente
-  previous_step: Anterior
-  finish: Finalizar
-setup_step_1:
-  title: Tipo de negocio
-  description: Seleccione la opción que corresponde con su tipo de negocio
-setup_step_2:
-  title: Tarifas
-  description: ¿Cómo calcula las tarifas de sus productos o servicios?
-setup_step_3:
-  title: Tipo de negocio
-  description: Seleccione la opción que corresponde con su tipo de negocio
-setup_step_4:
-  title: Tipo de negocio
-  description: Seleccione la opción que corresponde con su tipo de negocio
+#
+# ------------------------- STRUCTURE DATA -------------------------
+#
+# Storages, rental locations, pickup places
+#
+#
+# == Rental storages
+#
+booking_rental_storages_management:
+  table:
+    code: Código
+    name: Nombre
+    create_button: Añadir
+    confirm_delete: ¿Está seguro que desea eliminar el almacén?  
+#
+# == Rental locations
+#
 booking_rental_locations_management:
   title: Oficinas
   description: Oficinas de alquiler/actividades
@@ -1768,21 +1543,204 @@ booking_rental_locations_management:
     users:
       label: Usuarios
       description: Seleccione los usuarios de la oficina. Sólo los usuarios operadores, los usuarios gestores tienen acceso a la información de todas las oficinas
-booking_category_sales_channels_management:
-  title: Canales de venta
-  no_data: No se han definido canales de venta para el producto
+#
+# == Pickup/return places definition
+#
+booking_places_definition_management:
+  title: Entrega y devolución
   table:
-    channel_name: Canal de venta
-booking_category_sales_channels_setup:
-  title: Configurar canales de venta
-booking_category_sales_channels_edit:
-  title: Canal de venta %1
-booking_category_search:
-  description: "%1 ....... %2%3  -- (%4 disponibles las fechas seleccionadas)"
-  description_same_product: "%1 ....... %2%3  -- (SELECCION ACTUAL)"
-booking_rental_storages_management:
-  table:
-    code: Código
+    id: Id
     name: Nombre
+    places: Lugares    
+  form:
+    name:
+      label: Nombre
+    name_required: Nombre obligatorio
+#
+# == Pickup/return places
+#    
+booking_places_management:
+  title: Lugares
+  table:
+    id: Id
+    name: Nombre
+    is_pickup: Entrega
+    is_return: Devolución
+    price: Precio
+    rental_location: Oficina/Sucursal
+  form:
+    name:
+      label: Nombre
+    is_pickup:
+      label: Es lugar de entrega
+    is_return: 
+      label: Es lugar de recollida
+    price:
+      label: Precio                  
+    name_required: Nombre obligatorio
+    rental_location:
+      label: Oficina de gestión
+    sort_order:
+      label: Orden
+    translation: Traducción 
+#
+# == Pickup/return place editor
+#     
+pickup_return_place_edition:
+  confirm_delete: ¿Está seguro que desea eliminar el lugar de entrega/recogida?
+  table:
     create_button: Añadir
-    confirm_delete: ¿Está seguro que desea eliminar el almacén?  
+    update_button: Actualizar
+    delete_button: Eliminar
+    translate_button: Traducir  
+#
+# -------------------------- DRIVER AGE RULES --------------------------------
+#
+#
+# == Driver age rules definition
+#
+booking_driver_age_rule_definitions_management:
+  title: Def. reglas edad conductor
+  description: Definición reglas edad conductor
+  table:
+    id: Id
+    name: Nombre
+    driver_age_rules: Reglas del conductor
+  form:
+    name:
+      label: Nombre
+#
+# == Driver age rule
+#       
+booking_driver_age_rules_management:
+  title: Reglas edad conductor
+  description: Reglas edad conductor
+  table:
+    condition: Condición
+    and: Y
+    or: O
+    age: Edad conductor
+    driving_license_years: Años carnet conducir
+    allowed: Permitido
+    supplement: Suplemento
+    deposit: Fianza
+  form:
+    conditions_group: Condiciones
+    age_rule_type:
+      label: Tipo
+      age: Edad
+      driving_license_years: Carnet
+      both_age_driving_license_years: Edad y carnet
+    join_conditions:
+      label: Conector condiciones
+      and: Y
+      or: O
+    age_from:
+      label: Edad desde
+    age_to:
+      label: Edad hasta
+    age_condition:
+      label: Condición edad
+    driving_license_years_from:
+      label: Años carnet conducir desde
+    driving_license_years_to:
+      label: Años carnet conducir hasta
+    driving_license_years_condition:
+      label: Condición años carnet conducir
+    allowed:
+      label: Permitido
+    suplement:
+      label: Suplemento
+    deposit:
+      label: Fianza
+    apply_if_product_deposit:
+      label: Añadir el importe de la fianza del producto
+    rule_order:
+      label: Orden  
+#
+# == Age rule editor
+#      
+booking_driver_age_rule_editor:
+  condition: Condición
+  age: Edad
+  driving_license_years: Años de carnet
+  allows: Permite
+  deposit: Fianza
+  supplement: Supl.         
+#
+# == Age rule edition
+#    
+driver_age_rule_edition:
+  confirm_delete: ¿Está seguro que desea eliminar la regla?
+  table:
+    create_button: Añadir
+    update_button: Actualizar
+    delete_button: Eliminar
+#
+# ----------------------- ACTIVITIES MANAGEMENT AND INTERNAL SALES ---------------------------
+#           
+# == Activity reservation
+#
+#
+activity:
+  reservation: Reservar
+  mornings: Mañanas
+  afternoons: Tardes
+  evenings: Noches
+  dates: Seleccionar la fecha
+  turns: Seleccionar el horario
+  pickup_place: Seleccionar lugar de entrega
+  choose_pickup_place: Seleccionar lugar de entrega
+  tickets: Seleccionar los tickets
+  choose_tickets: Número de tickets (%1)
+  event_date: Fecha
+  no_pickup_place_selected: No ha seleccionado el lugar de entrega
+  no_ticket_selected: No ha seleccionado tickets
+  activity_not_available: "Lo sentimos, no hay plazas disponibles. Por favor, consulte telefónicamente."
+  activity_not_available_dates: "Lo sentimos, no hay plazas disponibles en esta fecha. Por favor, consulte telefónicamente."
+  activity_finished: "Lo sentimos, la actividad ya se llevó a cabo. Por favor, consulte telefónicamente."
+  item_customer: Cliente
+  item_customer_name: Nombre
+  item_customer_surname: Apellidos
+  item_customer_document_id: Documento
+  item_customer_phone: Teléfono
+  item_customer_email: Email
+  item_customer_height: Altura
+  item_customer_weight: Peso
+  item_customer_allergies_intolerances: Alergias
+activity_checkout:
+  make_order: Realizar pedido
+  order_summary: Resumen del pedido
+  reservation_data: Datos de la reserva  
+  activity_customers: Clientes de la actividad %1
+activity_shopping_cart:
+  pickup_customer: Recogida en %1
+activity_shopping_cart_summary:
+  total: Total  
+new_reservation_activity:
+  go_to_pay_line1: Pagar
+  go_to_pay_line2: (Confirmar el pedido)
+  notify_customer_empty: "Por favor, confirmar con el centro la fecha seleccionada" 
+  payment_information: >
+                       <p>Para confirmar la reserva es necesario realizar el pago.</p>
+                       <p>Si sólo desea solicitar información, por favor póngase en contacto telefónico.</p>
+programmed_activities:
+  title: Actividades programadas
+  empty: "Lo sentimos, pero en este momento no hay actividades programadas"
+shopping_cart:
+  empty: El carrito de la compra está vacío
+booking_activities_scheduler:
+  title: Agenda de actividades programadas
+  pax: >
+       %1 plazas   
+location:
+  location_title: Dirección
+  street: Calle
+  number: Número
+  complement: Complemento
+  city: Ciudad
+  state: Provincia
+  country: País
+  zip: Código postal
+  latitude: Latitud
+  longitude: Longitud  

@@ -122,6 +122,13 @@ module Sinatra
 
             driver_age_rule = ::Yito::Model::Booking::BookingDriverAgeRule.new(request_data)
             driver_age_rule.driver_age_rule_definition = driver_age_rule_definition
+
+            driver_age_rule.age_from = 0 if driver_age_rule.age_from.nil? or !driver_age_rule.age_from.is_a?Numeric
+            driver_age_rule.age_to = 0 if driver_age_rule.age_to.nil? or !driver_age_rule.age_to.is_a?Numeric
+            driver_age_rule.driving_license_years_from = 0 if driver_age_rule.driving_license_years_from.nil? or !driver_age_rule.driving_license_years_from.is_a?Numeric
+            driver_age_rule.driving_license_years_to = 0 if driver_age_rule.driving_license_years_to.nil? or !driver_age_rule.driving_license_years_to.is_a?Numeric            
+            
+            #p "data: #{driver_age_rule.inspect} -- #{driver_age_rule.valid?} -- #{driver_age_rule.errors.inspect} -- #{driver_age_rule.errors.full_messages.inspect}"
             driver_age_rule.save
 
             driver_age_rule_definition.reload

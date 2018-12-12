@@ -1,5 +1,5 @@
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.booking_contract.title%></h2>
+  <h2 class="entity-title"><%=t.booking_settings.contract.title%></h2>
 </div>
 <div class="admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
   <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
@@ -12,12 +12,12 @@
           <ul class="nav nav-tabs" data-toggle="tabs">
             <% if @renting_plan %>
             <li class="active">
-              <a id="renting_contract" href="#btabs-static-renting-contract"><%=t.booking_contract.renting_title%></a>
+              <a id="renting_contract" href="#btabs-static-renting-contract"><%=t.booking_settings.contract.renting_title%></a>
             </li>
             <% end %>
             <% if @activities_plan %>
             <li class="">
-              <a id="activities_contract" href="#btabs-static-activities-contract"><%=t.booking_contract.activities_title%></a>
+              <a id="activities_contract" href="#btabs-static-activities-contract"><%=t.booking_settings.contract.activities_title%></a>
             </li>
             <% end %>
           </ul>
@@ -42,7 +42,7 @@
                 <div class="col-sm-12 col-md-12 col-lg-12">
                   <div class="block block-bordered">
                     <div class="block-header bg-gray-lighter">
-                      <h3 class="block-title"><%=t.booking_contract.translations%></h3>
+                      <h3 class="block-title"><%=t.booking_settings.contract.translations%></h3>
                     </div>
                     <div class="block-content block-content-narrow">
                       <div id="contract_container">
@@ -74,7 +74,7 @@
                     <div class="col-sm-12 col-md-12 col-lg-12">
                       <div class="block block-bordered">
                         <div class="block-header bg-gray-lighter">
-                          <h3 class="block-title"><%=t.booking_contract.translations%></h3>
+                          <h3 class="block-title"><%=t.booking_settings.contract.translations%></h3>
                         </div>
                         <div class="block-content block-content-narrow">
                           <div id="contract_activities_container">

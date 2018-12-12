@@ -1,5 +1,5 @@
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.booking_settings.form.notifications%></h2>
+  <h2 class="entity-title"><%=t.booking_settings.notifications.title%></h2>
 </div>
 
 <div class="admin_content_wrapper" style="background-color: #f5f5f5; margin: 0">
@@ -10,17 +10,17 @@
     <div class="col-sm-12 col-md-10 col-md-offset-1">
       <div class="block ">
         <div class="block-header bg-gray-lighter">
-          <h3 class="block-title"><%=t.booking_settings.form.notificacions_setup%></h3>
+          <h3 class="block-title"><%=t.booking_settings.notifications.notificacions_setup%></h3>
         </div>
         <div class="block-content block-content-narrow">
           <form name="variables" action="/api/variables" method="PUT"
                 data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-            <%= render_variable_textarea('booking.notification_email', t.booking_settings.form.notification_email) %>
-            <p class="less_contrast_text smaller_text"><%=t.booking_settings.form.notification_email_description%></p>
+            <%= render_variable_textarea('booking.notification_email', t.booking_settings.notifications.notification_email) %>
+            <p class="less_contrast_text smaller_text"><%=t.booking_settings.notifications.notification_email_description%></p>
             <%= render_variable_checkbox_boolean('booking.send_notifications',
-                                                 t.booking_settings.form.send_notifications) %>
+                                                 t.booking_settings.notifications.send_notifications) %>
             <%= render_variable_checkbox_boolean('booking.send_notifications_backoffice_reservations',
-                                                 t.booking_settings.form.send_notifications_backoffice_reservations) %>
+                                                 t.booking_settings.notifications.send_notifications_backoffice_reservations) %>
             <div class="form-group">
               <div class="col-xs-12">
                 <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
@@ -38,7 +38,7 @@
       <a class="block block-link-hover2 text-center" href="/admin/booking/config/notifications/renting-customer-templates">
         <div class="block-content block-content-full bg-primary">
           <i class="si si-envelope-letter fa-4x text-white"></i>
-          <div class="font-w600 text-white-op push-15-t"><%=t.booking_notification_settings.renting_customer_notification_template_title%></div>
+          <div class="font-w600 text-white-op push-15-t"><%=t.booking_settings.notifications.renting_customer_notification_template_title%></div>
         </div>
       </a>
     </div>
@@ -46,7 +46,7 @@
       <a class="block block-link-hover2 text-center" href="/admin/booking/config/notifications/renting-manager-templates">
         <div class="block-content block-content-full bg-success">
           <i class="si si-envelope-letter fa-4x text-white"></i>
-          <div class="font-w600 text-white-op push-15-t"><%=t.booking_notification_settings.renting_manager_notification_template_title%></div>
+          <div class="font-w600 text-white-op push-15-t"><%=t.booking_settings.notifications.renting_manager_notification_template_title%></div>
         </div>
       </a>
     </div>
@@ -56,7 +56,7 @@
           <a class="block block-link-hover2 text-center" href="/admin/booking/config/notifications/activities-customer-templates">
             <div class="block-content block-content-full bg-primary-dark">
               <i class="si si-envelope-letter fa-4x text-white"></i>
-              <div class="font-w600 text-white-op push-15-t"><%=t.booking_notification_settings.activities_customer_notification_template_title%></div>
+              <div class="font-w600 text-white-op push-15-t"><%=t.booking_settings.notifications.activities_customer_notification_template_title%></div>
             </div>
           </a>
         </div>
@@ -64,7 +64,7 @@
           <a class="block block-link-hover2 text-center" href="/admin/booking/config/notifications/activities-manager-templates">
             <div class="block-content block-content-full bg-amethyst">
               <i class="si si-envelope-letter fa-4x text-white"></i>
-              <div class="font-w600 text-white-op push-15-t"><%=t.booking_notification_settings.activities_manager_notification_template_title%></div>
+              <div class="font-w600 text-white-op push-15-t"><%=t.booking_settings.notifications.activities_manager_notification_template_title%></div>
             </div>
           </a>
         </div>
@@ -75,7 +75,7 @@
     <div class="col-sm-12 col-md-10 col-md-offset-1">
       <div class="block ">
         <div class="block-header bg-gray-lighter">
-          <h3 class="block-title"><%=t.booking_settings.form.notificacion_smtp_setup%></h3>
+          <h3 class="block-title"><%=t.booking_settings.notifications.notificacion_smtp_setup%></h3>
         </div>
         <div class="block-content block-content-narrow">
           <form name="variables" action="/api/svariables" method="PUT"

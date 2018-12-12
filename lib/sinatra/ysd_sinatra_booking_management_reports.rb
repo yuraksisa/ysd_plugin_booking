@@ -7,47 +7,6 @@ module Sinatra
 
       def self.registered(app)
 
-
-        #
-        # Pending of confirmation
-        #
-        app.get '/admin/booking/reports/pending-confirmation', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          locals = {}
-          if product_family_id = SystemConfiguration::Variable.get_value('booking.item_family')
-            product_family = ::Yito::Model::Booking::ProductFamily.get(product_family_id)
-            locals.store(:product_family, product_family)
-            locals.store(:booking_reservation_starts_with, product_family.frontend)
-          end
-
-          @reservations = BookingDataSystem::Booking.all(
-              :conditions => {:status => [:pending_confirmation], :date_from.gte => Date.today.to_date},
-              :order => :creation_date.desc)
-
-          load_page(:report_pending_confirmation, :locals => locals)
-
-        end
-
-        #
-        # In progress
-        #
-        app.get '/admin/booking/reports/in-progress', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          @product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-          @today = Date.today.to_date
-          @reservations = BookingDataSystem::Booking.all(
-              :conditions => {:status => [:confirmed, :in_progress],
-                              :date_from.lte => @today,
-                              :date_to.gte => @today},
-              :order => :date_to.asc)
-
-          locals = {}
-          locals.store(:booking_reservation_starts_with, @product_family.frontend)
-
-          load_page(:report_in_progress, :locals => locals)
-
-        end
-
         #
         # Pickup and return
         #

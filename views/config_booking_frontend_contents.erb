@@ -4,7 +4,7 @@
   .sortable li span { position: absolute; margin-left: -1.3em; }
 </style>
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.booking_front_end.title%></h2>
+  <h2 class="entity-title"><%=t.reservation_website_contents.title%></h2>
 </div>
 <div class="admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
   <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
@@ -24,7 +24,7 @@
                 <button id="new_page_button" class="btn push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
-            <h3 class="block-title">Páginas</h3>
+            <h3 class="block-title"><%=t.reservation_website_contents.pages%></h3>
           </div>
           <div id="pages_container" class="block-content block-content-narrow">
             <%= partial :pages %>
@@ -45,7 +45,7 @@
                 <button class="new_menu_item_button" rel="<%=@primary_links_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
-            <h3 class="block-title">Menú principal <% if @show_activities_menu %>alquiler<%end%></h3>
+            <h3 class="block-title"><%=t.reservation_website_contents.main_menu%> <% if @show_activities_menu %>alquiler<%end%></h3>
           </div>
           <div id="primary_links_container" class="block-content block-content-narrow">
             <%= partial :menu, locals: {menu: @primary_links_menu} %>
@@ -65,7 +65,7 @@
                 <button class="new_menu_item_button" rel="<%=@secondary_links_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
-            <h3 class="block-title">Menú secundario <% if @show_activities_menu %>alquiler<%end%></h3>
+            <h3 class="block-title"><%=t.reservation_website_contents.secondary_menu%> <% if @show_activities_menu %>alquiler<%end%></h3>
           </div>
           <div id="secondary_links_container" class="block-content block-content-narrow">
             <%= partial :menu, locals: {menu: @secondary_links_menu} %>
@@ -88,7 +88,7 @@
                   <button class="new_menu_item_button" rel="<%=@primary_links_activities_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
                 </li>
               </ul>
-              <h3 class="block-title">Menú principal actividades</h3>
+              <h3 class="block-title"><%=t.reservation_website_contents.main_menu_activities%></h3>
             </div>
             <div id="primary_links_activities_container" class="block-content block-content-narrow">
               <%= partial :menu, locals: {menu: @primary_links_activities_menu} %>
@@ -108,7 +108,7 @@
                   <button class="new_menu_item_button" rel="<%=@secondary_links_activities_menu.name%>" class="btn btn-success push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
                 </li>
               </ul>
-              <h3 class="block-title">Menú secundario actividades</h3>
+              <h3 class="block-title"><%=t.reservation_website_contents.secondary_menu_activities%></h3>
             </div>
             <div id="secondary_links_activities_container" class="block-content block-content-narrow">
               <%= partial :menu, locals: {menu: @secondary_links_activities_menu} %>

@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.4.174] - 2018-12-XX
+### Updated
+- Translations organization
+
+## [0.4.173] - 2018-12-10
+### Updated
+- Rental location and rental storage organization and availability revision
+
+## [0.4.172] - 2018-12-09
+### Updated
+- Rental location and rental storage organization and availability revision
+
+## [0.4.171] - 2018-12-09
+### Updated
+- Rental location and rental storage organization and availability revision
+
+## [0.4.170] - 2018-12-08
+### Updated
+- Rental location and rental storage organization and availability revision
+
+## [0.4.169] - 2018-12-08
+### Added
+- Rental location and rental storage organization and availability
+
 ## [0.4.168] - 2018-08-31
 ### Updated
 - Reservations by resources: style + include total
@@ -11,7 +35,6 @@
 ## [0.4.166] - 2018-08-08
 ### Updated
 - Picked up reservations Excel Export: Include a row with total
-
 
 ## [0.4.165] - 2018-08-05
 ### Updated

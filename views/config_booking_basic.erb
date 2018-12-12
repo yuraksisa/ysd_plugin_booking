@@ -32,7 +32,7 @@
 </style>
 
 <div class="top-navigation-bar">
-  <h2 class="entity-title"><%=t.booking_settings.form.title%></h2>
+  <h2 class="entity-title"><%=t.booking_settings.basic.title%></h2>
 </div>
 <div class="admin_content_wrapper"  style="background-color: #f5f5f5; margin: 0">
   <div data-alerts="alerts" data-titles="{'success':'<%=t.entitymanagement.success%>','warning':'<%=t.entitymanagement.warning%>','error':'<%=t.entitymanagement.error%>'}" data-fade="10000"></div>
@@ -47,15 +47,15 @@
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
           <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_business_settings.renting_title%></h3>
+            <h3 class="block-title"><%=t.booking_settings.basic.business_type_title%></h3>
           </div>
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <div class="col-lg-12">
                 <div class="form-row bottom-space">
-                  <%= render_variable_select('booking.item_family', t.booking_settings.form.family, families, 'form-control', true) %>
-                  <p class="less_contrast_text "><%=t.booking_settings.form.family_description%></p>
+                  <%= render_variable_select('booking.item_family', t.booking_settings.basic.family, families, 'form-control', true) %>
+                  <p class="less_contrast_text "><%=t.booking_settings.basic.family_description%></p>
                 </div>
               </div>
               <div class="col-lg-12">
@@ -77,24 +77,24 @@
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
           <div class="block-header bg-gray-lighter">
-            <h3 class="block-title"><%=t.booking_settings.form.days_hours_group%></h3>
+            <h3 class="block-title"><%=t.booking_settings.basic.days_expiration_title%></h3>
           </div>
           <div class="block-content block-content-narrow">
             <form name="variables" action="/api/variables" method="PUT"
                   data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
               <% if booking_renting %>
-              <%= render_variable_input_text('booking.min_days', t.booking_settings.form.min_days, 2, 2, 'form-control') %>
-              <p class="text-muted "><%=t.booking_settings.form.min_days_description%></p>
-              <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.form.item_hold_time, 2, 2, 'form-control') %>
-              <p class="text-muted "><%=t.booking_settings.form.item_hold_time_description%></p>
+              <%= render_variable_input_text('booking.min_days', t.booking_settings.basic.min_days, 2, 2, 'form-control') %>
+              <p class="text-muted "><%=t.booking_settings.basic.min_days_description%></p>
+              <%= render_variable_input_text('booking.item_hold_time', t.booking_settings.basic.item_hold_time, 2, 2, 'form-control') %>
+              <p class="text-muted "><%=t.booking_settings.basic.item_hold_time_description%></p>
               <% if booking_item_family.cycle_of_24_hours %>
-                <%= render_variable_input_text('booking.hours_cadence', t.booking_settings.form.hours_cadence, 2, 2, 'form-control') %>
-                <p class="text-muted "><%=t.booking_settings.form.hours_cadence_description%></p>
+                <%= render_variable_input_text('booking.hours_cadence', t.booking_settings.basic.hours_cadence, 2, 2, 'form-control') %>
+                <p class="text-muted "><%=t.booking_settings.basic.hours_cadence_description%></p>
               <% end %>
               <% end %>
               <% if booking_activities %>
-              <%= render_variable_input_text('order.item_hold_time', t.booking_settings.form.activities_item_hold_time, 2, 2, 'form-control') %>
-              <p class="text-muted"><%=t.booking_settings.form.activities_item_hold_time_description%></p>
+              <%= render_variable_input_text('order.item_hold_time', t.booking_settings.basic.activities_item_hold_time, 2, 2, 'form-control') %>
+              <p class="text-muted"><%=t.booking_settings.basic.activities_item_hold_time_description%></p>
               <% end %>
               <div class="form-group">
                 <div class="col-xs-12">
@@ -108,26 +108,26 @@
     </div>
 
     <% if booking_renting %>
-
+      <!-- Multiple locations -->
       <% if booking_item_family and booking_item_family.multiple_locations %>
         <div class="row">
           <div class="col-sm-12 col-md-10 col-md-offset-1">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%=t.booking_settings.form.manage_locations%></h3>
+                <h3 class="block-title"><%=t.booking_settings.basic.manage_locations%></h3>
               </div>
               <div class="block-content block-content-narrow">
                 <form id="multiple_locations_form" name="variables" action="/api/variables" method="PUT"
                       data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-                  <%= render_variable_checkbox_boolean('booking.multiple_rental_locations', t.booking_settings.form.multiple_rental_locations) %>
-                  <p class="text-muted"><%=t.booking_settings.form.multiple_rental_locations_description%></p>
+                  <%= render_variable_checkbox_boolean('booking.multiple_rental_locations', t.booking_settings.basic.multiple_rental_locations) %>
+                  <p class="text-muted"><%=t.booking_settings.basic.multiple_rental_locations_description%></p>
                   <div id="rental_location_operators_container" style="display:none">
-                    <%= render_variable_checkbox_boolean('booking.resource_availability_by_rental_location_storage', t.booking_settings.form.resource_availability_by_rental_location_storage) %>
-                    <p class="text-muted"><%=t.booking_settings.form.resource_availability_by_rental_location_storage_description%></p>
-                    <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_pickup_return_same_location', t.booking_settings.form.multiple_rental_locations_pickup_return_same_location) %>
-                    <p class="text-muted"><%=t.booking_settings.form.multiple_rental_locations_pickup_return_same_location_description%></p>
-                    <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_allow_operator_all_locations', t.booking_settings.form.multiple_rental_locations_operator) %>
-                    <p class="text-muted"><%=t.booking_settings.form.multiple_rental_locations_operator_description%></p>
+                    <%= render_variable_checkbox_boolean('booking.resource_availability_by_rental_location_storage', t.booking_settings.basic.resource_availability_by_rental_location_storage) %>
+                    <p class="text-muted"><%=t.booking_settings.basic.resource_availability_by_rental_location_storage_description%></p>
+                    <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_pickup_return_same_location', t.booking_settings.basic.multiple_rental_locations_pickup_return_same_location) %>
+                    <p class="text-muted"><%=t.booking_settings.basic.multiple_rental_locations_pickup_return_same_location_description%></p>
+                    <%= render_variable_checkbox_boolean('booking.multiple_rental_locations_allow_operator_all_locations', t.booking_settings.basic.multiple_rental_locations_operator) %>
+                    <p class="text-muted"><%=t.booking_settings.basic.multiple_rental_locations_operator_description%></p>
                   </div>  
                   <div class="row">
                     <div class="col-lg-12">
@@ -177,24 +177,24 @@
           <div class="col-sm-12 col-md-10 col-md-offset-1">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
-                <h3 class="block-title">Lugares de entrega y devolución</h3>
+                <h3 class="block-title"><%=t.booking_settings.basic.pickup_return_places_title%></h3>
               </div>
               <div class="block-content">
                 <form name="variables" action="/api/variables" method="PUT"
                       data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
                   <div class="col-lg-5">
                     <div class="form-row bottom-space">
-                      <label for="booking.min_days" class="fieldtitle">Lugares de entrega y devolución</label>
+                      <label for="booking.min_days" class="fieldtitle"><%=t.booking_settings.basic.pickup_return_places%></label>
                       <select name="booking.pickup_return_places_configuration" id="booking.pickup_return_places_configuration" class="form-control">
-                        <option value="list" <%if booking_pickup_return_places_configuration == 'list'%>selected<%end%>>Lista de lugares</option>
-                        <option value="value" <%if booking_pickup_return_places_configuration == 'value'%>selected<%end%>>Dirección</option>
-                        <option value="list+custom" <%if booking_pickup_return_places_configuration == 'list+custom'%>selected<%end%>>Lista de lugares + otros lugares</option>
+                        <option value="list" <%if booking_pickup_return_places_configuration == 'list'%>selected<%end%>><%=t.booking_settings.basic.pickup_return_places_list%></option>
+                        <option value="value" <%if booking_pickup_return_places_configuration == 'value'%>selected<%end%>><%=t.booking_settings.basic.pickup_return_places_address%></option>
+                        <option value="list+custom" <%if booking_pickup_return_places_configuration == 'list+custom'%>selected<%end%>><%=t.booking_settings.basic.pickup_return_places_list_and_others%></option>
                       </select>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="form-row bottom-space">
-                      <%= render_variable_input_text('booking.custom_pickup_return_place_price', t.booking_settings.form.custom_pickup_return_place_price, 3, 30, 'form-control', true) %>
+                      <%= render_variable_input_text('booking.custom_pickup_return_place_price', t.booking_settings.basic.custom_pickup_return_place_price, 3, 30, 'form-control', true) %>
                     </div>
                   </div>
                   <div class="col-lg-3">
@@ -220,7 +220,7 @@
           <div class="col-sm-12 col-md-10 col-md-offset-1">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
-                <h3 class="block-title">Horarios entrega y devolución</h3>
+                <h3 class="block-title"><%=t.booking_settings.basic.timetable_pickup_return_title%></h3>
               </div>
               <div class="block-content ">
 
@@ -232,21 +232,21 @@
 
                   <div class="col-lg-3">
                     <div class="form-row bottom-space">
-                      <%= render_variable_select('booking.pickup_return_main_season.month_from', t.booking_settings.form.pickup_return_main_season_from, months, 'form-control', true) %>
+                      <%= render_variable_select('booking.pickup_return_main_season.month_from', t.booking_settings.basic.pickup_return_main_season_from, months, 'form-control', true) %>
                       <%= render_variable_select('booking.pickup_return_main_season.day_from', '', days, 'form-control', true) %>
                     </div>
                   </div>
 
                   <div class="col-lg-3">
                     <div class="form-row bottom-space">
-                      <%= render_variable_select('booking.pickup_return_main_season.month_to', t.booking_settings.form.pickup_return_main_season_to, months, 'form-control', true) %>
+                      <%= render_variable_select('booking.pickup_return_main_season.month_to', t.booking_settings.basic.pickup_return_main_season_to, months, 'form-control', true) %>
                       <%= render_variable_select('booking.pickup_return_main_season.day_to', '', days, 'form-control', true) %>
                     </div>
                   </div>
 
                   <div class="col-lg-4">
                     <div class="form-row bottom-space">
-                      <%= render_variable_input_text('booking.pickup_return_timetable_out_price', t.booking_settings.form.pickup_return_timetable_out_price, 3, 30, 'form-control', true) %>
+                      <%= render_variable_input_text('booking.pickup_return_timetable_out_price', t.booking_settings.basic.pickup_return_timetable_out_price, 3, 30, 'form-control', true) %>
                     </div>
                   </div>
 
@@ -260,14 +260,14 @@
                 <div class="row">
                   <div class="col-lg-6 col-md-6">
                     <div id="timetable_season_holder">
-                      <h2 class="content-heading"><%=t.booking_settings.form.pickup_return_main_season%></h2>
+                      <h2 class="content-heading"><%=t.booking_settings.basic.pickup_return_main_season%></h2>
                       <div id="timetable_season_container">
                       </div>
                     </div>
                   </div>
                   <div class="col-lg-6 col-md-6">
                     <div id="timetable_out_of_season_holder" style="display: none">
-                      <h2 class="content-heading"><%=t.booking_settings.form.pickup_return_out_of_season%></h2>
+                      <h2 class="content-heading"><%=t.booking_settings.basic.pickup_return_out_of_season%></h2>
                       <div id="timetable_out_of_season_container">
                       </div>
                     </div>
@@ -284,14 +284,14 @@
           <div class="col-sm-12 col-md-10 col-md-offset-1">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
-                <h3 class="block-title">Edad del conductor</h3>
+                <h3 class="block-title"><%=t.booking_settings.basic.driver_age%></h3>
               </div>
               <div class="block-content">
                 <form name="variables" action="/api/variables" method="PUT"
                       data-remote="ajax" data-remote-method="PUT" class="form-inline">
                     <div class="col-lg-9">
                       <div class="form-row bottom-space">
-                        <%= render_variable_checkbox_boolean('booking.driver_min_age.rules', t.booking_settings.form.driver_min_age_rules) %>
+                        <%= render_variable_checkbox_boolean('booking.driver_min_age.rules', t.booking_settings.basic.driver_min_age_rules) %>
                       </div>
                     </div>
                     <div class="col-lg-3">
@@ -314,7 +314,7 @@
         <div class="col-sm-12 col-md-10 col-md-offset-1">
           <div class="block ">
             <div class="block-header bg-gray-lighter">
-              <h3 class="block-title">Temporadas</h3>
+              <h3 class="block-title"><%=t.booking_settings.basic.seasons%></h3>
             </div>
             <div class="block-content">
               <form name="variables" action="/api/variables" method="PUT"
@@ -322,24 +322,24 @@
 
                 <div class="col-lg-12">
                   <div class="form-row bottom-space">
-                    <%= render_variable_checkbox_boolean('booking.new_season_definition_instance_for_category', 'Cada producto define su propia temporada', '', true) %>
-                    <p class="less_contrast_text ">Marcar esta opción si tenemos diferentes temporadas dependiendo del producto o servicio.</p>
+                    <%= render_variable_checkbox_boolean('booking.new_season_definition_instance_for_category', t.booking_settings.basic.season_per_product, '', true) %>
+                    <p class="less_contrast_text "><%=t.booking_settings.basic.season_per_product_description%></p>
                   </div>
                 </div>
 
                 <% if use_factors %>
                   <div class="col-lg-12">
                     <div class="form-row bottom-space">
-                      <%= render_variable_checkbox_boolean('booking.new_factor_definition_instance_for_category', 'Cada producto define sus propios factores', '', true) %>
-                      <p class="less_contrast_text ">Marcar esta opción si tenemos diferentes factores dependiendo del producto o servicio</p>
+                      <%= render_variable_checkbox_boolean('booking.new_factor_definition_instance_for_category', t.booking_settings.basic.factor_per_product, '', true) %>
+                      <p class="less_contrast_text "><%=t.booking_settings.basic.factor_per_product_description%></p>
                     </div>
                   </div>
                 <% end %>
 
                 <div class="col-lg-12">
                   <div class="form-row bottom-space">
-                    <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.form.calendar_mode.title, calendar_modes, 'form-control', true) %>
-                    <p class="less_contrast_text"><%=t.booking_settings.form.rates.description%></p>
+                    <%= render_variable_select('booking.renting_calendar_season_mode', t.booking_settings.basic.calendar_mode.title, calendar_modes, 'form-control', true) %>
+                    <p class="less_contrast_text"><%=t.booking_settings.basic.calendar_mode_description%></p>
                   </div>
                 </div>
 
@@ -351,7 +351,7 @@
 
               </form>
               <hr>
-              <p class="text-muted">A continuación se listan las <b>temporadas estándar</b> que utiliza la empresa para definir las tarifas</p>
+              <p class="text-muted"><%=t.booking_settings.basic.season_list_info%></p>
               <%= partial :seasons_editor %>
 
               <br>
@@ -364,18 +364,18 @@
         <div class="col-sm-12 col-md-10 col-md-offset-1">
           <div class="block ">
             <div class="block-header bg-gray-lighter">
-              <h3 class="block-title"><%=t.booking_settings.form.deposit_group.title%></h3>
+              <h3 class="block-title"><%=t.booking_settings.basic.deposit_group.title%></h3>
             </div>
             <div class="block-content block-content-narrow">
               <form name="variables" action="/api/variables" method="PUT"
                     data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
-                <%= render_variable_checkbox_boolean('booking.products.allow_deposit', t.booking_settings.form.product_allow_deposit) %>
-                <p class="less_contrast_text "><%=t.booking_settings.form.product_allow_deposit_description%></p>
+                <%= render_variable_checkbox_boolean('booking.products.allow_deposit', t.booking_settings.basic.product_allow_deposit) %>
+                <p class="less_contrast_text "><%=t.booking_settings.basic.product_allow_deposit_description%></p>
                 <div id="product_deposit_holder">
-                  <%= render_variable_checkbox_boolean('booking.booking_amount_includes_deposit', t.booking_settings.form.deposit_includes_product_deposit) %>
-                  <p class="less_contrast_text "><%=t.booking_settings.form.deposit_includes_product_deposit_description%></p>
-                  <%= render_variable_checkbox_boolean('booking.total_cost_includes_deposit', t.booking_settings.form.total_cost_includes_deposit) %>
-                  <p class="less_contrast_text "><%=t.booking_settings.form.total_cost_includes_deposit_description%></p>
+                  <%= render_variable_checkbox_boolean('booking.booking_amount_includes_deposit', t.booking_settings.basic.deposit_includes_product_deposit) %>
+                  <p class="less_contrast_text "><%=t.booking_settings.basic.deposit_includes_product_deposit_description%></p>
+                  <%= render_variable_checkbox_boolean('booking.total_cost_includes_deposit', t.booking_settings.basic.total_cost_includes_deposit) %>
+                  <p class="less_contrast_text "><%=t.booking_settings.basic.total_cost_includes_deposit_description%></p>
                 </div>
                 <div class="form-group">
                   <div class="col-xs-12">
