@@ -48,6 +48,19 @@ module Huasi
            :description => 'Booking Type : car, apartment, bike, motorbike, room',
            :module => :booking})
 
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.automatic_confirm_web_reservation_request'},
+          {:value => 'false',
+           :description => 'Automatically confirm web reservation request',
+           :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create(
+          {:name => 'booking.automatic_confirm_backoffice_reservation_request'},
+          {:value => 'false',
+           :description => 'Automatically confirm backoffice reservation request',
+           :module => :booking})
+
       # Planning
 
       SystemConfiguration::Variable.first_or_create(
@@ -56,6 +69,20 @@ module Huasi
            description: 'Show the pickup/return report version',
            module: :booking}
       )
+
+      SystemConfiguration::Variable.first_or_create(
+          {name: 'booking.assignation.automatic_resource_assignation_on_web_request'},
+          {value: 'true',
+           description: 'It assigns automatically an available item on web reservation request',
+           module: :booking}
+      )
+
+      SystemConfiguration::Variable.first_or_create(
+          {name: 'booking.assignation.automatic_resource_assignation_on_backoffice_request'},
+          {value: 'true',
+           description: 'It assigns automatically an available item on backoffice reservation request',
+           module: :booking}
+      )      
 
       SystemConfiguration::Variable.first_or_create(
           {name: 'booking.assignation.automatic_resource_assignation'},

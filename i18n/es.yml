@@ -1167,6 +1167,13 @@ booking_settings:
     languages_title: Idiomas
     multilanguage_site: Multi idioma
     multilanguage_site_description: Permite que definir los datos en múltiples idiomas
+    # Web request
+    automatic_confirmation:
+      title: Confirmación automática
+      automatically_confirm_web_request: Confirma automáticamente la solicitud de reserva web
+      automatically_confirm_web_request_description: Realiza la confirmación automática de una solicitud de reserva recibida por la web
+      automatically_confirm_backoffice_request: Confirma automáticamente la solicitud de reserva interna del programa
+      automatically_confirm_backoffice_request_description: Realiza la confirmación automática de una solicitud de reserva interna del programa
     # Planning and resources
     planning_resources: Planning y recursos
     assignation:
@@ -1174,7 +1181,11 @@ booking_settings:
       allow_different_category_description: Permite que a una reserva pueda asignarse un recurso de diferente categoría, por ejemplo un coche de categoría superior
       allow_busy_resource: Permitir asignar recurso ocupado.
       allow_busy_resource_description: Permite que en un mismo día pueda haber el mismo recurso asignado a dos reservas. Marcar si permitimos que el mismo día que se realice la devolución de un recurso pueda realizarse la asignación a otra reserva
-      automatic_resource_assignation: Asignación automática
+      automatic_resource_assignation_web_request: Asignación automática al recibir <b>solicitud de reserva desde la web</b>
+      automatic_resource_assignation_web_request_description: Realiza la asignación automática de uno de los recursos disponibles al solicitar la reserva desde la web
+      automatic_resource_assignation_backoffice_request: Asignación automática al recibir <b>solicitud de reserva desde el programa</b>
+      automatic_resource_assignation_backoffice_request_description: Realiza la asignación automática de uno de los recursos disponibles al solicitar la reserva desde el programa      
+      automatic_resource_assignation: Asignación automática <b>al confirmar reserva</b>
       automatic_resource_assignation_description: Realiza la asignación automática de uno de los recursos disponibles al confirmar la reserva
       planning_style:
         title: Tipo de planning
