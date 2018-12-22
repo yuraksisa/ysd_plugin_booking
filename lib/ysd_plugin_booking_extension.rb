@@ -517,6 +517,17 @@ module Huasi
                                                      :description => 'Booking operator front page (dashboard)',
                                                      :module => :booking})
 
+      # Contract      
+      SystemConfiguration::Variable.first_or_create({:name => 'booking.contract_logo'}, 
+                                                    {:value => '',
+                                                     :description => 'Booking contract logo', 
+                                                     :module => :booking})
+
+      SystemConfiguration::Variable.first_or_create({:name => 'booking.use_custom_contract'}, 
+                                                    {:value => 'false',
+                                                     :description => 'Booking use custom contract', 
+                                                     :module => :booking})
+
       #
       # Rates setup : Seasons (general), factors (general)
       #

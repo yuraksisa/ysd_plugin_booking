@@ -9,6 +9,51 @@
     <div class="row">
       <div class="col-sm-12 col-md-10 col-md-offset-1">
         <div class="block ">
+          <div class="block-header bg-gray-lighter">
+              <h3 class="block-title"><%=t.booking_settings.contract.logo%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+              <%= render_variable_photo_uploader('booking.contract_logo') %>
+              <p class="text-center"><%=t.booking_settings.contract.logo_size%></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if @addons.has_key?(:addon_custom_contract) and @addons[:addon_custom_contract] %>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+              <h3 class="block-title"><%=t.booking_settings.contract.settings%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+
+            <form name="custom_contract_form" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_checkbox_boolean('booking.use_custom_contract',
+                    t.booking_settings.contract.use_custom_contract) %>
+              <p class="text-muted"><%=t.booking_settings.contract.use_custom_contract_description%></p>                    
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-row bottom-space">
+                    <button class="button btn btn-sm btn-primary pull-right" type="button"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                  </div>
+                </div>                
+              </div>  
+            </form>
+
+            <br>
+
+          </div>          
+        </div>
+      </div>
+    </div>
+
+    <div id="custom_contract" class="row" <%unless @use_custom_contract %>style="display:none"<%end%>>
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
           <ul class="nav nav-tabs" data-toggle="tabs">
             <% if @renting_plan %>
             <li class="active">
@@ -90,6 +135,6 @@
         </div>
       </div>
     </div>
-
+    <% end %>
   </div>
 </div>

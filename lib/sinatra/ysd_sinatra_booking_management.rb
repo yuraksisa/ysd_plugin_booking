@@ -266,19 +266,44 @@ module Sinatra
         app.get '/admin/booking/contract/:id', :allowed_usergroups => ['booking_manager', 'booking_operator','staff'] do
 
            if booking = BookingDataSystem::Booking.get(params[:id])
-             product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
-             if contract_template = ContentManagerSystem::Template.first({:name => 'booking_contract'})
-               contract_template = contract_template.translate(booking.customer_language)
-               content_type 'application/pdf'
-               eval contract_template.text
+             custom_contract = false
+             addons = mybooking_addons             
+             if addons.has_key?(:addon_custom_contract) and addons[:addon_custom_contract]
+               custom_contract = SystemConfiguration::Variable.get_value('booking.use_custom_contract', 'false').to_bool
+             end  
+             if custom_contract
+               # Custom contract
+               product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+               if contract_template = ContentManagerSystem::Template.first({:name => 'booking_contract'})
+                 contract_template = contract_template.translate(booking.customer_language)
+                 content_type 'application/pdf'
+                 eval contract_template.text
+               else
+                 status 404
+               end 
              else
-               status 404
-             end 
+              # Standard contract
+              company = {
+                        name: SystemConfiguration::Variable.get_value('site.company.name'),
+                        document_id: SystemConfiguration::Variable.get_value('site.company.document_id'),
+                        phone_number: SystemConfiguration::Variable.get_value('site.company.phone_number'),
+                        email: SystemConfiguration::Variable.get_value('site.company.email'),
+                        address_1: SystemConfiguration::Variable.get_value('site.company.address_1'),
+                        address_2: SystemConfiguration::Variable.get_value('site.company.address_2'),
+                        city: SystemConfiguration::Variable.get_value('site.company.city'),
+                        state: SystemConfiguration::Variable.get_value('site.company.state'),
+                        zip: SystemConfiguration::Variable.get_value('site.company.zip'),
+                        country: SystemConfiguration::Variable.get_value('site.company.country')
+                       }            
+              contract = ::Yito::Model::Booking::Pdf::Contract.new(booking, company, '').build.render
+              content_type 'application/pdf'
+              contract
+             end  
            else
              status 404
            end
 
-        end         
+        end          
 
         # -------------------------------------- Assign stock -------------------------------------------------------
 

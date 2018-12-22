@@ -1287,6 +1287,11 @@ booking_settings:
   #     
   contract:
     title: Contrato
+    logo: Logo
+    logo_size: Tamaño recomendado 400x100
+    settings: Configuración
+    use_custom_contract: Usar contrato personalizado
+    use_custom_contract_description: El impreso del contrato es personalizado para la empresa
     template_title: Plantilla
     renting_title: Contrato de alquiler
     activities_title: Contrato de actividades

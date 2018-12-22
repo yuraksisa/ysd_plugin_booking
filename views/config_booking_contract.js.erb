@@ -1,8 +1,30 @@
 require(['jquery', 'YSDForms'], function($, YSDForms) {
 
-  $(document).ready(function() {
+  contractModel = {
+
+  };
+
+  contractController = {
+
+    customContractButtonClick: function() {
+      YSDForms.submitAjax($('form[name=custom_contract_form]')[0], {
+          successCallback: function(data, textStatus, jqXHR) {
+            contractView.update('use_custom_contract');
+          }
+      });
+    }
+
+  }
+
+  contractView = {
+
+    init: function() {
 
       YSDForms.improve();
+
+      $('form[name=custom_contract_form] button').bind('click', function(){
+        contractController.customContractButtonClick();
+      });
 
       <% if @show_translations and @tmpl %>
       $.ajax({url: '/admin/cms/translate/template/'+ <%=@tmpl.id%>, dataType: 'text'}).done(function(html) {
@@ -45,6 +67,25 @@ require(['jquery', 'YSDForms'], function($, YSDForms) {
       });
       <% end %>
 
+    },
 
-  });
+    update: function(action) {
+
+      switch (action) {
+        case 'use_custom_contract':
+          if ($('input[name=booking\\.use_custom_contract]').is(':checked')) {
+            $('#custom_contract').show();
+          }
+          else {
+            $('#custom_contract').hide();
+          }
+          break;
+      }
+
+    }
+
+  }
+
+  contractView.init();
+
 });

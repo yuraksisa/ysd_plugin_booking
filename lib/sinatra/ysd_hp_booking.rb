@@ -69,6 +69,7 @@ module Sinatra
         addon_invoicing = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_invoicing)
         addon_suppliers = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_suppliers)
         addon_locations = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_locations)
+        addon_custom_contract = RequestStore.store[:mybooking_addons].include?(:mybooking_addon_custom_contract)
       else
         addon_crm = (settings.respond_to?(:mybooking_addon_crm) ? settings.mybooking_addon_crm : false)
         addon_finances = (settings.respond_to?(:mybooking_addon_finances) ? settings.mybooking_addon_finances : false)
@@ -86,6 +87,7 @@ module Sinatra
         addon_invoicing = (settings.respond_to?(:mybooking_addon_invoicing) ? settings.mybooking_addon_invoicing : false)
         addon_suppliers = (settings.respond_to?(:mybooking_addon_suppliers) ? settings.mybooking_addon_suppliers : false)
         addon_locations = (settings.respond_to?(:mybooking_addon_locations) ? settings.mybooking_addon_locations : false)
+        addon_custom_contract = (settings.respond_to?(:mybooking_addon_custom_contract) ? settings.mybooking_addon_custom_contract : false)
       end
 
       {addon_crm: addon_crm,
@@ -103,7 +105,9 @@ module Sinatra
        addon_web: addon_web,
        addon_invoicing: addon_invoicing,
        addon_suppliers: addon_suppliers,
-       addon_locations: addon_locations}
+       addon_locations: addon_locations,
+       addon_custom_contract: addon_custom_contract
+      }
 
     end
 
