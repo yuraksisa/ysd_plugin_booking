@@ -377,6 +377,34 @@
               <li><%= t.admin_new_reservation.form.total_deposit %>: <span class="pull-right"><%%=new Number(shopping_cart.total_deposit).toFixed(2)%>€</span></li>
               <%% } %>
 
+              <% if booking_item_family.category_supplement_1 %>
+                <%% if (shopping_cart.category_supplement_1_cost > 0) { %>
+                <li><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['category_supplement_1'] %>: <span class="pull-right"><%%=new Number(shopping_cart.category_supplement_1_cost).toFixed(2)%>€</span></li>
+                <%% } %>
+              <% end %>
+              
+              <% if booking_item_family.category_supplement_2 %>
+                <%% if (shopping_cart.category_supplement_2_cost > 0) { %>
+                <li><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['category_supplement_2'] %>: <span class="pull-right"><%%=new Number(shopping_cart.category_supplement_2_cost).toFixed(2)%>€</span></li>
+                <%% } %>
+              <% end %>
+
+              <% if booking_item_family.category_supplement_3 %>
+                <%% if (shopping_cart.category_supplement_3_cost > 0) { %>
+                <li><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['category_supplement_3'] %>: <span class="pull-right"><%%=new Number(shopping_cart.category_supplement_3_cost).toFixed(2)%>€</span></li>
+                <%% } %>
+              <% end %>
+
+              <%% if (shopping_cart.supplement_1_cost > 0 ) { %>
+                <li><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['supplement_1'] %>: <span class="pull-right"><%%=new Number(shopping_cart.category_supplement_1_cost).toFixed(2)%>€</span></li>
+              <%% } %>  
+              <%% if (shopping_cart.supplement_2_cost > 0 ) { %>
+                <li><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['supplement_2'] %>: <span class="pull-right"><%%=new Number(shopping_cart.category_supplement_2_cost).toFixed(2)%>€</span></li>
+              <%% } %>
+              <%% if (shopping_cart.supplement_3_cost > 0 ) { %>
+                <li><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['supplement_3'] %>: <span class="pull-right"><%%=new Number(shopping_cart.category_supplement_3_cost).toFixed(2)%>€</span></li>
+              <%% } %>
+
               <li><%= t.admin_new_reservation.form.total_cost %>: <span class="pull-right"><strong><%%=new Number(shopping_cart.total_cost).toFixed(2)%>€</strong></span></li>
             </ul>
           </div>

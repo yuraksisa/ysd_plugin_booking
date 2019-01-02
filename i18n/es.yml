@@ -133,6 +133,7 @@ booking_category_management:
     other_data_group: Otros datos
     translations_group: Traducciones
     media_group: Imágenes
+    supplements_group: Suplementos
     rates_group: Tarifas
     deposit_group: Fianza
     stock_group: Stock
@@ -249,10 +250,26 @@ booking_category_sales_channels_management:
   no_data: No se han definido canales de venta para el producto
   table:
     channel_name: Canal de venta
+    edit: Editar
+    rates: Tarifas
+#
+# Category / sales channels setup
+#
 booking_category_sales_channels_setup:
   title: Configurar canales de venta
+#  
+# Category / sales channels rates
+#  
 booking_category_sales_channels_edit:
-  title: Canal de venta %1    
+  title: Canal de venta %1
+  form:
+    supplements: Suplementos
+#  
+# Category / sales channels rates
+#  
+booking_category_sales_channels_rates:
+  title: Canal de venta %1
+  rates: Tarifas    
 #
 # == Extras
 #    

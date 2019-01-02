@@ -3,6 +3,8 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForm
 
   model = {
 
+      menuFirstTime: true,
+
       deletePage: function(id) {
 
           var data = {'id': id};
@@ -65,7 +67,53 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForm
           });
 
 
-      }
+      },
+      updateMenuOrder: function(id, data) { /* Update menu order */
+
+        $.ajax({
+            data: data,
+            type: 'POST',
+            url: '/api/menu/'+id+'/order',
+            success: function(data, textStatus, jqXHR) {
+                  $.toast({
+                      heading: 'Menú ordenado',
+                      text: 'Menú ordenado correctamente',
+                      position: 'top-right',
+                      bgColor: 'rgb(56, 154, 56)',
+                      textColor: 'white',
+                      loader: false,
+                      stack: false
+                  });
+              },
+              error: function(data, textStatus, jqXHR) {
+                  alert('Error ordenando menú');
+              }            
+        });
+
+      },
+      updateSubMenuOrder: function(id, data) { /* Update submenu order */
+
+        $.ajax({
+            data: data,
+            type: 'POST',
+            url: '/api/submenu/'+id+'/order',
+            success: function(data, textStatus, jqXHR) {
+                  $.toast({
+                      heading: 'Submenú ordenado',
+                      text: 'Submenú ordenado correctamente',
+                      position: 'top-right',
+                      bgColor: 'rgb(56, 154, 56)',
+                      textColor: 'white',
+                      loader: false,
+                      stack: false
+                  });
+              },
+              error: function(data, textStatus, jqXHR) {
+                  alert('Error ordenando submenú');
+              }            
+        });
+
+      }             
 
   };
 
@@ -241,8 +289,6 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForm
 
       init: function() {
           YSDForms.improve();
-          $('.sortable').sortable();
-          $('.sortable').disableSelection();
           this.setupPagesEvents();
           this.setupMenuEvents();
       },
@@ -304,6 +350,23 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.toast'], function($, YSDForm
           $('.delete_menu_item_button').bind('click', function() {
               controller.deleteMenuItemButtonClick($(this).attr('rel'));
           });
+          // Setup sortable
+          $('.sortable').sortable({
+            update: function(event, ui) {
+              if ($(this).hasClass('sortable-submenu')){
+                var id = $(this).attr('data-id');
+                var data = $(this).sortable('serialize');
+                model.updateSubMenuOrder(id, data);
+              }
+              else {
+                var id = $(this).attr('data-id');
+                var data = $(this).sortable('serialize');
+                model.updateMenuOrder(id, data);
+              }
+            }
+          });
+          $('.sortable').disableSelection();          
+          model.menuFirstTime = false;
       },
 
       reloadPages: function() {

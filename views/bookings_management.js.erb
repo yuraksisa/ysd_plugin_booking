@@ -256,6 +256,14 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
         self.prepareFormEditBookingLineItemDeposit(id, value);
       });  
 
+      $('.booking-line-category-supplements').bind('click', function(){
+        var id = $(this).attr('data-id');
+        var cost1 = $(this).attr('data-value-cost-1');
+        var cost2 = $(this).attr('data-value-cost-2');
+        var cost3 = $(this).attr('data-value-cost-3');        
+        self.prepareFormEditBookingLineCategorySupplements(id, cost1, cost2, cost3);
+      });
+
       $('.booking-extra-quantity').bind('click', function() {
         var id = $(this).attr('data-id');
         var value = $(this).attr('data-value');
@@ -1099,6 +1107,41 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       });
 
     }
+
+    this.prepareFormEditBookingLineCategorySupplements = function(booking_line_id, category_supplement_1_unit_cost, category_supplement_2_unit_cost, category_supplement_3_unit_cost) { /* Show the form to create a new booking line */
+
+      var html = tmpl('edit_booking_line_supplements_script', {booking_line_id: booking_line_id,
+                                                              category_supplement_1_unit_cost: category_supplement_1_unit_cost,
+                                                              category_supplement_2_unit_cost: category_supplement_2_unit_cost,
+                                                              category_supplement_3_unit_cost: category_supplement_3_unit_cost});
+
+      $('#booking_management_modal_container .modal-title').html('Modificar suplementos');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
+
+      $('#update_booking_item_supplements_button').unbind('click');
+      $('#update_booking_item_supplements_button').bind('click', function(){
+
+        var formdata = $('form[name="edit_booking_line_supplements"]').formParams(true);
+        var json_request = JSON.stringify(formdata);
+        $.ajax({
+               type: 'PUT',
+               data : json_request,
+               url : '/api/booking/booking-line/category-supplements',
+               success: function(data, textStatus, jqXHR) {
+                 bookingManager.model.synchronizeCurrentEntity(data);
+                 bookingManager.model.change_state('entity_updated_successfully');
+                 alert('Suplementos actualizados');
+                 $('#booking_management_modal_container').modal('hide');
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error actualizando suplementos: ' + data.responseText);
+               }
+           });
+
+      });
+
+    }    
 
     this.prepareFormEditBookingExtraQuantity = function(booking_extra_id, quantity) { /* Show the form to create a new booking line */
 

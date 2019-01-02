@@ -883,7 +883,10 @@ module Sinatra
         end
 
         #
-        # Updates booking
+        # Updates booking attributes
+        #
+        # == Parameters::
+        #
         #
         app.put '/api/booking/:id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff']  do
 
@@ -1086,8 +1089,19 @@ module Sinatra
 
         end
 
+        # ----------------- BOOKING LINES --------------------------
+
         #
         # Create booking line
+        # ----------------------------------------------------------
+        #
+        # POST /api/booking/booking-line
+        #
+        # == Parameters::
+        #
+        # {booking_id: 1234,
+        #  item_id: 'A',
+        #  quantity: 1}
         #
         app.post '/api/booking/booking-line', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -1115,45 +1129,17 @@ module Sinatra
         end
         
         #
-        # Create booking extra
-        #
-        app.post '/api/booking/booking-extra', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
-
-          request.body.rewind
-          data_request = JSON.parse(URI.unescape(request.body.read))
-          data_request.symbolize_keys!
-
-          id = data_request[:booking_id]
-
-          if booking = BookingDataSystem::Booking.get(id)
-            if data_request[:extra_id] and data_request[:quantity]
-              extra_id = data_request[:extra_id]
-              quantity = data_request[:quantity].to_i
-              booking.add_booking_extra(extra_id, quantity)
-              booking.reload
-              content_type :json
-              booking.to_json
-            else 
-              body "Extra o cantidad no especificadas"
-              status 500
-            end
-          else
-            status 404
-          end
-        end
-
-        #
         # Update booking line item
-        # ---------------------------------------------------------------------------------------------------------
+        # --------------------------------------------------------------
         #
-        # The process updates the product of the booking line a manages the assigned resources. It tries to assign
-        # new resources or clear the assigned ones if there are not available
+        # == Parameters::
         #
-        # options :
-        #
-        #   price_modification = 'update'  => Recalculate the product price
-        #                      = 'hold'    => Holds the price
-        #
+        # {
+        #  booking_line_id: 1234,
+        #  item_id: 'A',
+        #  price_modification: 'hold' || 'update',
+        #  stock_assignation: 'hold' || 'update'
+        # }  
         #
         app.put '/api/booking/booking-line/item-id', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -1185,6 +1171,14 @@ module Sinatra
 
         #
         # Update booking line: quantity
+        # --------------------------------------------------------------
+        #
+        # == Parameters::
+        #
+        # {
+        #  booking_line_id: 1234,
+        #  quantity: 2,
+        # } 
         #
         app.put '/api/booking/booking-line/quantity', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
@@ -1268,6 +1262,80 @@ module Sinatra
         end
 
         #
+        # Update booking line: category supplements
+        #
+        app.put '/api/booking/booking-line/category-supplements', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_line_id]
+          if booking_line = BookingDataSystem::BookingLine.get(id)
+            booking = booking_line.booking
+            # Recalculate supplements
+            old_category_supplement_1_cost = booking_line.category_supplement_1_cost
+            old_category_supplement_2_cost = booking_line.category_supplement_2_cost
+            old_category_supplement_3_cost = booking_line.category_supplement_3_cost
+            if data_request[:category_supplement_1_unit_cost]
+              booking_line.category_supplement_1_unit_cost = data_request[:category_supplement_1_unit_cost]
+              booking_line.category_supplement_1_cost = booking_line.category_supplement_1_unit_cost * booking_line.quantity
+            end
+            if data_request[:category_supplement_2_unit_cost]
+              booking_line.category_supplement_2_unit_cost = data_request[:category_supplement_2_unit_cost]
+              booking_line.category_supplement_2_cost = booking_line.category_supplement_2_unit_cost * booking_line.quantity
+            end
+            if data_request[:category_supplement_3_unit_cost]
+              booking_line.category_supplement_3_unit_cost = data_request[:category_supplement_3_unit_cost]
+              booking_line.category_supplement_3_cost = booking_line.category_supplement_3_unit_cost * booking_line.quantity
+            end   
+            if old_category_supplement_1_cost != booking_line.category_supplement_1_cost or
+               old_category_supplement_2_cost != booking_line.category_supplement_2_cost
+               old_category_supplement_3_cost != booking_line.category_supplement_3_cost     
+              booking_line.transaction do
+                # Update the booking line
+                booking_line.save
+                # Update the booking
+                booking.category_supplement_1_cost -= old_category_supplement_1_cost
+                booking.category_supplement_1_cost += booking_line.category_supplement_1_cost
+                booking.category_supplement_2_cost -= old_category_supplement_2_cost
+                booking.category_supplement_2_cost += booking_line.category_supplement_2_cost
+                booking.category_supplement_3_cost -= old_category_supplement_3_cost
+                booking.category_supplement_3_cost += booking_line.category_supplement_3_cost                
+                booking.calculate_cost(false, false)
+                booking.save
+                # Create newsfeed to store category supplements update
+                ::Yito::Model::Newsfeed::Newsfeed.create(
+                                  category: 'booking',
+                                  action: 'updated_item_category_supplements',
+                                  identifier: booking.id.to_s,
+                                  description: BookingDataSystem.r18n.t.booking_news_feed.updated_item_category_supplements(
+                                      booking_line.item_id,
+                                      "%.2f" % booking_line.category_supplement_1_cost,  
+                                      "%.2f" % old_category_supplement_1_cost,
+                                      "%.2f" % booking_line.category_supplement_2_cost,  
+                                      "%.2f" % old_category_supplement_2_cost,
+                                      "%.2f" % booking_line.category_supplement_3_cost,  
+                                      "%.2f" % old_category_supplement_3_cost,
+                                      ),
+                                  attributes_updated: {
+                                    category_supplement_1_unit_cost: booking_line.category_supplement_1_cost,
+                                    category_supplement_2_unit_cost: booking_line.category_supplement_2_cost,
+                                    category_supplement_3_cost: booking_line.category_supplement_3_cost,
+                                    }.
+                                    merge({booking: booking.newsfeed_summary}).to_json)
+                booking.reload
+              end
+            end    
+            content_type :json
+            booking.to_json
+          else
+            status 404
+          end
+
+        end
+
+        #
         # Update booking deposit(s)
         #
         app.post '/api/booking/booking-deposits', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
@@ -1290,6 +1358,45 @@ module Sinatra
             status 404
           end
 
+        end
+
+        # ----------------- BOOKING EXTRAS --------------------
+
+        #
+        # Create booking extra
+        # -----------------------------------------------
+        #
+        # POST /api/booking/booking-extra
+        #
+        # == Parameters::
+        #
+        # {booking_id: 1234,
+        #  extra_id: 'silla',
+        #  quantity: 1}
+        #        
+        app.post '/api/booking/booking-extra', :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
+
+          request.body.rewind
+          data_request = JSON.parse(URI.unescape(request.body.read))
+          data_request.symbolize_keys!
+
+          id = data_request[:booking_id]
+
+          if booking = BookingDataSystem::Booking.get(id)
+            if data_request[:extra_id] and data_request[:quantity]
+              extra_id = data_request[:extra_id]
+              quantity = data_request[:quantity].to_i
+              booking.add_booking_extra(extra_id, quantity)
+              booking.reload
+              content_type :json
+              booking.to_json
+            else 
+              body "Extra o cantidad no especificadas"
+              status 500
+            end
+          else
+            status 404
+          end
         end
 
         #

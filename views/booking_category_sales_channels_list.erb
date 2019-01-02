@@ -17,9 +17,14 @@
               <% @booking_category_channels.each do |channel| %>
               <tr>
                 <td><%=channel.sales_channel.name%></td>
-                <td><button class="btn btn-default btn-sm edit_booking_category_channel pull-right"
+                <td>
+                  <button class="btn btn-default btn-sm booking_category_channel_rates pull-right"
                             data-sales-channel-id="<%=channel.sales_channel.id%>"
-                            data-sales-channel-name="<%=channel.sales_channel.name%>" >Editar</button></td>
+                            data-sales-channel-name="<%=channel.sales_channel.name%>" ><%=t.booking_category_sales_channels_management.table.rates%></button>
+                  <button class="btn btn-default btn-sm booking_category_channel_edit pull-right"
+                          data-sales-channel-id="<%=channel.sales_channel.id%>"
+                          data-sales-channel-name="<%=channel.sales_channel.name%>" ><%=t.booking_category_sales_channels_management.table.edit%></button>&nbsp;
+                </td>
               </tr>
               <% end %>
             </tbody>

@@ -128,6 +128,37 @@
   </form>
 </script>
 
+<!-- Edit booking line suplements -->
+<script type="text/tmpl" id="edit_booking_line_supplements_script">
+  <form name="edit_booking_line_supplements" 
+        class="all-space" style="background: white; min-width: 300px">
+    <input type="hidden" name="booking_line_id" value="<%%=booking_line_id%>"/>
+    <% if booking_item_family.category_supplement_1 %>
+    <div class="formrow">
+      <label class="fieldtitle"><label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['category_supplement_1'] %></label></label>
+      <input type="text" name="category_supplement_1_unit_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(category_supplement_1_unit_cost).toFixed(2)%>"/>
+    </div>
+    <% end %>
+    <% if booking_item_family.category_supplement_2 %>
+    <div class="formrow">
+      <label class="fieldtitle"><label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['category_supplement_2'] %></label></label>
+      <input type="text" name="category_supplement_2_unit_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(category_supplement_2_unit_cost).toFixed(2)%>"/>
+    </div>
+    <% end %>
+    <% if booking_item_family.category_supplement_3 %>
+    <div class="formrow">
+      <label class="fieldtitle"><label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['category_supplement_3'] %></label></label>
+      <input type="text" name="category_supplement_3_unit_cost" class="fieldcontrol" maxlength="10" value="<%%=new Number(category_supplement_3_unit_cost).toFixed(2)%>"/>
+    </div>
+    <% end %>        
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="update_booking_item_supplements_button" type="button" class="form-button blue-button" value="<%=t.entitymanagement.update%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+
 <!-- Edit extra quantity -->
 <script type="text/tmpl" id="edit_booking_extra_quantity_script">
   <form name="update_booking_extra_quantity" class="all-space" style="background: white; min-width: 300px">

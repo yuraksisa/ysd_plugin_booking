@@ -1,0 +1,39 @@
+require(['jquery', 'jquery.ui'], function($) {
+
+    editCategorySalesChannelsModel = {
+        bookingCategoryCode: '<%=@category_sales_channel.booking_category.code%>',
+        salesChannelId : <%=@category_sales_channel.sales_channel.id%>
+    };
+
+    editCategorySalesChannelsController = {
+
+    };
+
+    editCategorySalesChannelsView = {
+
+        init: function() {
+
+            this.initGui();
+
+        },
+
+        initGui: function() {
+
+            // Embed prices
+            $.ajax({url: '/admin/rates/prices/'+ <%=@category_sales_channel.price_definition.id%>, dataType: 'text'}).done(function(html) {
+                var dom = $('<html />').prop('innerHTML', html);
+                $('#category_sales_channel_prices_container').html(dom.find('body #page_wrapper'));
+                $('head').append(dom.find('script:not([src])'));
+            });
+
+        }
+
+
+
+
+
+    };
+
+    editCategorySalesChannelsView.init();
+
+});

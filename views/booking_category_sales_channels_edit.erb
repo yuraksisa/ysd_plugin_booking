@@ -4,17 +4,49 @@
 <div id="page_wrapper">
   <div class="content">
 
-    <!-- Prices -->
-
     <div class="row">
       <div class="col-sm-12 col-md-12 col-lg-12">
         <div class="block block-bordered">
           <div class="block-header bg-gray-lighter">
-            <h3 class="block-title">Tarifas</h3>
+            <h3 class="block-title"><%=t.booking_category_sales_channels_edit.form.supplements%></h3>
           </div>
           <div class="block-content">
-            <div id="category_sales_channel_prices_container">
-            </div>
+            <form name="update_category_sales_channel_form" class="form-horizontal" method="POST">
+              <!-- Supplements -->
+              <% if @booking_item_family.category_supplement_1 or 
+                    @booking_item_family.category_supplement_2 or
+                    @booking_item_family.category_supplement_3 %>                          
+                <% if @booking_item_family.category_supplement_1 %>
+                <div class="form-group">
+                   <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_supplement_1'] %></label>
+                   <div class="col-md-9">
+                      <input type="text" class="form-control" name="category_supplement_1_cost" id="category_supplement_1_cost" value="<%=@category_sales_channel.category_supplement_1_cost%>"/>
+                   </div>
+                </div>
+                <% end %>
+                <% if @booking_item_family.category_supplement_2 %>
+                <div class="form-group">
+                   <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_supplement_2'] %></label>
+                   <div class="col-md-9">
+                      <input type="text" class="form-control" name="category_supplement_2_cost" id="category_supplement_2_cost" value="<%=@category_sales_channel.category_supplement_2_cost%>"/>
+                   </div>
+                </div>
+                <% end %>
+                <% if @booking_item_family.category_supplement_3 %>
+                <div class="form-group">
+                   <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_supplement_3'] %></label>
+                   <div class="col-md-9">
+                     <input type="text" class="form-control" name="category_supplement_3_cost" id="category_supplement_3_cost" value="<%=@category_sales_channel.category_supplement_3_cost%>"/>
+                   </div>
+                </div>
+                <% end %>
+              <% end %>                                                               
+              <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                  <input id="update-category-sales-channel-button" type="button" class="btn btn-sm btn-primary" value="<%=t.entitymanagement.update%>"/>
+                </div>
+              </div>             
+            </form>          
           </div>
         </div>
       </div>

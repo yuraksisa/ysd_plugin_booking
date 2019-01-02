@@ -74,6 +74,32 @@
       </div>
     </div>
 
+    <% if @renting_plan and @activities_plan %>
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="block ">
+          <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><%=t.reservation_website_settings.activities_menu_group%></h3>
+          </div>
+          <div class="block-content block-content-narrow">
+            <form name="variables" action="/api/variables" method="PUT"
+                  data-remote="ajax" data-remote-method="PUT" class="form-horizontal">
+              <%= render_variable_checkbox_boolean('booking.frontend.activities_menu',
+                                                   t.reservation_website_settings.activities_menu) %>
+              <p class="text-muted "><%=t.reservation_website_settings.activities_menu_description%></p>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <button class="button btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+
     <% if @show_activities_menu %>
 
       <!-- Web primary links activities menu -->

@@ -207,16 +207,6 @@ module Sinatra
         end
 
         #
-        # Booking website engine configuration 
-        #
-        app.get '/admin/booking/config/front-end-setup', :allowed_usergroups => ['booking_manager', 'staff'] do
-
-          @renting_plan, @activities_plan = mybooking_plan_type
-
-          load_page(:config_booking_frontend_setup)
-        end
-
-        #
         # Booking website structure and contents
         #
         app.get '/admin/booking/config/front-end-contents', :allowed_usergroups => ['booking_manager', 'staff'] do

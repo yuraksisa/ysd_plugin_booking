@@ -1,36 +1,63 @@
-require(['jquery', 'jquery.ui'], function($) {
+require(['YSDGui', 'jquery', 'jquery.ui', 'jquery.formparams','jquery.toast'], function(YSDGui, $) {
 
     editCategorySalesChannelsModel = {
         bookingCategoryCode: '<%=@category_sales_channel.booking_category.code%>',
-        salesChannelId : <%=@category_sales_channel.sales_channel.id%>
+        salesChannelId : <%=@category_sales_channel.sales_channel.id%>,        
+        updateCategorySalesChannel: function() {
+
+          var request = $('form[name=update_category_sales_channel_form]').formParams(false);
+          var requestData = JSON.stringify(request);
+          var url = '/api/booking/booking-categories/' + this.bookingCategoryCode +
+                    '/channels/' + this.salesChannelId;
+
+          YSDGui.lockBackground('#bbb');
+          var unlock = false;
+
+          $.ajax({
+              type: 'PUT',
+              url : url,
+              data: requestData,
+              contentType : 'application/json; charset=utf-8',
+              success: function(data, textStatus, jqXHR) {
+                $.toast({
+                    heading: 'Actualización categoría / canal de venta',
+                    text: 'La categoría/canal de venta se ha realizado correctamente',
+                    position: 'top-right',
+                    bgColor: 'rgb(56, 154, 56)',
+                    textColor: 'white',
+                    loader: false,
+                    stack: false
+                });                
+              },
+              error: function(textStatus, jqXHR) {
+                alert('Error actualizando datos');
+              },
+              complete: function(jqXHT, textStatus) {
+                  if (!unlock) {
+                      YSDGui.unLockBackground();
+                  }
+              } 
+          });
+        }
     };
 
     editCategorySalesChannelsController = {
-
+        updateCategorySalesChannelButtonClick: function() {
+            editCategorySalesChannelsModel.updateCategorySalesChannel();
+        }
     };
 
     editCategorySalesChannelsView = {
 
         init: function() {
-
-            this.initGui();
-
+            this.setupEvents();
         },
 
-        initGui: function() {
-
-            // Embed prices
-            $.ajax({url: '/admin/rates/prices/'+ <%=@category_sales_channel.price_definition.id%>, dataType: 'text'}).done(function(html) {
-                var dom = $('<html />').prop('innerHTML', html);
-                $('#category_sales_channel_prices_container').html(dom.find('body #page_wrapper'));
-                $('head').append(dom.find('script:not([src])'));
+        setupEvents: function() {
+            $('#update-category-sales-channel-button').bind('click', function(){
+                editCategorySalesChannelsController.updateCategorySalesChannelButtonClick();
             });
-
         }
-
-
-
-
 
     };
 

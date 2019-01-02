@@ -10,8 +10,11 @@ require(['jquery', 'jquery.ui'], function($) {
         setupChannelsButtonClick: function() {
             categorySalesChannelsView.update('show_manage_channels_modal');
         },
-        editBookingCategoryChannelClick: function() {
-            categorySalesChannelsView.update('edit_booking_category_sales_channel');
+        bookingCategoryChannelRatesClick: function() {
+            categorySalesChannelsView.update('booking_category_sales_channel_rates');
+        },
+        bookingCategoryChannelEditClick: function() {
+            categorySalesChannelsView.update('booking_category_sales_channel_edit');
         }
     };
 
@@ -27,11 +30,16 @@ require(['jquery', 'jquery.ui'], function($) {
             $('#setup_channels_button').bind('click', function() {
                categorySalesChannelsController.setupChannelsButtonClick();
             });
-            $('.edit_booking_category_channel').bind('click', function() {
+            $('.booking_category_channel_rates').bind('click', function() {
                categorySalesChannelsModel.salesChannelId = $(this).attr('data-sales-channel-id');
                categorySalesChannelsModel.salesChannelName = $(this).attr('data-sales-channel-name');
-               categorySalesChannelsController.editBookingCategoryChannelClick();
+               categorySalesChannelsController.bookingCategoryChannelRatesClick();
             });
+            $('.booking_category_channel_edit').bind('click', function() {
+               categorySalesChannelsModel.salesChannelId = $(this).attr('data-sales-channel-id');
+               categorySalesChannelsModel.salesChannelName = $(this).attr('data-sales-channel-name');
+               categorySalesChannelsController.bookingCategoryChannelEditClick();
+            });            
         },
 
         update: function(action) {
@@ -48,13 +56,16 @@ require(['jquery', 'jquery.ui'], function($) {
                          }
                    );
                    break;
-                case 'edit_booking_category_sales_channel' :
+                   
+                case 'booking_category_sales_channel_rates' :
                     // To avoid problem with seasons edition
                     window.open('/admin/booking/booking-categories/'+ categorySalesChannelsModel.bookingCategoryCode +
-                        '/channels/'+ categorySalesChannelsModel.salesChannelId);
-                    /*
+                        '/channels/'+ categorySalesChannelsModel.salesChannelId+'/rates');
+                    break;
+
+                case 'booking_category_sales_channel_edit' :                    
                     $.ajax({url: '/admin/booking/booking-categories/'+ categorySalesChannelsModel.bookingCategoryCode +
-                            '/channels/'+ categorySalesChannelsModel.salesChannelId +' #page_wrapper', dataType: 'text'}).done(
+                            '/channels/'+ categorySalesChannelsModel.salesChannelId +'/edit #page_wrapper', dataType: 'text'}).done(
                         function (html) {
                             var dom = $('<html />').prop('innerHTML', html);
                             $('#modal_container .modal-title').html('Editar canal de venta : ' + categorySalesChannelsModel.salesChannelName);
@@ -63,7 +74,6 @@ require(['jquery', 'jquery.ui'], function($) {
                             $('#modal_container').modal('show');
                         }
                     );
-                    */
                     break;
             }
         }

@@ -271,6 +271,238 @@
         </div>
         <% end %>
 
+        <!-- Media -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_category_management.form.media_group %></h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                 <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
+                                                   :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
+                                                   :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
+                                                   :new_element_form_above => new_element_form_above,
+                                                   :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
+                                                   :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
+
+                 <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
+                                            :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
+                                            :edit_element_form_ingroup => edit_element_form_ingroup,
+                                            :new_element_form => new_element_form,
+                                            :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
+                                            :new_element_form_ingroup => new_element_form_ingroup}) %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prices -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_category_management.form.rates_group %></h3>
+              </div>
+              <div class="block-content">
+                  <%% if (entity.price_definition_id == null) { %>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-8 col-lg-8">
+                      <form name="element" method="POST">
+                          <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                          <div id="category_price">
+                            <%= partial(:price_definition_creation)%>
+                          </div>
+                          <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
+                            <div class="navigation-bar-crud-buttons">
+                               <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_rates.label%>"/>
+                            </div>
+                          </div>
+                      </form>
+                    </div>
+                  </div>
+                  <%% } %>
+                  <div id="prices_container">
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supplements -->
+
+        <% if @booking_item_family.category_supplement_1 or 
+              @booking_item_family.category_supplement_2 or
+              @booking_item_family.category_supplement_3 %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_category_management.form.supplements_group %></h3>
+              </div>
+              <div class="block-content">
+                  <form name="element" class="form-horizontal" method="POST">
+                      <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                      <% if @booking_item_family.category_supplement_1 %>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_supplement_1'] %></label>
+                         <div class="col-md-7">
+                            <input type="text" class="form-control" name="category_supplement_1_cost" id="category_supplement_1_cost" <%% if (entity){%>value="<%%=entity.category_supplement_1_cost%>" <%%} else { %>value="0"<%%}%>/>
+                         </div>
+                      </div>
+                      <% end %>
+                      <% if @booking_item_family.category_supplement_2 %>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_supplement_2'] %></label>
+                         <div class="col-md-7">
+                            <input type="text" class="form-control" name="category_supplement_2_cost" id="category_supplement_2_cost" <%% if (entity){%>value="<%%=entity.category_supplement_2_cost%>" <%%} else { %>value="0"<%%}%>/>
+                         </div>
+                      </div>
+                      <% end %>
+                      <% if @booking_item_family.category_supplement_3 %>
+                      <div class="form-group">
+                         <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_supplement_3'] %></label>
+                         <div class="col-md-7">
+                           <input type="text" class="form-control" name="category_supplement_3_cost" id="category_supplement_3_cost" <%% if (entity){%>value="<%%=entity.category_supplement_3_cost%>" <%%} else { %>value="0"<%%}%>/>
+                         </div>
+                      </div>
+                      <% end %>                                            
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                          <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>              
+        <% end %>
+
+        <!-- Deposit -->
+
+        <% if products_allow_deposit %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_category_management.form.deposit_group %></h3>
+              </div>
+              <div class="block-content">
+                <form name="element" class="form-horizontal" method="POST">
+                  <%% if (entity) { %>
+                  <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                  <%% } %>
+                  <div class="form-group">
+                    <label class="col-md-3 control-label"><%= t.booking_category_management.form.deposit.label%></label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control" name="deposit" id="deposit" <%% if (entity){%>value="<%%=new Number(entity.deposit).toFixed(2)%>" <%%} else { %>value="0"<%%}%>/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                      <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
+
+        <!-- Stock -->
+
+        <%% if (entity.type == 'category_of_resources') { %>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_category_management.form.stock_group %></h3>
+              </div>
+              <div class="block-content">
+                <form name="element" class="form-horizontal" method="POST">
+                  <%% if (entity) { %>
+                  <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                  <%% } %>
+                  <div id="stock_container" class="form-group">
+                    <label class="col-md-3 control-label"><%= t.booking_category_management.form.stock.label%></label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control" name="stock" id="stock" <%% if (entity){%>value="<%%=entity.stock%>" <%%}%>/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-md-3 control-label"><%= t.booking_category_management.form.stock_control.label%></label>
+                    <div class="col-md-7">
+                      <input type="checkbox" name="stock_control" value="true" id="stock_control" <%% if (entity && entity.stock_control) { %>checked="checked"<%%}%>/>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                      <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                    </div>
+                  </div>
+                </form>
+                <hr>
+                <a id="show_stock_detail" class="btn btn-default" role="button"><%= t.booking_category_management.form.stock_detail_group %></a>
+                <br>
+                <br>
+                <br>
+                <div id="stock_detail_container" style="display: none">
+                </div>               
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <%% } %>
+
+        <!-- Sales channels -->
+
+        <% if @addon_sales_channels %>
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <ul class="block-options">
+                    <li>
+                        <button id="setup_channels_button" type="button"><i class="si si-settings"></i></button>
+                    </li>
+                </ul>
+                <h3 class="block-title"><%= t.booking_category_management.form.sales_channel_group %></h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div id="sales_channels_container">
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
+
+        <!-- Calendar -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= t.booking_category_management.form.calendar_group %></h3>
+              </div>
+              <div class="block-content">
+                <div id="calendar_container">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Other data -->
         <div class="row">
           <div class="col-sm-12 col-md-10 col-md-offset-1">
@@ -335,198 +567,6 @@
             </div>
           </div>
 
-        </div>
-
-        <!-- Media -->
-
-        <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%= t.booking_category_management.form.media_group %></h3>
-              </div>
-              <div class="block-content block-content-narrow">
-                 <%= include('entity-tabs-above', {:edit_element_form_above => edit_element_form_above,
-                                                   :edit_element_form_above_ingroup_tab => edit_element_form_above_ingroup_tab,
-                                                   :edit_element_form_above_ingroup => edit_element_form_above_ingroup,
-                                                   :new_element_form_above => new_element_form_above,
-                                                   :new_element_form_above_ingroup_tab => new_element_form_above_ingroup_tab,
-                                                   :new_element_form_above_ingroup => new_element_form_above_ingroup}) %>
-
-                 <%= include('entity-tabs-below', {:edit_element_form => edit_element_form,
-                                            :edit_element_form_ingroup_tab => edit_element_form_ingroup_tab,
-                                            :edit_element_form_ingroup => edit_element_form_ingroup,
-                                            :new_element_form => new_element_form,
-                                            :new_element_form_ingroup_tab => new_element_form_ingroup_tab,
-                                            :new_element_form_ingroup => new_element_form_ingroup}) %>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Prices -->
-
-        <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%= t.booking_category_management.form.rates_group %></h3>
-              </div>
-              <div class="block-content">
-                  <%% if (entity.price_definition_id == null) { %>
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-8 col-lg-8">
-                      <form name="element" method="POST">
-                          <input type="hidden" name="code" value="<%%=entity.code%>"/>
-                          <div id="category_price">
-                            <%= partial(:price_definition_creation)%>
-                          </div>
-                          <div class="bottom-navigation-bar navigation-bar" style="padding-right:0px">
-                            <div class="navigation-bar-crud-buttons">
-                               <input type="button" class="form-button green-button update-entity-button entity-management-button orange-button" value="<%=t.booking_category_management.form.create_rates.label%>"/>
-                            </div>
-                          </div>
-                      </form>
-                    </div>
-                  </div>
-                  <%% } %>
-                  <div id="prices_container">
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Deposit -->
-
-        <% if products_allow_deposit %>
-        <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%= t.booking_category_management.form.deposit_group %></h3>
-              </div>
-              <div class="block-content block-content-narrow">
-                <form name="element" class="form-horizontal" method="POST">
-                  <%% if (entity) { %>
-                  <input type="hidden" name="code" value="<%%=entity.code%>"/>
-                  <%% } %>
-                  <div class="form-group">
-                    <label class="col-md-3 control-label"><%= t.booking_category_management.form.deposit.label%></label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control" name="deposit" id="deposit" <%% if (entity){%>value="<%%=new Number(entity.deposit).toFixed(2)%>" <%%} else { %>value="0"<%%}%>/>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-md-9 col-md-offset-3">
-                      <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <% end %>
-
-        <!-- Stock -->
-
-        <%% if (entity.type == 'category_of_resources') { %>
-
-        <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%= t.booking_category_management.form.stock_group %></h3>
-              </div>
-              <div class="block-content block-content-narrow">
-                <form name="element" class="form-horizontal" method="POST">
-                  <%% if (entity) { %>
-                  <input type="hidden" name="code" value="<%%=entity.code%>"/>
-                  <%% } %>
-                  <div id="stock_container" class="form-group">
-                    <label class="col-md-3 control-label"><%= t.booking_category_management.form.stock.label%></label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control" name="stock" id="stock" <%% if (entity){%>value="<%%=entity.stock%>" <%%}%>/>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-md-3 control-label"><%= t.booking_category_management.form.stock_control.label%></label>
-                    <div class="col-md-7">
-                      <input type="checkbox" class="form-control" name="stock_control" value="true" id="stock_control" <%% if (entity && entity.stock_control) { %>checked="checked"<%%}%>/>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-md-9 col-md-offset-3">
-                      <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%= t.booking_category_management.form.stock_detail_group %></h3>
-              </div>
-              <div class="block-content">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div id="stock_detail_container">
-                      </div>
-                    </div>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <%% } %>
-
-        <!-- Sales channels -->
-
-        <% if @addon_sales_channels %>
-        <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <ul class="block-options">
-                    <li>
-                        <button id="setup_channels_button" type="button"><i class="si si-settings"></i></button>
-                    </li>
-                </ul>
-                <h3 class="block-title"><%= t.booking_category_management.form.sales_channel_group %></h3>
-              </div>
-              <div class="block-content block-content-narrow">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div id="sales_channels_container">
-                      </div>
-                    </div>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <% end %>
-
-        <!-- Calendar -->
-
-        <div class="row">
-          <div class="col-sm-12 col-md-10 col-md-offset-1">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%= t.booking_category_management.form.calendar_group %></h3>
-              </div>
-              <div class="block-content">
-                <div id="calendar_container">
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <%% if (entity.type == 'resource') { %>

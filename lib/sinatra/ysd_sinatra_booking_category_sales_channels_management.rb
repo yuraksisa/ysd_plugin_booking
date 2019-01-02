@@ -5,16 +5,29 @@ module Sinatra
       def self.registered(app)
 
         #
-        # Edit booking category - channel configuration
+        # Booking category - channel rates
         #
-        app.get "/admin/booking/booking-categories/:booking_category_code/channels/:sales_channel_id/?*", :allowed_usergroups => ['booking_manager','staff'] do
+        app.get "/admin/booking/booking-categories/:booking_category_code/channels/:sales_channel_id/rates", :allowed_usergroups => ['booking_manager','staff'] do
 
           @category_sales_channel = ::Yito::Model::Booking::BookingCategoriesSalesChannel.first(booking_category_code: params[:booking_category_code],
                                                                                                 sales_channel_id: params[:sales_channel_id])
           halt 404 unless @category_sales_channel
           
-          load_page :booking_category_sales_channels_edit
+          load_page :booking_category_sales_channels_rates
 
+        end
+
+        #
+        # Booking category - channel edition
+        #
+        app.get "/admin/booking/booking-categories/:booking_category_code/channels/:sales_channel_id/edit", :allowed_usergroups => ['booking_manager','staff'] do
+
+          @category_sales_channel = ::Yito::Model::Booking::BookingCategoriesSalesChannel.first(booking_category_code: params[:booking_category_code],
+                                                                                                sales_channel_id: params[:sales_channel_id])
+          halt 404 unless @category_sales_channel
+         
+          @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family')) 
+          load_page :booking_category_sales_channels_edit
 
         end
 
