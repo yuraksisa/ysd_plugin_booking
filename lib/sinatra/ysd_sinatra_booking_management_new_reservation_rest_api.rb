@@ -12,7 +12,10 @@ module Sinatra
 
         # Prepare the shopping cart
         only = [:free_access_id, :date_from, :time_from, :date_to, :time_to, :pickup_place, :return_place, :days,
-                :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_deposit, :total_cost,
+                :item_cost, :extras_cost, :time_from_cost, :time_to_cost, :product_deposit_cost, :total_deposit, 
+                :category_supplement_1_cost, :category_supplement_2_cost, :category_supplement_3_cost,
+                :supplement_1_cost, :supplement_2_cost, :supplement_3_cost,
+                :total_cost,
                 :booking_amount, :pickup_place_cost, :return_place_cost,
                 :customer_name, :customer_surname, :customer_email, :customer_phone, :customer_mobile_phone, :customer_document_id,
                 :driver_age, :driver_driving_license_years, :driver_under_age, :driver_age_allowed, :driver_age_cost, :driver_age_deposit,
