@@ -1,9 +1,10 @@
 
-         <div id="booking_actions">
-             <div class="btn btn-default"><a href="/admin/booking/contract/<%%=entity.id%>" target="_blank"><%=t.booking_management.print_contract%></a></div>
+         <!--div id="booking_actions"-->
+             <div class="btn btn-default">
+             	<a href="/admin/booking/contract/<%%=entity.id%>" target="_blank"><span class="fa fa-print"></span>&nbsp;<%=t.booking_management.print_contract%></a></div>
              <%% if (entity.status != 'cancelled') { %>
              <div class="btn btn-default">
-               <a href="/admin/booking/edit/pickup-return/<%%=entity.id%>"><%= t.booking_management.form.change_dates %></a>    
+                <a href="/admin/booking/edit/pickup-return/<%%=entity.id%>"><span class="fa fa-calendar"></span>&nbsp;<%= t.booking_management.form.change_dates %></a>    
              </div>
              <%% } %>  
-         </div>
+         <!--/div-->

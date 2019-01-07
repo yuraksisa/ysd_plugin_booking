@@ -190,6 +190,10 @@ module Sinatra
           @confirmed_reservations = BookingDataSystem::Booking.count_confirmed_reservations(@year)
           addons = mybooking_addons
           @addon_sales_channels = (addons and addons.has_key?(:addon_sales_channels) and addons[:addon_sales_channels])
+          @addon_invoicing = (addons and addons.has_key?(:addon_invoicing) and addons[:addon_invoicing])
+          if @addon_invoicing
+            @taxes = ::Yito::Model::Invoices::Taxes.first(name: 'taxes.default')
+          end  
           @multilanguage = settings.multilanguage_site
           @languages = Model::Translation::TranslationLanguage.all
           @default_language = settings.default_language

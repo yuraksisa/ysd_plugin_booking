@@ -1,37 +1,67 @@
 <div class="row">
-  <div class="col-sm-6 col-md-3">
-    <a class="block block-link-hover3 text-center" href="javascript:void(0)">
-      <div class="block-content block-content-full">
-        <div class="h3 font-w600 push-15-t"><span><%%= self.model.entityHooks[0].statusDescriptionText[entity.status] %></span></div>
-        <div class="font-w600 push-15-t"><span class="fa fa-credit-card">&nbsp;</span><span><%%= self.model.entityHooks[0].paymentStatusDescriptionText[entity.payment_status] %></span></div>
+  <div class="col-sm-12 col-md-12">
+    <div class="block ">
+      <div class="block-header bg-gray-lighter">
+        <div class="col-md-2 pull-left">
+           <h3 class="block-title" style="font-size:20px; position: relative; top: 1px; text-align: left">#<%%= entity.id %></h3>
+        </div>
+        <div class="pull-right">
+            <%= partial :booking_management_workflow %>
+            <%= partial :booking_management_actions %>
+            <% if @addon_sales_channels %>
+                  <form name="sales_channel_form" class="form-inline" style="display: inline">
+                    <input type="hidden" name="id" value="<%%=entity.id%>"/>                    
+                    <div class="form-group">
+                      <select name="sales_channel_code" id="sales_channel_code" class="form-control">
+                        <option value="">Estándar</option>
+                        <% @sales_channels.each do |sales_channel| %>
+                        <option value="<%=sales_channel.code%>" <%% if (entity.sales_channel_code == '<%=sales_channel.code%>') {%>selected<%%}%>><%=sales_channel.name%></option>
+                        <% end %>
+                      </select>
+                    </div>
+                  </form>
+            <% end %>    
+        </div>  
       </div>
-      <div class="block-content block-content-full block-content-mini bg-gray-lighter font-w600"><span class="text-success">#<%%= entity.id %></span> <%% if (entity.created_by_manager) { %><i class="fa fa-user"></i><%% } else { %><i class="fa fa-desktop"></i><%%}%></div>
-    </a>
-  </div>
+    </div>
+  </div>    
+</div>  
+<!-- Pickup - return and days --> 
+<div class="row">
   <div class="col-sm-6 col-md-3">
     <a class="block block-link-hover3 text-center" href="javascript:void(0)">
-      <div class="block-content block-content-full">
+      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-primary font-w600"><h3 class="block-title"><%= t.booking_management.form.date_from %></h3></div>
+      <div class="block-content block-content-full" style="min-height:142px">
         <div class="<% if booking_item_family.time_to_from%>h4<%else%>h3<%end%> font-w600 push-15-t"><span class="fa fa-calendar">&nbsp;</span><%%= self.formatDate(entity.date_from, 'dd.MM.yyyy') %> <% if booking_item_family.time_to_from%> <%%= entity.time_from?entity.time_from:'' %> <% end %></div>
         <div class="font-w400 push-15-t"><% if booking_item_family.pickup_return_place %><span class="fa fa-map-marker">&nbsp;</span><%%= entity.pickup_place %><%else%>&nbsp;<% end %></div>
       </div>
-      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-primary font-w600"><%= t.booking_management.form.date_from %></div>
     </a>
   </div>
   <div class="col-sm-6 col-md-3">
     <a class="block block-link-hover3 text-center" href="javascript:void(0)">
-      <div class="block-content block-content-full">
+      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-primary font-w600"><h3 class="block-title"><%= t.booking_management.form.date_to %></h3></div>
+      <div class="block-content block-content-full" style="min-height:142px">
         <div class="<% if booking_item_family.time_to_from%>h4<%else%>h3<%end%> font-w600 push-15-t"><span class="fa fa-calendar">&nbsp;</span><%%= self.formatDate(entity.date_to, 'dd.MM.yyyy') %> <% if booking_item_family.time_to_from%> <%%= entity.time_to?entity.time_to:'' %> <% end %></div>
         <div class="font-w400 push-15-t"><% if booking_item_family.pickup_return_place %><span class="fa fa-map-marker">&nbsp;</span><%%= entity.return_place %><%else%>&nbsp;<%end%></div>
       </div>
-      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-primary font-w600"><%= t.booking_management.form.date_to %></div>
     </a>
   </div>
   <div class="col-sm-6 col-md-3">
     <a class="block block-link-hover3 text-center" href="javascript:void(0)">
-      <div class="block-content block-content-full">
+      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600"><h3 class="block-title"><%= t.booking_management.form.days %></h3></div>
+      <div class="block-content block-content-full" style="min-height:142px">
         <div class="h2 font-w600 push-15-t push-20"><span><%%= entity.days %></span></div>
       </div>
-      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600"><%= t.booking_management.form.days %></div>
     </a>
   </div>
+  <div class="col-sm-6 col-md-3">
+    <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+      <div class="block-content block-content-full block-content-mini bg-gray-lighter text-primary font-w600"><h3 class="block-title"><%= t.booking_management.form.status %></h3></div>
+      <div class="block-content block-content-full" style="min-height:142px">
+        <%%= self.model.entityHooks[0].statusDescriptionText[entity.status] %>
+        <%%= self.model.entityHooks[0].paymentStatusDescriptionText[entity.payment_status] %>
+        <span class="btn btn-minw btn-rounded btn-noborder btn-default push-5" style="font-size:100%"><%% if (entity.created_by_manager) { %>Back-office<%% } else { %>Web<%%}%></span>
+      </div>
+    </a>
+  </div>  
 </div>

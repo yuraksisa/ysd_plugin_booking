@@ -324,3 +324,40 @@
     </div>
   </form>
 </script>
+<!-- New invoice -->
+<% if @addon_invoicing %>
+<script type="text/tmpl" id="new_invoice_script">
+  <form name="new_invoice_form" class="all-space" style="background: white; min-width: 300px">
+    <div class="formrow">
+      <label class="fieldtitle">Fecha</label>
+      <input type="text" name="date" id="new_invoice_date" class="fieldcontrol"/>
+    </div>
+    <div class="formrow">
+      <label class="fieldtitle">Concepto factura</label>
+      <input type="text" name="concept" id="new_invoice_concept" class="fieldcontrol" value="Factura reserva #<%%=entity.id%>"/>
+    </div>
+    <hr>
+    <div class="formrow">
+      <label class="fieldtitle">Concepto línea factura</label>
+      <input type="text" name="item_concept" id="new_invoice_item_concept" class="fieldcontrol" value="Alquiler reserva #<%%=entity.id%>"/>
+    </div>    
+    <div class="formrow">
+      <label class="fieldtitle">Tipo de impuestos</label>
+      <select name="vat_type" id="new_invoice_vat_type" class="fieldcontrol">
+        <% @taxes.vat_types.each do |key, value| %>
+          <option value="<%=key%>"><%=value%></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="formrow">
+      <label class="fieldtitle">Importe</label>
+      <input type="text" name="price_without_taxes" id="new_invoice_price_without_taxes" class="fieldcontrol" value="<%%=new Number(entity.total_cost / 1.21).toFixed(2)%>"/>
+    </div>
+    <div class="navigation-bar bottom-margin">
+      <div class="navigation-bar-crud-buttons right-float">
+        <input id="create_invoice_button" type="button" class="form-button green-button" value="<%=t.entitymanagement.create%>"/>
+      </div>
+    </div>     
+  </form>
+</script>
+<% end %>

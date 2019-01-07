@@ -4,14 +4,14 @@
                       data-action-method="POST"
                       data-action-url="/api/booking/cancel/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
-                      <%=t.booking_management.form.cancel_button.label%>
+                      <span class="fa fa-trash"></span>&nbsp;<%=t.booking_management.form.cancel_button.label%>
                     </button>                      
                     <button class="btn btn-success element-action-button" id="confirm_booking_button"
                       title="<%=t.booking_management.form.confirm_button.label%>"
                       data-action-method="POST"
                       data-action-url="/api/booking/confirm/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.confirm_button.message%>">
-                      <%=t.booking_management.form.confirm_button.label%>
+                      <span class="fa fa-check-square-o"></span>&nbsp;<%=t.booking_management.form.confirm_button.label%>
                     </button>                          
                    <%% } %>
                    <%% if (entity.status == 'confirmed') {  %>                    
@@ -20,14 +20,14 @@
                       data-action-method="POST"
                       data-action-url="/api/booking/cancel/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.cancel_button.message%>">
-                      <%=t.booking_management.form.cancel_button.label%>
+                     <span class="fa fa-trash"></span>&nbsp; <%=t.booking_management.form.cancel_button.label%>
                    </button>                     
                    <button class="btn btn-primary element-action-button" id="pickup_booking_button"
                       title="<%=t.booking_management.form.pickup_button.label%>" 
                       data-action-method="POST"
                       data-action-url="/api/booking/pickup/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.pickup_button.message%>">
-                    <%=t.booking_management.form.pickup_button.label%>
+                    <span class="fa fa-mail-forward"></span>&nbsp;<%=t.booking_management.form.pickup_button.label%>
                    </button>                   
                    <%%  } %>
                    <%% if (entity.status == 'in_progress') { %>
@@ -36,6 +36,6 @@
                       data-action-method="POST"
                       data-action-url="/api/booking/return/<%%=entity.id%>"
                       data-confirm-message="<%=t.booking_management.form.return_button.message%>">
-                      <%=t.booking_management.form.return_button.label%>
+                      <span class="fa fa-handshake-o"></span>&nbsp;<%=t.booking_management.form.return_button.label%>
                    </button>
                    <%% }%>

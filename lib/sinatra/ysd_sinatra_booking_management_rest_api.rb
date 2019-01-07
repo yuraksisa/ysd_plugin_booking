@@ -1651,6 +1651,8 @@ module Sinatra
 
         end
 
+        # -------------------------- CHARGES ---------------------------
+
         #
         # Register a booking charge
         #
@@ -1728,6 +1730,57 @@ module Sinatra
           end
 
         end
+
+        # -------------------------- INVOICING ---------------------------
+
+        #
+        # Create a booking invoice
+        # ----------------------------------------------------------------
+        #
+        # == Parameters::
+        #
+        # {
+        #   date: '2018-12-01',
+        #   concept: 'Factura reserva #n',
+        #   item_concept: 'Alquiler reserva #n',
+        #   vat_type: 'standard',
+        #   price_without_taxes: 100,
+        # }
+        # 
+        #
+        app.post '/api/booking/:id/invoice', :allowed_usergroups => ['bookings_manager', 'booking_operator', 'staff'] do
+
+          request.body.rewind
+          data = JSON.parse(URI.unescape(request.body.read))
+          data.symbolize_keys!
+
+          if booking = BookingDataSystem::Booking.get(params[:id])
+            @taxes = ::Yito::Model::Invoices::Taxes.first(name: 'taxes.default')
+            invoice = ::Yito::Model::Invoices::CustomerInvoice.new
+            ::Yito::Model::Invoices::CustomerInvoice.transaction do
+              invoice.date = data[:date]
+              invoice.concept = data[:concept]
+              invoice.reference_source = 'booking'
+              invoice.reference = booking.id
+              if booking.customer # If the booking has a customer
+                invoice.customer = booking.customer
+              else # If the booking has not a customer
+                customer = booking.create_customer
+                booking.customer = customer
+                booking.save
+                invoice.customer = customer  
+              end         
+              invoice.save
+              invoice = invoice.add_invoice_item(data[:item_concept], data[:vat_type].to_sym, @taxes, 1, data[:price_without_taxes])
+            end
+            status 200
+            content_type :json
+            invoice.to_json
+          else
+            status 404  
+          end  
+
+        end                
 
         # ------------ Send the notification emails ----------------------
 

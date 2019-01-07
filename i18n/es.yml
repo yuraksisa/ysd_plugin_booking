@@ -933,7 +933,7 @@ booking_management:
     user_agent_browser: Navegador
     user_agent_version: Versión
     user_agent_os: Sistema Operativo
-    new_charge: Registrar nuevo cobro
+    new_charge: Nuevo cobro
     audit: Auditoría
     extra_removed:
       confirm_delete_title: Eliminar extra

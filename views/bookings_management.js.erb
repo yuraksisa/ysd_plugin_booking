@@ -21,7 +21,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
     <% end %>
 
     this.statusDescription = {
-       'pending_confirmation' : '<span class="label label-warning"><%= t.booking_status.pending_confirmation%></span>',
+       'pending_confirmation' : '<span class="label label-warning"><%= t.booking_status.pending_confirmation%>',
        'confirmed' : '<span class="label label-success"><%= t.booking_status.confirmed%></span>',
        'in_progress' : '<span class="label label-info"><%= t.booking_status.in_progress%></span>',
        'done' : '<span class="label label-primary"><%= t.booking_status.done%></span>',
@@ -29,26 +29,26 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
     }
  	   
     this.paymentStatusDescription = {
-       'none' : '<%= t.booking_payment_status.none%>',
+       'none' : '<span class="label label-warning"><%= t.booking_payment_status.none%></span>',
        'deposit' : '<span class="label label-primary"><%= t.booking_payment_status.deposit%></span>',
        'total' : '<span class="label label-success"><%= t.booking_payment_status.total%></span>',
        'refunded': '<span class="label label-danger"><%= t.booking_payment_status.refunded%></span>'
     }
 
-      this.statusDescriptionText = {
-          'pending_confirmation' : '<span class="label text-warning"><%= t.booking_status.pending_confirmation%></span>',
-          'confirmed' : '<span class="label text-success"><%= t.booking_status.confirmed%></span>',
-          'in_progress' : '<span class="label text-info"><%= t.booking_status.in_progress%></span>',
-          'done' : '<span class="label text-primary"><%= t.booking_status.done%></span>',
-          'cancelled' : '<span class="label text-danger"><%= t.booking_status.cancelled%></span>'
-      }
+    this.statusDescriptionText = {
+        'pending_confirmation' : '<span class="btn btn-minw btn-rounded btn-noborder btn-warning push-5" style="font-size:100%"><%= t.booking_status.pending_confirmation%></span>',
+        'confirmed' : '<span class="btn btn-minw btn-rounded btn-noborder btn-success push-5" style="font-size:100%"><%= t.booking_status.confirmed%></span>',
+        'in_progress' : '<span class="btn btn-minw btn-rounded btn-noborder btn-info push-5" style="font-size:100%"><%= t.booking_status.in_progress%></span>',
+        'done' : '<span class="btn btn-minw btn-rounded btn-noborder btn-primary push-5" style="font-size:100%"><%= t.booking_status.done%></span>',
+        'cancelled' : '<span class="btn btn-minw btn-rounded btn-noborder btn-danger push-5" style="font-size:100%"><%= t.booking_status.cancelled%></span>'
+    }
 
-      this.paymentStatusDescriptionText = {
-          'none' : '<%= t.booking_payment_status.none%>',
-          'deposit' : '<span class="label text-primary" style="font-size:100%"><%= t.booking_payment_status.deposit%></span>',
-          'total' : '<span class="label text-success" style="font-size:100%"><%= t.booking_payment_status.total%></span>',
-          'refunded': '<span class="label text-danger" style="font-size:100%"><%= t.booking_payment_status.refunded%></span>'
-      }
+    this.paymentStatusDescriptionText = {
+        'none' : '<span class="btn btn-minw btn-rounded btn-noborder btn-warning push-5" style="font-size:100%"><%= t.booking_payment_status.none%></span>',
+        'deposit' : '<span class="btn btn-minw btn-rounded btn-noborder btn-primary push-5" style="font-size:100%"><%= t.booking_payment_status.deposit%></span>',
+        'total' : '<span class="btn btn-minw btn-rounded btn-noborder btn-success push-5" style="font-size:100%"><%= t.booking_payment_status.total%></span>',
+        'refunded': '<span class="btn btn-minw btn-rounded btn-noborder btn-danger push-5" style="font-size:100%"><%= t.booking_payment_status.refunded%></span>'
+    }
 
     this.chargeStatusDescription = {
        'pending': '<%= t.charge_status.pending %>',
@@ -309,6 +309,18 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       $('select[name=sales_channel_code]').bind('change', function(){
             $($(this)[0].form).find('input[type=submit]').trigger('click');
       });
+
+      // Embed invoicing
+      <% if @addon_invoicing %>
+      $.ajax({url: '/admin/invoices/customer-invoices/list?reference_source=booking&reference='+entity.id, dataType: 'text'}).done(function(html) {
+            var dom = $('<html />').prop('innerHTML', html);
+            $('#invoicing_container').html(dom.find('body #page_wrapper'));
+            $('head').append(dom.find('script:not([src])'));
+            $('#new_invoice_btn').bind('click', function(){
+              self.prepareFormNewInvoice(entity);
+            });
+      });      
+      <% end %>
 
     }
 
@@ -1278,6 +1290,92 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       });
 
     }
+
+    this.prepareFormNewInvoice = function(entity) { /* Show the form to create new invoice */
+
+      var html = tmpl('new_invoice_script', {entity: entity});
+
+      $('#booking_management_modal_container .modal-title').html('Crear factura');
+      $('#booking_management_modal_container .modal-body').html(html);
+      $('#booking_management_modal_container').modal('show');
+
+      $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+      var locale = $.datepicker.regional["<%=session[:locale] || 'es'%>"];
+      $('#new_invoice_date').datepicker({numberOfMonths:1},
+                                        locale);
+      $('#new_invoice_date').datepicker('setDate', new Date());
+      $('#new_invoice_price_without_taxes').autoNumeric('init',{aSep:''});
+
+      $('form[name=new_invoice_form]').data('validator', null);
+      $('form[name=new_invoice_form]').unbind('validate');
+      $('form[name=new_invoice_form]').validate({
+
+            submitHandler: function(form)
+            {
+                $('#new_invoice_error_summary').html('');
+                $('#new_invoice_error_summary').hide();
+                return false;
+            },
+
+            invalidHandler : function (form, validator) {
+                $('#new_invoice_error_summary').html('<%=t.booking_management.form.validations.customer_errors_summary%>');
+                $('#new_invoice_error_summary').show();
+            },
+
+            rules : {
+               'date': {
+                    required: true
+                },
+                'concept': {
+                    required: true
+                },
+                'concept_item': {
+                    required: true
+                }
+            },
+
+            messages : {
+                'date': {
+                    required: 'Fecha factura obligatoria'
+                },
+                'concept': {
+                    required: 'Concepto factura obligatorio'
+                },
+                'concept_item': {
+                    required: 'Concepto línea factura obligatorio'
+                }
+            }
+
+        });
+
+      $('#create_invoice_button').unbind('click');
+      $('#create_invoice_button').bind('click', function(){
+
+        if ($('form[name=new_invoice_form]').valid()) {
+          var formdata = $('form[name="new_invoice_form"]').formParams(true);
+          var json_request = JSON.stringify(formdata);
+          $.ajax({
+                 type: 'POST',
+                 data : json_request,
+                 url : '/api/booking/'+entity.id+'/invoice',
+                 success: function(data, textStatus, jqXHR) {
+                   alert('Factura creada');
+                   $.ajax({url: '/admin/invoices/customer-invoices/list?reference_source=booking&reference='+entity.id, dataType: 'text'}).done(function(html) {
+                      var dom = $('<html />').prop('innerHTML', html);
+                      $('#invoicing_container').html(dom.find('body #page_wrapper'));
+                      $('head').append(dom.find('script:not([src])'));
+                                });                       
+                   $('#booking_management_modal_container').modal('hide');
+                 },
+                 error: function(data, textStatus, jqXHR) {
+                   alert('Error creando factura');
+                 }
+             });
+        }
+
+      });
+
+    }     
 
     this.updateLineResource = function(control) {
 
