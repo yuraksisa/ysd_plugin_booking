@@ -1,3 +1,12 @@
+<script type="text/tmpl" id="edit_driver_script">
+  <%= partial :booking_management_driver, :locals => {:booking_item_family => booking_item_family,
+                                                      :driver_min_age_rules => driver_min_age_rules} %>
+</script>
+
+<script type="text/tmpl" id="edit_additional_driver_script">
+  <%= partial :booking_management_additional_drivers, :locals => {:booking_item_family => booking_item_family} %>
+</script>
+
 <!-- Add new booking line -->
 <script type="text/tmpl" id="new_booking_line_script">
   <form name="new_booking_line" class="all-space" style="background: white; min-width: 300px">

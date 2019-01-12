@@ -1,53 +1,62 @@
-          <form name="customer" class="form-inline">
+<% if @addon_invoicing %>
+<div class="alert alert-info">
+  <p>La información del cliente se almacena en la <strong>reserva</strong> para mantenerlos en el contrato.</p>
+  <p>Estos datos pueden, además, sincronizarse con los datos de la <strong>ficha de cliente</strong>.</p>
+</div>  
+<% end %>
+          <form name="customer" class="form-horizontal">
             <input type="hidden" name="id" value="<%%=entity.id%>"/>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_name %><span class="mandatoryfield">*</span></span>
-                <span class="entity-fieldvalue">
-                    <input type="text" maxlength="40" size="12" name="customer_name" id="customer_name"
-                      value="<%%=entity.customer_name%>" class="form-control"/>
-                    <input type="text" maxlength="40" size="13" name="customer_surname" id="customer_surname"
-                      value="<%%=entity.customer_surname%>" class="form-control"/>
-                </span>
-              </div>
+
+            <div class="form-group">
+                <div class="col-xs-6">
+                    <label for="customer_name"><%= t.booking_management.form.customer_name %><span class="mandatoryfield">*</span></label>
+                    <input type="text" maxlength="40" size="12" name="customer_name" id="customer_name" value="<%%=entity.customer_name%>" class="form-control"/>
+                </div>
+                <div class="col-xs-6">
+                    <label for="customer_surname-lastname">Apellidos<span class="mandatoryfield">*</span></label>
+                    <input type="text" maxlength="40" size="13" name="customer_surname" id="customer_surname" value="<%%=entity.customer_surname%>" class="form-control"/>
+                </div>
             </div>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_phone %></span>
-                <span class="entity-fieldvalue">
-                    <input type="text" maxlength="15" size="12" name="customer_phone" id="customer_phone"
-                      value="<%%=entity.customer_phone%>" class="form-control"/>
-                    <input type="text" maxlength="15" size="13" name="customer_mobile_phone" id="customer_mobile_phone"
-                      value="<%%=entity.customer_mobile_phone%>" class="form-control"/>
-                </span>
-              </div>
+
+            <div class="form-group">
+                <div class="col-xs-6">
+                    <label for="customer_name"><%= t.booking_management.form.customer_phone %></label>
+                    <input type="text" maxlength="15" size="12" name="customer_phone" id="customer_phone" value="<%%=entity.customer_phone%>" class="form-control"/>
+                </div>
+                <div class="col-xs-6">
+                    <label for="customer_surname-lastname">Teléfono alternativo</label>
+                    <input type="text" maxlength="15" size="13" name="customer_mobile_phone" id="customer_mobile_phone" value="<%%=entity.customer_mobile_phone%>" class="form-control"/>
+                </div>
             </div>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_email %></span>
-                <span class="entity-fieldvalue">
-                    <input type="text" maxlength="40" size="35" name="customer_email" id="customer_email" class="form-control"
-                      value="<%%=entity.customer_email%>"/>
-                </span>
-              </div>
-            </div>
-            <div class="element_template">
-              <div class="entity-field">
-                <span class="entity-fieldlabel less_contrast_text"><%= t.booking_management.form.customer_language %></span>
-                <span class="entity-fieldvalue">
-                  <select name="customer_language" class="form-control" style="width: 100%">
+
+            <div class="form-group">
+                <div class="col-xs-6">
+                    <label for="customer_name"><%= t.booking_management.form.customer_email %></label>
+                    <input type="text" maxlength="40" size="35" name="customer_email" id="customer_email" class="form-control" value="<%%=entity.customer_email%>"/>
+                </div>
+                <div class="col-xs-5">
+                    <label for="customer_surname-lastname"><%= t.booking_management.form.customer_language %></label>
+                    <select name="customer_language" class="form-control" style="width: 100%">
                       <option value="" <%% if (entity.customer_language == null || entity.customer_language == ''){%>selected<%%}%>>Seleccione idioma</option>
                     <% @languages.each do |item| %>
                       <option value="<%=item.code%>" <%% if (entity.customer_language == '<%=item.code%>'){%>selected<%%}%>><%=item.description%></option>
                     <% end %>
                   </select>
-                </span>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="form-group">
+              <div class="col-xs-12">
+                <% if booking_item_family.driver %>
+                  <button id="main_driver_button" class="button btn btn-sm btn-default" type="button"><% if booking_item_family.driver_license %><%=t.booking_management.form.driver_tab%><%else%><%=t.booking_management.form.driver_contact_title%><%end%></button>
+                  <% if booking_item_family.driver_license %>
+                  <button id="additional_driver_button" class="button btn btn-sm btn-default" type="button"><%=t.booking_management.form.additional_drivers_tab%></button>
+                  <% end %>
+                <% end %>
+                <button class="button btn btn-sm btn-primary pull-right update-entity-button action-button entity-management-button" type="submit"><i class="fa fa-save push-5-r"></i> <%=t.entitymanagement.update%></button>
               </div>
             </div>
-            <div class="navigation-bar bottom-margin">
-              <div id="customer_error_summary" class="alert alert-danger" style="display: none; margin: 10px"></div>
-              <div class="navigation-bar-crud-buttons right-float right-margin">
-                <input type="submit" class="btn btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
-              </div>
-            </div>             
+            
           </form> 

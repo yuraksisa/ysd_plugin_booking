@@ -5,7 +5,28 @@
 <!-- ======================================== -->
 <div class="modal fade" id="booking_management_modal_container" tabindex="-1"
      role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul class="block-options">
+          <li>
+            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+          </li>
+        </ul>
+        <h3 class="modal-title"></h3>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================== -->
+<!--            Reservation modal             -->
+<!-- ======================================== -->
+<div class="modal fade" id="booking_management_modal_lg_container" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <ul class="block-options">
@@ -137,10 +158,30 @@
         <div class="col-lg-6">
           <div class="block">
             <div class="block-header bg-gray-lighter">
+                <ul class="block-options">
+                  <%% if (entity.customer_id == null) {%>
+                    <li>
+                    <button class="btn btn-sm" id="create_customer_btn"><i class="fa fa-plus-circle" title="Crear ficha cliente"></i></button>
+                    </li>
+                    <li>
+                    <button class="btn btn-sm" id="create_customer_btn"><i class="fa fa-search-plus" title="Seleccionar/asignar cliente a la reserva"></i></button>
+                    </li>
+                  <%% } else {%>
+                    <li>
+                      <button class="btn btn-sm" id="sync_customer_btn"><i class="fa fa-arrow-circle-down" title="Actualizar desde ficha cliente"></i></button>
+                    </li>
+                    <li>  
+                      <button class="btn btn-sm" id="update_customer_btn"><i class="fa fa-arrow-circle-up" title="Actualizar ficha cliente"></i></button>
+                    </li>
+                    <li>
+                    <button class="btn btn-sm" id="create_customer_btn"><i class="fa fa-search-plus" title="Seleccionar/asignar cliente a la reserva"></i></button>
+                    </li>  
+                  <%% } %>  
+                </ul>            
                 <h3 class="block-title"><%=t.booking_management.form.customer_tab%></h3>
             </div>
             <div class="block-content block-content-full">
-                <%= partial :booking_management_customer %>
+                <%= partial :booking_management_customer, :locals => {:booking_item_family => booking_item_family} %>
             </div>
           </div>
         </div>
@@ -288,38 +329,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Driver information -->
-
-      <% if booking_item_family.driver %>
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="block">
-            <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><% if booking_item_family.driver_license %><%=t.booking_management.form.driver_tab%><%else%><%=t.booking_management.form.driver_contact_title%><%end%></h3>
-            </div>
-            <div class="block-content block-content-full">
-                <%= partial :booking_management_driver, :locals => {:booking_item_family => booking_item_family,
-                                                    :driver_min_age_rules => driver_min_age_rules} %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% if booking_item_family.driver_license %>
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="block">
-            <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%=t.booking_management.form.additional_drivers_tab%></h3>
-            </div>
-            <div class="block-content block-content-full">
-              <%= partial :booking_management_additional_drivers, :locals => {:booking_item_family => booking_item_family} %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% end %>
-      <% end %>
 
       <% if multiple_rental_locations %>
       <div class="row">

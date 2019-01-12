@@ -1710,6 +1710,16 @@ driver_age_rule_edition:
     update_button: Actualizar
     delete_button: Eliminar
 #
+# --------------------------------- INTEGRATIONS ---------------------------------------------
+#    
+
+#
+# == Invoices integration
+#    
+invoices_integration:
+  booking: Reserva alquiler
+
+
 # ----------------------- ACTIVITIES MANAGEMENT AND INTERNAL SALES ---------------------------
 #           
 # == Activity reservation

@@ -974,6 +974,15 @@ module Huasi
 
     end
     
+    # ----------- Invoices integration ----------------------
+
+    #
+    # Invoice source
+    #
+    def invoice_sources(context={})
+       [:booking] 
+    end  
+
     # ----------- Blocks ------------------------------------
 
     # Retrieve all the blocks defined in this module 
