@@ -367,6 +367,40 @@ booking_item_management:
     reference_change_success: La referencia se ha cambiado.
     reference_change_error: Lo sentimos, se ha producido un error al cambiar la referencia.
 #
+# Booking item extra data
+#
+booking_item_extra_data:
+  registrable:
+    registrable_registration_date: Fecha matriculación
+  usage:
+    usage_units: Km actuales
+  purchasable:
+    title: Adquisición / Venta
+    purchasable_year: Año
+    purchasable_adquisition_date: Fecha adquisición
+    purchasable_purchase_price: Precio adquisición
+    purchasable_purchase_units: Km adquisición
+    purchasable_sold_release_date: Fecha venta
+    purchasable_sale_price: Precio de venta
+  maintenance:
+    title: Mantenimiento
+    official_title: ITV
+    maintenance_external_revision_last_date: Última revisión
+    maintenance_external_revision_last_units: Km última
+    maintenance_external_revision_next_date: Próxima revisión
+    maintenance_external_revision_next_units: Km próxima
+    maintenance_official_revision_last_date: Última ITV
+    maintenance_official_revision_last_ok: Última ITV válida
+    maintenance_official_revision_next_date: Siguiente ITV
+  insurance:
+    title: Seguro
+    insurance_valid: Asegurado
+    insurance_start_date: Fecha inicio póliza
+    insurance_end_date: Fecha fin póliza
+    insurance_company: Compañía aseguradora
+    insurance_policy_number: Número de póliza
+
+#
 # == Activities
 #      
 booking_activity_management:

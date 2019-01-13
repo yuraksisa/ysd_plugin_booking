@@ -110,6 +110,7 @@ module Sinatra
                               
           if booking_item = ::Yito::Model::Booking::BookingItem.get(booking_item_request.delete(:reference))     
             booking_item.attributes=(booking_item_request)  
+            p "booking_item:#{booking_item.valid?}--#{booking_item.errors.full_messages.inspect}--#{booking_item.purchasable_sold_release_date}"
             booking_item.save
           end
       

@@ -1,6 +1,7 @@
 
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
-         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "autonumeric", "YSDjson2", "jquery.validate"],
+         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "autonumeric", "YSDjson2", "jquery.validate",
+         'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation'],
          function($, EntityManagement, EntityManagementComplementHooks, RemoteDataSource, SelectSelector) {
     
   var bookingItemHook = {
@@ -47,7 +48,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
             },
             errorClass : 'text-danger'
         });
-        this.configForm();
+        this.configForm(null);
     },
 
     onEdit : function(entity) { /* On edit stock item */
@@ -84,7 +85,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           errorClass : 'text-danger'
       });
 
-      this.configForm();
+      this.configForm(entity);
 
       $('#change_reference_button').unbind('click');
       $('#change_reference_button').bind('click', function(){
@@ -164,6 +165,60 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       var rentalStorageValue = (this.entity && this.entity.rental_storage_id)?this.entity.rental_storage_id:null;
       var rentalStorageSelector = new SelectSelector('rental_storage[id]', rentalStorageDataSource, rentalStorageValue);
 
+      this.setupDates(entity);
+
+    },
+
+    setupDates: function(entity) {
+
+      // Dates setup
+      $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+
+      $('#registrable_registration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.registrable_registration_date != null) {
+          $('#registrable_registration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.registrable_registration_date, 'dd/MM/yyyy')));
+      }
+      
+      $('#purchasable_adquisition_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.purchasable_adquisition_date != null) {
+          $('#purchasable_adquisition_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.purchasable_adquisition_date, 'dd/MM/yyyy')));
+      }
+
+      $('#purchasable_sold_release_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.purchasable_sold_release_date != null) {
+          $('#purchasable_sold_release_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.purchasable_sold_release_date, 'dd/MM/yyyy')));
+      }
+
+      $('#maintenance_external_revision_last_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.maintenance_external_revision_last_date != null) {
+          $('#maintenance_external_revision_last_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.maintenance_external_revision_last_date, 'dd/MM/yyyy')));
+      }
+
+      $('#maintenance_external_revision_next_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.maintenance_external_revision_next_date != null) {
+          $('#maintenance_external_revision_next_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.maintenance_external_revision_next_date, 'dd/MM/yyyy')));
+      }      
+
+      $('#maintenance_official_revision_last_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.maintenance_official_revision_last_date != null) {
+          $('#maintenance_official_revision_last_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.maintenance_official_revision_last_date, 'dd/MM/yyyy')));
+      }
+
+      $('#maintenance_official_revision_next_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.maintenance_official_revision_next_date != null) {
+          $('#maintenance_official_revision_next_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.maintenance_official_revision_next_date, 'dd/MM/yyyy')));
+      }      
+
+      $('#insurance_start_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.insurance_start_date != null) {
+          $('#insurance_start_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.insurance_start_date, 'dd/MM/yyyy')));
+      }
+
+      $('#insurance_end_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      if (entity && entity.insurance_end_date != null) {
+          $('#insurance_end_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.insurance_end_date, 'dd/MM/yyyy')));
+      }   
+
     },
       
     adaptFormData : function(data) {
@@ -195,6 +250,24 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
         }
       }
 
+      if ($('#insurance_valid').length > 0) {
+        if ($('#insurance_valid').prop('checked')) {
+          data.insurance_valid = true;
+        }
+        else {
+          data.insurance_valid = false;
+        }
+      }
+
+      if ($('#maintenance_official_revision_last_ok').length > 0) {
+        if ($('#maintenance_official_revision_last_ok').prop('checked')) {
+          data.maintenance_official_revision_last_ok = true;
+        }
+        else {
+          data.maintenance_official_revision_last_ok = false;
+        }
+      }
+      
       return data;  
       
     }

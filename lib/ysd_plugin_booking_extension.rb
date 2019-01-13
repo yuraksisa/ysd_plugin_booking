@@ -597,7 +597,12 @@ module Huasi
         :allow_extras => true,
         :multiple_locations => true,
         :multiple_storages => true,
-        :pax => false
+        :pax => false,
+        :purchasable => true,
+        :usage => true,
+        :maintenance => true,
+        :insurance => true,
+        :registrable => true
       })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'car_vehicles'},
@@ -634,7 +639,12 @@ module Huasi
         :allow_extras => true,
         :multiple_locations => true,
         :multiple_storages => true,
-        :pax => false        
+        :pax => false,
+        :purchasable => true,
+        :usage => true,
+        :maintenance => true,
+        :insurance => true,
+        :registrable => true        
       })
 
 
@@ -677,7 +687,12 @@ module Huasi
         :allow_extras => true,
         :multiple_locations => true,
         :multiple_storages => true,
-        :pax => true   
+        :pax => true,
+        :purchasable => true,
+        :usage => false,
+        :maintenance => false,
+        :insurance => false,
+        :registrable => false   
       })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'place'},
@@ -712,7 +727,12 @@ module Huasi
          :allow_extras => true,
          :multiple_locations => false,        
          :multiple_storages => false,
-         :pax => false   
+         :pax => false,
+         :purchasable => false,
+         :usage => false,
+         :maintenance => false,
+         :insurance => false,
+         :registrable => false
         })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'bike'},
@@ -747,7 +767,12 @@ module Huasi
          :allow_extras => true,
          :multiple_locations => true,        
          :multiple_storages => true,
-         :pax => false
+         :pax => false,
+         :purchasable => true,
+         :usage => false,
+         :maintenance => false,
+         :insurance => false,
+         :registrable => false
         })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'boat_charter'},
@@ -792,7 +817,12 @@ module Huasi
         :allow_extras => true,
         :multiple_locations => false,        
         :multiple_storages => false,
-        :pax => false
+        :pax => false,
+        :purchasable => true,
+        :usage => true,
+        :maintenance => true,
+        :insurance => true,
+        :registrable => true
     })
 
 
@@ -819,7 +849,12 @@ module Huasi
           :allow_extras => true,
           :multiple_locations => true,        
           :multiple_storages => false,
-          :pax => false
+          :pax => false,
+          :purchasable => false,
+          :usage => false,
+          :maintenance => false,
+          :insurance => false,
+          :registrable => false
       })
 
       Yito::Model::Booking::ProductFamily.first_or_create(
@@ -845,7 +880,12 @@ module Huasi
               :allow_extras => true,
               :multiple_locations => true,        
               :multiple_storages => false,
-              :pax => false
+              :pax => false,
+              :purchasable => false,
+              :usage => false,
+              :maintenance => false,
+              :insurance => false,
+              :registrable => false
           })
 
       Yito::Model::Booking::ProductFamily.first_or_create({:code => 'other'},
@@ -878,7 +918,12 @@ module Huasi
         :allow_extras => true,
         :multiple_locations => true,        
         :multiple_storages => true,
-        :pax => false
+        :pax => false,
+        :purchasable => false,
+        :usage => false,
+        :maintenance => false,
+        :insurance => false,
+        :registrable => false
       })
 
       #

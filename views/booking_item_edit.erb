@@ -33,6 +33,32 @@
 
                   <% end %>
 
+                  <% if @booking_item_family.purchasable %>
+                  <div class="form-group">
+                    <label class="col-md-3 control-label"><%=t.booking_item_extra_data.purchasable.purchasable_year%></label>
+                    <div class="col-md-9">
+                    <input type="number" step="1" maxlength="4" id="purchasable_year" name="purchasable_year" class="form-control" <% if @booking_item %> value="<%= @booking_item.purchasable_year%>" <%end%>/>
+                     </div>
+                  </div>
+                  <% end %>
+                  <% if @booking_item_family.registrable %>
+                  <div class="form-group">
+                    <label class="col-md-3 control-label"><%=t.booking_item_extra_data.registrable.registrable_registration_date%></label>
+                    <div class="col-md-9">
+                      <input type="text" maxlength="10" id="registrable_registration_date" name="registrable_registration_date" class="form-control"/>
+                    </div>
+                  </div>
+                  <% end %>
+
+                  <% if @booking_item_family.usage %>
+                  <div class="form-group">
+                    <label class="col-md-3 control-label"><%=t.booking_item_extra_data.usage.usage_units%></label>
+                    <div class="col-md-9">
+                      <input type="number" step="1" id="usage_units" name="usage_units" class="form-control" <% if @booking_item %> value="<%= @booking_item.usage_units%>" <%end%>/>
+                    </div>  
+                  </div>
+                  <% end %>
+
                   <div class="form-group">
                      <label class="col-md-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['resource_characteristic_1'] %></label>
                      <div class="col-md-9">

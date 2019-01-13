@@ -1,4 +1,5 @@
-require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.formparams', 'jquery.toast'], function($, YSDForms) {
+require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.formparams', 'jquery.toast',"jquery.validate",
+         'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation'], function($, YSDForms) {
     
     bookingItemModel = {
 
@@ -43,6 +44,7 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.formparams', 'jquery.toast']
         init: function () {
             YSDForms.improve();
             this.setupControls();
+            this.setupDates();
         },
 
         setupControls: function() {
@@ -50,6 +52,20 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.formparams', 'jquery.toast']
             $('#update_booking_item_button').bind('click', function(){
                 bookingItemController.updateBookingItemButtonClick();
             })
+        },
+
+        setupDates: function() {
+
+          // Dates setup
+          $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
+
+          $('#registrable_registration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, 
+                                                         "<%=session[:locale] || 'es'%>" );
+          <% if  @booking_item and @booking_item.registrable_registration_date %>
+          $('#registrable_registration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", 
+                            '<%=@booking_item.registrable_registration_date.strftime("%d-%m-%Y")%>'));
+          <% end %>
+
         },
 
         update: function(action) {

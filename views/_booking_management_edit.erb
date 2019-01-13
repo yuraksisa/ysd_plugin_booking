@@ -298,19 +298,19 @@
       <div class="grid_6">
         <div class="left-margin">
           <div class="formrow">
-            <label class="fieldtitle">Característica 1</label>
+            <label class="fieldtitle"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['resource_characteristic_1'] %></label>
             <input type="text" name="booking_item_characteristic_1" class="fieldcontrol" maxlength="80" value="<%%=entity.booking_item_characteristic_1%>"/> 
           </div>
           <div class="formrow">
-            <label class="fieldtitle">Característica 2</label>
+            <label class="fieldtitle"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['resource_characteristic_2'] %></label>
             <input type="text" name="booking_item_characteristic_2" class="fieldcontrol" maxlength="80" value="<%%=entity.booking_item_characteristic_2%>"/> 
           </div>
           <div class="formrow">
-            <label class="fieldtitle">Característica 3</label>
+            <label class="fieldtitle"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['resource_characteristic_3'] %></label>
             <input type="text" name="booking_item_characteristic_3" class="fieldcontrol" maxlength="80" value="<%%=entity.booking_item_characteristic_3%>"/> 
           </div>
           <div class="formrow">
-            <label class="fieldtitle">Característica 4</label>
+            <label class="fieldtitle"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['resource_characteristic_4'] %></label>
             <input type="text" name="booking_item_characteristic_4" class="fieldcontrol" maxlength="80" value="<%%=entity.booking_item_characteristic_4%>"/> 
           </div>
           <% if booking_item_family.driver %>
