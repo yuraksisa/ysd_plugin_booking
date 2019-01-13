@@ -174,49 +174,49 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       // Dates setup
       $.datepicker.setDefaults( $.datepicker.regional["<%=session[:locale] || 'es'%>" ] );
 
-      $('#registrable_registration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#registrable_registration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.registrable_registration_date != null) {
-          $('#registrable_registration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.registrable_registration_date, 'dd/MM/yyyy')));
+          $('#registrable_registration_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.registrable_registration_date));
       }
       
-      $('#purchasable_adquisition_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#purchasable_adquisition_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.purchasable_adquisition_date != null) {
-          $('#purchasable_adquisition_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.purchasable_adquisition_date, 'dd/MM/yyyy')));
+          $('#purchasable_adquisition_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.purchasable_adquisition_date));
       }
 
-      $('#purchasable_sold_release_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#purchasable_sold_release_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.purchasable_sold_release_date != null) {
-          $('#purchasable_sold_release_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.purchasable_sold_release_date, 'dd/MM/yyyy')));
+          $('#purchasable_sold_release_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.purchasable_sold_release_date));
       }
 
-      $('#maintenance_external_revision_last_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#maintenance_external_revision_last_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.maintenance_external_revision_last_date != null) {
-          $('#maintenance_external_revision_last_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.maintenance_external_revision_last_date, 'dd/MM/yyyy')));
+          $('#maintenance_external_revision_last_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.maintenance_external_revision_last_date));
       }
 
-      $('#maintenance_external_revision_next_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#maintenance_external_revision_next_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.maintenance_external_revision_next_date != null) {
-          $('#maintenance_external_revision_next_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.maintenance_external_revision_next_date, 'dd/MM/yyyy')));
+          $('#maintenance_external_revision_next_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.maintenance_external_revision_next_date));
       }      
 
-      $('#maintenance_official_revision_last_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#maintenance_official_revision_last_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.maintenance_official_revision_last_date != null) {
-          $('#maintenance_official_revision_last_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.maintenance_official_revision_last_date, 'dd/MM/yyyy')));
+          $('#maintenance_official_revision_last_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.maintenance_official_revision_last_date));
       }
 
-      $('#maintenance_official_revision_next_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#maintenance_official_revision_next_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.maintenance_official_revision_next_date != null) {
-          $('#maintenance_official_revision_next_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.maintenance_official_revision_next_date, 'dd/MM/yyyy')));
+          $('#maintenance_official_revision_next_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.maintenance_official_revision_next_date));
       }      
 
-      $('#insurance_start_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#insurance_start_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.insurance_start_date != null) {
-          $('#insurance_start_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.insurance_start_date, 'dd/MM/yyyy')));
+          $('#insurance_start_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.insurance_start_date));
       }
 
-      $('#insurance_end_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
+      $('#insurance_end_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', defaultDate: ''}, "<%=session[:locale] || 'es'%>" );
       if (entity && entity.insurance_end_date != null) {
-          $('#insurance_end_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", bookingItemManager.view.formatDate(entity.insurance_end_date, 'dd/MM/yyyy')));
+          $('#insurance_end_date').datepicker("setDate", $.datepicker.parseDate("yy-mm-dd", entity.insurance_end_date));
       }   
 
     },
@@ -267,7 +267,7 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
           data.maintenance_official_revision_last_ok = false;
         }
       }
-      
+
       return data;  
       
     }
