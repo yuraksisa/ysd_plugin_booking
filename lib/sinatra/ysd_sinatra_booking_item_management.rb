@@ -19,6 +19,8 @@ module Sinatra
         app.get '/admin/booking/booking-items/:id/edit', :allowed_usergroups => ['booking_manager', 'staff'] do
 
           if @booking_item = ::Yito::Model::Booking::BookingItem.get(params[:id])
+            @addons = mybooking_addons
+            @addon_fleet_maintenance = (@addons and @addons.has_key?(:addon_fleet_maintenance) and @addons[:addon_fleet_maintenance])
             @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
             @multiple_rental_locations = BookingDataSystem::Booking.multiple_rental_locations
             if @multiple_rental_locations
@@ -39,6 +41,7 @@ module Sinatra
           # Add-on finances
           @addons = mybooking_addons
           @addon_finances = (@addons and @addons.has_key?(:addon_finances) and @addons[:addon_finances])
+          @addon_fleet_maintenance = (@addons and @addons.has_key?(:addon_fleet_maintenance) and @addons[:addon_fleet_maintenance])
           # Item family
           @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           # Multiple rental locations

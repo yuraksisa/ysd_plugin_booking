@@ -403,141 +403,142 @@
         </div>
         <% end %>
 
-        <!-- Maintenance -->
+        <% if @addon_fleet_maintenance %>
+          <!-- Maintenance --> 
+          <% if @booking_item_family.maintenance %>
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="block ">
+                <div class="block-header bg-gray-lighter">
+                  <h3 class="block-title"><%=t.booking_item_extra_data.maintenance.title%></h3>
+                </div>
+                <div class="block-content">
+                    <form name="element" class="form-horizontal" method="POST">
+                        <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                        <div class="form-group">
+                          <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_external_revision_last_date%></label>
+                          <div class="col-md-3">
+                          <input type="text" maxlength="10" id="maintenance_external_revision_last_date" name="maintenance_external_revision_last_date" class="form-control"/>
+                           </div>
+                          <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_external_revision_last_units%></label>
+                          <div class="col-md-3">
+                          <input type="number" maxlength="10" id="maintenance_external_revision_last_units" name="maintenance_external_revision_last_units" class="form-control" <%% if (entity) { %> value="<%%=entity.maintenance_external_revision_last_units%>" <%% } %>/>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_external_revision_next_date%></label>
+                          <div class="col-md-3">
+                          <input type="text" maxlength="10" id="maintenance_external_revision_next_date" name="maintenance_external_revision_next_date" class="form-control"/>
+                           </div>
+                          <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_external_revision_next_units%></label>
+                          <div class="col-md-3">
+                          <input type="number" maxlength="10" id="maintenance_external_revision_next_units" name="maintenance_external_revision_next_units" class="form-control" <%% if (entity) { %> value="<%%=entity.maintenance_external_revision_next_units%>" <%% } %>/>
+                           </div>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                          <div class="col-md-9 col-md-offset-3">
+                              <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button pull-right" value="<%=t.entitymanagement.update%>"/>
+                          </div>
+                        </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="block ">
+                <div class="block-header bg-gray-lighter">
+                  <h3 class="block-title"><%=t.booking_item_extra_data.maintenance.official_title%></h3>
+                </div>
+                <div class="block-content">
+                    <form name="element" class="form-horizontal" method="POST">
+                        <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                        <div class="form-group">
+                          <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_official_revision_last_date%></label>
+                          <div class="col-md-3">
+                          <input type="text" maxlength="10" id="maintenance_official_revision_last_date" name="maintenance_official_revision_last_date" class="form-control"/>
+                           </div>
+                          <label class="col-md-4 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_official_revision_last_ok%></label>
+                          <div class="col-md-2 checkbox">
+                             <label for="maintenance_official_revision_last_ok">
+                               <input type="checkbox" name="maintenance_official_revision_last_ok" id="maintenance_official_revision_last_ok" <%% if (entity.maintenance_official_revision_last_ok) {%>checked<%%}%>>  
+                             </label>
+                          </div>        
+                        </div>  
+                        <div class="form-group">
+                          <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_official_revision_next_date%></label>
+                          <div class="col-md-3">
+                          <input type="text" maxlength="10" id="maintenance_official_revision_next_date" name="maintenance_official_revision_next_date" class="form-control"/>
+                           </div>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                          <div class="col-md-9 col-md-offset-3">
+                              <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button pull-right" value="<%=t.entitymanagement.update%>"/>
+                          </div>
+                        </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>        
+          <% end %>
 
-        <% if @booking_item_family.maintenance %>
-        <div class="row">
-          <div class="col-sm-12 col-md-6">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%=t.booking_item_extra_data.maintenance.title%></h3>
-              </div>
-              <div class="block-content">
-                  <form name="element" class="form-horizontal" method="POST">
-                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
-                      <div class="form-group">
-                        <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_external_revision_last_date%></label>
-                        <div class="col-md-3">
-                        <input type="text" maxlength="10" id="maintenance_external_revision_last_date" name="maintenance_external_revision_last_date" class="form-control"/>
-                         </div>
-                        <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_external_revision_last_units%></label>
-                        <div class="col-md-3">
-                        <input type="number" maxlength="10" id="maintenance_external_revision_last_units" name="maintenance_external_revision_last_units" class="form-control" <%% if (entity) { %> value="<%%=entity.maintenance_external_revision_last_units%>" <%% } %>/>
-                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_external_revision_next_date%></label>
-                        <div class="col-md-3">
-                        <input type="text" maxlength="10" id="maintenance_external_revision_next_date" name="maintenance_external_revision_next_date" class="form-control"/>
-                         </div>
-                        <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_external_revision_next_units%></label>
-                        <div class="col-md-3">
-                        <input type="number" maxlength="10" id="maintenance_external_revision_next_units" name="maintenance_external_revision_next_units" class="form-control" <%% if (entity) { %> value="<%%=entity.maintenance_external_revision_next_units%>" <%% } %>/>
-                         </div>
-                      </div>
-                      <hr>
-                      <div class="form-group">
-                        <div class="col-md-9 col-md-offset-3">
-                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button pull-right" value="<%=t.entitymanagement.update%>"/>
+          <!-- Insurance -->
+
+          <% if @booking_item_family.insurance %>
+          <div class="row">
+            <div class="col-sm-12 col-md-12">
+              <div class="block ">
+                <div class="block-header bg-gray-lighter">
+                  <h3 class="block-title"><%=t.booking_item_extra_data.insurance.title%></h3>
+                </div>
+                <div class="block-content block-content-narrow">
+                    <form name="element" class="form-horizontal" method="POST">
+                        <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
+                        <div class="form-group">
+                          <label class="col-md-2 control-label"><%=t.booking_item_extra_data.insurance.insurance_valid%></label>
+                          <div class="col-md-2 checkbox">
+                             <label for="insurance_valid">
+                               <input type="checkbox" name="insurance_valid" id="insurance_valid" <%% if (entity.insurance_valid) {%>checked<%%}%>>
+                               
+                             </label>
+                          </div>        
+                        </div>                
+                        <div class="form-group">
+                          <label class="col-md-2 control-label"><%=t.booking_item_extra_data.insurance.insurance_start_date%></label>
+                          <div class="col-md-3">
+                          <input type="text" maxlength="10" id="insurance_start_date" name="insurance_start_date" class="form-control"/>
+                           </div>
+                          <label class="col-md-3 control-label"><%=t.booking_item_extra_data.insurance.insurance_end_date%></label>
+                          <div class="col-md-3">
+                          <input type="text" maxlength="10" id="insurance_end_date" name="insurance_end_date" class="form-control"/>
+                           </div>
                         </div>
-                      </div>
-                  </form>
+                        <div class="form-group">
+                          <label class="col-md-2 control-label"><%=t.booking_item_extra_data.insurance.insurance_company%></label>
+                          <div class="col-md-3">
+                          <input type="text" maxlength="50" id="insurance_company" name="insurance_company" class="form-control" <%% if (entity) { %> value="<%%=entity.insurance_company%>" <%% } %>/>
+                           </div>
+                          <label class="col-md-3 control-label"><%=t.booking_item_extra_data.insurance.insurance_policy_number%></label>
+                          <div class="col-md-3">
+                          <input type="text" maxlength="50" id="insurance_policy_number" name="insurance_policy_number" class="form-control" <%% if (entity) { %> value="<%%=entity.insurance_policy_number%>" <%% } %>/>
+                           </div>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                          <div class="col-md-8 col-md-offset-4">
+                              <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button pull-right" value="<%=t.entitymanagement.update%>"/>
+                          </div>
+                        </div>
+                    </form>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-sm-12 col-md-6">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%=t.booking_item_extra_data.maintenance.official_title%></h3>
-              </div>
-              <div class="block-content">
-                  <form name="element" class="form-horizontal" method="POST">
-                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
-                      <div class="form-group">
-                        <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_official_revision_last_date%></label>
-                        <div class="col-md-3">
-                        <input type="text" maxlength="10" id="maintenance_official_revision_last_date" name="maintenance_official_revision_last_date" class="form-control"/>
-                         </div>
-                        <label class="col-md-4 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_official_revision_last_ok%></label>
-                        <div class="col-md-2 checkbox">
-                           <label for="maintenance_official_revision_last_ok">
-                             <input type="checkbox" name="maintenance_official_revision_last_ok" id="maintenance_official_revision_last_ok" <%% if (entity.maintenance_official_revision_last_ok) {%>checked<%%}%>>  
-                           </label>
-                        </div>        
-                      </div>  
-                      <div class="form-group">
-                        <label class="col-md-3 control-label"><%=t.booking_item_extra_data.maintenance.maintenance_official_revision_next_date%></label>
-                        <div class="col-md-3">
-                        <input type="text" maxlength="10" id="maintenance_official_revision_next_date" name="maintenance_official_revision_next_date" class="form-control"/>
-                         </div>
-                      </div>
-                      <hr>
-                      <div class="form-group">
-                        <div class="col-md-9 col-md-offset-3">
-                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button pull-right" value="<%=t.entitymanagement.update%>"/>
-                        </div>
-                      </div>
-                  </form>
-              </div>
-            </div>
-          </div>
-        </div>        
+          <% end %>
         <% end %>
-
-        <!-- Insurance -->
-
-        <% if @booking_item_family.insurance %>
-        <div class="row">
-          <div class="col-sm-12 col-md-12">
-            <div class="block ">
-              <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%=t.booking_item_extra_data.insurance.title%></h3>
-              </div>
-              <div class="block-content block-content-narrow">
-                  <form name="element" class="form-horizontal" method="POST">
-                      <input type="hidden" name="reference" value="<%%=entity.reference%>"/>
-                      <div class="form-group">
-                        <label class="col-md-2 control-label"><%=t.booking_item_extra_data.insurance.insurance_valid%></label>
-                        <div class="col-md-2 checkbox">
-                           <label for="insurance_valid">
-                             <input type="checkbox" name="insurance_valid" id="insurance_valid" <%% if (entity.insurance_valid) {%>checked<%%}%>>
-                             
-                           </label>
-                        </div>        
-                      </div>                
-                      <div class="form-group">
-                        <label class="col-md-2 control-label"><%=t.booking_item_extra_data.insurance.insurance_start_date%></label>
-                        <div class="col-md-3">
-                        <input type="text" maxlength="10" id="insurance_start_date" name="insurance_start_date" class="form-control"/>
-                         </div>
-                        <label class="col-md-3 control-label"><%=t.booking_item_extra_data.insurance.insurance_end_date%></label>
-                        <div class="col-md-3">
-                        <input type="text" maxlength="10" id="insurance_end_date" name="insurance_end_date" class="form-control"/>
-                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="col-md-2 control-label"><%=t.booking_item_extra_data.insurance.insurance_company%></label>
-                        <div class="col-md-3">
-                        <input type="text" maxlength="50" id="insurance_company" name="insurance_company" class="form-control" <%% if (entity) { %> value="<%%=entity.insurance_company%>" <%% } %>/>
-                         </div>
-                        <label class="col-md-3 control-label"><%=t.booking_item_extra_data.insurance.insurance_policy_number%></label>
-                        <div class="col-md-3">
-                        <input type="text" maxlength="50" id="insurance_policy_number" name="insurance_policy_number" class="form-control" <%% if (entity) { %> value="<%%=entity.insurance_policy_number%>" <%% } %>/>
-                         </div>
-                      </div>
-                      <hr>
-                      <div class="form-group">
-                        <div class="col-md-8 col-md-offset-4">
-                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button pull-right" value="<%=t.entitymanagement.update%>"/>
-                        </div>
-                      </div>
-                  </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <% end %>
-
+          
         <!-- Other information -->
 
         <div class="row">
