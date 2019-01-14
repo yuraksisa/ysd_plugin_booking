@@ -318,7 +318,23 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       // Configure sales channel
       $('select[name=sales_channel_code]').bind('change', function(){
-            $($(this)[0].form).find('input[type=submit]').trigger('click');
+            if (confirm('<%=t.booking_management.form.update_sales_channel_confirm%>')) {
+              bookingManager.model.update(null, null, this);
+            }
+            else {
+               $(this).val($.data(this, 'current'));
+               return false;
+            }
+      });
+
+      $('select[name=rental_location_code]').bind('change', function(){
+            if (confirm('<%=t.booking_management.form.update_rental_location_code_confirm%>')) {
+              bookingManager.model.update(null, null, this);
+            }
+            else {
+               $(this).val($.data(this, 'current'));
+               return false;
+            }
       });
 
       // Embed invoicing

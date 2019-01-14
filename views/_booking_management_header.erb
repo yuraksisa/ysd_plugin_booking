@@ -21,6 +21,12 @@
                     </div>
                   </form>
             <% end %>    
+            <% if multiple_rental_locations %>
+                  <form name="rental_location" class="form-inline" style="display: inline">
+                      <input type="hidden" name="id" value="<%%=entity.id%>"/>
+                      <select name="rental_location_code" id="rental_location" class="form-control"></select>
+                  </form>
+            <% end %>
         </div>  
       </div>
     </div>

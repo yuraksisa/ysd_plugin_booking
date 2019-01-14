@@ -979,6 +979,8 @@ booking_management:
       confirm_delete_message: ¿Está seguro que desea eliminar el cobro de la reserva?
       done: Cobro eliminado con éxito
       error: Error eliminando cobro
+    update_sales_channel_confirm: ¿Seguro que desea cambiar el canal de venta?
+    update_rental_location_code_confirm: ¿Seguro que desea cambiar la oficina?  
     validations:
       customer_name_required: El nombre del cliente es obligatorio
       customer_surname_required: Los apellidos del cliente son obligatorios

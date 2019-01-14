@@ -62,7 +62,7 @@ require(['jquery', 'YSDForms', 'jquery.ui', 'jquery.formparams', 'jquery.toast',
           $('#registrable_registration_date').datepicker({numberOfMonths:1, dateFormat: 'dd/mm/yy', maxDate: new Date(), defaultDate: ''}, 
                                                          "<%=session[:locale] || 'es'%>" );
           <% if  @booking_item and @booking_item.registrable_registration_date %>
-          $('#registrable_registration_date').datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", 
+          $('#registrable_registration_date').datepicker("setDate", $.datepicker.parseDate("dd-mm-yy", 
                             '<%=@booking_item.registrable_registration_date.strftime("%d-%m-%Y")%>'));
           <% end %>
 

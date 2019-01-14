@@ -330,21 +330,6 @@
         </div>
       </div>
 
-      <% if multiple_rental_locations %>
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="block">
-            <div class="block-header bg-gray-lighter">
-                <h3 class="block-title"><%= t.booking_management.form.rental_location %></h3>
-            </div>
-            <div class="block-content block-content-full">
-                  <%= partial :booking_management_rental_location %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% end %>
-
       <!-- Notifications -->
       <div class="row">
         <div class="<%% if (entity.total_pending > 0 && entity.status != 'cancelled') { %>col-lg-8<%%} else {%>col-lg-12<%%}%>">
