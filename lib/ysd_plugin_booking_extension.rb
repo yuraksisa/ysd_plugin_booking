@@ -529,7 +529,7 @@ module Huasi
                                                      :module => :booking})
 
       #
-      # Rates setup : Seasons (general), factors (general)
+      # Rates setup : Seasons (general), factors (general), discount by days (general)
       #
       unless season_definition = Yito::Model::Rates::SeasonDefinition.first(name: 'general')
         season_definition = Yito::Model::Rates::SeasonDefinition.create(name: 'general', description: 'Temporadas generales')
@@ -543,6 +543,10 @@ module Huasi
         factor_2 = Yito::Model::Rates::Factor.create(factor_definition: factor_definition, from: 2, to: 2, factor: 1.5)
         factor_3 = Yito::Model::Rates::Factor.create(factor_definition: factor_definition, from: 3, to: 3, factor: 1.1)
       end
+
+      unless discount_by_day_definition = Yito::Model::Rates::DiscountByDayDefinition.first(name: 'general')
+        discount_by_day_definition = Yito::Model::Rates::DiscountByDayDefinition.create(name: 'general', description: 'Descuento por días general')
+      end  
 
       #
       # Calendars : Three types of events for this business : not_available, payment_enabled and activity
