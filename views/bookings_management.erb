@@ -258,10 +258,12 @@
         <div class="col-lg-12">
           <div class="block">
             <div class="block-header bg-gray-lighter">
+                <%% if (entity.payment_status != 'total') { %>
                 <div class="block-options-simple">
                     <button id="new_charge" class="btn btn-xs btn-default" type="button"><%=t.booking_management.form.new_charge%></button>
-                </div>                 
-                <h3 class="block-title"><%= t.booking_management.form.charges_tab %><%=@addons_invoicing%></h3>
+                </div>    
+                <%% } %>             
+                <h3 class="block-title"><%= t.booking_management.form.charges_tab %></h3>
             </div>
             <div class="block-content block-content-full">
               <%= partial :booking_management_charges %>

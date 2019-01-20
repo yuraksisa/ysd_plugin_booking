@@ -58,6 +58,17 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
        'refunded': '<%= t.charge_status.refunded%>'
     };
 
+    this.paymentMethodDescription = {
+       'cash':'<%= t.booking_payment_method.cash%>',
+       'bank_transfer':'<%= t.booking_payment_method.bank_transfer%>',
+       'credit_card':'<%= t.booking_payment_method.credit_card%>',
+       'redsys256':'<%= t.booking_payment_method.redsys256%>',
+       'santander':'<%= t.booking_payment_method.santander%>',
+       'pi4b':'<%= t.booking_payment_method.pi4b%>',
+       'cecabank':'<%= t.booking_payment_method.cecabank%>',
+       'paypal_standard':'<%= t.booking_payment_method.paypal_standard%>',                                      
+    }
+
     this.nextExternalInvoiceNumber = function() {
         $.ajax({
             type: 'GET',
@@ -97,37 +108,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       // Set up new charge button click
       $('#new_charge').bind('click', function(){
-        $('#new_charge_button').unbind('click');
-        $('#date').datetimepicker(
-            {controlType: 'select', showTimezone: false, useLocalTimezone: true, 
-             numberOfMonths:1, dateFormat: 'dd/mm/yy'},
-            '<%= session[:locale] %>');
-        $('#date').datetimepicker('setDate', new Date());
-        $('#amount').autoNumeric('init',{aSep:''});
-        $('#new_charge_button').bind('click', function(){
-           var formdata = $('form[name="charge"]').formParams(true);
-           var json_request = JSON.stringify(formdata);
-           $.ajax({
-               type: 'POST',
-               data : json_request,
-               url : '/api/booking/charge',
-               success: function(data, textStatus, jqXHR) {
-                 bookingManager.model.synchronizeCurrentEntity(data);
-                 bookingManager.model.change_state('entity_updated_successfully');
-                 alert('<%=t.booking_management.charge_form.done%>');
-                 $('form[name="charge"]').hide();
-               },
-               error: function(data, textStatus, jqXHR) {
-                 alert('Error updating resource');
-               }
-           });
-        });       
-        if ($('form[name="charge"]').is(':visible')) {
-          $('form[name="charge"]').hide();
-        }
-        else {
-          $('form[name="charge"]').show();          
-        }
+        self.prepareFormNewCharge(entity);       
       });
 
       <% if booking_item_family.driver %>
@@ -176,7 +157,6 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                   bookingManager.model.synchronizeCurrentEntity(data);
                   bookingManager.model.change_state('entity_updated_successfully');
                   alert('<%=t.booking_management.form.extra_removed.done%>');
-                  $('form[name="charge"]').hide();
                 },
                 error: function(data, textStatus, jqXHR) {
                   alert('<%=t.booking_management.form.extra_removed.error%>');
@@ -213,7 +193,6 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                   bookingManager.model.synchronizeCurrentEntity(data);
                   bookingManager.model.change_state('entity_updated_successfully');
                   alert('<%=t.booking_management.form.charge_removed.done%>');
-                  $('form[name="charge"]').hide();
                 },
                 error: function(data, textStatus, jqXHR) {
                   alert('<%=t.booking_management.form.charge_removed.error%>');
@@ -348,6 +327,97 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
             });
       });      
       <% end %>
+
+      // Create customer
+      $('#create_customer_btn').bind('click', function(){
+
+        if (confirm('¿Está seguro que desea crear el cliente con los datos de la reserva?')) {
+           var url = '/api/booking/'+entity.id+'/customer';
+           YSDGui.lockBackground('#bbb');
+           var unlock = false;   
+           $.ajax({
+               type: 'POST',
+               url : url,
+               success: function(data, textStatus, jqXHR) {
+                 unlock = true;
+                 YSDGui.unLockBackground();                    
+                 bookingManager.model.synchronizeCurrentEntity(data);
+                 bookingManager.model.change_state('entity_updated_successfully');
+                 alert('Cliente creado con éxito');
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error creando cliente');
+               },
+              complete: function(jqXHT, textStatus) {
+                if (!unlock) {
+                    YSDGui.unLockBackground();
+                }
+              }
+           });          
+        }
+
+      });
+
+      // Update customer from reservation
+      $('#update_customer_btn').bind('click', function(){
+
+        if (confirm('¿Está seguro que desea actualizar el cliente con los datos de la reserva?')) {
+           var url = '/api/booking/'+entity.id+'/sync-customer';
+           YSDGui.lockBackground('#bbb');
+           var unlock = false;   
+           $.ajax({
+               type: 'PUT',
+               url : url,
+               success: function(data, textStatus, jqXHR) {
+                 unlock = true;
+                 YSDGui.unLockBackground();                
+                 bookingManager.model.synchronizeCurrentEntity(data);
+                 bookingManager.model.change_state('entity_updated_successfully');
+                 alert('Cliente actualizado con éxito');
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error actualizando cliente');
+               },
+              complete: function(jqXHT, textStatus) {
+                if (!unlock) {
+                    YSDGui.unLockBackground();
+                }
+              }
+           });          
+        }
+
+      });
+
+      // Update reservation from customer
+      $('#sync_customer_btn').bind('click', function(){
+
+        if (confirm('¿Está seguro que desea actualizar los datos de la reserva con los datos del cliente?')) {
+           var url = '/api/booking/'+entity.id+'/customer';
+           YSDGui.lockBackground('#bbb');
+           var unlock = false;              
+           $.ajax({
+               type: 'PUT',
+               url : url,
+               success: function(data, textStatus, jqXHR) {
+                 unlock = true;
+                 YSDGui.unLockBackground();                    
+                 bookingManager.model.synchronizeCurrentEntity(data);
+                 bookingManager.model.change_state('entity_updated_successfully');
+                 alert('Reserva actualizada con éxito');
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error actualizando reserva');
+               },
+              complete: function(jqXHT, textStatus) {
+                if (!unlock) {
+                    YSDGui.unLockBackground();
+                }
+              }
+           });          
+        }
+
+      });
+
 
     }
 
@@ -497,6 +567,12 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
             self.updateLineResource($(this)[0]);
         });
         $('.customer_2_weight').bind('change', function() {
+            self.updateLineResource($(this)[0]);
+        });
+        $('.km_miles_on_pickup').bind('blur', function() {
+            self.updateLineResource($(this)[0]);
+        });
+        $('.km_miles_on_return').bind('blur', function() {
             self.updateLineResource($(this)[0]);
         });
         $('.booking_item_reference').bind('change', function() {
@@ -1150,6 +1226,42 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
     }
 
+    this.prepareFormNewCharge = function(entity) { /* Show the form to create new charge */
+
+        var html = tmpl('new_charge_script', {entity: entity});
+
+        $('#booking_management_modal_container .modal-title').html('Nuevo cobro');
+        $('#booking_management_modal_container .modal-body').html(html);
+        $('#booking_management_modal_container').modal('show');
+
+        $('#new_charge_button').unbind('click');
+        $('#new_charge_date').datetimepicker(
+            {controlType: 'select', showTimezone: false, useLocalTimezone: true, 
+             numberOfMonths:1, dateFormat: 'dd/mm/yy'},
+            '<%= session[:locale] %>');
+        $('#new_charge_date').datetimepicker('setDate', new Date());
+        $('#new_charge_amount').autoNumeric('init',{aSep:''});
+        $('#new_charge_button').bind('click', function(){
+           var formdata = $('form[name="charge"]').formParams(true);
+           var json_request = JSON.stringify(formdata);
+           $.ajax({
+               type: 'POST',
+               data : json_request,
+               url : '/api/booking/charge',
+               success: function(data, textStatus, jqXHR) {
+                 bookingManager.model.synchronizeCurrentEntity(data);
+                 bookingManager.model.change_state('entity_updated_successfully');
+                 alert('<%=t.booking_management.charge_form.done%>');
+                 $('#booking_management_modal_container').modal('hide');
+               },
+               error: function(data, textStatus, jqXHR) {
+                 alert('Error updating resource');
+               }
+           });
+        });       
+
+    }
+
     this.prepareFormNewInvoice = function(entity) { /* Show the form to create new invoice */
 
       var html = tmpl('new_invoice_script', {entity: entity});
@@ -1164,6 +1276,17 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                                         locale);
       $('#new_invoice_date').datepicker('setDate', new Date());
       $('#new_invoice_price_without_taxes').autoNumeric('init',{aSep:''});
+
+      $('#new_invoice_manual_concept').bind('change', function(){
+        if ($('#new_invoice_manual_concept').is(':checked')) {
+          $('form[name=new_invoice_form] select[name=concept]').hide();
+          $('form[name=new_invoice_form] input[name=concept]').show();
+        }
+        else {
+          $('form[name=new_invoice_form] select[name=concept]').hide();
+          $('form[name=new_invoice_form] input[name=concept]').show(); 
+        }
+      }); 
 
       $('form[name=new_invoice_form]').data('validator', null);
       $('form[name=new_invoice_form]').unbind('validate');
@@ -1186,10 +1309,12 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                     required: true
                 },
                 'concept': {
-                    required: true
+                    required: true,
+                    minlength: 1
                 },
-                'concept_item': {
-                    required: true
+                'price_without_taxes': {
+                    required: true,
+                    min: 0.01,
                 }
             },
 
@@ -1198,10 +1323,12 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
                     required: 'Fecha factura obligatoria'
                 },
                 'concept': {
-                    required: 'Concepto factura obligatorio'
+                    required: 'Concepto factura obligatorio',
+                    minlength: 'Concepto factura obligatorio'
                 },
-                'concept_item': {
-                    required: 'Concepto línea factura obligatorio'
+                'price_without_taxes': {
+                    required: 'Concepto línea factura obligatorio',
+                    min: 'El importe debe ser mayor que 0'
                 }
             }
 
@@ -1212,6 +1339,15 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
         if ($('form[name=new_invoice_form]').valid()) {
           var formdata = $('form[name="new_invoice_form"]').formParams(true);
+          if (!($('#new_invoice_manual_concept').is(':checked'))) {
+            formdata.concept = $('form[name=new_invoice_form] select[name=concept]').val();
+          }          
+          if ($('#new_invoice_taxes_included').is(':checked')) {
+            formdata.taxes_included = true;
+          }
+          else {
+            formdata.taxes_included = false;
+          }
           var json_request = JSON.stringify(formdata);
           $.ajax({
                  type: 'POST',

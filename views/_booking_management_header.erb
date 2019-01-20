@@ -7,7 +7,7 @@
         </div>
         <div class="pull-right">
             <%= partial :booking_management_workflow %>
-            <%= partial :booking_management_actions %>
+            <%= partial :booking_management_actions, locals: {booking_item_family: booking_item_family} %>
             <% if @addon_sales_channels %>
                   <form name="sales_channel_form" class="form-inline" style="display: inline">
                     <input type="hidden" name="id" value="<%%=entity.id%>"/>                    

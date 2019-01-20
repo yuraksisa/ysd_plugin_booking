@@ -288,12 +288,6 @@
           <label class="fieldtitle">Matrícula (identificador)</label>
           <input type="text" name="booking_item_stock_plate" class="fieldcontrol" maxlength="80" value="<%%=entity.booking_item_stock_plate%>"/> 
         </div>
-        <% if booking_item_family.driver %>
-        <div class="formrow">
-          <label class="fieldtitle">Km entrega</label>
-          <input type="text" name="km_miles_on_pickup" class="fieldcontrol" maxlength="80" value="<%%=entity.km_miles_on_pickup%>"/>
-        </div>
-        <% end %>
       </div>
       <div class="grid_6">
         <div class="left-margin">
@@ -313,12 +307,6 @@
             <label class="fieldtitle"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['resource_characteristic_4'] %></label>
             <input type="text" name="booking_item_characteristic_4" class="fieldcontrol" maxlength="80" value="<%%=entity.booking_item_characteristic_4%>"/> 
           </div>
-          <% if booking_item_family.driver %>
-          <div class="formrow">
-            <label class="fieldtitle">Km devolución</label>
-            <input type="text" name="km_miles_on_return" class="fieldcontrol" maxlength="80" value="<%%=entity.km_miles_on_return%>"/>
-          </div>
-          <% end %>
         </div>                                      
       </div>
     </div>
@@ -333,40 +321,103 @@
     </div>
   </form>
 </script>
+
+<!-- New charge -->
+<script type="text/tmpl" id="new_charge_script">
+  <form name="charge">
+      <input type="hidden" name="id" value="<%%=entity.id%>"/>                   
+      <div class="formrow">
+        <label for="date" class="fieldtitle"><%=t.booking_management.charge_form.date%></label>
+        <input type="text" name="date" id="new_charge_date" class="fieldcontrol" size="30" maxlength="16"/>
+      </div>
+
+      <div class="formrow">
+        <label for="payment_method" class="fieldtitle"><%=t.booking_management.charge_form.payment_method%></label>
+        <select name="payment_method_id" class="fieldcontrol">
+          <option value="bank_transfer"><%=t.booking_management.charge_form.bank_transfer%></option>
+          <option value="cash"><%=t.booking_management.charge_form.cash%></option>
+          <option value="credit_card"><%=t.booking_management.charge_form.credit_card%></option>
+        </select> 
+      </div>
+
+      <div class="formrow">
+        <label for="amount" class="fieldtitle"><%=t.booking_management.charge_form.amount%></label>
+        <input type="text" name="amount" id="new_charge_amount" class="fieldcontrol" size="30" maxlength="10"/>
+      </div>
+
+      <div class="navigation-bar bottom-margin">
+        <div class="navigation-bar-crud-buttons right-float">
+           <input id="new_charge_button" type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
+        </div>
+      </div>  
+  </form>
+</script>
+
 <!-- New invoice -->
 <% if @addon_invoicing %>
 <script type="text/tmpl" id="new_invoice_script">
-  <form name="new_invoice_form" class="all-space" style="background: white; min-width: 300px">
-    <div class="formrow">
-      <label class="fieldtitle">Fecha</label>
-      <input type="text" name="date" id="new_invoice_date" class="fieldcontrol"/>
+
+  <form name="new_invoice_form" class="form-horizontal" style="background: white; min-width: 300px">
+    
+    <div class="form-group">
+       <label class="col-md-12"><%= t.invoices.form.date.label %></label>
+       <div class="col-md-12">
+         <input type="text" name="date" id="new_invoice_date" maxlength="10" class="form-control"/>
+       </div>
     </div>
-    <div class="formrow">
-      <label class="fieldtitle">Concepto factura</label>
-      <input type="text" name="concept" id="new_invoice_concept" class="fieldcontrol" value="Factura reserva #<%%=entity.id%>"/>
+
+    <div class="form-group">
+       <label class="col-md-12"><%= t.invoices.form.invoice_item.concept.label %></label>
+       <div class="col-md-11">
+          <select name="concept" class="form-control">
+             <option value=""><%= t.invoices.form.select_concept %></option>
+             <% @concept.classifier_terms.each do |term| %>
+               <option value="<%=term.name%>"><%=term.name%></option>
+             <% end %>
+          </select>       
+         <input type="text" name="concept" id="new_invoice_concept" class="fieldcontrol" style="display: none"/>
+       </div>
+    </div>
+
+    <div class="form-group">
+      <label class="css-input switch switch-sm switch-primary" style="margin-left: 15px">
+        <input type="checkbox" id="new_invoice_manual_concept"><span></span> <%= t.invoices.form.manual_concept.label %>
+      </label>
+    </div>     
+
+    <hr>
+
+    <div class="form-group">
+       <label class="col-md-12"><%= t.invoices.form.invoice_item.vat_type.label %></label>
+       <div class="col-md-11">
+         <select name="vat_type" id="new_invoice_vat_type" class="form-control">
+          <% @taxes.vat_types.each do |key, value| %>
+            <option value="<%=key%>"><%=value%></option>
+          <% end %>
+        </select>
+       </div>
+    </div>
+
+    <div class="form-group">
+       <label class="col-md-12"><%= t.invoices.form.invoice_item.price.label %></label>
+       <div class="col-md-12">
+         <input type="text" name="price" id="new_invoice_price" class="form-control" value="<%%=new Number(entity.total_cost).toFixed(2)%>"/>
+       </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-md-12 checkbox">
+         <label for="maintenance_official_revision_last_ok">
+           <input type="checkbox" id="new_invoice_taxes_included" checked/><%= t.invoices.form.invoice_item.taxes_included.label %>  
+         </label>
+      </div>  
     </div>
     <hr>
-    <div class="formrow">
-      <label class="fieldtitle">Concepto línea factura</label>
-      <input type="text" name="item_concept" id="new_invoice_item_concept" class="fieldcontrol" value="Alquiler reserva #<%%=entity.id%>"/>
-    </div>    
-    <div class="formrow">
-      <label class="fieldtitle">Tipo de impuestos</label>
-      <select name="vat_type" id="new_invoice_vat_type" class="fieldcontrol">
-        <% @taxes.vat_types.each do |key, value| %>
-          <option value="<%=key%>"><%=value%></option>
-        <% end %>
-      </select>
-    </div>
-    <div class="formrow">
-      <label class="fieldtitle">Importe</label>
-      <input type="text" name="price_without_taxes" id="new_invoice_price_without_taxes" class="fieldcontrol" value="<%%=new Number(entity.total_cost / 1.21).toFixed(2)%>"/>
-    </div>
-    <div class="navigation-bar bottom-margin">
-      <div class="navigation-bar-crud-buttons right-float">
-        <input id="create_invoice_button" type="button" class="form-button green-button" value="<%=t.entitymanagement.create%>"/>
+    <div class="form-group">
+      <div class="col-md-9 col-md-offset-3">
+          <input id="create_invoice_button" type="button" class="btn btn-sm btn-primary pull-right" value="<%=t.entitymanagement.create%>"/>
       </div>
-    </div>     
+    </div>        
   </form>
 </script>
 <% end %>

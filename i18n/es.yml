@@ -550,6 +550,15 @@ booking_payment_status:
   deposit: Depósito
   total: Total  
   refunded: Devuelto
+booking_payment_method:
+  cash: Efectivo
+  bank_transfer: Transferencia bancaria
+  credit_card: Tarjeta de crédito/débito
+  redsys256: TPV Virtual
+  santander: TPV Virtual
+  pi4b: TPV Virtual
+  cecabank: TPV Virtual
+  paypal_standard: Paypal  
 #
 # == New reservation from customer
 #  
@@ -759,6 +768,7 @@ booking_management:
   title: Reservas
   description: <p>Consultar las reservas.</p>
   print_contract: Imprimir contrato
+  print_qr: QR
   print_contract_short: Contrato
   table:
     rental_location: Centro
@@ -855,7 +865,7 @@ booking_management:
     charges_title: Cobros
     charge_date: Fecha
     charge_payment_method: Forma pago
-    charge_amount: Cantidad
+    charge_amount: Importe
     charge_status: Estado      
     days: Días
     cost: Precio
@@ -959,6 +969,8 @@ booking_management:
       height: Altura
       weight: Peso
       resource: Recurso
+      usage_pickup: Km entrega
+      usage_return: Km devolución
     planning_color: 
       title: Color en el planning
     created_by_manager: Creada en el backend

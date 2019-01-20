@@ -1731,6 +1731,106 @@ module Sinatra
 
         end
 
+        # -------------------------- CUSTOMER ----------------------------
+
+        #
+        # Create customer from the reservation
+        #
+        # == Parameters::
+        #
+        # id:: Reservation Id
+        #        
+        app.post '/api/booking/:id/customer', allowed_usergroups: ['booking_manager', 'booking_operator', 'staff'] do
+
+          if booking = BookingDataSystem::Booking.get(params[:id])
+            unless booking.customer
+              booking.transaction do
+                customer = booking.create_customer
+                booking.customer = customer
+                booking.save
+              end
+            end
+            status 200
+            content_type :json
+            booking.to_json
+          else
+            status 404  
+          end    
+
+        end  
+
+        #
+        # Assign a customer to the reservation
+        #
+        app.post '/api/booking/:id/set-customer', allowed_usergroups: ['booking_manager','booking_operator', 'staff'] do
+
+          if booking = BookingDataSystem::Booking.get(params[:id]) and customer = ::Yito::Model::Customers::Customer.get(params[:customer_id])
+            booking.transaction do
+              booking.customer = customer
+              booking.update_data_from_customer
+              booking.save
+            end
+            status 200
+            content_type :json
+            booking.to_json
+          else
+            status 404  
+          end  
+
+        end  
+
+
+        #
+        # Update the booking customer data from the customer 
+        #
+        # == Parameters::
+        #
+        # id:: Reservation Id
+        #
+        app.put '/api/booking/:id/customer', allowed_usergroups: ['booking_manager', 'booking_operator', 'staff'] do
+
+          if booking = BookingDataSystem::Booking.get(params[:id])
+            if booking.customer
+              booking.transaction do
+                booking.update_data_from_customer
+                booking.save
+              end  
+            end
+            status 200
+            content_type :json
+            booking.to_json
+          else
+            status 404  
+          end  
+
+        end  
+
+        #
+        # Update the customer from the booking customer data 
+        #
+        # == Parameters::
+        #
+        # id:: Reservation Id
+        #
+        app.put '/api/booking/:id/sync-customer', allowed_usergroups: ['booking_manager', 'booking_operator', 'staff'] do
+
+          if booking = BookingDataSystem::Booking.get(params[:id])
+            if booking.customer
+              booking.transaction do
+                booking.update_customer_data
+                p "booking-customer:#{booking.customer.valid?}--#{booking.customer.errors.full_messages.inspect}"
+                booking.customer.save
+              end  
+            end
+            status 200
+            content_type :json
+            booking.to_json
+          else
+            status 404  
+          end  
+
+        end  
+
         # -------------------------- INVOICING ---------------------------
 
         #
@@ -1739,12 +1839,17 @@ module Sinatra
         #
         # == Parameters::
         #
+        # id:: Reservation Id
+        #
+        # == Body parameters::
+        #
         # {
         #   date: '2018-12-01',
         #   concept: 'Factura reserva #n',
         #   item_concept: 'Alquiler reserva #n',
         #   vat_type: 'standard',
-        #   price_without_taxes: 100,
+        #   price: 100,
+        #   taxes_included: true
         # }
         # 
         #
@@ -1771,7 +1876,12 @@ module Sinatra
                 invoice.customer = customer  
               end         
               invoice.save
-              invoice = invoice.add_invoice_item(data[:item_concept], data[:vat_type].to_sym, @taxes, 1, data[:price_without_taxes])
+              invoice = invoice.add_invoice_item(data[:concept], 
+                                                 data[:vat_type].to_sym, 
+                                                 @taxes, 
+                                                 1, 
+                                                 data[:price], 
+                                                 data[:taxes_included])
             end
             status 200
             content_type :json

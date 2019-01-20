@@ -1,69 +1,37 @@
         <div class="row">
-          <div class="col-lg-7">
+          <div class="col-lg-12">
             <%% if (entity.charges.length > 0) { %>
-               <table class="table table-striped">
-                  <thead class="table-header">
-                    <tr>
-                      <th class="table-cell text-center" scope="col" style="width:5%">#</th>
-                      <th class="table-cell text-center" scope="col" style="width:30%"><%=t.booking_management.form.charge_date%></th>
-                      <th class="table-cell text-center" scope="col" style="width:20%"><%=t.booking_management.form.charge_payment_method%></th>
-                      <th class="table-cell text-center" scope="col" style="width:20%"><%=t.booking_management.form.charge_amount%></th>
-                      <th class="table-cell text-center" scope="col" style="width:20%"><%=t.booking_management.form.charge_status%></th>
-                      <th class="table-cell text-center" scope="col" style="width:5%"></th>
+              <table class="table table-striped">
+                <thead class="table-header">
+                  <tr>
+                    <th class="table-cell text-center" scope="col" style="width:5%">#</th>
+                    <th class="table-cell text-center" scope="col" style="width:10%"><%=t.booking_management.form.charge_date%></th>
+                    <th class="table-cell text-center" scope="col" style="width:10%"><%=t.booking_management.form.charge_payment_method%></th>
+                    <th class="table-cell text-center" scope="col" style="width:10%"><%=t.booking_management.form.charge_amount%></th>
+                    <th class="table-cell text-center" scope="col" style="width:10%"><%=t.booking_management.form.charge_status%></th>
+                    <th class="table-cell text-center" scope="col" style="width:35%"></th>
+                  </tr>
+                </thead>
+                <tbody class="table-tbody">
+                  <%% for (var chargeIdx=entity.charges.length-1; chargeIdx >=0 ; chargeIdx--) { %>
+                    <tr class="table-row">
+                       <td class="table-cell text-center"><span style="position:relative; top: 7px"><%%=entity.charges[chargeIdx].id%></span></td>
+                       <td class="table-cell text-center"><span style="position:relative; top: 7px"><%%=self.formatDate(entity.charges[chargeIdx].date, 'dd.MM.yyyy HH:mm')%></span></td>
+                       <td class="table-cell text-center">
+                          <span style="position:relative; top: 7px"><%%= self.model.entityHooks[0].paymentMethodDescription[entity.charges[chargeIdx].payment_method_id]%></span></td>
+                       <td class="table-cell text-center"><span style="position:relative; top: 7px"><%%= new Number(entity.charges[chargeIdx].amount).toFixed(2) %></span></td>
+                       <td class="table-cell text-center"><span class="element-status <%%=self.model.entityHooks[0].chargeStatusClass(entity.charges[chargeIdx])%>" style="position:relative; top: 7px"><%%= self.model.entityHooks[0].chargeStatusDescription[entity.charges[chargeIdx].status] %></span></td>
+                       <td class="table-cell">
+                        <%% if (['bank_transfer','credit_card','cash'].indexOf(entity.charges[chargeIdx].payment_method_id)>-1) {%>
+                        <span class="btn btn-sm btn-default remove-booking-charges remove-icon" data-charge-id="<%%=entity.charges[chargeIdx].id%>" data-booking-id="<%%=entity.id%>" role="button"><i class="fa fa-trash" style="position:relative; top: -2px"></i>&nbsp;Eliminar</span>
+                        <%% } %>
+                       </td>
                     </tr>
-                  </thead>
-                  <tbody class="table-tbody">
-                    <%% for (var chargeIdx=entity.charges.length-1; chargeIdx >=0 ; chargeIdx--) { %>
-                      <tr class="table-row">
-                         <td class="table-cell text-center"><%%=entity.charges[chargeIdx].id%></td>
-                         <td class="table-cell text-center"><%%=self.formatDate(entity.charges[chargeIdx].date, 'dd.MM.yyyy HH:mm')%></td>
-                         <td class="table-cell text-center"><%%=entity.charges[chargeIdx].payment_method_id%></td>
-                         <td class="table-cell text-center"><%%= new Number(entity.charges[chargeIdx].amount).toFixed(2) %></td>
-                         <td class="table-cell text-center"><span class="element-status <%%=self.model.entityHooks[0].chargeStatusClass(entity.charges[chargeIdx])%>"><%%= self.model.entityHooks[0].chargeStatusDescription[entity.charges[chargeIdx].status] %></span></td>
-                         <td class="table-cell">
-                          <%% if (['bank_transfer','credit_card','cash'].indexOf(entity.charges[chargeIdx].payment_method_id)>-1) {%>
-                          <span class="remove-booking-charges ui-icon ui-icon-trash remove-icon" data-charge-id="<%%=entity.charges[chargeIdx].id%>" data-booking-id="<%%=entity.id%>"></span>
-                          <%% } %>
-                         </td>
-                      </tr>
-                    <%% } %>
-                  </tbody>
-               </table>
-            <%% } else { %>
-              <p class="all-space"><%=t.booking_management.form.no_charges%></p>
-            <%% } %>
-          </div>
-          <div class="col-lg-5">
-                <div class="top-margin-top-space left-margin">
-                  <form name="charge" style="display:none">
-                    <div class="grid_6">
-                      <input type="hidden" name="id" value="<%%=entity.id%>"/>                   
-                      <div class="formrow">
-                        <label for="date" class="fieldtitle"><%=t.booking_management.charge_form.date%></label>
-                        <input type="text" name="date" id="date" class="fieldcontrol" size="30" maxlength="16"/>
-                      </div>
-      
-                      <div class="formrow">
-                        <label for="payment_method" class="fieldtitle"><%=t.booking_management.charge_form.payment_method%></label>
-                        <select name="payment_method_id" class="fieldcontrol">
-                          <option value="bank_transfer"><%=t.booking_management.charge_form.bank_transfer%></option>
-                          <option value="cash"><%=t.booking_management.charge_form.cash%></option>
-                          <option value="credit_card"><%=t.booking_management.charge_form.credit_card%></option>
-                        </select> 
-                      </div>
-
-                      <div class="formrow">
-                        <label for="amount" class="fieldtitle"><%=t.booking_management.charge_form.amount%></label>
-                        <input type="text" name="amount" id="amount" class="fieldcontrol" size="30" maxlength="10"/>
-                      </div>
-
-                      <div class="navigation-bar bottom-margin">
-                        <div class="navigation-bar-crud-buttons right-float">
-                           <input id="new_charge_button" type="button" class="update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.create%>"/>
-                        </div>
-                      </div>  
-                    </div>
-                  </form>
-                </div>
-            </div>
-          </div>
+                  <%% } %>
+                </tbody>
+              </table>
+          <%% } else { %>
+            <p class="text-center"><%=t.booking_management.form.no_charges%></p>
+          <%% } %>
+        </div>
+      </div>

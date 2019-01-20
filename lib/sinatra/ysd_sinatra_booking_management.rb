@@ -193,6 +193,7 @@ module Sinatra
           @addon_invoicing = (addons and addons.has_key?(:addon_invoicing) and addons[:addon_invoicing])
           if @addon_invoicing
             @taxes = ::Yito::Model::Invoices::Taxes.first(name: 'taxes.default')
+            @concept = ::Yito::Model::Classifier::ClassifierTaxonomy.first({name: 'customer_invoice_concepts'})
           end  
           @multilanguage = settings.multilanguage_site
           @languages = Model::Translation::TranslationLanguage.all
@@ -307,7 +308,35 @@ module Sinatra
              status 404
            end
 
-        end          
+        end      
+
+        #
+        # Print the QR document (PDF document)
+        # -----------------------------------------------------------------------------------------------------------
+        #
+        app.get '/admin/booking/qr-doc/:id', :allowed_usergroups => ['booking_manager', 'booking_operator','staff'] do
+
+          if booking = BookingDataSystem::Booking.get(params[:id])
+            company = {
+                      name: SystemConfiguration::Variable.get_value('site.company.name'),
+                      document_id: SystemConfiguration::Variable.get_value('site.company.document_id'),
+                      phone_number: SystemConfiguration::Variable.get_value('site.company.phone_number'),
+                      email: SystemConfiguration::Variable.get_value('site.company.email'),
+                      address_1: SystemConfiguration::Variable.get_value('site.company.address_1'),
+                      address_2: SystemConfiguration::Variable.get_value('site.company.address_2'),
+                      city: SystemConfiguration::Variable.get_value('site.company.city'),
+                      state: SystemConfiguration::Variable.get_value('site.company.state'),
+                      zip: SystemConfiguration::Variable.get_value('site.company.zip'),
+                      country: SystemConfiguration::Variable.get_value('site.company.country')
+                     }            
+            contract = ::Yito::Model::Booking::Pdf::QRcode.new(booking, company).build.render
+            content_type 'application/pdf'
+            contract
+          else
+            status 404
+          end      
+        end  
+
 
         # -------------------------------------- Assign stock -------------------------------------------------------
 

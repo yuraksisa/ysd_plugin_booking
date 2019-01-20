@@ -391,12 +391,12 @@ module Sinatra
         app.get '/admin/booking/reports/charges-pdf/?*', :allowed_usergroups => ['booking_manager'] do
 
           year = Date.today.year
-          date_from = Date.civil(year,1,1)
-          date_to = Date.civil(year,12,31)
+          @date_from = Date.today - 30
+          @date_to = Date.today
 
           if params[:from]
             begin
-              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
             rescue
               logger.error("charges from date not valid #{params[:from]}")
             end
@@ -404,14 +404,14 @@ module Sinatra
 
           if params[:to]
             begin
-              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
             rescue
               logger.error("charges from date not valid #{params[:to]}")
             end
           end
 
           content_type 'application/pdf'
-          pdf = ::Yito::Model::Booking::Pdf::Charges.new(date_from, date_to).build.render
+          pdf = ::Yito::Model::Booking::Pdf::Charges.new(@date_from, @date_to + 1).build.render
         end
 
         #
@@ -421,12 +421,12 @@ module Sinatra
 
           year = Date.today.year
 
-          date_from = Date.civil(year,1,1)
-          date_to = Date.civil(year,12,31)
+          @date_from = Date.today - 30
+          @date_to = Date.today
 
           if params[:from]
             begin
-              date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
+              @date_from = DateTime.strptime(params[:from], '%Y-%m-%d')
             rescue
               logger.error("reservation from date not valid #{params[:from]}")
             end
@@ -434,13 +434,13 @@ module Sinatra
 
           if params[:to]
             begin
-              date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
+              @date_to = DateTime.strptime(params[:to], '%Y-%m-%d')
             rescue
               logger.error("reservation from date not valid #{params[:to]}")
             end
           end
 
-          @charges = BookingDataSystem::Booking.charges(date_from, date_to)
+          @charges = BookingDataSystem::Booking.charges(@date_from, @date_to + 1)
           load_page(:report_charges)
 
         end

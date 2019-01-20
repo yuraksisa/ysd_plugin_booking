@@ -2,7 +2,7 @@
                      <table class="table">
                         <thead class="table-header">
                           <tr>
-                            <th class="table-cell left_text" scope="col" style="width: 120px"><%=t.booking_management.form.booking_resources.item%></th>
+                            <th class="table-cell left_text" scope="col" style="width: 200px"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['category_singular']%></th>
                             <% if booking_item_family.named_resources %>
                             <th class="table-cell left_text" scope="col" style="width: 280px"><%=t.booking_management.form.booking_resources.user%></th>
                             <th class="table-cell left_text" scope="col"><%=t.booking_management.form.booking_resources.document_id%></th>
@@ -15,7 +15,11 @@
                             <% if booking_item_family.weight %>                       
                             <th class="table-cell centered_text" scope="col"><%=t.booking_management.form.booking_resources.weight%></th>
                             <% end %>                            
-                            <th class="table-cell centered_text" scope="col"  style="width: 120px"><%=t.booking_management.form.booking_resources.resource%></th>
+                            <th class="table-cell centered_text" scope="col"  style="width: 120px"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[booking_item_family.business_type.to_s]['product_singular']%></th>
+                            <% if booking_item_family.driver_license %>                            
+                            <th class="table-cell centered_text" scope="col" style="width: 200px"><%=t.booking_management.form.booking_resources.usage_pickup%></th>
+                            <th class="table-cell centered_text" scope="col" style="width: 200px"><%=t.booking_management.form.booking_resources.usage_return%></th>
+                            <% end %> 
                             <th class="table-cell" scope="col"></th>
                           </tr>
                         </thead>
@@ -23,7 +27,8 @@
                          <%% for (var lineIdx=0; lineIdx < entity.booking_lines.length; lineIdx++) { %>
                             <%% for (var resourceIdx=0; resourceIdx < entity.booking_lines[lineIdx].booking_line_resources.length; resourceIdx++) { %>
                             <tr class="table-row">
-                               <td class="table-cell left_text smaller_text more_contrast_text" style="position:relative; top: 10px"><%%= entity.booking_lines[lineIdx].item_description %></td>
+                               <td class="table-cell left_text more_contrast_text">
+                                  <span style="position:relative; top: 10px"><%%= entity.booking_lines[lineIdx].item_description %></span></td>
                                <% if booking_item_family.named_resources %>
                                <td class="table-cell left_text">
                                  <form data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
@@ -78,7 +83,21 @@
                                      </form>
                                    <%% } %>
                                  </div>
+                               </td>                               
+                               <% if booking_item_family.driver_license %>
+                               <td class="table-cell centered_text">
+                                  <form data-name="km_miles_on_pickup" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                    <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                    <input class="fieldcontrol km_miles_on_pickup text-right" type="text" maxlength="10" size="10" name="km_miles_on_pickup" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].km_miles_on_pickup%>" autocomplete="off"/>
+                                  </form>
                                </td>
+                               <td class="table-cell centered_text">
+                                  <form data-name="km_miles_on_return" data-lineindex="<%%=lineIdx%>" data-resourceindex="<%%=resourceIdx%>">
+                                    <input type="hidden" name="id" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].id%>"/>
+                                    <input class="fieldcontrol km_miles_on_return text-right" type="text" maxlength="10" size="10" name="km_miles_on_return" value="<%%=entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].km_miles_on_return%>" autocomplete="off"/>
+                                  </form>
+                               </td>                                                                
+                               <% end %>
                                <td class="table-cell"></td>
                             </tr>
                             <%% if (entity.booking_lines[lineIdx].booking_line_resources[resourceIdx].pax == 2) { %>
