@@ -353,6 +353,59 @@
   </form>
 </script>
 
+<!-- Create customer assignation -->
+<script type="text/tmpl" id="create_customer_assignation_script">
+
+  <div class="alert alert-warning">
+    <%=t.booking_management.form.customer_creation.customer_exists_modal.warning_message%>
+  </div>
+
+  <form name="new_customer_select_form">  
+    <div class="form-group">
+      <table id="customer_list_table" class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th><%= t.customer_selection.table.full_name %></th>
+            <th><%= t.customer_selection.table.document_id %></th>
+            <th><%= t.customer_selection.table.company_name %></th> 
+            <th><%= t.customer_selection.table.email %></th>
+            <th><%= t.customer_selection.table.phone_number %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%% for (var idx=0; idx<data.length; idx++) {%>
+            <tr>
+              <td><input type="radio" class="form-control" name="id" style="position: relative; top: -12px"
+                 value="<%%=data[idx].id%>"></td>
+              <td><%%= data[idx].full_name%></td>
+              <td><%%= data[idx].document_id%></td>
+              <td><%%= data[idx].company_name%></td>
+              <td><%%= data[idx].email%></td>
+              <td><%%= data[idx].phone_number%></td>
+            </tr> 
+          <%% } %>
+        </tbody>
+      </table> 
+    </div> 
+    <hr>
+        <div class="form-group">
+          <div class="col-md-12">
+            <div class="pull-right">
+            <button id="new_customer_create_customer_button" class="button btn btn-sm btn-danger" type="button"><i class="fa fa-save push-5-r"></i> <%=t.booking_management.form.customer_creation.customer_exists_modal.create%></button>
+            <button id="new_customer_assign_customer_button" class="button btn btn-sm btn-primary" type="button"><i class="fa fa-arrow-circle-right push-5-r"></i> <%=t.booking_management.form.customer_creation.customer_exists_modal.assign%></button>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+  </form>
+</script>
+
+</script>
+
 <!-- New invoice -->
 <% if @addon_invoicing %>
 <script type="text/tmpl" id="new_invoice_script">

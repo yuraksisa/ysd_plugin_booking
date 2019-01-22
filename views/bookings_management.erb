@@ -1,3 +1,12 @@
+<style type="text/css">
+  .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .cancel { 
+     background-color: #d26a5c;
+     background-image: none;
+         border-color: #c54736;
+
+  }
+</style>
+
 <%= include('entity-management') %>
 
 <!-- ======================================== -->
@@ -47,6 +56,10 @@
 <!-- ========================================== -->
 <%= partial :select_customer %>
 
+<div id="dialog-confirm" title="<%=t.booking_management.form.customer_assignation.title%>" style="display:none">
+  <%=t.booking_management.form.customer_assignation.dialog_message%>
+</div>
+
 <!-- Renders the element description -->
 
 <script type="text/tmpl" id="elements_title">
@@ -62,7 +75,7 @@
   <form name="contents_search" id="contents_search" style="overflow:visible" class="form-inline">
      <div class="form-row">
        <input type="text" name="search" class="search-entity-input form-control"
-              maxlength="60" size="20" placeholder="<%=t.entitymanagement.search%>"/>
+              maxlength="60" size="40" placeholder="<%=t.booking_management.form.search_placeholder%>" autocomplete="off"/>
        <button class="btn btn-primary search-entity-button" type="button"><i class="si si-magnifier"></i></button>
        <select name="status" class="search-entity-control form-control">
          <option value="all">Todas</option>
@@ -108,25 +121,9 @@
 <script type="text/tmpl" id="elements_list_template">
     <tr class="table-row element-navigation-detail" rel="<%%= index %>" id="element_row_<%%=index%>">
       <td class="table-cell"><strong class="text-primary"><%%= entity.id %></strong></td>
-      <td class="table-cell"><strong><%%= entity.customer_name %> <%%=entity.customer_surname%></strong></td>
+      <td class="table-cell"><strong><%% if (entity.customer_id != null) {%><span class="fa fa-user-circle-o"></span>&nbsp;<%%}%><%%= entity.customer_name %> <%%=entity.customer_surname%></strong></td>
       <td class="table-cell centered_text">
-         <% if booking_item_family.multiple_items? %>
-           <%% if (entity.booking_lines) {%>
-             <%% for (var idx=0;idx<entity.booking_lines.length;idx++) { %>
-             <%%= entity.booking_lines[idx].item_id %> (<%%= entity.booking_lines[idx].quantity %> u.)<br>
-             <%% } %>
-           <%% } else {%>
-           <%%= entity.item_id %>
-           <%% } %>
-         <% else %>
-           <%% if (entity.booking_lines) { %> 
-             <%% if (entity.booking_lines.length > 0) { %>
-             <%%= entity.booking_lines[0].item_id %>
-             <%% } %>
-           <%% } else { %>
-              <%%= entity.item_id %>
-           <%% } %>
-         <% end %>
+        <%%= entity.item_id %>
       </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_from,'dd.MM.yyyy') %> </td>
       <td class="table-cell centered_text"><%%= self.formatDate(entity.date_to,'dd.MM.yyyy') %> </td>
@@ -167,6 +164,8 @@
                                                        multiple_rental_locations: multiple_rental_locations,
                                                        driver_min_age_rules: driver_min_age_rules} %>
 
+      <!-- Customer -->
+                                                       
       <div class="row">
         <div class="col-lg-6">
           <div class="block">
@@ -190,7 +189,7 @@
                     <button class="btn btn-sm" id="select_customer_btn"><i class="fa fa-search-plus" title="Seleccionar/asignar cliente a la reserva"></i></button>
                     </li>  
                   <%% } %>  
-                </ul>            
+                </ul>  
                 <h3 class="block-title"><%=t.booking_management.form.customer_tab%></h3>
             </div>
             <div class="block-content block-content-full">
@@ -209,6 +208,8 @@
           </div>
         </div>
       </div>
+
+      <!-- Detail (lines, extras and totals) -->
 
       <div class="row">
         <div class="col-lg-12">

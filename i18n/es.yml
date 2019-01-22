@@ -795,6 +795,7 @@ booking_management:
     m2_notification: Gestor (reserva recibida con pago online)
     m3_notification: Gestor (reserva confirmada)
   form:
+    search_placeholder: "Nombre completo, teléfono, correo electrónico" 
     customer_tab: Cliente
     comments_tab: Comentarios y notas
     reservation_tab: Datos de la reserva
@@ -890,11 +891,38 @@ booking_management:
       c3_notification: Con pago
       c4_notification: Pago habilitado
     anotations: Notas
+    customer_button: Ver cliente
     customer_title: Cliente
     customer_name: Nombre
     customer_phone: Teléfono
     customer_email: Correo electrónico
     customer_language: Idioma    
+    customer_assignation:
+      title: Selección del cliente
+      dialog_title: Asignación del cliente a la reserva
+      dialog_message: > 
+                      <br>
+                      <p>¿Cómo desea actualizar la reserva?</p>
+                      <div class="alert alert-warning">
+                        <ul>
+                          <li><strong>Asignar copiando datos</strong> asigna el cliente y <u>copia los datos del cliente en el contrato</u>.</li>
+                          <li><strong>Asignar sin copiar datos</strong> asigna el cliente pero <u>mantiene los datos del contrato</u>.</li>
+                        </ul>  
+                      </div>
+      assign_copying_data: Asignar copiando datos        
+      assign_not_copying_data: Asignar sin copiar datos
+      no_assign: No asignar
+      customer_assigned_successfully: Cliente asignado con éxito
+      customer_assignation_error: Error asignando cliente
+    customer_creation:
+      confirm: ¿Está seguro que desea crear el cliente con los datos de la reserva?
+      customer_exists_modal: 
+        title: Selección / Creación de cliente
+        warning_message: >
+                         <p>Ya existen clientes con ese nombre, nif, teléfono o email. Puede elegir entre asignar la reserva al cliente existente
+                         o bien crear la ficha del cliente de todas formas.</p>
+        assign: Seleccionar
+        create: Crear                   
     customer_height_placeholder: Altura
     customer_weight_placeholder: Peso
     guests_title: Huéspedes

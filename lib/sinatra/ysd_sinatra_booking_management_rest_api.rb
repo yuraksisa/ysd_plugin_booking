@@ -275,7 +275,11 @@ module Sinatra
                   total = BookingDataSystem::Booking.all_and_count({:conditions => {:creation_date.gte => first_year_date}})
                 end
               elsif search_request.has_key?('search') and (search_request['search'].to_s.strip.length > 0)
-                total, data = BookingDataSystem::Booking.text_search(search_request['search'], page_size, offset)
+                if @booking_item_family.multiple_items?
+                  total, data = BookingDataSystem::Booking.text_search_multiple(search_request['search'], page_size, offset)
+                else  
+                  total, data = BookingDataSystem::Booking.text_search(search_request['search'], page_size, offset)
+                end  
               else
                 if @booking_item_family.multiple_items?
                   data = BookingDataSystem::Booking.reservation_search_multiple(page_size, offset)
@@ -296,7 +300,7 @@ module Sinatra
 
             content_type :json
             if params[:mode] == 'lazy'
-             data_json = BookingDataSystem::Booking.map_results(data).to_json(only: fields_lazy)
+             data_json = BookingDataSystem::Booking.map_optimized_query_results(data).to_json(only: fields_lazy)
              summary_json= {total: total}.to_json
              "{\"data\": #{data_json}, \"summary\": #{summary_json}}"
             else  
@@ -1807,7 +1811,7 @@ module Sinatra
           if booking = BookingDataSystem::Booking.get(params[:id]) and customer = ::Yito::Model::Customers::Customer.get(params[:customer_id])
             booking.transaction do
               booking.customer = customer
-              booking.update_data_from_customer
+              booking.update_data_from_customer if params[:update] == 'customer-data'
               booking.save
             end
             status 200

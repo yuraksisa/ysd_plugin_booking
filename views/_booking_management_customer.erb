@@ -1,9 +1,3 @@
-<% if @addon_invoicing %>
-<div class="alert alert-info">
-  <p>La información del cliente se almacena en la <strong>reserva</strong> para mantenerlos en el contrato.</p>
-  <p>Estos datos pueden, además, sincronizarse con los datos de la <strong>ficha de cliente</strong>.</p>
-</div>  
-<% end %>
           <form name="customer" class="form-horizontal">
             <input type="hidden" name="id" value="<%%=entity.id%>"/>
 
@@ -49,6 +43,9 @@
 
             <div class="form-group">
               <div class="col-xs-12">
+                <%% if (entity.customer_id) { %>
+                  <a href="/admin/customers/customers/<%%=entity.customer_id%>" class="button btn btn-sm btn-default" role="button" target="blank"><i class="fa fa-user-circle-o"></i>&nbsp;<%=t.booking_management.form.customer_button%></a>
+                <%% } %>
                 <% if booking_item_family.driver %>
                   <button id="main_driver_button" class="button btn btn-sm btn-default" type="button"><% if booking_item_family.driver_license %><%=t.booking_management.form.driver_tab%><%else%><%=t.booking_management.form.driver_contact_title%><%end%></button>
                   <% if booking_item_family.driver_license %>

@@ -120,30 +120,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
       // Create customer
       $('#create_customer_btn').bind('click', function(){
 
-        if (confirm('¿Está seguro que desea crear el cliente con los datos de la reserva?')) {
-           var url = '/api/booking/'+entity.id+'/customer';
-           YSDGui.lockBackground('#bbb');
-           var unlock = false;   
-           $.ajax({
-               type: 'POST',
-               url : url,
-               success: function(data, textStatus, jqXHR) {
-                 unlock = true;
-                 YSDGui.unLockBackground();                    
-                 bookingManager.model.synchronizeCurrentEntity(data);
-                 bookingManager.model.change_state('entity_updated_successfully');
-                 alert('Cliente creado con éxito');
-               },
-               error: function(data, textStatus, jqXHR) {
-                 alert('Error creando cliente');
-               },
-              complete: function(jqXHT, textStatus) {
-                if (!unlock) {
-                    YSDGui.unLockBackground();
-                }
-              }
-           });          
-        }
+        self.createCustomer(entity);
 
       });
 
@@ -1395,11 +1372,175 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
     /* ==================== CUSTOMER =================== */
 
-    this.selectCustomer = function(entity) {
+    this.assignCustomer = function(bookingId, customerId, copyCustomerData, dialogComponent){ /** Assign the customer API CALL **/
+        var url = '/api/booking/'+bookingId+'/set-customer?customer_id='+customerId;
+        if (copyCustomerData) {
+          url+='&update=customer-data';
+        }
+        $.ajax({
+            type: 'POST',
+            url : url,
+            success: function(data, textStatus, jqXHR) {
+                bookingManager.model.synchronizeCurrentEntity(data);
+                bookingManager.model.change_state('entity_updated_successfully');
+                alert('<%=t.booking_management.form.customer_assignation.customer_assigned_successfully%>');
+                dialogComponent.dialog("close");
+            },
+            error: function(data, textStatus, jqXHR) {
+                alert('<%=t.booking_management.form.customer_assignation.customer_assignation_error%>');
+            }
+        });    
+    }
 
-      selectCustomerModel.removeListener(this);
-      selectCustomerModel.addListener(this);
+    this.selectCustomerDialog = function(bookingId, customerId) { /** Show the select customer dialog: copy data or not **/
+          $("#dialog-confirm").dialog({
+              title: '<%=t.booking_management.form.customer_assignation.dialog_title%>',
+              resizable: false,
+              height: "auto",
+              width: 600,
+              modal: true,
+              buttons: [
+                {
+                  text: "<%=t.booking_management.form.customer_assignation.assign_copying_data%>",
+                  click: function() {
+                    bookingHook.assignCustomer(bookingId, customerId, true, $(this));
+                  }                                
+                },
+                {
+                  text: "<%=t.booking_management.form.customer_assignation.assign_not_copying_data%>",
+                  click: function() {
+                    bookingHook.assignCustomer(bookingId, customerId, false, $(this));
+                  }
+                },      
+                {
+                  text: "<%=t.booking_management.form.customer_assignation.no_assign%>",
+                  click: function(){
+                    $(this).dialog("close");
+                  },
+                  class: 'cancel'
+                }
+              ] 
+            });
+    }
+
+    this.selectCustomerListener = function(event) {
+      if (event.type == 'customer_selected') {
+        var currentEntity = bookingManager.model.currentEntity();
+        if (currentEntity && currentEntity.id && event && event.data && event.data.id) {
+          selectCustomerView.hide();
+          bookingHook.selectCustomerDialog(currentEntity.id, event.data.id);
+        }
+      }
+    }
+
+    this.selectCustomer = function(entity) { /** Select the reservation customer **/
+
+      selectCustomerModel.removeListener('customer_selected', this.selectCustomerListener);
+      selectCustomerModel.addListener('customer_selected', this.selectCustomerListener);
       selectCustomerView.show();
+      if (entity.customer_name.trim().length > 0) {
+        var textSearch = entity.customer_name;
+        if (entity.customer_surname.trim().length > 0) {
+          textSearch += ' ';
+          textSearch += entity.customer_surname;
+        }
+        selectCustomerModel.setText(textSearch);
+      }
+
+    }
+
+    this.createBookingCustomer = function(entity) { /** Create customer API call **/
+       var url = '/api/booking/'+entity.id+'/customer';
+       YSDGui.lockBackground('#bbb');
+       var unlock = false;   
+       $.ajax({
+           type: 'POST',
+           url : url,
+           success: function(data, textStatus, jqXHR) {
+             unlock = true;
+             YSDGui.unLockBackground();                    
+             bookingManager.model.synchronizeCurrentEntity(data);
+             bookingManager.model.change_state('entity_updated_successfully');
+             alert('Cliente creado con éxito');
+           },
+           error: function(data, textStatus, jqXHR) {
+             alert('Error creando cliente');
+           },
+          complete: function(jqXHT, textStatus) {
+            if (!unlock) {
+                YSDGui.unLockBackground();
+            }
+          }
+       });        
+    }
+
+    this.createCustomer = function(entity) { /** Create a customer from the reservation data **/
+
+
+      // Check if customer exists
+      var customerName = entity.customer_name;
+      if (entity.customer_surname.trim().length > 0) {
+        customerName += ' ';
+        customerName += entity.customer_surname;
+      }
+
+      var url = '/api/customer-check?full_name='+customerName;
+      if (entity.phone_number && entity.phone_number.trim().length > 0) {
+        url+= '&phone_number_1='+entity.phone_number;
+      }
+      if (entity.mobile_phone && entity.mobile_phone.trim().length > 0) {
+        url+= '&phone_number_2='+entity.mobile_phone;
+      }      
+      if (entity.email && entity.email.trim().length > 0) {
+        url+= '&email='+entity.email;
+      }      
+      if (entity.driver_document_id && entity.driver_document_id.trim().length > 0) {
+        url+= '&document_id='+entity.driver_document_id;
+      }      
+
+      YSDGui.lockBackground('#bbb');
+      var unlock = false;   
+      $.ajax({
+           type: 'GET',
+           url : url,
+           contentType: 'application/json; charset=utf-8',
+           success: function(data, textStatus, jqXHR) {
+             unlock = true;
+             YSDGui.unLockBackground();  
+             if (data.length == 0) {
+                if (confirm('<%=t.booking_management.form.customer_creation.confirm%>')) {
+                  bookingHook.createBookingCustomer(entity);
+                }              
+             }         
+             else {
+                var html = tmpl('create_customer_assignation_script', {data: data}); 
+                $('#booking_management_modal_container .modal-title').html('<%=t.booking_management.form.customer_creation.customer_exists_modal.title%>');
+                $('#booking_management_modal_container .modal-body').html(html);
+                $('#booking_management_modal_container').modal('show');
+                $('#new_customer_create_customer_button').unbind('click');
+                $('#new_customer_create_customer_button').bind('click', function(){
+                  $('#booking_management_modal_container').modal('hide');
+                  bookingHook.createBookingCustomer(entity);
+                });
+                $('#new_customer_assign_customer_button').unbind('click');
+                $('#new_customer_assign_customer_button').bind('click', function(){
+                  $('#booking_management_modal_container').modal('hide');
+                  bookingHook.selectCustomerDialog(entity.id, $('form[name=new_customer_select_form] input[name=id]').val());
+                });                
+             }         
+           },
+           error: function(data, textStatus, jqXHR) {
+             alert('Error comprobando cliente');
+           },
+          complete: function(jqXHT, textStatus) {
+            if (!unlock) {
+                YSDGui.unLockBackground();
+            }
+          }
+      });    
+
+
+
 
     }
 
