@@ -106,6 +106,8 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
   	    var from = this.dateFrom.toString('yyyy-MM-dd');
   	    var to = this.dateTo.toString('yyyy-MM-dd');
   	    var url = '/api/booking/planning-summary?from='+from+'&to='+to;
+        YSDGui.lockBackground('#bbb');
+        var unlock = false;   
  	      $.ajax({
   	        type: 'GET',
   	   	    url : url,
@@ -115,9 +117,16 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
                bookingPlanningModel.references = data.references;
                bookingPlanningModel.planningData = data.result;
                bookingPlanningView.update('data_available');
+               unlock = true;
+               YSDGui.unLockBackground();   
             },
             error: function(textStatus, jqXHR) {
               alert('Error obteniendo datos del planning');
+            },
+            complete: function(jqXHT, textStatus) {
+              if (!unlock) {
+                  YSDGui.unLockBackground();
+              }
             }
           });  	 
  	    }
@@ -933,8 +942,14 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
 
   		case 'data_available':
 
+        console.log('building');
+        var t1 = new Date().getTime();
   		  this.createPlanningTable();
+        var t2 = new Date().getTime();
+        console.log('createdTable:'+ ((t2-t1)/1000));
   		  this.fillPlanningTable();
+        var t3 = new Date().getTime();
+        console.log('filledTable:'+ ((t3-t2)/1000));
 
         $('.data').on('mouseover', function() {
             $(this).closest('tr').addClass('highlight');

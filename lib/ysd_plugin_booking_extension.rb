@@ -1081,14 +1081,12 @@ module Huasi
 
       case block_name
         when 'booking_operator_menu', 'booking_admin_menu'
+          #p "BUILD-MENU-START"
           today = Date.today
           year = today.year
-
           use_factors = SystemConfiguration::Variable.get_value('booking.use_factors_in_rates','false').to_bool
-
           booking_renting, booking_activities = app.mybooking_plan_type
           addons = app.mybooking_addons
-
           menu_locals = {booking_renting: booking_renting,
                          booking_activities: booking_activities,
                          addons: addons,
@@ -1096,9 +1094,10 @@ module Huasi
                          use_inner_reservation_engine: SystemConfiguration::Variable.get_value('booking.inner_reservation_engine','false').to_bool}
           if booking_renting
             menu_locals.store(:pending_confirmation, BookingDataSystem::Booking.count_pending_confirmation_reservations(year))
-            menu_locals.store(:today_pickup, BookingDataSystem::Booking.pickup_list(today, today, nil, true).size) #BookingDataSystem::Booking.count_pickup(today))
-            menu_locals.store(:today_return, BookingDataSystem::Booking.return_list(today, today, nil, true).size)#BookingDataSystem::Booking.count_delivery(today))
-            menu_locals.store(:pending_assignation, BookingDataSystem::Booking.pending_of_assignation.size)
+            addon_journal = (addons.has_key?(:addon_journal) and addons[:addon_journal])
+            menu_locals.store(:today_pickup, BookingDataSystem::Booking.pickup_count(today, today, nil, addon_journal)) #.pickup_list(today, today, nil, true).size) 
+            menu_locals.store(:today_return, BookingDataSystem::Booking.return_count(today, today, nil, addon_journal)) #return_list(today, today, nil, true).size)
+            menu_locals.store(:pending_assignation, BookingDataSystem::Booking.pending_of_assignation_count) #.pending_of_assignation.size)
             menu_locals.store(:planning_conflicts_count, BookingDataSystem::Booking.overbooking_conflicts.size)
           end
           if booking_activities
@@ -1108,16 +1107,17 @@ module Huasi
           menu_locals.store(:multiple_rental_locations, BookingDataSystem::Booking.multiple_rental_locations)
           product_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
           menu_locals.store(:product_family, product_family)
+          #p "BUILD-MENU-END"
 
           if block_name == 'booking_admin_menu'
             begin
-              p "product_family: #{product_family.inspect} #{product_family.accommodation?}"
               if product_family.accommodation?
                 app.partial(:booking_menu_hostel, :locals => menu_locals)
               else
                 app.partial(:booking_menu, :locals => menu_locals)
               end
             rescue => error
+              puts error.backtrace
               p "error: #{error.inspect}"
             end
           else

@@ -1,3 +1,5 @@
+<%= partial 'select_customer.js'.to_sym %>
+
 require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelector', 
          'YSDForms', 'ysdtemplate', 'YSDGui', 'jquery.validate',
          'jquery.ui', 'jquery.ui.datepicker-es', 'jquery.ui.datepicker.validation',
@@ -106,227 +108,14 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       var self = this;
 
-      // Set up new charge button click
-      $('#new_charge').bind('click', function(){
-        self.prepareFormNewCharge(entity);       
+      // == Customer
+
+      // Select customer
+      $('#select_customer_btn').bind('click', function(){
+
+        self.selectCustomer(entity);
+
       });
-
-      <% if booking_item_family.driver %>
-        $('#main_driver_button').bind('click', function(){
-          self.prepareFormMainDriver(entity);
-        });
-        <% if booking_item_family.driver_license %>
-          $('#additional_driver_button').bind('click', function(){
-            self.prepareFormAdditionalDriver(entity);
-          });
-        <% end %>
-      <% end %>
-
-      // Set up new booking line button click
-      $('#new_booking_line_button').bind('click', function() {
-        self.prepareFormNewBookingLine(entity);
-      });
-
-      // Set up new extra button click
-      $('#new_booking_extra_button').bind('click', function() {
-        self.prepareFormNewBookingExtra(entity);
-      });
-
-      // Set up remove extra button click
-      $('.remove-booking-extra-id').bind('click', function() {
-        var bookingExtraId = $(this).attr('data-id');
-        $("<div title='" + '<%=t.booking_management.form.extra_removed.confirm_delete_title%>' + "'>" +
-                           '<%=t.booking_management.form.extra_removed.confirm_delete_message%>' + "</div>").dialog( 
-          { height: 250, modal: true,        
-            buttons: {
-                Ok: function() {
-                      response = true;
-                      $(this).dialog( "close" );
-                },
-                Cancel: function() {
-                      response = false;  
-                      $( this ).dialog( "close" );
-                }
-          },
-          close : function(event, ui) {                   
-            if (response) {
-              $.ajax({
-                type: 'DELETE',
-                url : '/api/booking/booking-extra?id='+bookingExtraId,
-                success: function(data, textStatus, jqXHR) {
-                  bookingManager.model.synchronizeCurrentEntity(data);
-                  bookingManager.model.change_state('entity_updated_successfully');
-                  alert('<%=t.booking_management.form.extra_removed.done%>');
-                },
-                error: function(data, textStatus, jqXHR) {
-                  alert('<%=t.booking_management.form.extra_removed.error%>');
-                }
-              }); 
-            }
-          }
-        }); 
-      });
-
-      // Set up remove booking charge button click
-      $('.remove-booking-charges').bind('click', function() {
-        var bookingId = $(this).attr('data-booking-id');
-        var chargeId = $(this).attr('data-charge-id');
-        $("<div title='" + '<%=t.booking_management.form.charge_removed.confirm_delete_title%>' + "'>" +
-                           '<%=t.booking_management.form.charge_removed.confirm_delete_message%>' + "</div>").dialog( 
-          { height: 250, modal: true,        
-            buttons: {
-                Ok: function() {
-                      response = true;
-                      $(this).dialog( "close" );
-                },
-                Cancel: function() {
-                      response = false;  
-                      $( this ).dialog( "close" );
-                }
-          },
-          close : function(event, ui) {                   
-            if (response) {
-              $.ajax({
-                type: 'DELETE',
-                url : '/api/booking/booking-charge?booking_id='+bookingId+'&charge_id='+chargeId,
-                success: function(data, textStatus, jqXHR) {
-                  bookingManager.model.synchronizeCurrentEntity(data);
-                  bookingManager.model.change_state('entity_updated_successfully');
-                  alert('<%=t.booking_management.form.charge_removed.done%>');
-                },
-                error: function(data, textStatus, jqXHR) {
-                  alert('<%=t.booking_management.form.charge_removed.error%>');
-                }
-              }); 
-            }
-          }
-        }); 
-      });
-
-      // Setup booking supplemments button click
-      $('#booking_supplements_button').bind('click', function() {
-        self.prepareFormBookingSupplements(entity);
-      });
-
-      // Setup booking deposit button click
-      $('#booking_deposit_button').bind('click', function() {
-         self.prepareFormBookingDeposit(entity);
-      });
-
-      // Setup edit booking line item button click
-      $('.booking-line-item-id').bind('click', function() {
-        var id = $(this).attr('data-id');
-        var value = $(this).attr('data-value');
-        var priceValue = $(this).attr('data-value-price');
-        var quantity = parseInt($(this).attr('data-value-quantity'));
-        if (!isNaN(quantity)){
-            quantity = 1;
-        }
-        self.prepareFormEditBookingLineItemId(id, value, priceValue, quantity);
-      });
-
-      // Setup edit booking line quantity button click
-      $('.booking-line-quantity').bind('click', function() {
-        var id = $(this).attr('data-id');
-        var value = $(this).attr('data-value');
-        self.prepareFormEditBookingLineQuantity(id, value);
-      });
-
-      // Setup edit booking line unit cost button click
-      $('.booking-line-unit-cost').bind('click', function() {
-        var id = $(this).attr('data-id');
-        var value = $(this).attr('data-value');        
-        self.prepareFormEditBookingLineItemUnitCost(id, value);
-      });
-
-      // Setup edit booking line deposit button click
-      $('.booking-line-deposit').bind('click', function() {
-        var id = $(this).attr('data-id');
-        var value = $(this).attr('data-value');        
-        self.prepareFormEditBookingLineItemDeposit(id, value);
-      });  
-
-      $('.booking-line-category-supplements').bind('click', function(){
-        var id = $(this).attr('data-id');
-        var cost1 = $(this).attr('data-value-cost-1');
-        var cost2 = $(this).attr('data-value-cost-2');
-        var cost3 = $(this).attr('data-value-cost-3');        
-        self.prepareFormEditBookingLineCategorySupplements(id, cost1, cost2, cost3);
-      });
-
-      $('.booking-extra-quantity').bind('click', function() {
-        var id = $(this).attr('data-id');
-        var value = $(this).attr('data-value');
-        self.prepareFormEditBookingExtraQuantity(id, value);
-      });
-
-      $('.booking-extra-item-cost').bind('click', function() {
-        var id = $(this).attr('data-id');
-        var value = $(this).attr('data-value');        
-        self.prepareFormEditBookingExtraItemCost(id, value);
-      });
-
-      // Configure resources auto edition
-      this.configResourcesAutoEdition();
-
-      $('.booking_item_reference_detail').bind('click', function() {
-        var form = $(this)[0].form;
-        var lineIdx = $(form).attr('data-lineindex');
-        var resourceIdx = $(form).attr('data-resourceindex');
-        self.prepareFormEditBookingLineResource(lineIdx, resourceIdx);
-      });
-
-      $('#next_external_invoice_number').bind('click', function(){
-          self.nextExternalInvoiceNumber();
-      })
-
-      // Configure rental
-      <% if multiple_rental_locations %>
-      var dataSourceRentalLocation = new RemoteDataSource('/api/booking-rental-locations?all=yes',{'id':'code','description':'name'});
-      var valueRentalLocation = entity.rental_location_code;
-      var selectorRentalLocation = new SelectSelector('rental_location',
-            dataSourceRentalLocation, valueRentalLocation, true );
-      <% end %>
-
-      // Embed activity newsfeed
-      $.ajax({url: '/admin/newsfeed/booking/'+ entity.id, dataType: 'text'}).done(function(html) {
-            var dom = $('<html />').prop('innerHTML', html);
-            $('#newsfeed_container').html(dom.find('body #page_wrapper'));
-            $('head').append(dom.find('script:not([src])'));
-      });
-
-      // Configure sales channel
-      $('select[name=sales_channel_code]').bind('change', function(){
-            if (confirm('<%=t.booking_management.form.update_sales_channel_confirm%>')) {
-              bookingManager.model.update(null, null, this);
-            }
-            else {
-               $(this).val($.data(this, 'current'));
-               return false;
-            }
-      });
-
-      $('select[name=rental_location_code]').bind('change', function(){
-            if (confirm('<%=t.booking_management.form.update_rental_location_code_confirm%>')) {
-              bookingManager.model.update(null, null, this);
-            }
-            else {
-               $(this).val($.data(this, 'current'));
-               return false;
-            }
-      });
-
-      // Embed invoicing
-      <% if @addon_invoicing %>
-      $.ajax({url: '/admin/invoices/customer-invoices/list?reference_source=booking&reference='+entity.id, dataType: 'text'}).done(function(html) {
-            var dom = $('<html />').prop('innerHTML', html);
-            $('#invoicing_container').html(dom.find('body #page_wrapper'));
-            $('head').append(dom.find('script:not([src])'));
-            $('#new_invoice_btn').bind('click', function(){
-              self.prepareFormNewInvoice(entity);
-            });
-      });      
-      <% end %>
 
       // Create customer
       $('#create_customer_btn').bind('click', function(){
@@ -418,6 +207,238 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
       });
 
+      <% if booking_item_family.driver %>
+        $('#main_driver_button').bind('click', function(){
+          self.prepareFormMainDriver(entity);
+        });
+        <% if booking_item_family.driver_license %>
+          $('#additional_driver_button').bind('click', function(){
+            self.prepareFormAdditionalDriver(entity);
+          });
+        <% end %>
+      <% end %>
+
+      // == Booking line
+
+      // New booking line
+      $('#new_booking_line_button').bind('click', function() {
+        self.prepareFormNewBookingLine(entity);
+      });
+
+      $('.booking-line-item-id').bind('click', function() {
+        var id = $(this).attr('data-id');
+        var value = $(this).attr('data-value');
+        var priceValue = $(this).attr('data-value-price');
+        var quantity = parseInt($(this).attr('data-value-quantity'));
+        if (!isNaN(quantity)){
+            quantity = 1;
+        }
+        self.prepareFormEditBookingLineItemId(id, value, priceValue, quantity);
+      });
+
+      $('.booking-line-quantity').bind('click', function() {
+        var id = $(this).attr('data-id');
+        var value = $(this).attr('data-value');
+        self.prepareFormEditBookingLineQuantity(id, value);
+      });
+
+      $('.booking-line-unit-cost').bind('click', function() {
+        var id = $(this).attr('data-id');
+        var value = $(this).attr('data-value');        
+        self.prepareFormEditBookingLineItemUnitCost(id, value);
+      });
+
+      $('.booking-line-deposit').bind('click', function() {
+        var id = $(this).attr('data-id');
+        var value = $(this).attr('data-value');        
+        self.prepareFormEditBookingLineItemDeposit(id, value);
+      });  
+
+      $('.booking-line-category-supplements').bind('click', function(){
+        var id = $(this).attr('data-id');
+        var cost1 = $(this).attr('data-value-cost-1');
+        var cost2 = $(this).attr('data-value-cost-2');
+        var cost3 = $(this).attr('data-value-cost-3');        
+        self.prepareFormEditBookingLineCategorySupplements(id, cost1, cost2, cost3);
+      });
+
+      // == Booking extra
+
+      // New extra
+      $('#new_booking_extra_button').bind('click', function() {
+        self.prepareFormNewBookingExtra(entity);
+      });
+
+      // Modify extra quantity
+      $('.booking-extra-quantity').bind('click', function() {
+        var id = $(this).attr('data-id');
+        var value = $(this).attr('data-value');
+        self.prepareFormEditBookingExtraQuantity(id, value);
+      });
+
+      // Modify extra item cost
+      $('.booking-extra-item-cost').bind('click', function() {
+        var id = $(this).attr('data-id');
+        var value = $(this).attr('data-value');        
+        self.prepareFormEditBookingExtraItemCost(id, value);
+      });
+
+      // Remove booking extra
+      $('.remove-booking-extra-id').bind('click', function() {
+        var bookingExtraId = $(this).attr('data-id');
+        $("<div title='" + '<%=t.booking_management.form.extra_removed.confirm_delete_title%>' + "'>" +
+                           '<%=t.booking_management.form.extra_removed.confirm_delete_message%>' + "</div>").dialog( 
+          { height: 250, modal: true,        
+            buttons: {
+                Ok: function() {
+                      response = true;
+                      $(this).dialog( "close" );
+                },
+                Cancel: function() {
+                      response = false;  
+                      $( this ).dialog( "close" );
+                }
+          },
+          close : function(event, ui) {                   
+            if (response) {
+              $.ajax({
+                type: 'DELETE',
+                url : '/api/booking/booking-extra?id='+bookingExtraId,
+                success: function(data, textStatus, jqXHR) {
+                  bookingManager.model.synchronizeCurrentEntity(data);
+                  bookingManager.model.change_state('entity_updated_successfully');
+                  alert('<%=t.booking_management.form.extra_removed.done%>');
+                },
+                error: function(data, textStatus, jqXHR) {
+                  alert('<%=t.booking_management.form.extra_removed.error%>');
+                }
+              }); 
+            }
+          }
+        }); 
+      });
+
+      // == Resource 
+
+      this.configResourcesAutoEdition();
+      $('.booking_item_reference_detail').bind('click', function() {
+        var form = $(this)[0].form;
+        var lineIdx = $(form).attr('data-lineindex');
+        var resourceIdx = $(form).attr('data-resourceindex');
+        self.prepareFormEditBookingLineResource(lineIdx, resourceIdx);
+      });
+
+      // == Charges
+
+      // New charge
+      $('#new_charge').bind('click', function(){
+        self.prepareFormNewCharge(entity);       
+      });
+
+      // Remove charge
+      $('.remove-booking-charges').bind('click', function() {
+        var bookingId = $(this).attr('data-booking-id');
+        var chargeId = $(this).attr('data-charge-id');
+        $("<div title='" + '<%=t.booking_management.form.charge_removed.confirm_delete_title%>' + "'>" +
+                           '<%=t.booking_management.form.charge_removed.confirm_delete_message%>' + "</div>").dialog( 
+          { height: 250, modal: true,        
+            buttons: {
+                Ok: function() {
+                      response = true;
+                      $(this).dialog( "close" );
+                },
+                Cancel: function() {
+                      response = false;  
+                      $( this ).dialog( "close" );
+                }
+          },
+          close : function(event, ui) {                   
+            if (response) {
+              $.ajax({
+                type: 'DELETE',
+                url : '/api/booking/booking-charge?booking_id='+bookingId+'&charge_id='+chargeId,
+                success: function(data, textStatus, jqXHR) {
+                  bookingManager.model.synchronizeCurrentEntity(data);
+                  bookingManager.model.change_state('entity_updated_successfully');
+                  alert('<%=t.booking_management.form.charge_removed.done%>');
+                },
+                error: function(data, textStatus, jqXHR) {
+                  alert('<%=t.booking_management.form.charge_removed.error%>');
+                }
+              }); 
+            }
+          }
+        }); 
+      });
+
+      // == Supplements
+
+      $('#booking_supplements_button').bind('click', function() {
+        self.prepareFormBookingSupplements(entity);
+      });
+
+      // == Deposit
+
+      $('#booking_deposit_button').bind('click', function() {
+         self.prepareFormBookingDeposit(entity);
+      });
+
+      // == Invoicing simple
+
+      $('#next_external_invoice_number').bind('click', function(){
+          self.nextExternalInvoiceNumber();
+      })
+
+      // == Newsfeed
+
+      $.ajax({url: '/admin/newsfeed/booking/'+ entity.id, dataType: 'text'}).done(function(html) {
+            var dom = $('<html />').prop('innerHTML', html);
+            $('#newsfeed_container').html(dom.find('body #page_wrapper'));
+            $('head').append(dom.find('script:not([src])'));
+      });
+
+      // == Sales channel 
+
+      $('select[name=sales_channel_code]').bind('change', function(){
+            if (confirm('<%=t.booking_management.form.update_sales_channel_confirm%>')) {
+              bookingManager.model.update(null, null, this);
+            }
+            else {
+               $(this).val($.data(this, 'current'));
+               return false;
+            }
+      });
+
+      // == Rental location code
+
+      <% if multiple_rental_locations %>
+      var dataSourceRentalLocation = new RemoteDataSource('/api/booking-rental-locations?all=yes',{'id':'code','description':'name'});
+      var valueRentalLocation = entity.rental_location_code;
+      var selectorRentalLocation = new SelectSelector('rental_location',
+            dataSourceRentalLocation, valueRentalLocation, true );
+      $('select[name=rental_location_code]').bind('change', function(){
+            if (confirm('<%=t.booking_management.form.update_rental_location_code_confirm%>')) {
+              bookingManager.model.update(null, null, this);
+            }
+            else {
+               $(this).val($.data(this, 'current'));
+               return false;
+            }
+      });
+      <% end %>
+
+      // == Invoicing : embed
+
+      <% if @addon_invoicing %>
+      $.ajax({url: '/admin/invoices/customer-invoices/list?reference_source=booking&reference='+entity.id, dataType: 'text'}).done(function(html) {
+            var dom = $('<html />').prop('innerHTML', html);
+            $('#invoicing_container').html(dom.find('body #page_wrapper'));
+            $('head').append(dom.find('script:not([src])'));
+            $('#new_invoice_btn').bind('click', function(){
+              self.prepareFormNewInvoice(entity);
+            });
+      });      
+      <% end %>
 
     }
 
@@ -1372,6 +1393,16 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
 
     }     
 
+    /* ==================== CUSTOMER =================== */
+
+    this.selectCustomer = function(entity) {
+
+      selectCustomerModel.removeListener(this);
+      selectCustomerModel.addListener(this);
+      selectCustomerView.show();
+
+    }
+
     /* ==================== DRIVER ===================== */
 
     /* ------- Driver/Contact ------ */
@@ -1730,6 +1761,7 @@ require(['jquery', 'YSDEntityManagement','YSDRemoteDataSource', 'YSDSelectSelect
              };
   
   var bookingHook = new BookingHook();
-  var bookingManager = new EntityManagement(urls, 'bookings', <%=bookings_page_size%>, bookingHook, {prefix: '/admin/booking', hold_form_after_action:true});
+  var bookingManager = new EntityManagement(urls, 'bookings', <%=bookings_page_size%>, bookingHook, 
+        {prefix: '/admin/booking', hold_form_after_action:true, lazy_loading: true});
  
  });

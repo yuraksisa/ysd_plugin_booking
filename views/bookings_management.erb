@@ -42,6 +42,11 @@
   </div>
 </div>
 
+<!-- ========================================== -->
+<!--             Customer selection             -->
+<!-- ========================================== -->
+<%= partial :select_customer %>
+
 <!-- Renders the element description -->
 
 <script type="text/tmpl" id="elements_title">
@@ -106,12 +111,20 @@
       <td class="table-cell"><strong><%%= entity.customer_name %> <%%=entity.customer_surname%></strong></td>
       <td class="table-cell centered_text">
          <% if booking_item_family.multiple_items? %>
-           <%% for (var idx=0;idx<entity.booking_lines.length;idx++) { %>
-           <%%= entity.booking_lines[idx].item_id %> (<%%= entity.booking_lines[idx].quantity %> u.)<br>
+           <%% if (entity.booking_lines) {%>
+             <%% for (var idx=0;idx<entity.booking_lines.length;idx++) { %>
+             <%%= entity.booking_lines[idx].item_id %> (<%%= entity.booking_lines[idx].quantity %> u.)<br>
+             <%% } %>
+           <%% } else {%>
+           <%%= entity.item_id %>
            <%% } %>
          <% else %>
-           <%% if (entity.booking_lines.length > 0) { %>
-           <%%= entity.booking_lines[0].item_id %>
+           <%% if (entity.booking_lines) { %> 
+             <%% if (entity.booking_lines.length > 0) { %>
+             <%%= entity.booking_lines[0].item_id %>
+             <%% } %>
+           <%% } else { %>
+              <%%= entity.item_id %>
            <%% } %>
          <% end %>
       </td>
@@ -164,7 +177,7 @@
                     <button class="btn btn-sm" id="create_customer_btn"><i class="fa fa-plus-circle" title="Crear ficha cliente"></i></button>
                     </li>
                     <li>
-                    <button class="btn btn-sm" id="create_customer_btn"><i class="fa fa-search-plus" title="Seleccionar/asignar cliente a la reserva"></i></button>
+                    <button class="btn btn-sm" id="select_customer_btn"><i class="fa fa-search-plus" title="Seleccionar/asignar cliente a la reserva"></i></button>
                     </li>
                   <%% } else {%>
                     <li>
@@ -174,7 +187,7 @@
                       <button class="btn btn-sm" id="update_customer_btn"><i class="fa fa-arrow-circle-up" title="Actualizar ficha cliente"></i></button>
                     </li>
                     <li>
-                    <button class="btn btn-sm" id="create_customer_btn"><i class="fa fa-search-plus" title="Seleccionar/asignar cliente a la reserva"></i></button>
+                    <button class="btn btn-sm" id="select_customer_btn"><i class="fa fa-search-plus" title="Seleccionar/asignar cliente a la reserva"></i></button>
                     </li>  
                   <%% } %>  
                 </ul>            
@@ -437,6 +450,8 @@
 
 </script>
 
-<%= partial :booking_management_edit, locals: {booking_item_family: booking_item_family, driver_min_age_rules: driver_min_age_rules}%>
+<%= partial :booking_management_edit, locals: { booking_item_family: booking_item_family, 
+                                                driver_min_age_rules: driver_min_age_rules}%>   
+<%= partial :select_customer_script %>                                                
 <%= element_form_extension %>
 <%= element_action_extension %>

@@ -222,9 +222,17 @@ module Sinatra
         ["/api/bookings", "/api/bookings/page/:page"].each do |path|
           app.post path, :allowed_usergroups => ['booking_manager', 'booking_operator', 'staff'] do
 
+            @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
+
+            p "BOOKING-SEARCH-START"
+            fields_lazy = [:id, :customer_name, :customer_surname, :date_from, :date_to, :status, :payment_status, :creation_date, :created_by_manager, :rental_location_code]
+
             page = [params[:page].to_i, 1].max
             page_size = 20
-            offset_order_query = {:offset => (page - 1)  * page_size, :limit => page_size, :order => [:id.desc]}
+            offset = (page - 1)  * page_size
+            offset_order_query = {:offset => offset, :limit => page_size, :order => [:id.desc]}
+
+            offset_order_query.merge!(fields: fields_lazy) if params[:mode] == 'lazy'
 
             if request.media_type == "application/json"
               request.body.rewind
@@ -234,34 +242,66 @@ module Sinatra
                 today = Date.today.to_date
                 first_year_date = Date.civil(today.year, 1, 1)
                 if search_request['status'] == 'pending'
-                  data, total = BookingDataSystem::Booking.all_and_count(
-                      {:conditions => {:status => [:pending_confirmation],
-                                       :date_from.gte => today}}.merge(offset_order_query))
+                  if @booking_item_family.multiple_items?
+                    data = BookingDataSystem::Booking.reservation_search_pending_multiple(page_size, offset, today)
+                  else
+                    data = BookingDataSystem::Booking.reservation_search_pending(page_size, offset, today)
+                  end                   
+                  total = BookingDataSystem::Booking.count({:conditions => {:status => [:pending_confirmation],
+                                                                            :date_from.gte => today}})                      
                 elsif search_request['status'] == 'in_process'
-                  data, total = BookingDataSystem::Booking.all_and_count(
-                      {:conditions => {:status => [:confirmed, :in_progress],
-                                      :date_from.lte => today,
-                                      :date_to.gte => today}}.merge(offset_order_query))
+                  if @booking_item_family.multiple_items?
+                    data = BookingDataSystem::Booking.reservation_search_in_process_multiple(page_size, offset, today)
+                  else
+                    data = BookingDataSystem::Booking.reservation_search_in_process(page_size, offset, today)
+                  end                   
+                  total = BookingDataSystem::Booking.count({:conditions => {:status => [:confirmed, :in_progress],
+                                                                                    :date_from.lte => today, 
+                                                                                    :date_to.gte => today}})
                 elsif search_request['status'] == 'confirmed'
-                  data, total = BookingDataSystem::Booking.all_and_count(
-                      {:conditions => {:status => [:confirmed, :in_progress, :done],
-                                      :creation_date.gte => first_year_date}}.merge(offset_order_query))
+                  if @booking_item_family.multiple_items?
+                    data = BookingDataSystem::Booking.reservation_search_confirmed_multiple(page_size, offset, first_year_date)
+                  else
+                    data = BookingDataSystem::Booking.reservation_search_confirmed(page_size, offset, first_year_date)
+                  end                      
+                  total = BookingDataSystem::Booking.count({:conditions => {:status => [:confirmed, :in_progress, :done],
+                                                                                    :creation_date.gte => first_year_date}})
                 elsif search_request['status'] == 'received'
-                  data, total = BookingDataSystem::Booking.all_and_count(
-                      {:conditions => {:creation_date.gte => first_year_date}}.merge(offset_order_query))
+                  if @booking_item_family.multiple_items?
+                    data = BookingDataSystem::Booking.reservation_search_received_multiple(page_size, offset, first_year_date)
+                  else
+                    data = BookingDataSystem::Booking.reservation_search_received(page_size, offset, first_year_date)
+                  end                    
+                  total = BookingDataSystem::Booking.all_and_count({:conditions => {:creation_date.gte => first_year_date}})
                 end
               elsif search_request.has_key?('search') and (search_request['search'].to_s.strip.length > 0)
-                total, data = BookingDataSystem::Booking.text_search(search_request['search'],offset_order_query)
+                total, data = BookingDataSystem::Booking.text_search(search_request['search'], page_size, offset)
               else
-                data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
+                if @booking_item_family.multiple_items?
+                  data = BookingDataSystem::Booking.reservation_search_multiple(page_size, offset)
+                else
+                  data = BookingDataSystem::Booking.reservation_search(page_size, offset)
+                end  
+                total = BookingDataSystem::Booking.count
               end
-
             else
-                data, total = BookingDataSystem::Booking.all_and_count(offset_order_query)
+                if @booking_item_family.multiple_items?
+                  data = BookingDataSystem::Booking.reservation_search_multiple(page_size, offset)
+                else
+                  data = BookingDataSystem::Booking.reservation_search(page_size, offset)
+                end  
+                total = BookingDataSystem::Booking.count
             end
+            p "BOOKING-SEARCH-END"
 
             content_type :json
-            {:data => data, :summary => {:total => total}}.to_json
+            if params[:mode] == 'lazy'
+             data_json = BookingDataSystem::Booking.map_results(data).to_json(only: fields_lazy)
+             summary_json= {total: total}.to_json
+             "{\"data\": #{data_json}, \"summary\": #{summary_json}}"
+            else  
+              {:data => data, :summary => {:total => total}}.to_json
+            end
 
           end
         end
