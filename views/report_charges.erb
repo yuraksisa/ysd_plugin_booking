@@ -61,7 +61,7 @@
                   <% subtotals.each do |payment_method_id, subtotal| %>
                     <tr class="bg-gray-light">
                       <td>&nbsp;</td>
-                      <td>Total <%=payment_method_id%></td>                    
+                      <td>T. <%=payment_method_id%></td>                    
                       <td class="text-right"><%="%.2f" % subtotal%></td>
                       <td>&nbsp;</td>
                       <td>&nbsp;</td>   
@@ -98,8 +98,8 @@
               </thead>
               <tbody>      
           <% end %>  
-          <tr>
-            <td><%=charge.date.strftime('%Y-%m-%d %H:%M:%S')%> </td>
+          <tr <%if charge.payment_type == 'payment'%>class="text-danger"<%end%>>
+            <td><%=charge.date.strftime('%Y-%m-%d %H:%M:%S')%></td>
             <td><%=charge.payment_method_id%></td>
             <td class="text-right"><%="%.2f" % charge.amount%></td>
             <td><%=charge.source_link%></td>
@@ -114,7 +114,7 @@
             <% subtotals.each do |payment_method_id, subtotal| %>
               <tr class="bg-gray-light">
                 <td>&nbsp;</td>
-                <td>Total <%=payment_method_id%></td>                    
+                <td>T. <%=payment_method_id%></td>                    
                 <td class="text-right"><%="%.2f" % subtotal%></td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>   
