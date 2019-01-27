@@ -213,6 +213,7 @@ module Sinatra
 
           @renting_plan, @activities_plan = mybooking_plan_type
 
+          @content_types = ContentManagerSystem::ContentType.all(conditions: {:id.not => 'fragment'})
           @pages = ContentManagerSystem::Content.all(conditions: { type: 'page' },
                                                      order: [:title])
           @primary_links_menu = ::Site::Menu.first(name: 'primary_links')

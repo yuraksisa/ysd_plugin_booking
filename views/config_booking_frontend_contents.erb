@@ -20,14 +20,24 @@
         <div class="block ">
           <div class="block-header bg-gray-lighter">
             <ul class="block-options">
+              <li class="dropdown">
+                  <button type="button" data-toggle="dropdown" aria-expanded="false">Tipos de contenido<span class="caret"></span></button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                      <% @content_types.each do |content_type| %>
+                      <li>
+                          <a href="javascript:void(0)" class="content_type" rel="<%=content_type.id%>"><%=content_type.name%></a>
+                      </li>
+                      <% end %>
+                  </ul>
+              </li>              
               <li>
                 <button id="new_page_button" class="btn push-5-r push-10" type="button"><i class="fa fa-plus"></i></button>
               </li>
             </ul>
-            <h3 class="block-title"><%=t.reservation_website_contents.pages%></h3>
+            <h3 id="content_type_title" class="block-title"><%=t.reservation_website_contents.pages%></h3>
           </div>
           <div id="pages_container" class="block-content block-content-narrow">
-            <%= partial :pages %>
+            <%= partial :contents %>
           </div>
         </div>
       </div>
