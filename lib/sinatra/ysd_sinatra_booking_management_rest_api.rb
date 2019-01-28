@@ -225,7 +225,8 @@ module Sinatra
             @booking_item_family = ::Yito::Model::Booking::ProductFamily.get(SystemConfiguration::Variable.get_value('booking.item_family'))
 
             p "BOOKING-SEARCH-START"
-            fields_lazy = [:id, :customer_name, :customer_surname, :date_from, :date_to, :status, :payment_status, :creation_date, :created_by_manager, :rental_location_code]
+            fields_lazy = [:id, :customer_name, :customer_surname, :date_from, :date_to, :status, :payment_status, :creation_date, 
+                           :created_by_manager, :rental_location_code, :sales_channel_code]
 
             page = [params[:page].to_i, 1].max
             page_size = 20
