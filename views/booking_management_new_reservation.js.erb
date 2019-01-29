@@ -63,7 +63,9 @@ bookingNewModel = {
            contentType : 'application/json; charset=utf-8',
            crossDomain: true,
            success: function(data, textStatus, jqXHR) {
+               bookingNewModel.extras = data.extras;
                bookingNewModel.shopping_cart = data.shopping_cart;
+               bookingNewView.loadExtras();
                bookingNewView.loadSummary();
            },
            error: function(data, textStatus, jqXHR) {
@@ -424,7 +426,7 @@ bookingNewView = {
         $('.product_chooser').unbind('change');
         $('.product_selector').unbind('change');
 
-        var html = tmpl('script_products')({products:bookingNewModel.products});
+        var html = tmpl('script_products')({products:bookingNewModel.products, shoppingCart: bookingNewModel.shopping_cart});
         $('#products_list').html(html);
 
         $('.product_chooser').bind('change', function(){

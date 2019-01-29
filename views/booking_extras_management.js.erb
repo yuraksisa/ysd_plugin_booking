@@ -1,14 +1,18 @@
 <%= partial('price_definition_creation.js'.to_sym) %>
 require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
-         "YSDRemoteDataSource", "YSDSelectSelector", "jquery.ui", "YSDjson2"], 
+         "YSDRemoteDataSource", "YSDSelectSelector", 'YSDListSelector', "jquery.ui", "YSDjson2"], 
          function($, EntityManagement, EntityManagementComplementHooks,
-           RemoteDataSource, SelectSelector) {
+           RemoteDataSource, SelectSelector, ListSelector) {
     
   var bookingItemExtra = {
      
        
     entityKey : function(entity) {
       return entity.code;
+    },
+
+    onRenderEntities: function() {
+      $('.elements-search').show(); 
     },
 
     onEdit : function(entity) {
@@ -46,11 +50,20 @@ require(["jquery", "YSDEntityManagement", "YSDEntityManagementComplementHooks",
       this.configForm(null);     
     },
 
-    onRenderEntities: function() {
-      $('.elements-search').show(); 
-    },
-
     configForm: function(entity) {
+
+      var categoriesDataSource = new RemoteDataSource('/api/booking-categories',{id:'code', description:'code'});
+      var categoriesValue = (entity&&entity.booking_categories)?entity.booking_categories.map(function(item){return item.code;}):[];
+      var categoriesSelector = new ListSelector('booking_categories', 'booking_categories[]', categoriesDataSource, categoriesValue );
+
+      $('#extra_application').bind('change', function(){
+          if ($(this).val() == 'generic') {
+            $('#categories_container').hide();
+          }
+          else {
+            $('#categories_container').show();
+          }
+      })
 
     },
       

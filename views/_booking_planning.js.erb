@@ -709,7 +709,7 @@ require(['YSDFormatter', 'jquery', 'ysdtemplate', 'YSDGui', 'jquery.ui', 'jquery
         for (item in bookingPlanningModel.references) {
             $("#planning_table tbody").append("<tr id='" + item + "' rel='" + bookingPlanningModel.references[item] + "'></tr>");
             var title = bookingPlanningModel.planningStyle == 'compact' ? item+'<span class="planning_item_category">'+bookingPlanningModel.references[item]+'</span>' :
-                <%if @product_family.category_of_resources?%>'<span class="planning_item_category_extended">'+ bookingPlanningModel.references[item]+'</span>'+ ' - ' +<%end%>item;
+                <%if @product_family.category_of_resources? and @product_family.vehicle_rental?%>'<span class="planning_item_category_extended">'+ bookingPlanningModel.references[item]+'</span>'+ ' - ' +<%end%>item;
             $("#planning_table tbody tr#"+item+"").append(
                 "<td class='planning_reference' style='width:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['colReferenceWidth'].toString()+
            "px;line-height:"+bookingPlanningModel.planningMeasurements[bookingPlanningModel.planningStyle]['tableLineHeight'].toString()+"px;' data-reference='"+item+"'>"+

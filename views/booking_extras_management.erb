@@ -31,26 +31,25 @@
        <tr>
          <th class="table-header-title" scope="col" style="width:10%">
          </th>
-         <th class="table-header-title" scope="col" style="width:10%">
-            <%= t.booking_extra_management.table.code %>
-         </th>
          <th class="table-header-title" scope="col" style="width:20%">
             <%= t.booking_extra_management.table.name %>
          </th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%">
-            Stock
+         <th class="table-header-title text-right" scope="col" style="width:10%">
+            <%= t.booking_extra_management.table.stock %>
          </th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%">
-            Cant. máxima
+         <th class="table-header-title text-right" scope="col" style="width:10%">
+            <%= t.booking_extra_management.table.max_quantity %>
          </th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%">
-            Activo
+         <th class="table-header-title text-center" scope="col" style="width:10%">
+           <%= t.booking_extra_management.table.active %>
          </th>
-         <th class="table-header-title centered_text" scope="col" style="width:10%">
-            Disponible web
+         <th class="table-header-title text-center" scope="col" style="width:10%">
+            <%= t.booking_extra_management.table.web %>
          </th>
-         <th class="table-header-title" scope="col" style="width:10%">
+         <th class="table-header-title" scope="col" style="width:15%">
+           <%= t.booking_extra_management.table.application %>
          </th>         
+         <th class="table-header-title"></th>
        </tr>
      </thead>
      <tbody id="elements_tbody" class="table-tbody">             
@@ -68,25 +67,24 @@
          <%% } %>
       </td>
       <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="vertical-align: middle">
-        <strong><%%= entity.code %></strong>
-      </td>
-      <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="vertical-align: middle">
         <%%= entity.name %>
       </td>
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
+      <td class="table-cell element-navigation-detail text-right" rel="<%%= index %>" style="vertical-align: middle">
         <%%= entity.stock %>
       </td>
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
+      <td class="table-cell element-navigation-detail text-right" rel="<%%= index %>" style="vertical-align: middle">
         <%%= entity.max_quantity %>
       </td>
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
+      <td class="table-cell element-navigation-detail text-center" rel="<%%= index %>" style="vertical-align: middle">
          <%%= entity.active ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' %>
       </td>
-      <td class="table-cell element-navigation-detail centered_text" rel="<%%= index %>" style="vertical-align: middle">
+      <td class="table-cell element-navigation-detail text-center" rel="<%%= index %>" style="vertical-align: middle">
          <%%= entity.web_public ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'  %>
       </td>
-      <td class="table-cell">
+      <td class="table-cell element-navigation-detail" rel="<%%= index %>" style="vertical-align: middle">
+        <%%= entity.extra_application == 'generic' ? "<%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['extra_applications']['generic']%>" : "<%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['extra_applications']['category']%>"  %>
       </td>
+      <td class="table-cell"></td>
     </tr>
 </script>
 
@@ -153,19 +151,19 @@
                   <form name="element" class="form-horizontal" method="POST">
                       <input type="hidden" name="code" value="<%%=entity.code%>"/>
                       <div class="form-group">
-                         <label class="col-md-3 control-label"><%= t.booking_category_management.form.code.label %></label>
+                         <label class="col-md-3 control-label"><%= t.booking_extra_management.form.code.label %></label>
                          <div class="col-md-9">
                          <span class="form-control"><%%=entity.code%></span>
                          </div>
                       </div>
                       <div class="form-group">
-                        <label class="col-md-3 control-label"><%= t.booking_category_management.form.name.label %></label>
+                        <label class="col-md-3 control-label"><%= t.booking_extra_management.form.name.label %></label>
                         <div class="col-md-9">
                         <input type="text" maxlength="80" id="name" name="name" class="form-control" <%% if (entity) { %> value="<%%=entity.name%>" <%% } %>/>
                          </div>
                       </div>
                       <div class="form-group">
-                        <label class="col-md-3 control-label"><%= t.booking_category_management.form.description.label %></label>
+                        <label class="col-md-3 control-label"><%= t.booking_extra_management.form.description.label %></label>
                         <div class="col-md-9">
                          <textarea rows="5" cols="50" id="description" name="description" class="form-control texteditor"><%% if (entity) {%><%%=entity.description %><%% } %></textarea>
                          </div>
@@ -214,7 +212,7 @@
           <div class="col-sm-12 col-md-10 col-md-offset-1">
             <div class="block ">
               <div class="block-header bg-gray-lighter">
-                <h3 class="block-title">Tarifas</h3>
+                <h3 class="block-title"><%= t.booking_extra_management.form.prices_title %></h3>
               </div>
               <div class="block-content block-content-narrow">
                   <%% if (entity.price_definition_id == null) { %>
@@ -236,6 +234,44 @@
                   <%% } %>
                   <div id="prices_container">
                   </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories -->
+
+        <div class="row">
+          <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="block ">
+              <div class="block-header bg-gray-lighter">
+                <h3 class="block-title"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category']%></h3>
+              </div>
+              <div class="block-content block-content-narrow">
+                    <form name="element" class="form-horizontal">
+                      <input type="hidden" name="code" value="<%%=entity.code%>"/>
+                      <div class="form-group">
+                        <label class="col-sm-3 control-label"><%=t.booking_extra_management.form.extra_application.label%></label>
+                        <div class="col-sm-8">
+                          <select name="extra_application" class="form-control" id="extra_application">
+                            <option value="generic"  <%% if (entity && entity.extra_application == 'generic'){%>selected<%%}%> ><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['extra_applications']['generic']%></option>
+                            <option value="category" <%% if (entity && entity.extra_application == 'category'){%>selected<%%}%> ><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['extra_applications']['category']%></option>
+                          </select>
+                        </div>
+                      </div>
+                      <div id="categories_container" class="form-group" <%% if (!entity || entity.extra_application == 'generic'){%>style="display:none"<%%}%>>
+                        <label class="col-sm-3 control-label"><%= BookingDataSystem.r18n.t.booking_business_literals.business_type[@booking_item_family.business_type.to_s]['category_singular']%></label>
+                        <div class="col-sm-9">
+                           <div id="booking_categories">
+                           </div>
+                        </div>
+                      </div>                      
+                      <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3">
+                            <input type="button" class="btn btn-sm btn-primary update-entity-button action-button entity-management-button" value="<%=t.entitymanagement.update%>"/>
+                        </div>
+                      </div>
+                  </form>              
               </div>
             </div>
           </div>

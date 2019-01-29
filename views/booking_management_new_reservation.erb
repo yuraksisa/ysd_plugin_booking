@@ -229,21 +229,23 @@
         <div class="block-header bg-gray-lighter">
           <h3 class="block-title">Productos</h3>
         </div>
-        <div class="block-content block-content-narrow">
+        <div class="block-content">
           <form name="products_selection">
-            <table id="products_table" class="table table-hover">
+            <table id="products_table" class="table">
               <thead class="table-header">
                 <tr>
                   <th class="table-header-title centered_text" scope="col" style="width:10%"></th>
                   <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_new_reservation.products_table.photo %></th>
-                  <th class="table-header-title centered_text" scope="col" style="width:30%"><%= t.admin_new_reservation.products_table.product %></th>
-                  <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_new_reservation.products_table.stock %></th>
+                  <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_new_reservation.products_table.product %></th>
+                  <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.admin_new_reservation.products_table.stock %></th>
+                  <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.admin_new_reservation.products_table.days %></th> 
+                  <th class="table-header-title centered_text" scope="col" style="width:10%"><%= t.admin_new_reservation.products_table.min_days %></th>                  
                   <th class="table-header-title centered_text" scope="col" style="width:20%"><%= t.admin_new_reservation.products_table.price %></th>
                 </tr>
               </thead>
               <tbody id="elements_tbody" class="table-tbody">
                 <%% for (var idx=0;idx<products.length;idx++) { %>
-                  <tr class="table-row element-navigation-detail" rel="<%%= idx %>" id="element_row_<%%=idx%>">
+                  <tr class="table-row element-navigation-detail <%% if (shoppingCart.days < products[idx].min_days){%>danger<%%}%>" rel="<%%= idx %>" id="element_row_<%%=idx%>">
                     <td class="table-cell centered_text">
                       <% if multiple_products %>
                         <select name="item_id_<%%=products[idx].code%>" rel="<%%=products[idx].code%>" class="product_selector">
@@ -258,6 +260,8 @@
                    <td class="table-cell centered_text"><img src="<%%= products[idx].photo %>" style="max-width:150px"/></td>
                    <td class="table-cell centered_text"><%%=products[idx].name%></td>
                    <td class="table-cell centered_text"><%%= (products[idx].stock - products[idx].busy) %> (<%%=products[idx].stock%>)</td>
+                   <td class="table-cell centered_text"><%%= shoppingCart.days %></td>
+                   <td class="table-cell centered_text"><%%= products[idx].min_days%></td>                   
                    <td class="table-cell centered_text"><%% if (products[idx].price != products[idx].base_price){%>
                         <span style="text-decoration:line-through;"><%%=new Number(products[idx].base_price).toFixed(2)%></span>&nbsp;
                         <span class="badge">oferta</span>&nbsp;<%%}%><%%=new Number(products[idx].price).toFixed(2)%></td>

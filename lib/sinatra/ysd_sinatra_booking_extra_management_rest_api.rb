@@ -76,8 +76,19 @@ module Sinatra
         app.post "/api/booking-extra" do
         
           data_request = body_as_json(::Yito::Model::Booking::BookingExtra)
-          data = ::Yito::Model::Booking::BookingExtra.create(data_request)
-         
+          booking_categories = data_request.delete(:booking_categories) 
+          data = ::Yito::Model::Booking::BookingExtra.new(data_request)
+          # Affected categories
+          p "booking_categories: #{booking_categories.inspect}"
+          if booking_categories and booking_categories.is_a?(Array)
+            booking_categories.each do |category|
+              if (!data.booking_categories.any? {|item| item.code == category} and booking_category = ::Yito::Model::Booking::BookingCategory.get(category))
+                data.booking_categories << booking_category
+              end
+            end
+          end
+          data.save
+
           status 200
           content_type :json
           data.to_json          
@@ -91,8 +102,19 @@ module Sinatra
           
           data_request = body_as_json(::Yito::Model::Booking::BookingExtra)
                               
-          if data = ::Yito::Model::Booking::BookingExtra.get(data_request.delete(:code))     
+          if data = ::Yito::Model::Booking::BookingExtra.get(data_request.delete(:code))  
+            booking_categories = data_request.delete(:booking_categories)
             data.attributes=data_request  
+            if booking_categories and booking_categories.is_a?(Array)
+              # Remove existing and not selected booking categories
+              data.booking_extra_categories.all(conditions: {'booking_category_code'.to_sym.not => booking_categories }).destroy
+              # Add not existing booking categories
+              booking_categories.each do |category|
+                if (!data.booking_categories.any? {|item| item.code == category} and booking_category = ::Yito::Model::Booking::BookingCategory.get(category))
+                  data.booking_categories << booking_category
+                end
+              end
+            end            
             data.save
           end
       

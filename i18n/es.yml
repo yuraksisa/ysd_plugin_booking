@@ -279,7 +279,12 @@ booking_extra_management:
   table:
     code: Código
     name: Nombre
-    prices: Precios      
+    prices: Precios
+    stock: Stock
+    max_quantity: Cant. Máxima   
+    active: Activo
+    web: Web
+    application: Aplicación   
   form:
     code:
       label: Código
@@ -297,6 +302,12 @@ booking_extra_management:
       label: Activo
     web_public:
       label: Público 
+    extra_application:
+      label: Aplicación
+    prices_title: Tarifas
+  extra_applications:
+    generic: Todas las categorías
+    category: Una o varias categorías    
 #
 # == Items (inventory)
 #      
@@ -1507,6 +1518,8 @@ admin_new_reservation:
     product: Producto
     stock: Stock
     price: Precio
+    days: Días
+    min_days: "Mín. días"
   extras_table:
     extra: Extra
     price: Precio
